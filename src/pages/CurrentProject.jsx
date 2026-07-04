@@ -1,19 +1,13 @@
 import { useEffect, useRef, useState } from 'react';
 
-const CS_STAGES = [
-  { id: 'cs1', label: '01 Context' },
-  { id: 'cs2', label: '02 Problem' },
-  { id: 'cs3', label: '03 Discovery' },
-  { id: 'cs4', label: '04 The Call' },
-  { id: 'cs5', label: '05 The Build' },
-  { id: 'cs6', label: '06 Outcome' },
-];
-
 const STATS = [
   { to: 3, prefix: '', suffix: '×', label: 'self-serve adoption' },
-  { to: 40, prefix: '−', suffix: '%', label: 'dev handoffs per feature' },
-  { to: 50, prefix: '~', suffix: '%', label: 'vendor dependency cut' },
+  { to: 40, prefix: '−', suffix: '%', label: 'dev handoffs' },
+  { to: 50, prefix: '~', suffix: '%', label: 'vendor dependency' },
+  { to: 5, prefix: '', suffix: '+', label: 'surfaces · one owner' },
 ];
+
+const SURFACES = ['Customer Portal', 'Admin Portal', 'Invoice Design', 'Developer Portal', 'Knowledge Base'];
 
 function CountStat({ to, prefix, suffix, label }) {
   const [n, setN] = useState(0);
@@ -55,265 +49,439 @@ function CountStat({ to, prefix, suffix, label }) {
 }
 
 export default function CurrentProject() {
-  const [activeCs, setActiveCs] = useState('cs1');
-  const fillRef = useRef(null);
+  const [studyOpen, setStudyOpen] = useState(false);
+  const [studyIdx, setStudyIdx] = useState(0);
+  const globeSecRef = useRef(null);
+  const baseGlobeRef = useRef(null);
+  const hiGlobeRef = useRef(null);
+
+  const openStudy = (name) => {
+    const idx = SURFACES.indexOf(name);
+    setStudyIdx(idx < 0 ? 0 : idx);
+    setStudyOpen(true);
+  };
+  const closeStudy = () => setStudyOpen(false);
+  const prevStudy = () => setStudyIdx((i) => (i + SURFACES.length - 1) % SURFACES.length);
+  const nextStudy = () => setStudyIdx((i) => (i + 1) % SURFACES.length);
 
   useEffect(() => {
-    const blocks = CS_STAGES.map((s) => document.getElementById(s.id)).filter(Boolean);
-    if (blocks.length === 0) return undefined;
+    document.body.classList.toggle('ovl-lock', studyOpen);
+    return () => document.body.classList.remove('ovl-lock');
+  }, [studyOpen]);
 
-    const obs = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting) {
-            const idx = CS_STAGES.findIndex((s) => s.id === entry.target.id);
-            if (idx >= 0) {
-              setActiveCs(entry.target.id);
-              if (fillRef.current) fillRef.current.style.height = `${((idx + 1) / CS_STAGES.length) * 100}%`;
-            }
-          }
-        });
-      },
-      { rootMargin: '-40% 0px -50% 0px', threshold: 0 },
-    );
-    blocks.forEach((b) => obs.observe(b));
-    return () => obs.disconnect();
+  useEffect(() => {
+    if (!studyOpen) return undefined;
+    const onKey = (e) => {
+      if (e.key === 'Escape') closeStudy();
+      if (e.key === 'ArrowLeft') prevStudy();
+      if (e.key === 'ArrowRight') nextStudy();
+    };
+    window.addEventListener('keydown', onKey);
+    return () => window.removeEventListener('keydown', onKey);
+  }, [studyOpen]);
+
+  // horizontal project-track scroll + scroll-trace fade
+  useEffect(() => {
+    const noMotion = window.matchMedia('(prefers-reduced-motion:reduce)').matches;
+    const enhanced = !noMotion;
+    const clamp = (v, a, b) => Math.min(b, Math.max(a, v));
+
+    const scene = document.querySelector('[data-scene="polx"]');
+    const track = document.getElementById('pxTrack');
+    const bar = document.getElementById('pxBar');
+    const count = document.getElementById('pxCount');
+    const trace = document.getElementById('polScroll');
+
+    const sceneProgress = () => {
+      if (!scene) return 0;
+      const top = scene.getBoundingClientRect().top + window.scrollY;
+      const total = scene.offsetHeight - window.innerHeight;
+      if (total <= 0) return 0;
+      return clamp((window.scrollY - top) / total, 0, 1);
+    };
+
+    let rafId;
+    const tick = () => {
+      if (enhanced && track && bar && count) {
+        const p = sceneProgress();
+        const max = track.scrollWidth - window.innerWidth;
+        track.style.transform = `translateX(${-p * max}px)`;
+        bar.style.width = `${p * 100}%`;
+        count.textContent = `${1 + Math.round(p * 5)} / 6`;
+      }
+      if (trace) {
+        trace.style.opacity = Math.max(0, 1 - window.scrollY / (window.innerHeight * 0.3));
+      }
+      rafId = window.requestAnimationFrame(tick);
+    };
+
+    if (enhanced) {
+      rafId = window.requestAnimationFrame(tick);
+    } else if (track) {
+      track.style.flexWrap = 'wrap';
+      track.style.height = 'auto';
+    }
+
+    return () => window.cancelAnimationFrame(rafId);
   }, []);
 
-  const jumpTo = (id) => {
-    document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' });
-  };
+  // playable globe: dots that light up near the cursor
+  useEffect(() => {
+    const noMotion = window.matchMedia('(prefers-reduced-motion:reduce)').matches;
+    const finePointer = window.matchMedia('(pointer:fine)').matches;
+    if (noMotion || !finePointer) return undefined;
+    const gsec = globeSecRef.current;
+    const base = baseGlobeRef.current;
+    const hi = hiGlobeRef.current;
+    if (!gsec || !base || !hi) return undefined;
+
+    const NS = 'http://www.w3.org/2000/svg';
+    const dots = [];
+    let inited = false;
+    let raf = null;
+
+    const initDots = () => {
+      if (inited) return;
+      inited = true;
+      base.querySelectorAll('.g-line').forEach((ln) => {
+        let length = 0;
+        try {
+          length = ln.getTotalLength();
+        } catch {
+          return;
+        }
+        if (!length) return;
+        for (let d = 23; d < length; d += 46) {
+          const p = ln.getPointAtLength(d);
+          if (p.y < -10 || p.y > 478) continue;
+          const c = document.createElementNS(NS, 'circle');
+          c.setAttribute('cx', p.x);
+          c.setAttribute('cy', p.y);
+          c.setAttribute('r', '1.6');
+          c.setAttribute('class', 'g-dot');
+          base.appendChild(c);
+          dots.push({ c, x: p.x, y: p.y });
+        }
+      });
+    };
+
+    const onMove = (e) => {
+      if (raf) return;
+      raf = window.requestAnimationFrame(() => {
+        raf = null;
+        const r = base.getBoundingClientRect();
+        const px = e.clientX - r.left;
+        const py = e.clientY - r.top;
+        hi.style.setProperty('--gx', `${px}px`);
+        hi.style.setProperty('--gy', `${py}px`);
+        hi.style.opacity = 1;
+        const mx = px * (1000 / r.width);
+        const my = py * (480 / r.height);
+        const R = 130;
+        dots.forEach((d) => {
+          const dist = Math.hypot(d.x - mx, d.y - my);
+          if (dist < R) {
+            const k = 1 - dist / R;
+            d.c.setAttribute('transform', `translate(0 ${(-16 * k).toFixed(1)})`);
+            d.c.setAttribute('r', (1.6 + 2.8 * k).toFixed(2));
+            d.c.style.fill = 'var(--signal)';
+            d.c.style.opacity = (0.35 + 0.65 * k).toFixed(2);
+          } else if (d.c.hasAttribute('transform')) {
+            d.c.removeAttribute('transform');
+            d.c.setAttribute('r', '1.6');
+            d.c.style.fill = '';
+            d.c.style.opacity = '';
+          }
+        });
+      });
+    };
+
+    const onLeave = () => {
+      hi.style.opacity = 0;
+      dots.forEach((d) => {
+        d.c.removeAttribute('transform');
+        d.c.setAttribute('r', '1.6');
+        d.c.style.fill = '';
+        d.c.style.opacity = '';
+      });
+    };
+
+    gsec.addEventListener('mouseenter', initDots);
+    gsec.addEventListener('mousemove', onMove);
+    gsec.addEventListener('mouseleave', onLeave);
+    return () => {
+      gsec.removeEventListener('mouseenter', initDots);
+      gsec.removeEventListener('mousemove', onMove);
+      gsec.removeEventListener('mouseleave', onLeave);
+      dots.forEach((d) => d.c.remove());
+    };
+  }, []);
 
   return (
     <div>
-      {/* POLARIN HERO */}
-      <section className="pol-hero">
+      {/* 01 · simple open */}
+      <section className="pol-open">
         <div className="wrap">
-          <p className="pol-kicker rv">Current Project · <b>POLO</b> · Network-as-a-Service</p>
-          <h2 className="pol-title rv d1"><span>Polarin.</span></h2>
-          <div className="pol-sub rv d2">
-            <span><b>4 years</b> · 2022 — now</span>
-            <span><b>first designer</b> → associate product manager</span>
-            <span><b>5 surfaces</b> · one roadmap</span>
-            <span><b>AI</b> in every loop</span>
+          <p className="pol-kicker rv">Current Project · 2022 — now</p>
+          <h2 className="pol-title rv d1">
+            <span className="bt">{'Building'.split('').map((ch, i) => <b key={i}>{ch}</b>)}</span><br />
+            <span className="pw">Polarin</span>
+            <span className="tdots" aria-hidden="true"><i></i><i></i><i></i></span>
+          </h2>
+          <p className="pol-open-sub rv d2">a four-year build, still going</p>
+        </div>
+        <div className="scroll-trace" id="polScroll" aria-hidden="true">
+          <span className="lane"><i className="st-push"></i></span>
+          <em>scroll</em>
+        </div>
+      </section>
+
+      {/* 02 · what is polarin (half globe) */}
+      <section className="globe-sec" ref={globeSecRef}>
+        <svg className="globe" ref={baseGlobeRef} viewBox="0 0 1000 480" aria-hidden="true">
+          <defs>
+            <clipPath id="dome"><rect x="0" y="0" width="1000" height="478" /></clipPath>
+          </defs>
+          <g clipPath="url(#dome)">
+            <circle className="g-line" cx="500" cy="480" r="400" />
+            <ellipse className="g-line" cx="500" cy="480" rx="280" ry="400" />
+            <ellipse className="g-line" cx="500" cy="480" rx="150" ry="400" />
+            <ellipse className="g-line" cx="500" cy="480" rx="40" ry="400" />
+            <path className="g-line" d="M132 420 Q 500 300 868 420" />
+            <path className="g-line" d="M196 300 Q 500 196 804 300" />
+            <path className="g-line" d="M300 190 Q 500 116 700 190" />
+            <circle className="g-node" cx="240" cy="400" r="4" /><circle className="g-node n2" cx="700" cy="330" r="4" />
+            <circle className="g-node n3" cx="330" cy="250" r="4" /><circle className="g-node" cx="810" cy="380" r="4" />
+            <circle className="g-node n2" cx="180" cy="440" r="4" /><circle className="g-node n3" cx="620" cy="200" r="4" />
+            <circle className="g-node" cx="870" cy="420" r="4" />
+          </g>
+        </svg>
+        <svg className="globe globe-hi" ref={hiGlobeRef} viewBox="0 0 1000 480" aria-hidden="true">
+          <g clipPath="url(#dome)">
+            <circle className="g-line" cx="500" cy="480" r="400" />
+            <ellipse className="g-line" cx="500" cy="480" rx="280" ry="400" />
+            <ellipse className="g-line" cx="500" cy="480" rx="150" ry="400" />
+            <ellipse className="g-line" cx="500" cy="480" rx="40" ry="400" />
+            <path className="g-line" d="M132 420 Q 500 300 868 420" />
+            <path className="g-line" d="M196 300 Q 500 196 804 300" />
+            <path className="g-line" d="M300 190 Q 500 116 700 190" />
+          </g>
+        </svg>
+        <div className="wrap globe-copy">
+          <p className="eyebrow rv" style={{ justifyContent: 'center' }}>What is Polarin</p>
+          <p className="lede-big rv d1" style={{ margin: '0 auto', textAlign: 'center', maxWidth: '30ch' }}>Enterprise connectivity that provisions
+          <i> like cloud</i> — a Network-as-a-Service platform by <em>POLO</em>, connecting businesses across the globe
+          <i> in clicks, not contracts.</i></p>
+          <div className="pol-sub rv d2" style={{ justifyContent: 'center', marginTop: '24px' }}>
+            <span><b>NaaS</b> platform</span><span><b>global</b> connectivity</span><span><b>self-serve</b> by design</span>
           </div>
         </div>
       </section>
 
-      {/* BRIEF */}
+      {/* 03 · my role, brief */}
+      <section className="role-sec">
+        <div className="wrap" style={{ textAlign: 'center' }}>
+          <p className="eyebrow rv" style={{ justifyContent: 'center' }}>My input</p>
+          <h2 className="ch-title rv d1" style={{ fontSize: 'clamp(26px,4.4vw,50px)' }}>Its first designer.<br />Now its <span>product manager.</span></h2>
+          <div className="hats3 rv d2">
+            <div className="h3t">
+              <span className="h3g">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M15 4l5 5L8 21H3v-5L15 4z" />
+                  <path d="M4 23h16" strokeDasharray="16" strokeDashoffset="16">
+                    <animate attributeName="stroke-dashoffset" values="16;0;0;16" keyTimes="0;.45;.7;1" dur="2.6s" repeatCount="indefinite" />
+                  </path>
+                </svg>
+              </span>
+              <b>Design</b>
+              <p>every screen, 0 → 1 + the design system</p>
+            </div>
+            <div className="h3t">
+              <span className="h3g">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6">
+                  <rect x="4" y="4.5" width="12" height="3.4" rx="1.7">
+                    <animate attributeName="width" values="12;16;12" dur="2.4s" repeatCount="indefinite" />
+                  </rect>
+                  <rect x="4" y="10.3" width="16" height="3.4" rx="1.7">
+                    <animate attributeName="width" values="16;9;16" dur="2.4s" begin=".4s" repeatCount="indefinite" />
+                  </rect>
+                  <rect x="4" y="16.1" width="8" height="3.4" rx="1.7">
+                    <animate attributeName="width" values="8;14;8" dur="2.4s" begin=".8s" repeatCount="indefinite" />
+                  </rect>
+                </svg>
+              </span>
+              <b>Product</b>
+              <p>roadmap, priorities & releases — end to end</p>
+            </div>
+            <div className="h3t">
+              <span className="h3g">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinejoin="round">
+                  <path d="M13 2L5 13h6l-1 9 8-11h-6l1-9z" strokeDasharray="42" strokeDashoffset="42">
+                    <animate attributeName="stroke-dashoffset" values="42;0;0;42" keyTimes="0;.4;.75;1" dur="2.2s" repeatCount="indefinite" />
+                  </path>
+                </svg>
+              </span>
+              <b>AI Build</b>
+              <p>requirement → frontend → deploy, myself</p>
+            </div>
+          </div>
+          <p className="role-link rv d3">the full arc — three roles, four years — lives in{' '}
+            <a href="#/journey">My Journey · Ch.2 →</a>
+            <span>·</span> how I work: <a href="#/journey">Ch.4 →</a>
+          </p>
+        </div>
+      </section>
+
+      {/* 04 · projects, horizontal */}
       <section>
-        <div className="wrap pol-brief-grid">
-          <p className="lede-big rv">Polarin is enterprise connectivity that provisions like cloud — and it's been
-          <i> my longest-running product story.</i> I joined when it was a blank Figma file. Four years and three
-          roles later, <em>every screen it has still passes through my hands</em> — first as its designer,
-          now as its product manager, always as its builder.</p>
-          <div className="pol-facts rv d1">
-            <div className="fb"><span>platform</span><b>Network-as-a-Service</b></div>
-            <div className="fb"><span>tenure</span><b>Nov 2022 — present</b></div>
-            <div className="fb"><span>arc</span><b>Exec. Designer → Sr. Exec. → APM</b></div>
-            <div className="fb"><span>surfaces owned</span><b>customer · admin · dev · invoicing · DS</b></div>
-            <div className="fb"><span>self-serve adoption</span><b className="g">3× ↑</b></div>
-            <div className="fb"><span>vendor dependency</span><b className="g">~50% ↓</b></div>
-            <div className="fb"><span>status</span><b className="a">● shipping weekly</b></div>
+        <div className="scene hscroll" data-scene="polx" style={{ height: '460vh' }}>
+          <div className="pin">
+            <div className="htrack" id="pxTrack">
+              <div className="panel">
+                <div className="panel-intro">
+                  <p className="ch-num"><b>The surfaces</b> · complete design ownership</p>
+                  <h2 className="ch-title" style={{ marginTop: '12px' }}>Five fronts.<br />One <span>owner.</span></h2>
+                  <p style={{ color: 'var(--mute)', marginTop: '18px', maxWidth: '38ch' }}>What each one is, what I did, what moved. Scroll down — the roadmap moves sideways. →</p>
+                </div>
+              </div>
+
+              <div className="panel panel-sm">
+                <article className="panel-card pxcard">
+                  <div className="px-top"><span className="glyphbox">⌂</span></div>
+                  <div className="mg" aria-hidden="true">
+                    <span className="mg-tag">— platform animation — placeholder</span>
+                    <div className="mgbar"><i></i><i></i><i></i></div>
+                    <span className="mgl w6"></span>
+                    <div className="mgrow"><span className="mgbox"></span><span className="mgbox"></span></div>
+                    <span className="mgbtn"></span>
+                  </div>
+                  <h3>Customer Portal</h3>
+                  <div className="krow"><span>about</span><p>the self-serve front door — order, manage, monitor connectivity</p></div>
+                  <div className="krow"><span>my role</span><p>designed it 0 → 1 · now own its roadmap & ship its frontend</p></div>
+                  <div className="krow im"><span>impact</span><p className="big">3× <small>self-serve adoption</small></p></div>
+                  <div className="proj-foot"><button type="button" className="cs-link" onClick={() => openStudy('Customer Portal')}>Deep dive →</button></div>
+                </article>
+              </div>
+
+              <div className="panel panel-sm">
+                <article className="panel-card pxcard">
+                  <div className="px-top"><span className="glyphbox">⚙</span></div>
+                  <div className="mg mg-admin" aria-hidden="true">
+                    <span className="mg-tag">internal data — no preview</span>
+                    <div className="tg on"><i></i></div><div className="tg"><i></i></div><div className="tg on"><i></i></div>
+                    <div className="mgdots"><i></i><i></i><i></i></div>
+                  </div>
+                  <h3>Admin Portal</h3>
+                  <div className="krow"><span>about</span><p>the internal ops console — user management & KYC approvals, inventory, reports, billing & invoicing</p></div>
+                  <div className="krow"><span>my role</span><p>understood internal users, defined & designed the flows — then built and deployed them</p></div>
+                  <div className="krow im"><span>impact</span><p className="big">faster <small>order → delivery cycle · clearer NaaS billing ops</small></p></div>
+                  <div className="proj-foot"><button type="button" className="cs-link" onClick={() => openStudy('Admin Portal')}>Deep dive →</button></div>
+                </article>
+              </div>
+
+              <div className="panel panel-sm">
+                <article className="panel-card pxcard">
+                  <div className="px-top"><span className="glyphbox">₹</span></div>
+                  <div className="mg mg-inv" aria-hidden="true">
+                    <span className="mg-tag">— invoice image — placeholder</span>
+                    <span className="mgl w7"></span><span className="mgl w5"></span><span className="mgl w6"></span>
+                    <span className="mgdash"></span>
+                    <div className="mgtotal"><span>total</span><b>₹ ---</b></div>
+                  </div>
+                  <h3>Invoice Design</h3>
+                  <div className="krow"><span>about</span><p>transparency for high-ticket billing — clarity for every second billed</p></div>
+                  <div className="krow"><span>my role</span><p>designed a template that adapts complicated billing to complicated products</p></div>
+                  <div className="krow im"><span>impact</span><p className="big">trust <small>transparent · readable · scalable — for users & finance</small></p></div>
+                  <div className="proj-foot"><button type="button" className="cs-link" onClick={() => openStudy('Invoice Design')}>Deep dive →</button></div>
+                </article>
+              </div>
+
+              <div className="panel panel-sm">
+                <article className="panel-card pxcard">
+                  <div className="px-top"><span className="glyphbox">λ</span></div>
+                  <div className="mg mg-dev" aria-hidden="true">
+                    <span className="mg-tag">— portal animation — placeholder</span>
+                    <p><span className="c1">POST</span> /v1/circuits</p>
+                    <p><span className="c2">{'{'}</span> bandwidth: <span className="c3">"10G"</span> <span className="c2">{'}'}</span></p>
+                    <p><span className="c4">201</span> provisioned <i className="tcur s"></i></p>
+                  </div>
+                  <h3>Developer Portal</h3>
+                  <div className="krow"><span>about</span><p>APIs, docs, keys, sandboxes — customers order & provision via API</p></div>
+                  <div className="krow"><span>my role</span><p>DX design, docs & frontend · PRD + pricing framework · volumetrics with engineering</p></div>
+                  <div className="krow im"><span>impact</span><p className="big">revenue <small>in testing — opens segments with in-house NMS tools</small></p></div>
+                  <div className="proj-foot"><button type="button" className="cs-link" onClick={() => openStudy('Developer Portal')}>Deep dive →</button></div>
+                </article>
+              </div>
+
+              <div className="panel panel-sm">
+                <article className="panel-card pxcard">
+                  <div className="px-top"><span className="glyphbox">▤</span></div>
+                  <div className="mg mg-kb" aria-hidden="true">
+                    <span className="mg-tag">— portal animation — placeholder</span>
+                    <div className="mgsearch"><span></span></div>
+                    <div className="mgpage p1"></div><div className="mgpage p2"></div><div className="mgpage p3"></div>
+                  </div>
+                  <h3>Knowledge Base</h3>
+                  <div className="krow"><span>about</span><p>answers before tickets — self-help designed into the product</p></div>
+                  <div className="krow"><span>my role</span><p>content architecture, design & frontend — findable, skimmable, honest</p></div>
+                  <div className="krow im"><span>impact</span><p className="big">deflect <small>fewer tickets — customers help themselves</small></p></div>
+                  <div className="proj-foot"><button type="button" className="cs-link" onClick={() => openStudy('Knowledge Base')}>Deep dive →</button></div>
+                </article>
+              </div>
+            </div>
+            <div className="hs-progress"><span>surfaces</span><span className="bar"><i id="pxBar"></i></span><span id="pxCount">1 / 6</span></div>
           </div>
         </div>
       </section>
 
-      {/* THREE HATS */}
+      {/* 05 · overall metrics */}
       <section>
-        <div className="wrap ch-head" style={{ paddingTop: '50px' }}>
-          <p className="ch-num rv"><b>My input</b> · one product, three hats</p>
-          <h2 className="ch-title rv d1">Same product.<br />Three <span>hats.</span></h2>
-          <p style={{ color: 'var(--mute)', maxWidth: '56ch', marginTop: '14px' }} className="rv d2">Most products pass through many hands. Polarin passed through mine three times — in three different roles. Scroll: each hat stacks on the last, the way the skills did.</p>
-        </div>
-        <div className="wrap hat-stack">
-          <article className="hat" data-big="DESIGN" style={{ top: 'calc(var(--nav-h) + 56px)', zIndex: 1 }}>
-            <p className="hat-tag">Hat 01 · The Designer</p>
-            <h3>Gave it a <span>face</span> — and a language.</h3>
-            <p className="period">2022 — 2024 · Executive UI/UX Designer · first designer in the building</p>
-            <p className="hat-desc">There was a network platform and no product surface. I drew the first screen,
-            then <b>every module of the customer portal, 0 → 1</b> — and built the system underneath so
-            screen two hundred would be as coherent as screen one.</p>
-            <ul className="hat-list">
-              <li><b>0→1 modules</b> — structure, core flows, screens for each portal capability</li>
-              <li><b>Polarin Design System</b> — tokens, components, patterns; every surface still runs on it</li>
-              <li><b>IA & navigation</b> — a mental model engineers and customers could share</li>
-              <li><b>Usability testing</b> — flows validated with real network engineers before build</li>
-            </ul>
-            <div className="hat-metrics"><span className="hm">design → dev drift ↓ near zero</span><span className="hm">1 system · all surfaces</span></div>
-          </article>
-          <article className="hat" data-big="MANAGE" style={{ top: 'calc(var(--nav-h) + 74px)', zIndex: 2 }}>
-            <p className="hat-tag">Hat 02 · The Manager</p>
-            <h3>Gave it a <span>direction</span> — and a reason.</h3>
-            <p className="period">2025 — now · Sr. Executive → Associate Product Manager · promoted 2×</p>
-            <p className="hat-desc">The screens worked; the question became <b>which screens deserve to exist.</b>
-            I took ownership of the developer & customer portal roadmap end to end — priorities argued from
-            evidence, not opinion.</p>
-            <ul className="hat-list">
-              <li><b>Roadmap ownership</b> — end-to-end, across both portals</li>
-              <li><b>Evidence-led priorities</b> — support data, usage analytics, customer interviews</li>
-              <li><b>Sprint & release planning</b> — the drumbeat engineering ships to</li>
-              <li><b>Stakeholder alignment</b> — sales, support, network engineering on one page</li>
-            </ul>
-            <div className="hat-metrics"><span className="hm">self-serve adoption 3× ↑</span><span className="hm">roadmap · 5 surfaces</span></div>
-          </article>
-          <article className="hat" data-big="BUILD" style={{ top: 'calc(var(--nav-h) + 92px)', zIndex: 3 }}>
-            <p className="hat-tag">Hat 03 · The AI Builder</p>
-            <h3>Gave it <span>speed</span> — and closed the loop.</h3>
-            <p className="period">2024 — now · Claude · Figma · Cursor · VS Code · Vercel</p>
-            <p className="hat-desc">Frontend changes used to route through outsourced vendors. Now the person who
-            finds the problem <b>ships the fix</b> — I deploy frontend changes directly, and prototypes stopped
-            being pictures of the spec. They became the spec.</p>
-            <ul className="hat-list">
-              <li><b>Direct deploys</b> — frontend changes via Claude + Figma in VS Code</li>
-              <li><b>Prototypes as specs</b> — high-fidelity, working, on the design system</li>
-              <li><b>AI discovery synthesis</b> — tickets & transcripts → ranked friction themes</li>
-              <li><b>Rapid POCs</b> — idea to testable software in days, not sprints</li>
-            </ul>
-            <div className="hat-metrics"><span className="hm">vendor dependency ~50% ↓</span><span className="hm">dev handoffs 40% ↓</span></div>
-          </article>
-        </div>
-      </section>
-
-      {/* DETAILED CASE STUDY */}
-      <section>
-        <div className="wrap cs-head">
-          <p className="ch-num rv"><b>Case Study 01</b> · Customer Portal · deep dive</p>
-          <h2 className="ch-title rv d1">Teaching customers to<br />serve <span>themselves.</span></h2>
-          <p style={{ color: 'var(--mute)', maxWidth: '58ch', marginTop: '14px' }} className="rv d2">The flagship story of my four years on Polarin — told the way the work actually went: context, problem, evidence, the call, the build, and what moved.</p>
-        </div>
-        <div className="wrap cs-wrap">
-          <nav className="cs-rail" aria-label="Case study stages">
-            <span className="cs-rail-line" aria-hidden="true"></span>
-            <span className="cs-rail-fill" ref={fillRef} aria-hidden="true"></span>
-            {CS_STAGES.map((s) => (
-              <button key={s.id} className={activeCs === s.id ? 'on' : ''} onClick={() => jumpTo(s.id)}>
-                <span className="dot"></span><span className="lbl">{s.label}</span>
-              </button>
+        <div className="wrap" style={{ padding: '80px 0 20px', textAlign: 'center' }}>
+          <p className="eyebrow rv" style={{ justifyContent: 'center' }}>Four years in</p>
+          <h2 className="ch-title rv d1" style={{ fontSize: 'clamp(28px,4.6vw,54px)' }}>What <span>moved.</span></h2>
+          <div className="cs-stats rv d2" style={{ justifyContent: 'center', marginTop: '34px' }}>
+            {STATS.map((s) => (
+              <CountStat key={s.label} {...s} />
             ))}
-          </nav>
-          <div>
-            <div className="cs-block" id="cs1">
-              <p className="stage">Stage 01 · Context</p>
-              <h3>A platform with everything except a front door.</h3>
-              <p>By 2024, Polarin could provision enterprise circuits, meter bandwidth, and surface network health.
-              The capability was real. But the <b>customer portal was a brochure</b> — customers could see what
-              Polarin did, not do it themselves.</p>
-              <p>I was uniquely placed to fix it: I had drawn every screen as its designer, and now I owned its
-              roadmap as its PM. <b>No translation loss between the person who knew the problem and the person
-              who could decide.</b></p>
-            </div>
-            <div className="cs-block" id="cs2">
-              <p className="stage">Stage 02 · Problem</p>
-              <h3>Capability lived in the platform. Usage lived in tickets.</h3>
-              <p>Customers asked humans for what the portal could already do. Every order, change, and health
-              question routed through support — <b>slow for them, expensive for us, and invisible to the roadmap</b>
-              because friction never left the ticket queue.</p>
-              <div className="pull">"Honestly? It's faster to email your team than to figure out the portal."
-                <small>— enterprise customer, discovery interview</small></div>
-              <p>That sentence became the problem statement. Not "improve the portal" — <b>make the portal the
-              faster path.</b></p>
-            </div>
-            <div className="cs-block" id="cs3">
-              <p className="stage">Stage 03 · Discovery</p>
-              <h3>Let the tickets testify.</h3>
-              <p>Instead of guessing, I fed the evidence to the pipeline: <b>support-ticket exports, usage analytics,
-              and customer interview transcripts, synthesized with Claude</b> into friction themes I could
-              interrogate, challenge, and rank. Two weeks of analysis became two days.</p>
-              <div className="rklist">
-                <div className="rk"><span className="no">1</span><span className="tx"><b>Ordering opacity</b> — customers couldn't predict steps, time, or price before committing</span><span className="sh">top theme</span></div>
-                <div className="rk"><span className="no">2</span><span className="tx"><b>Status blindness</b> — "where is my request?" was a ticket, not a screen</span><span className="sh">#2</span></div>
-                <div className="rk"><span className="no">3</span><span className="tx"><b>Permission maze</b> — the right person could rarely do the thing themselves</span><span className="sh">#3</span></div>
-              </div>
-            </div>
-            <div className="cs-block" id="cs4">
-              <p className="stage">Stage 04 · The Call</p>
-              <h3>Make the obvious path the self-serve path.</h3>
-              <p>The bet: redesign the three highest-friction flows so that self-serve wasn't a feature —
-              it was <b>the shortest route</b>. Transparent ordering with steps and timelines up front, a live
-              request-status surface, and role-based permissions that matched how customer teams actually work.</p>
-              <p>What we said <b>no</b> to mattered as much: no big-bang redesign, no new nav paradigm, no
-              "portal 2.0" branding. <b>Same portal, shorter paths.</b></p>
-            </div>
-            <div className="cs-block" id="cs5">
-              <p className="stage">Stage 05 · The Build</p>
-              <h3>Prototype was the spec. Spec was the product.</h3>
-              <p>This is where the three hats compound. PRDs drafted with Claude as a sparring partner; high-fidelity
-              <b> working prototypes built on the Polarin Design System</b> in days; validated with customers before
-              the first engineering ticket; and the frontend polish <b>deployed directly via Claude + Figma in
-              VS Code</b>.</p>
-              <div className="mini-tl">
-                <div className="mtl"><span className="t">Days 1—2</span><p className="d">Evidence synthesis, friction themes ranked</p></div>
-                <div className="mtl"><span className="t">Days 3—5</span><p className="d">PRD + working prototype on the DS</p></div>
-                <div className="mtl"><span className="t">Week 2</span><p className="d">Customer validation on real software</p></div>
-                <div className="mtl"><span className="t">Weeks 3—6</span><p className="d">Build with engineering, direct FE deploys</p></div>
-              </div>
-            </div>
-            <div className="cs-block" id="cs6">
-              <p className="stage">Stage 06 · Outcome</p>
-              <h3>The portal became the front door.</h3>
-              <div className="cs-stats">
-                {STATS.map((s) => (
-                  <CountStat key={s.label} {...s} />
-                ))}
-              </div>
-              <p>Customers now order, change, and check status without a ticket. The friction data that once hid
-              in the support queue <b>feeds the roadmap directly</b> — which is exactly how the next case study
-              begins.</p>
-              <div className="soon-ctas" style={{ marginTop: '26px' }}>
-                <a className="btn-big" href="#/journey">See it in the story — Ch.3 <span aria-hidden="true">→</span></a>
-                <a className="btn-ghost" href="#/journey">My AI loop — Ch.4</a>
-              </div>
-            </div>
           </div>
         </div>
       </section>
 
-      {/* OTHER SURFACES */}
-      <section>
-        <div className="wrap surf-head">
-          <p className="ch-num rv"><b>The other surfaces</b> · same roadmap, studies in progress</p>
-          <h2 className="ch-title rv d1" style={{ fontSize: 'clamp(28px,4.4vw,52px)' }}>One roadmap, five <span>fronts.</span></h2>
-        </div>
-        <div className="wrap proj-grid">
-          <article className="proj-card rv">
-            <span className="st build">In build</span>
-            <div className="glyphbox">▤</div>
-            <h3>Admin Portal</h3>
-            <p>The internal ops console — provisioning, approvals, customer management. Killing swivel-chair
-            workflows so <b>ops moves at portal speed</b>.</p>
-            <div className="proj-tags"><span className="chip">internal tools</span><span className="chip">workflows</span></div>
-            <div className="proj-foot"><span className="cs-soon">case study soon</span></div>
-          </article>
-          <article className="proj-card rv d1">
-            <span className="st build">In build</span>
-            <div className="glyphbox">λ</div>
-            <h3>Developer Portal</h3>
-            <p>APIs, docs, keys, sandboxes — turning Polarin from a product into a <b>platform other teams
-            build on</b>.</p>
-            <div className="proj-tags"><span className="chip">API-first</span><span className="chip">DX</span></div>
-            <div className="proj-foot"><span className="cs-soon">case study soon</span></div>
-          </article>
-          <article className="proj-card rv d2">
-            <span className="st live">Shipping</span>
-            <div className="glyphbox">¤</div>
-            <h3>Invoicing</h3>
-            <p>Billing without tickets — usage clarity, invoice history, disputes in-portal.
-            <b> Finance teams see what they pay for</b>, and why.</p>
-            <div className="proj-tags"><span className="chip">billing UX</span><span className="chip">trust</span></div>
-            <div className="proj-foot"><span className="cs-soon">case study soon</span></div>
-          </article>
-          <article className="proj-card rv d3">
-            <span className="st live">Live · every surface</span>
-            <div className="glyphbox">◆</div>
-            <h3>Polarin Design System</h3>
-            <p>Tokens, components, patterns — the shared language every surface runs on, and the vocabulary
-            <b> my AI pipeline speaks</b> when generating frontends.</p>
-            <div className="proj-tags"><span className="chip">tokens</span><span className="chip">AI-ready</span></div>
-            <div className="proj-foot"><a className="cs-link" href="#/journey">Its origin in Ch.2 <span aria-hidden="true">→</span></a></div>
-          </article>
+      {/* 06 · still building */}
+      <section className="still-sec">
+        <div className="wrap" style={{ textAlign: 'center' }}>
+          <h2 className="still-t rv">still building<i className="tcur"></i></h2>
+          <div className="soon-bar rv d1" style={{ maxWidth: '280px', margin: '22px auto 0' }}><i></i></div>
+          <div className="soon-ctas rv d2" style={{ justifyContent: 'center', marginTop: '34px' }}>
+            <a className="btn-big" href="#/journey">The whole story — My Journey <span aria-hidden="true">→</span></a>
+            <a className="btn-ghost" href="#/">Home</a>
+          </div>
         </div>
       </section>
+
+      {/* case study overlay */}
+      <div className={`ovl ${studyOpen ? 'open' : ''}`} role="dialog" aria-modal="true" aria-labelledby="ovlTitle">
+        <div className="ovl-scrim" onClick={closeStudy}></div>
+        <button className="ovl-close" onClick={closeStudy} aria-label="Close">×</button>
+        <div className="ovl-panel">
+          <div className="ovl-inner">
+            <p className="eyebrow">Polarin · Case study</p>
+            <h2><span id="ovlTitle">{SURFACES[studyIdx]}</span><br /><em>deep dive soon.</em></h2>
+            <p className="lede">Problem, evidence, the call, the AI-in-the-loop build, and what moved —
+            project details are being added one by one, in the same three-act format as My Journey.</p>
+            <div className="soon-term" style={{ marginTop: '30px' }}>
+              <div><span className="k">$</span> publish case-study --surface <span>{SURFACES[studyIdx].toLowerCase().replace(/\s+/g, '-')}</span></div>
+              <div><span className="k">status:</span> <span className="a">gathering artifacts…</span> <span className="cur"></span></div>
+              <div className="soon-bar"><i></i></div>
+            </div>
+            <div className="ovl-nav">
+              <button type="button" onClick={prevStudy}>← Prev</button>
+              <span className="ovl-count"><b>{studyIdx + 1}</b> / {SURFACES.length} surfaces</span>
+              <button type="button" onClick={nextStudy}>Next →</button>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
   );
 }
