@@ -12,15 +12,20 @@ export default function Home() {
       </div>
       
       <div className="duo rv d1">
-        <div className="hzone l" onClick={() => setMode('design')} aria-hidden="true" style={{ cursor: 'pointer' }}></div>
-        <div className="hzone r" onClick={() => setMode('pm')} aria-hidden="true" style={{ cursor: 'pointer' }}></div>
-        
+        <div className="hzone l" onMouseEnter={() => setMode('design')} aria-hidden="true"></div>
+        <div className="hzone r" onMouseEnter={() => setMode('pm')} aria-hidden="true"></div>
+
         <div className="side side-design">
-          <span className="tagl">2017 — 2025</span>
+          <span className="tagl">2021 — 2024</span>
           <h2>designer</h2>
-          <p>Four years of pixels — enterprise UI, the Polarin design system, every portal module taken 0 → 1.</p>
+          <p>Three years of pixels — enterprise UI, the Polarin design system, every portal module taken 0 → 1.</p>
+          <div className="side-skills">
+            <span className="chip">Figma</span>
+            <span className="chip">Design systems</span>
+            <span className="chip">UI/UX</span>
+          </div>
         </div>
-        
+
         <div className="face" id="face">
           <div className="layer face-real">
             <img src="profile.jpg" alt="Prashant Kumar"
@@ -28,14 +33,26 @@ export default function Home() {
             />
           </div>
         </div>
-        
+
         <div className="side side-pm">
-          <span className="tagl">2026 — Now</span>
+          <span className="tagl">2025 — Now</span>
           <h2><span className="br">&lt;</span>product manager<span className="br">/&gt;</span></h2>
           <p>AI-native PM who ships the whole loop on Polarin NaaS — discovery, PRDs, prototypes, deploys — with Claude, Figma & Vercel.</p>
+          <div className="side-skills">
+            <span className="chip">PRDs & roadmaps</span>
+            <span className="chip">Customer discovery</span>
+            <span className="chip">Claude + Vercel</span>
+          </div>
         </div>
       </div>
-      
+
+      <div className="disc-cycle" aria-hidden="true">
+        <span style={{ animationDelay: '0s' }}>designing interfaces</span>
+        <span style={{ animationDelay: '2s' }}>writing code</span>
+        <span style={{ animationDelay: '4s' }}>shipping product</span>
+        <span style={{ animationDelay: '6s' }}>growing the business</span>
+      </div>
+
       <p className="face-cap rv d2">hover a side — <b>same person, both halves</b></p>
       
       <div className="home-foot rv d2">

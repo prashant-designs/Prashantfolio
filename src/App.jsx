@@ -45,7 +45,7 @@ function AppContent() {
           <nav className="tabs" aria-label="Main navigation">
             <a
               href="#/"
-              className={`tab tab-ic ${currentPage === '' ? 'active' : ''}`}
+              className={`tab tab-ic ${currentPage === 'home' ? 'active' : ''}`}
               aria-label="Home"
               title="Home"
             >

@@ -579,6 +579,73 @@ body::after {
   font-weight: 500;
 }
 
+.side-skills {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 7px;
+  margin-top: 16px;
+  opacity: 0;
+  transform: translateY(6px);
+  transition: opacity 0.4s var(--ease), transform 0.4s var(--ease);
+}
+
+.side-design .side-skills {
+  justify-content: flex-end;
+}
+
+.home-hero[data-mode="design"] .side-design .side-skills {
+  opacity: 1;
+  transform: none;
+}
+
+.home-hero[data-mode="pm"] .side-pm .side-skills {
+  opacity: 1;
+  transform: none;
+}
+
+.disc-cycle {
+  position: relative;
+  height: 20px;
+  margin-top: 18px;
+  text-align: center;
+}
+
+.disc-cycle span {
+  position: absolute;
+  left: 50%;
+  top: 0;
+  transform: translateX(-50%) translateY(6px);
+  opacity: 0;
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--signal);
+  white-space: nowrap;
+  animation: discCycle 8s ease infinite;
+}
+
+@keyframes discCycle {
+  0%, 3% {
+    opacity: 0;
+    transform: translateX(-50%) translateY(6px);
+  }
+  8%, 17% {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+  }
+  22%, 100% {
+    opacity: 0;
+    transform: translateX(-50%) translateY(-6px);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .disc-cycle span {
+    animation: none;
+  }
+}
+
 .home-foot {
   display: flex;
   flex-direction: column;
