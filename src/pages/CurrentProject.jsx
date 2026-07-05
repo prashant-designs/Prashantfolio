@@ -366,8 +366,40 @@ export default function CurrentProject() {
                   <div className="px-top"><span className="glyphbox">⚙</span></div>
                   <div className="mg mg-admin" aria-hidden="true">
                     <span className="mg-tag">internal data — no preview</span>
-                    <div className="tg on"><i></i></div><div className="tg"><i></i></div><div className="tg on"><i></i></div>
-                    <div className="mgdots"><i></i><i></i><i></i></div>
+                    <svg className="opsviz" viewBox="0 0 220 90" preserveAspectRatio="xMidYMid meet">
+                      <line className="ops-line" x1="110" y1="45" x2="40" y2="18" />
+                      <line className="ops-line" x1="110" y1="45" x2="180" y2="18" />
+                      <line className="ops-line" x1="110" y1="45" x2="40" y2="72" />
+                      <line className="ops-line" x1="110" y1="45" x2="180" y2="72" />
+
+                      <circle className="ops-ring" cx="110" cy="45" r="9">
+                        <animate attributeName="r" values="9;18;9" dur="2.6s" repeatCount="indefinite" />
+                        <animate attributeName="opacity" values="0.7;0;0.7" dur="2.6s" repeatCount="indefinite" />
+                      </circle>
+                      <circle className="ops-core" cx="110" cy="45" r="6" />
+
+                      <circle className="ops-node" cx="40" cy="18" r="4" style={{ animationDelay: '0s' }} />
+                      <circle className="ops-node" cx="180" cy="18" r="4" style={{ animationDelay: '.6s' }} />
+                      <circle className="ops-node" cx="40" cy="72" r="4" style={{ animationDelay: '1.2s' }} />
+                      <circle className="ops-node" cx="180" cy="72" r="4" style={{ animationDelay: '1.8s' }} />
+
+                      <circle className="ops-pulse" r="2.6">
+                        <animateMotion dur="2.4s" repeatCount="indefinite" begin="0s" path="M110,45 L40,18" />
+                        <animate attributeName="opacity" values="0;1;1;0" keyTimes="0;0.15;0.85;1" dur="2.4s" repeatCount="indefinite" begin="0s" />
+                      </circle>
+                      <circle className="ops-pulse" r="2.6">
+                        <animateMotion dur="2.4s" repeatCount="indefinite" begin="0.6s" path="M110,45 L180,18" />
+                        <animate attributeName="opacity" values="0;1;1;0" keyTimes="0;0.15;0.85;1" dur="2.4s" repeatCount="indefinite" begin="0.6s" />
+                      </circle>
+                      <circle className="ops-pulse" r="2.6">
+                        <animateMotion dur="2.4s" repeatCount="indefinite" begin="1.2s" path="M110,45 L40,72" />
+                        <animate attributeName="opacity" values="0;1;1;0" keyTimes="0;0.15;0.85;1" dur="2.4s" repeatCount="indefinite" begin="1.2s" />
+                      </circle>
+                      <circle className="ops-pulse" r="2.6">
+                        <animateMotion dur="2.4s" repeatCount="indefinite" begin="1.8s" path="M110,45 L180,72" />
+                        <animate attributeName="opacity" values="0;1;1;0" keyTimes="0;0.15;0.85;1" dur="2.4s" repeatCount="indefinite" begin="1.8s" />
+                      </circle>
+                    </svg>
                   </div>
                   <h3>Admin Portal</h3>
                   <div className="krow"><span>about</span><p>the internal ops console — user management & KYC approvals, inventory, reports, billing & invoicing</p></div>
@@ -382,9 +414,11 @@ export default function CurrentProject() {
                   <div className="px-top"><span className="glyphbox">₹</span></div>
                   <div className="mg mg-inv" aria-hidden="true">
                     <span className="mg-tag">— invoice image — placeholder</span>
-                    <span className="mgl w7"></span><span className="mgl w5"></span><span className="mgl w6"></span>
+                    <span className="mgl w7" style={{ animationDelay: '0s' }}></span>
+                    <span className="mgl w5" style={{ animationDelay: '.25s' }}></span>
+                    <span className="mgl w6" style={{ animationDelay: '.5s' }}></span>
                     <span className="mgdash"></span>
-                    <div className="mgtotal"><span>total</span><b>₹ ---</b></div>
+                    <div className="mgtotal"><span>total</span><b>₹ <span className="tdots"><i></i><i></i><i></i></span></b></div>
                   </div>
                   <h3>Invoice Design</h3>
                   <div className="krow"><span>about</span><p>transparency for high-ticket billing — clarity for every second billed</p></div>
