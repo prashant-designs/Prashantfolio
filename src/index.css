@@ -921,13 +921,23 @@ footer .g {
 .mgrow { display: flex; gap: 8px; flex: 1; }
 .mgbox { flex: 1; border: 1.2px solid rgba(143, 160, 255, 0.45); border-radius: 6px; }
 .mgbtn { width: 64px; height: 16px; border-radius: 8px; background: rgba(255, 196, 107, 0.85); }
-.mg-admin { justify-content: center; align-items: center; }
-.opsviz { width: 100%; height: 100%; overflow: visible; }
-.ops-line { stroke: var(--line2); stroke-width: 1.3; }
-.ops-ring { fill: none; stroke: var(--up); stroke-width: 1.4; transform-origin: 110px 45px; }
-.ops-core { fill: var(--up); filter: drop-shadow(0 0 5px rgba(92, 224, 168, 0.6)); }
-.ops-node { fill: var(--link); animation: npulse 2.4s ease-in-out infinite; }
-.ops-pulse { fill: var(--signal); filter: drop-shadow(0 0 4px rgba(255, 196, 107, 0.7)); }
+.port-chrome { display: flex; align-items: center; gap: 5px; }
+.port-chrome i { width: 7px; height: 7px; border-radius: 50%; background: var(--dim); opacity: 0.6; }
+.port-chrome i:nth-child(1) { background: var(--rose); }
+.port-chrome i:nth-child(2) { background: var(--signal); }
+.port-chrome i:nth-child(3) { background: var(--up); }
+.port-chrome span { margin-left: 6px; font-family: var(--mono); font-size: 8.5px; letter-spacing: 0.1em; color: var(--dim); }
+.port-body { display: flex; gap: 10px; flex: 1; }
+.port-side { display: flex; flex-direction: column; gap: 8px; padding-top: 2px; }
+.port-nav { width: 16px; height: 5px; border-radius: 3px; background: rgba(150, 160, 186, 0.25); animation: navcycle 3.2s ease-in-out infinite; }
+.port-nav:nth-child(1) { animation-delay: 0s; }
+.port-nav:nth-child(2) { animation-delay: 0.8s; }
+.port-nav:nth-child(3) { animation-delay: 1.6s; }
+.port-nav:nth-child(4) { animation-delay: 2.4s; }
+@keyframes navcycle { 0%, 80%, 100% { background: rgba(150, 160, 186, 0.25); } 15% { background: var(--signal); } }
+.port-main { flex: 1; display: flex; flex-direction: column; gap: 8px; justify-content: center; }
+.port-lastrow { display: flex; align-items: center; gap: 8px; }
+.port-approve { flex-shrink: 0; width: 14px; height: 14px; border-radius: 50%; display: grid; place-items: center; background: rgba(92, 224, 168, 0.15); border: 1px solid rgba(92, 224, 168, 0.5); color: var(--up); font-size: 9px; line-height: 1; animation: npulse 2.4s ease-in-out infinite; }
 .mgdots { position: absolute; right: 14px; top: 13px; display: flex; flex-direction: column; gap: 7px; }
 .mgdots i { width: 6px; height: 6px; border-radius: 50%; background: var(--up); animation: npulse 2s infinite; }
 .mgdots i:nth-child(2) { animation-delay: 0.5s; }
@@ -935,7 +945,7 @@ footer .g {
 .mgdash { display: block; height: 0; border-top: 1px dashed var(--line2); margin: 2px 0; }
 .mgtotal { display: flex; justify-content: space-between; align-items: center; font-family: var(--mono); font-size: 11px; color: var(--dim); text-transform: uppercase; letter-spacing: 0.14em; }
 .mgtotal b { display: inline-flex; align-items: center; gap: 4px; color: var(--signal); }
-.mg-inv .mgl { background: linear-gradient(90deg, rgba(150, 160, 186, 0.18) 0%, rgba(205, 214, 240, 0.55) 50%, rgba(150, 160, 186, 0.18) 100%); background-size: 250% 100%; animation: shimmer 2.4s ease-in-out infinite; }
+.mgl.shimmer { background: linear-gradient(90deg, rgba(150, 160, 186, 0.18) 0%, rgba(205, 214, 240, 0.55) 50%, rgba(150, 160, 186, 0.18) 100%); background-size: 250% 100%; animation: shimmer 2.4s ease-in-out infinite; }
 @keyframes shimmer { 0% { background-position: 150% 0; } 100% { background-position: -150% 0; } }
 .mg-dev { font-family: var(--mono); font-size: 11.5px; color: var(--mute); gap: 5px; justify-content: center; }
 .mg-dev .c1 { color: var(--rose); }
