@@ -1,5 +1,50 @@
-import { useState } from 'react';
-import CompareSlider, { ImageOrFallback } from './CompareSlider';
+import { useEffect, useRef, useState } from 'react';
+import CompareSlider from './CompareSlider';
+
+const ZOOM = 2.4;
+const LENS_SIZE = 220;
+
+function ZoomableShot({ src, alt, children }) {
+  const [failed, setFailed] = useState(false);
+  const [lens, setLens] = useState(null);
+  const wrapRef = useRef(null);
+
+  if (failed || !src) return children;
+
+  const onMove = (e) => {
+    const rect = wrapRef.current.getBoundingClientRect();
+    const px = e.clientX - rect.left;
+    const py = e.clientY - rect.top;
+    setLens({
+      px,
+      py,
+      bgW: rect.width * ZOOM,
+      bgH: rect.height * ZOOM,
+      bgX: -(px * ZOOM - LENS_SIZE / 2),
+      bgY: -(py * ZOOM - LENS_SIZE / 2),
+    });
+  };
+
+  return (
+    <div className="zoom-wrap" ref={wrapRef} onMouseMove={onMove} onMouseLeave={() => setLens(null)}>
+      <img src={src} alt={alt} className="zoom-base" onError={() => setFailed(true)} />
+      {lens ? (
+        <div
+          className="zoom-lens"
+          style={{
+            left: lens.px,
+            top: lens.py,
+            backgroundImage: `url(${src})`,
+            backgroundSize: `${lens.bgW}px ${lens.bgH}px`,
+            backgroundPosition: `${lens.bgX}px ${lens.bgY}px`,
+          }}
+        />
+      ) : (
+        <span className="zoom-hint">hover to zoom</span>
+      )}
+    </div>
+  );
+}
 
 const REQUIREMENTS = [
   { n: '01', title: 'Every product', body: 'Whatever a customer buys — one product or ten — it all had to show up clearly on one bill, not a pile of separate ones.' },
@@ -32,15 +77,36 @@ const PAGES = [
   },
 ];
 
-const TABS = [
-  { id: 1, label: 'Page 1 · Snapshot', img: '/invoice/page1.png' },
-  { id: 2, label: 'Page 2 · Breakdown', img: '/invoice/page2.png' },
-  { id: 3, label: 'Page 3 · Annexure', img: '/invoice/page3.png' },
+const SECTIONS = [
+  { id: 1, label: 'Page 1 · Snapshot' },
+  { id: 2, label: 'Page 2 · Breakdown' },
+  { id: 3, label: 'Page 3 · Annexure' },
 ];
 
 export default function InvoiceCaseStudy({ onPrev, onNext, idx, total }) {
-  const [tab, setTab] = useState(1);
-  const activeTab = TABS.find((t) => t.id === tab);
+  const [activeSection, setActiveSection] = useState(1);
+  const sectionRefs = useRef({});
+
+  useEffect(() => {
+    const panel = document.querySelector('.ovl-panel');
+    if (!panel) return undefined;
+    const obs = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            setActiveSection(Number(entry.target.dataset.secId));
+          }
+        });
+      },
+      { root: panel, rootMargin: '-72px 0px -55% 0px', threshold: 0 },
+    );
+    Object.values(sectionRefs.current).forEach((el) => el && obs.observe(el));
+    return () => obs.disconnect();
+  }, []);
+
+  const jumpToSection = (id) => {
+    sectionRefs.current[id]?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  };
 
   return (
     <div className="inv-wrap">
@@ -114,91 +180,61 @@ export default function InvoiceCaseStudy({ onPrev, onNext, idx, total }) {
       <div className="inv-section inv-explore">
         <p className="eyebrow">The new invoice</p>
         <h3 className="ch-title" style={{ fontSize: 'clamp(22px,3vw,32px)' }}>Explore the <span>three pages.</span></h3>
-        <div className="inv-tabs">
-          {TABS.map((t) => (
-            <button key={t.id} type="button" className={`inv-tab ${tab === t.id ? 'on' : ''}`} onClick={() => setTab(t.id)}>
-              {t.label}
+        <div className="inv-tabs inv-tabs-sticky">
+          {SECTIONS.map((s) => (
+            <button key={s.id} type="button" className={`inv-tab ${activeSection === s.id ? 'on' : ''}`} onClick={() => jumpToSection(s.id)}>
+              {s.label}
             </button>
           ))}
         </div>
 
-        <div className="inv-explore-body">
-          {tab === 1 && (
-            <>
-              <ImageOrFallback src={activeTab.img} alt="Page 1 — invoice snapshot">
-                <div className="inv-mock" key="mock-1">
-                  <div className="inv-mock-brand"><i></i>Polarin <span className="inv-mock-tag">Tax Invoice</span></div>
-                  <div className="inv-mock-grid">
-                    <div><span>Billed by</span><b>XXX Communications Pvt Ltd</b></div>
-                    <div><span>Billed to</span><b>XXX Enterprises Ltd</b></div>
-                    <div><span>Invoice number</span><b>XX-XXLTXXXX#####</b></div>
-                    <div><span>Billing period</span><b>XX Mon — XX Mon 2026</b></div>
-                  </div>
-                  <div className="inv-mock-amount">
-                    <div>
-                      <div className="lbl">Total amount payable</div>
-                      <div className="val">₹X,XX,XXX</div>
-                    </div>
-                    <div className="inv-mock-qr" aria-hidden="true"></div>
-                  </div>
-                </div>
-              </ImageOrFallback>
-              <div className="inv-callout">
-                <h5>⚡ Quick scan</h5>
-                <p>Hero amount section: large, bold total with a QR code for instant payment.</p>
-                <ul>
-                  <li>Customers know what to pay in 3 seconds</li>
-                  <li>Reduces "how much do I owe?" support calls</li>
-                </ul>
+        <div className="inv-page-shot" ref={(el) => { sectionRefs.current[1] = el; }} data-sec-id="1">
+          <ZoomableShot src="/invoice/page1.png" alt="Page 1 — invoice snapshot">
+            <div className="inv-mock">
+              <div className="inv-mock-brand"><i></i>Polarin <span className="inv-mock-tag">Tax Invoice</span></div>
+              <div className="inv-mock-grid">
+                <div><span>Billed by</span><b>XXX Communications Pvt Ltd</b></div>
+                <div><span>Billed to</span><b>XXX Enterprises Ltd</b></div>
+                <div><span>Invoice number</span><b>XX-XXLTXXXX#####</b></div>
+                <div><span>Billing period</span><b>XX Mon — XX Mon 2026</b></div>
               </div>
-            </>
-          )}
+              <div className="inv-mock-amount">
+                <div>
+                  <div className="lbl">Total amount payable</div>
+                  <div className="val">₹X,XX,XXX</div>
+                </div>
+                <div className="inv-mock-qr" aria-hidden="true"></div>
+              </div>
+            </div>
+          </ZoomableShot>
+        </div>
 
-          {tab === 2 && (
-            <>
-              <ImageOrFallback src={activeTab.img} alt="Page 2 — charge breakdown">
-                <div className="inv-mock" key="mock-2">
-                  <div className="inv-mock-brand"><i></i>Polarin <span className="inv-mock-tag">Charge breakdown</span></div>
-                  <div className="inv-mock-table">
-                    <div className="inv-mock-row head"><span>Sl. · product</span><span>Recurring</span><span>Total</span></div>
-                    <div className="inv-mock-row"><span>01 · Port — <b>XXX</b></span><span>₹X,XX,XXX</span><b>₹X,XX,XXX</b></div>
-                    <div className="inv-mock-row"><span>02 · Virtual Connection</span><span>₹X,XX,XXX</span><b>₹X,XX,XXX</b></div>
-                    <div className="inv-mock-row"><span>03 · Port — <b>XXX</b></span><span>₹X,XX,XXX</span><b>₹X,XX,XXX</b></div>
-                  </div>
-                  <div className="inv-mock-total"><span>Final payable amount</span><b>₹X,XX,XXX.XX</b></div>
-                </div>
-              </ImageOrFallback>
-              <div className="inv-callout">
-                <h5>📋 Product breakdown</h5>
-                <p>The second page gives a comprehensive view of every active product and service with clear categorization — parent, sub-product, and location, in one numbered list.</p>
+        <div className="inv-page-shot" ref={(el) => { sectionRefs.current[2] = el; }} data-sec-id="2">
+          <ZoomableShot src="/invoice/page2.png" alt="Page 2 — charge breakdown">
+            <div className="inv-mock">
+              <div className="inv-mock-brand"><i></i>Polarin <span className="inv-mock-tag">Charge breakdown</span></div>
+              <div className="inv-mock-table">
+                <div className="inv-mock-row head"><span>Sl. · product</span><span>Recurring</span><span>Total</span></div>
+                <div className="inv-mock-row"><span>01 · Port — <b>XXX</b></span><span>₹X,XX,XXX</span><b>₹X,XX,XXX</b></div>
+                <div className="inv-mock-row"><span>02 · Virtual Connection</span><span>₹X,XX,XXX</span><b>₹X,XX,XXX</b></div>
+                <div className="inv-mock-row"><span>03 · Port — <b>XXX</b></span><span>₹X,XX,XXX</span><b>₹X,XX,XXX</b></div>
               </div>
-            </>
-          )}
+              <div className="inv-mock-total"><span>Final payable amount</span><b>₹X,XX,XXX.XX</b></div>
+            </div>
+          </ZoomableShot>
+        </div>
 
-          {tab === 3 && (
-            <>
-              <ImageOrFallback src={activeTab.img} alt="Page 3 — annexure">
-                <div className="inv-mock" key="mock-3">
-                  <div className="inv-mock-brand"><i></i>Polarin <span className="inv-mock-tag">Annexure · per-service</span></div>
-                  <div className="inv-mock-tiers">
-                    <div className="inv-tier"><span>01a · Base rate</span><b>10 Gbps</b><span className="tag">15 days</span></div>
-                    <div className="inv-tier"><span>02b · Permanent upgrade</span><b>120 Mbps</b><span className="tag">↑ upgrade</span></div>
-                    <div className="inv-tier"><span>02c · Add-on active</span><b>+30 Mbps</b><span className="tag">add-on</span></div>
-                  </div>
-                </div>
-              </ImageOrFallback>
-              <div className="inv-callout">
-                <h5>📊 Detailed usage tables</h5>
-                <p>Granular consumption data — what's included:</p>
-                <ul>
-                  <li>Daily / hourly usage breakdowns</li>
-                  <li>Peak vs. off-peak consumption</li>
-                  <li>Bandwidth burst instances</li>
-                  <li>API call counts & limits</li>
-                </ul>
+        <div className="inv-page-shot" ref={(el) => { sectionRefs.current[3] = el; }} data-sec-id="3">
+          <ZoomableShot src="/invoice/page3.png" alt="Page 3 — annexure">
+            <div className="inv-mock">
+              <div className="inv-mock-brand"><i></i>Polarin <span className="inv-mock-tag">Annexure · per-service</span></div>
+              <div className="inv-mock-tiers">
+                <div className="inv-tier"><span>01a · Base rate</span><b>10 Gbps</b><span className="tag">15 days</span></div>
+                <div className="inv-tier"><span>02b · Permanent upgrade</span><b>120 Mbps</b><span className="tag">↑ upgrade</span></div>
+                <div className="inv-tier"><span>02c · Add-on active</span><b>+30 Mbps</b><span className="tag">add-on</span></div>
               </div>
-            </>
-          )}
+            </div>
+          </ZoomableShot>
         </div>
       </div>
 
