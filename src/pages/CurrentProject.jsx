@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import InvoiceCaseStudy from '../components/InvoiceCaseStudy';
+import AdminPortalCaseStudy from '../components/AdminPortalCaseStudy';
 import ScrollHint from '../components/ScrollHint';
 
 const STATS = [
@@ -463,6 +464,8 @@ export default function CurrentProject() {
         <div className="ovl-panel">
           {SURFACES[studyIdx] === 'Invoice Design' ? (
             <InvoiceCaseStudy onPrev={prevStudy} onNext={nextStudy} idx={studyIdx} total={SURFACES.length} />
+          ) : SURFACES[studyIdx] === 'Admin Portal' ? (
+            <AdminPortalCaseStudy onPrev={prevStudy} onNext={nextStudy} idx={studyIdx} total={SURFACES.length} />
           ) : (
             <div className="ovl-inner">
               <p className="eyebrow">Polarin · Case study</p>
