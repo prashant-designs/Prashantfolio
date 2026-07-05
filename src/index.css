@@ -54,6 +54,14 @@ a {
   color: inherit;
 }
 
+h1, h2, h3 {
+  text-wrap: balance;
+}
+
+p {
+  text-wrap: pretty;
+}
+
 :focus-visible {
   outline: 2px solid var(--signal);
   outline-offset: 3px;
@@ -758,6 +766,10 @@ body::after {
   gap: 13px;
   margin-top: 34px;
   flex-wrap: wrap;
+}
+
+footer span {
+  text-wrap: balance;
 }
 
 footer {

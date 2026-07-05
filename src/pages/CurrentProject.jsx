@@ -102,9 +102,11 @@ export default function CurrentProject() {
     };
 
     let rafId;
+    const DEAD_ZONE = 0.08; // keep the intro panel fully readable before the track starts panning
     const tick = () => {
       if (enhanced && track && bar && count) {
-        const p = sceneProgress();
+        const raw = sceneProgress();
+        const p = raw <= DEAD_ZONE ? 0 : (raw - DEAD_ZONE) / (1 - DEAD_ZONE);
         const max = track.scrollWidth - window.innerWidth;
         track.style.transform = `translateX(${-p * max}px)`;
         bar.style.width = `${p * 100}%`;
