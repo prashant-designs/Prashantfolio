@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
+import InvoiceCaseStudy from '../components/InvoiceCaseStudy';
 
 const STATS = [
   { to: 3, prefix: '', suffix: '×', label: 'self-serve adoption' },
@@ -464,22 +465,26 @@ export default function CurrentProject() {
         <div className="ovl-scrim" onClick={closeStudy}></div>
         <button className="ovl-close" onClick={closeStudy} aria-label="Close">×</button>
         <div className="ovl-panel">
-          <div className="ovl-inner">
-            <p className="eyebrow">Polarin · Case study</p>
-            <h2><span id="ovlTitle">{SURFACES[studyIdx]}</span><br /><em>deep dive soon.</em></h2>
-            <p className="lede">Problem, evidence, the call, the AI-in-the-loop build, and what moved —
-            project details are being added one by one, in the same three-act format as My Journey.</p>
-            <div className="soon-term" style={{ marginTop: '30px' }}>
-              <div><span className="k">$</span> publish case-study --surface <span>{SURFACES[studyIdx].toLowerCase().replace(/\s+/g, '-')}</span></div>
-              <div><span className="k">status:</span> <span className="a">gathering artifacts…</span> <span className="cur"></span></div>
-              <div className="soon-bar"><i></i></div>
+          {SURFACES[studyIdx] === 'Invoice Design' ? (
+            <InvoiceCaseStudy onPrev={prevStudy} onNext={nextStudy} idx={studyIdx} total={SURFACES.length} />
+          ) : (
+            <div className="ovl-inner">
+              <p className="eyebrow">Polarin · Case study</p>
+              <h2><span id="ovlTitle">{SURFACES[studyIdx]}</span><br /><em>deep dive soon.</em></h2>
+              <p className="lede">Problem, evidence, the call, the AI-in-the-loop build, and what moved —
+              project details are being added one by one, in the same three-act format as My Journey.</p>
+              <div className="soon-term" style={{ marginTop: '30px' }}>
+                <div><span className="k">$</span> publish case-study --surface <span>{SURFACES[studyIdx].toLowerCase().replace(/\s+/g, '-')}</span></div>
+                <div><span className="k">status:</span> <span className="a">gathering artifacts…</span> <span className="cur"></span></div>
+                <div className="soon-bar"><i></i></div>
+              </div>
+              <div className="ovl-nav">
+                <button type="button" onClick={prevStudy}>← Prev</button>
+                <span className="ovl-count"><b>{studyIdx + 1}</b> / {SURFACES.length} surfaces</span>
+                <button type="button" onClick={nextStudy}>Next →</button>
+              </div>
             </div>
-            <div className="ovl-nav">
-              <button type="button" onClick={prevStudy}>← Prev</button>
-              <span className="ovl-count"><b>{studyIdx + 1}</b> / {SURFACES.length} surfaces</span>
-              <button type="button" onClick={nextStudy}>Next →</button>
-            </div>
-          </div>
+          )}
         </div>
       </div>
     </div>
