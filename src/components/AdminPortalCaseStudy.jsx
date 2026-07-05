@@ -2,7 +2,7 @@ const MODULES = [
   { ic: '✓', title: 'KYC Approval', line: 'Verify before anything goes live' },
   { ic: '◎', title: 'User Management', line: 'Who can act, and where' },
   { ic: '▦', title: 'Inventory Management', line: 'Every circuit, tracked to the port' },
-  { ic: '↗', title: 'Reports', line: 'The numbers, on demand' },
+  { ic: '↗', title: 'Reports', line: 'Generate reports for audits & reviews' },
   { ic: '⇄', title: 'Order → Live Cycle', line: 'Signed order to switched-on service' },
   { ic: '₹', title: 'Billing & Invoicing', line: 'Where the money math lives' },
 ];
@@ -56,21 +56,9 @@ export default function AdminPortalCaseStudy({ onPrev, onNext, idx, total }) {
       </div>
 
       <div className="inv-section">
-        <div className="adm-console" aria-hidden="true">
-          <div className="adm-console-bar"><i></i><i></i><i></i><span>admin.polarin.internal</span></div>
-          <div className="adm-console-body">
-            <div className="adm-console-side">
-              {MODULES.map((m) => (
-                <span key={m.title} className="adm-console-ic">{m.ic}</span>
-              ))}
-            </div>
-            <div className="adm-console-main">
-              <div className="adm-console-row head"><span>ID</span><span>Status</span><span>Team</span><span>Action</span></div>
-              <div className="adm-console-row"><span>ORD-0142</span><span className="tag pending">KYC pending</span><span>CSD</span><span className="go">Approve →</span></div>
-              <div className="adm-console-row"><span>ORD-0141</span><span className="tag live">Live</span><span>NOC</span><span className="go">View →</span></div>
-              <div className="adm-console-row"><span>ORD-0139</span><span className="tag billing">Invoiced</span><span>Sales Ops</span><span className="go">View →</span></div>
-            </div>
-          </div>
+        <div className="inv-brm">
+          <span className="icon">🔒</span>
+          <p>This one runs on Polarin&apos;s internal network, so I can&apos;t show real screens here — the modules, teams and loop above are exactly what shipped.</p>
         </div>
       </div>
 
