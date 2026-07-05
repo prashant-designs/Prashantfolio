@@ -1,4 +1,5 @@
 import { useEffect } from 'react';
+import ScrollHint from '../components/ScrollHint';
 
 export default function MyJourney() {
   useEffect(() => {
@@ -321,7 +322,7 @@ export default function MyJourney() {
             </div>
           </div>
         </div>
-        <div className="hero-scroll"><i></i>scroll to begin</div>
+        <ScrollHint label="Scroll to begin" />
       </section>
 
       {/* CH1 */}

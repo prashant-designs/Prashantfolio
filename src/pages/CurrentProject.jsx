@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import InvoiceCaseStudy from '../components/InvoiceCaseStudy';
+import ScrollHint from '../components/ScrollHint';
 
 const STATS = [
   { to: 3, prefix: '', suffix: '×', label: 'self-serve adoption' },
@@ -81,7 +82,7 @@ export default function CurrentProject() {
     return () => window.removeEventListener('keydown', onKey);
   }, [studyOpen]);
 
-  // horizontal project-track scroll + scroll-trace fade
+  // horizontal project-track scroll
   useEffect(() => {
     const noMotion = window.matchMedia('(prefers-reduced-motion:reduce)').matches;
     const enhanced = !noMotion;
@@ -91,7 +92,6 @@ export default function CurrentProject() {
     const track = document.getElementById('pxTrack');
     const bar = document.getElementById('pxBar');
     const count = document.getElementById('pxCount');
-    const trace = document.getElementById('polScroll');
 
     const sceneProgress = () => {
       if (!scene) return 0;
@@ -109,9 +109,6 @@ export default function CurrentProject() {
         track.style.transform = `translateX(${-p * max}px)`;
         bar.style.width = `${p * 100}%`;
         count.textContent = `${1 + Math.round(p * 5)} / 6`;
-      }
-      if (trace) {
-        trace.style.opacity = Math.max(0, 1 - window.scrollY / (window.innerHeight * 0.3));
       }
       rafId = window.requestAnimationFrame(tick);
     };
@@ -231,10 +228,7 @@ export default function CurrentProject() {
           </h2>
           <p className="pol-open-sub rv d2">a four-year build, still going</p>
         </div>
-        <div className="scroll-trace" id="polScroll" aria-hidden="true">
-          <span className="lane"><i className="st-push"></i></span>
-          <em>scroll</em>
-        </div>
+        <ScrollHint />
       </section>
 
       {/* 02 · what is polarin (half globe) */}
