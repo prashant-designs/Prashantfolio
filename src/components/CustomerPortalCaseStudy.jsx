@@ -1,4 +1,7 @@
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
+
+const prefersReducedMotion = typeof window !== 'undefined'
+  && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
 const CJ_STEPS = [
   { d: 0, i: '📢', t: 'the need', x: 'Alex needs to connect their new Mumbai datacenter to AWS ap-south-1.', w: '' },
@@ -33,101 +36,196 @@ const LEARNED = [
   { t: 'systems are the product', p: 'screens age and get replaced; the system built in month one is what made four years of solo delivery possible' },
 ];
 
-export default function CustomerPortalCaseStudy({ onPrev, onNext, idx, total }) {
-  const [shot, setShot] = useState('globe');
-  const [imgOk, setImgOk] = useState(true);
-  const sh = SHOTS[shot];
+/* generic pinned-scroll-scene reader: given a container ref and number of
+   beats, tracks scroll progress through the container (relative to the
+   nearest scrolling ancestor, the overlay panel) and returns the active
+   beat index, plus a jump(beat) helper for click-to-scroll nav. */
+function useScrollBeat(ref, beats) {
+  const [beat, setBeat] = useState(prefersReducedMotion ? beats - 1 : 0);
 
-  const selectShot = (key) => {
-    setShot(key);
-    setImgOk(true);
+  useEffect(() => {
+    const panel = document.querySelector('.ovl-panel');
+    const el = ref.current;
+    if (!panel || !el) return undefined;
+    let raf = null;
+
+    const update = () => {
+      const stage = el.firstElementChild;
+      if (!stage) return;
+      const top = el.getBoundingClientRect().top - panel.getBoundingClientRect().top + panel.scrollTop;
+      const span = el.offsetHeight - stage.offsetHeight;
+      if (span <= 0) return;
+      const p = Math.min(1, Math.max(0, (panel.scrollTop - top) / span));
+      setBeat(Math.min(beats - 1, Math.floor(p * beats)));
+    };
+    const onScroll = () => {
+      if (raf) return;
+      raf = requestAnimationFrame(() => { raf = null; update(); });
+    };
+    panel.addEventListener('scroll', onScroll);
+    update();
+    return () => panel.removeEventListener('scroll', onScroll);
+  }, [ref, beats]);
+
+  const jump = (b) => {
+    const panel = document.querySelector('.ovl-panel');
+    const el = ref.current;
+    if (!panel || !el) return;
+    const stage = el.firstElementChild;
+    const top = el.getBoundingClientRect().top - panel.getBoundingClientRect().top + panel.scrollTop;
+    const span = el.offsetHeight - stage.offsetHeight;
+    panel.scrollTo({ top: top + ((b + 0.5) / beats) * span, behavior: 'smooth' });
   };
 
-  return (
-    <div className="inv-wrap">
-      <div className="inv-hero">
-        <p className="eyebrow">Polarin · Customer Portal</p>
-        <h2>90 days → 10 minutes.</h2>
-        <p>In 2022, ordering enterprise connectivity in India meant phone calls, PDF forms and ~90 days of waiting — an industry running on processes unchanged since the 1990s. Polarin was a name on a whiteboard, and I was POLO&apos;s first designer, with no telecom background and no template to copy. Four years later it&apos;s a live platform enterprises trust, and I&apos;ve gone from designing it to running it.</p>
-        <div className="inv-meta">
-          <div><span>My role</span><b>First designer, 0 → 1 → now Product Manager</b></div>
-          <div><span>Team</span><b>1 designer · 3 PMs · 12 devs</b></div>
-        </div>
-      </div>
+  return [beat, jump];
+}
 
-      <div className="inv-section">
-        <div className="inv-step-tag"><i></i>Meet Alex</div>
-        <h3 className="plain">What &quot;before&quot; felt like</h3>
-        <p className="dv-p">A VP of Infrastructure at a Mumbai fintech needs one connection: datacenter → AWS ap-south-1.</p>
-        <div className="cj-timeline">
-          {CJ_STEPS.map((s) => (
-            <div className="cj" key={s.t}>
-              <div className="cj-top">
-                <div className="cj-day">day <b>{s.d}</b></div>
-              </div>
-              <div className="cj-body">
-                <span className="cj-ico">{s.i}</span>
-                <div>
-                  <b className="cj-t">{s.t}</b>
-                  <p className="cj-x">{s.x}</p>
-                  {s.w ? <p className="cj-w">⚠ {s.w}</p> : null}
-                </div>
+function AlexJourney() {
+  const ref = useRef(null);
+  const [beat, jump] = useScrollBeat(ref, CJ_STEPS.length + 1);
+  const stepIdx = beat - 1; // -1 = hook screen
+  const [displayDay, setDisplayDay] = useState(0);
+  const prevDay = useRef(0);
+  const [flashKey, setFlashKey] = useState(0);
+
+  useEffect(() => {
+    if (stepIdx < 0) { setDisplayDay(0); prevDay.current = 0; return undefined; }
+    const target = CJ_STEPS[stepIdx].d;
+    const from = prevDay.current;
+    const t0 = performance.now();
+    const dur = 550;
+    let raf;
+    const step = (now) => {
+      const p = Math.min(1, (now - t0) / dur);
+      const eased = 1 - (1 - p) ** 3;
+      setDisplayDay(Math.round(from + (target - from) * eased));
+      if (p < 1) raf = requestAnimationFrame(step);
+      else prevDay.current = target;
+    };
+    raf = requestAnimationFrame(step);
+    setFlashKey((k) => k + 1);
+    return () => cancelAnimationFrame(raf);
+  }, [stepIdx]);
+
+  const heat = stepIdx >= 7 ? '2' : stepIdx >= 4 ? '1' : '0';
+  const current = stepIdx >= 0 ? CJ_STEPS[stepIdx] : null;
+
+  if (prefersReducedMotion) {
+    return (
+      <div className="cj-timeline">
+        {CJ_STEPS.map((s) => (
+          <div className="cj" key={s.t}>
+            <div className="cj-top"><div className="cj-day">day <b>{s.d}</b></div></div>
+            <div className="cj-body">
+              <span className="cj-ico">{s.i}</span>
+              <div>
+                <b className="cj-t">{s.t}</b>
+                <p className="cj-x">{s.x}</p>
+                {s.w ? <p className="cj-w">⚠ {s.w}</p> : null}
               </div>
             </div>
-          ))}
-        </div>
-        <div className="cj-result">
-          <span><b>~90</b> days to provision</span>
-          <span><b>5+</b> vendors contacted</span>
-          <span><b>34%</b> form error rate</span>
-          <span><b>0</b> visibility into status</span>
-        </div>
-        <p className="dv-p dim">this was the standard. for decades.</p>
+          </div>
+        ))}
       </div>
+    );
+  }
 
-      <div className="inv-section">
-        <div className="inv-step-tag"><i></i>The bet</div>
-        <h3 className="plain">Alex doesn&apos;t call anyone. He opens <span>Polarin.</span></h3>
-        <p className="dv-p">A Network-as-a-Service platform with pre-established NNIs across datacenters, cloud on-ramps and PoPs — the fabric already connects everywhere Alex needs.</p>
-        <div className="dv-pipe bet-pipe">
+  return (
+    <div className="cjx" ref={ref}>
+      <div className="cjx-stage" data-heat={heat}>
+        {!current ? (
+          <div className="cjx-hook">
+            <p className="cjx-q">How hard can it be<br />to connect <em>one</em> datacenter?</p>
+            <span className="cjx-cue">scroll to walk Alex&apos;s 90 days →</span>
+          </div>
+        ) : (
+          <div className="cjx-step flash" key={flashKey}>
+            <div className="cj-top">
+              <div className="cj-day">day <b>{displayDay}</b></div>
+              <div className="cj-dots">
+                {CJ_STEPS.map((s, i) => (
+                  <i key={s.t} className={i <= stepIdx ? 'on' : ''} onClick={() => jump(i + 1)} />
+                ))}
+              </div>
+            </div>
+            <div className="cj-body">
+              <span className="cj-ico">{current.i}</span>
+              <div>
+                <b className="cj-t">{current.t}</b>
+                <p className="cj-x">{current.x}</p>
+                {current.w ? <p className="cj-w">⚠ {current.w}</p> : null}
+              </div>
+            </div>
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}
+
+function TheBetScene() {
+  const ref = useRef(null);
+  const [beat] = useScrollBeat(ref, 5);
+  const on = (b) => `obeat ${beat >= b ? 'on' : ''}`;
+
+  return (
+    <div className="oscn" ref={ref} style={{ '--beats': 5 }}>
+      <div className="oscn-stage bet-stage">
+        <p className={`bet-l1 ${on(0)}`}>Alex doesn&apos;t call anyone.</p>
+        <p className={`bet-l2 ${on(1)}`}>He opens <em>Polarin.</em></p>
+        <div className={`dv-pipe bet-pipe ${on(2)}`}>
           <span className="dvp"><b>discover</b></span><em>→</em>
           <span className="dvp"><b>compare</b></span><em>→</em>
           <span className="dvp"><b>order</b></span><em>→</em>
           <span className="dvp"><b>provision</b></span><em>→</em>
           <span className="dvp last"><b>manage</b><i>live</i></span>
         </div>
-        <p className="bet-90"><s className="from">~90 days</s><span className="arr">→</span><b className="to">10 minutes.</b></p>
-        <div className="bet-swaps">
+        <p className={`bet-90 ${on(3)}`}><s className="from">~90 days</s><span className="arr">→</span><b className="to">10 minutes.</b></p>
+        <div className={`bet-swaps ${on(4)}`}>
           <span><s>5+ vendor calls</s><b>1 platform</b></span>
           <span><s>PDF order forms</s><b>self-serve</b></span>
           <span><s>zero visibility</s><b>real-time tracking</b></span>
         </div>
       </div>
+    </div>
+  );
+}
 
-      <div className="inv-section">
-        <div className="inv-step-tag"><i></i>Discovery</div>
-        <h3 className="dv-h" style={{ marginTop: '10px' }}>4 months before touching Figma</h3>
-        <div className="ivx-principles">
-          <div className="ivp"><b>technical immersion</b><p>learned networking from the architects — L1/L2/L3, ports, VRs, VCs — sat in sales calls, walked the manual provisioning workflows</p></div>
-          <div className="ivp"><b>12 user interviews</b><p>IT managers, network engineers, enterprise buyers — mapped where every competitor demo broke</p></div>
-          <div className="ivp"><b>competitive audit</b><p>4 global NaaS platforms — every UX gap became a design requirement</p></div>
-        </div>
+function AuditScene() {
+  const ref = useRef(null);
+  const [beat] = useScrollBeat(ref, 7);
+  const on = (b) => (beat >= b ? 'on' : '');
+
+  return (
+    <div className="oscn" ref={ref} style={{ '--beats': 7 }}>
+      <div className="oscn-stage aud-stage">
+        <p className={`aud-lead obeat ${on(0)}`}>4 global platforms audited — every gap in their UX became a design requirement:</p>
         <div className="aud">
-          <div className="aud-r aud-h"><span>platform</span><span>self-serve</span><span>onboarding</span><span>india</span></div>
-          {AUDIT.map((a) => (
-            <div className="aud-r" key={a.name}><span>{a.name}</span><span>{a.serve}</span><span>{a.onboard}</span><span>{a.india}</span></div>
+          <div className={`aud-r aud-h obeat ${on(0)}`}><span>platform</span><span>self-serve</span><span>onboarding</span><span>india</span></div>
+          {AUDIT.map((a, i) => (
+            <div className={`aud-r obeat ${on(i + 1)}`} key={a.name}><span>{a.name}</span><span>{a.serve}</span><span>{a.onboard}</span><span>{a.india}</span></div>
           ))}
-          <div className="aud-r aud-p"><span>Polarin →</span><span>full</span><span>15 minutes</span><span>native</span></div>
+          <div className={`aud-r aud-p obeat ${on(5)}`}><span>Polarin →</span><span>full</span><span>15 minutes</span><span>native</span></div>
         </div>
-        <p className="aud-insight">every one of them chose engineering power over buyer accessibility. the person who approves a ₹50L contract <em>can&apos;t place an order without help.</em> that&apos;s the gap Polarin closes.</p>
+        <p className={`aud-insight obeat ${on(6)}`}>every one of them chose engineering power over buyer accessibility. the person who approves a ₹50L contract <em>can&apos;t place an order without help.</em> that&apos;s the gap Polarin closes.</p>
       </div>
+    </div>
+  );
+}
 
-      <div className="inv-section">
-        <div className="inv-step-tag"><i></i>The screens</div>
-        <h3 className="dv-h" style={{ marginTop: '10px' }}>Scroll through the product</h3>
+function ScreensScene() {
+  const ref = useRef(null);
+  const [beat, jump] = useScrollBeat(ref, 4);
+  const [imgOk, setImgOk] = useState(true);
+  const key = SHOT_ORDER[beat];
+  const sh = SHOTS[key];
+
+  return (
+    <div className="oscn" ref={ref} style={{ '--beats': 4 }}>
+      <div className="oscn-stage shots-stage">
         <div className="cs-tabs">
-          {SHOT_ORDER.map((key) => (
-            <button key={key} type="button" className={shot === key ? 'on' : ''} onClick={() => selectShot(key)}>{SHOTS[key].label}</button>
+          {SHOT_ORDER.map((k, i) => (
+            <button key={k} type="button" className={key === k ? 'on' : ''} onClick={() => jump(i)}>{SHOTS[k].label}</button>
           ))}
         </div>
         <figure className="cs-shot">
@@ -147,6 +245,60 @@ export default function CustomerPortalCaseStudy({ onPrev, onNext, idx, total }) 
           )}
           <figcaption>{sh.cap}</figcaption>
         </figure>
+      </div>
+    </div>
+  );
+}
+
+export default function CustomerPortalCaseStudy({ onPrev, onNext, idx, total }) {
+  return (
+    <div className="inv-wrap">
+      <div className="inv-hero">
+        <p className="eyebrow">Polarin · Customer Portal</p>
+        <h2>90 days → 10 minutes.</h2>
+        <p>In 2022, ordering enterprise connectivity in India meant phone calls, PDF forms and ~90 days of waiting — an industry running on processes unchanged since the 1990s. Polarin was a name on a whiteboard, and I was POLO&apos;s first designer, with no telecom background and no template to copy. Four years later it&apos;s a live platform enterprises trust, and I&apos;ve gone from designing it to running it.</p>
+        <div className="inv-meta">
+          <div><span>My role</span><b>First designer, 0 → 1 → now Product Manager</b></div>
+          <div><span>Team</span><b>1 designer · 3 PMs · 12 devs</b></div>
+        </div>
+      </div>
+
+      <div className="inv-section">
+        <div className="inv-step-tag"><i></i>Meet Alex</div>
+        <h3 className="plain">What &quot;before&quot; felt like</h3>
+        <p className="dv-p">A VP of Infrastructure at a Mumbai fintech needs one connection: datacenter → AWS ap-south-1. Keep scrolling — and watch the days pile up.</p>
+        <AlexJourney />
+        <div className="cj-result">
+          <span><b>~90</b> days to provision</span>
+          <span><b>5+</b> vendors contacted</span>
+          <span><b>34%</b> form error rate</span>
+          <span><b>0</b> visibility into status</span>
+        </div>
+        <p className="dv-p dim">this was the standard. for decades.</p>
+      </div>
+
+      <div className="inv-section">
+        <div className="inv-step-tag"><i></i>The bet</div>
+        <h3 className="plain">What happens instead</h3>
+        <p className="dv-p">A Network-as-a-Service platform with pre-established NNIs across datacenters, cloud on-ramps and PoPs — the fabric already connects everywhere Alex needs. Keep scrolling:</p>
+        <TheBetScene />
+      </div>
+
+      <div className="inv-section">
+        <div className="inv-step-tag"><i></i>Discovery</div>
+        <h3 className="dv-h" style={{ marginTop: '10px' }}>4 months before touching Figma</h3>
+        <div className="ivx-principles">
+          <div className="ivp"><b>technical immersion</b><p>learned networking from the architects — L1/L2/L3, ports, VRs, VCs — sat in sales calls, walked the manual provisioning workflows</p></div>
+          <div className="ivp"><b>12 user interviews</b><p>IT managers, network engineers, enterprise buyers — mapped where every competitor demo broke</p></div>
+          <div className="ivp"><b>competitive audit</b><p>4 global NaaS platforms — every UX gap became a design requirement</p></div>
+        </div>
+        <AuditScene />
+      </div>
+
+      <div className="inv-section">
+        <div className="inv-step-tag"><i></i>The screens</div>
+        <h3 className="dv-h" style={{ marginTop: '10px' }}>Scroll through the product</h3>
+        <ScreensScene />
       </div>
 
       <div className="inv-section">

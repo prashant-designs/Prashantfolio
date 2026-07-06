@@ -1377,6 +1377,59 @@ body.ovl-lock { overflow: hidden; }
 .cs-shot img { width: 100%; display: block; border: 1px solid var(--line2); border-radius: 16px; background: var(--raise); transition: opacity 0.3s; min-height: 120px; }
 .cs-shot figcaption { font-family: var(--mono); font-size: 11px; letter-spacing: 0.05em; color: var(--dim); margin-top: 10px; }
 
+/* ---- pinned scroll scenes (inside the overlay panel) ---- */
+.oscn { position: relative; margin-top: 16px; height: calc(var(--beats, 5) * 46vh); }
+.oscn-stage { position: sticky; top: 5vh; height: 74vh; display: flex; flex-direction: column; justify-content: center; overflow: hidden; }
+.obeat { opacity: 0; transform: translateY(20px); transition: opacity 0.55s var(--ease), transform 0.55s var(--ease); }
+.obeat.on { opacity: 1; transform: none; }
+
+.bet-stage { text-align: center; gap: 8px; }
+.bet-l1 { font-family: var(--disp); font-weight: 800; font-size: clamp(24px, 3.8vw, 46px); letter-spacing: -0.03em; }
+.bet-l2 { font-family: var(--disp); font-weight: 800; font-size: clamp(28px, 4.6vw, 56px); letter-spacing: -0.03em; margin-bottom: 14px; }
+.bet-l2 em { font-style: normal; background: linear-gradient(100deg, var(--link), var(--signal)); -webkit-background-clip: text; background-clip: text; color: transparent; }
+.oscn .bet-pipe { margin: 10px auto 16px; }
+
+.aud-stage { justify-content: center; }
+.aud-lead { font-family: var(--mono); font-size: 11px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--dim); margin-bottom: 14px; }
+.aud-stage .aud { margin-top: 0; }
+.aud-stage .aud-r { transform: translateX(-16px); }
+.aud-stage .aud-r.on { transform: none; }
+.aud-stage .aud-p.on { box-shadow: inset 0 0 30px rgba(255, 196, 107, 0.06); }
+
+.shots-stage { justify-content: center; gap: 14px; }
+.shots-stage .cs-shot img { max-height: 52vh; object-fit: contain; }
+
+/* ---- alex journey: pinned scroll story ---- */
+.cjx { position: relative; margin-top: 16px; height: 340vh; }
+.cjx-stage { position: sticky; top: 5vh; height: 74vh; display: flex; flex-direction: column; justify-content: center; overflow: hidden; }
+.cjx-stage .cj-day b { transition: color 0.5s, text-shadow 0.5s; }
+.cjx-stage[data-heat="1"] .cj-day b { text-shadow: 0 0 24px rgba(255, 196, 107, 0.45); }
+.cjx-stage[data-heat="2"] .cj-day b { color: var(--rose); text-shadow: 0 0 26px rgba(255, 143, 168, 0.5); }
+.cjx-hook { text-align: center; }
+.cjx-q { font-family: var(--disp); font-weight: 800; font-size: clamp(28px, 4.6vw, 56px); letter-spacing: -0.03em; line-height: 1.08; }
+.cjx-q em { font-style: normal; color: var(--signal); }
+.cjx-cue { display: block; margin-top: 26px; font-family: var(--mono); font-size: 10.5px; letter-spacing: 0.24em; text-transform: uppercase; color: var(--dim); animation: cuepulse 2s ease-in-out infinite; }
+@keyframes cuepulse { 0%, 100% { opacity: 0.45; } 50% { opacity: 1; } }
+.cjx-step .cj-day b { font-size: clamp(42px, 6.5vw, 68px); }
+.cjx-step .cj-t { font-size: clamp(20px, 2.8vw, 32px); }
+.cjx-step .cj-x { font-size: clamp(14px, 1.55vw, 17.5px); max-width: 54ch; }
+.cjx-step .cj-w { font-size: clamp(11px, 1.2vw, 12.5px); }
+.cjx-step .cj-ico { width: 60px; height: 60px; font-size: 30px; }
+.cjx-step.flash .cj-body { animation: pagein 0.45s var(--ease); }
+.cj-dots { display: flex; gap: 6px; }
+.cj-dots i { width: 9px; height: 9px; border-radius: 50%; background: var(--raise2); border: 1px solid var(--line2); cursor: pointer; transition: all 0.3s; }
+.cj-dots i.on { background: var(--signal); border-color: var(--signal); }
+@media (prefers-reduced-motion: reduce) {
+  .oscn, .cjx { height: auto !important; }
+  .oscn-stage, .cjx-stage { position: static; height: auto; min-height: 0; }
+  .obeat { opacity: 1 !important; transform: none !important; }
+  .cjx-hook { display: none; }
+  .cjx-step { display: block !important; }
+}
+@media (max-width: 760px) {
+  .cjx-step .cj-day b { font-size: clamp(34px, 9vw, 50px); }
+}
+
 .kb-map { margin-top: 18px; border: 1px solid var(--line); border-radius: 16px; background: var(--raise); padding: 22px 20px; text-align: center; }
 .kb-root { display: inline-block; font-family: var(--mono); font-size: 11px; letter-spacing: 0.16em; text-transform: uppercase; color: var(--ink); background: var(--signal); border-radius: 99px; padding: 8px 18px; position: relative; }
 .kb-root::after { content: ''; position: absolute; left: 50%; top: 100%; width: 1px; height: 16px; background: var(--line2); }
