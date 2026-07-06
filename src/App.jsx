@@ -59,7 +59,7 @@ function AppContent() {
               href="#/about"
               className={`tab ${currentPage === 'about' ? 'active' : ''}`}
             >
-              About<span className="soon">soon</span>
+              About
             </a>
             <a
               href="#/current"
