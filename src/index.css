@@ -768,6 +768,18 @@ body::after {
   flex-wrap: wrap;
 }
 
+/* ---- other projects: bouncing "coming." + hammering builder ---- */
+.op-coming { position: relative; display: inline-flex; align-items: center; gap: 2px; }
+.op-bounce span { display: inline-block; animation: opLetterBounce 1.6s ease-in-out infinite; }
+@keyframes opLetterBounce {
+  0%, 60%, 100% { transform: translateY(0); }
+  30% { transform: translateY(-0.14em); }
+}
+.op-builder { width: 42px; height: 42px; flex-shrink: 0; transform: translateY(2px); }
+@media (max-width: 640px) {
+  .op-builder { width: 32px; height: 32px; }
+}
+
 footer span {
   text-wrap: balance;
 }
