@@ -1140,14 +1140,15 @@ body.ovl-lock { overflow: hidden; }
 .adm-loop-arrow.loopback { font-family: var(--mono); font-size: 10px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--signal); white-space: nowrap; }
 /* ================= MY PROCESS — orbit loop (About, scroll-scrubbed) ================= */
 .loop-grid { display: grid; grid-template-columns: minmax(280px, 440px) 1fr; gap: 64px; align-items: center; width: 100%; }
-.orbit-stage { perspective: 900px; display: grid; place-items: center; }
+.orbit-stage { position: relative; perspective: 900px; display: grid; place-items: center; }
 .orbit { position: relative; width: min(360px, 72vw); height: min(360px, 72vw); transform-style: preserve-3d; transform: rotateX(62deg); will-change: transform; }
 .orbit .ring { position: absolute; inset: 0; border-radius: 50%; border: 1px dashed var(--line2); }
 .orbit .ring.r2 { inset: 13%; border-style: solid; border-color: var(--line); opacity: 0.7; }
 .orbit .node { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%) rotateZ(var(--a)) translateY(calc(min(360px, 72vw) / -2)) rotateZ(calc(var(--a) * -1)) rotateX(-62deg); }
 .orbit .node b { display: block; font-family: var(--mono); font-weight: 500; font-size: 11.5px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--mute); background: var(--raise2); border: 1px solid var(--line2); border-radius: 99px; padding: 8px 15px; white-space: nowrap; box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5); transition: all 0.35s; }
 .orbit .node.on b { color: var(--ink); background: var(--signal); border-color: var(--signal); box-shadow: 0 0 26px rgba(255, 196, 107, 0.4); }
-.orbit-core { position: absolute; top: 50%; left: 50%; text-align: center; transform: translate(-50%, -50%) rotateX(-62deg); }
+.orbit .node.peek b { border-color: rgba(255, 196, 107, 0.5); color: var(--text); }
+.orbit-core { position: absolute; top: 50%; left: 50%; text-align: center; transform: translate(-50%, -50%) rotateX(-62deg); transition: transform 0.1s linear; }
 .orbit-core .c1 { font-family: var(--disp); font-weight: 700; font-size: 24px; color: var(--signal); letter-spacing: -0.02em; }
 .orbit-core .c2 { font-family: var(--mono); font-size: 10px; letter-spacing: 0.26em; text-transform: uppercase; color: var(--dim); margin-top: 4px; }
 .loop-steps { display: flex; flex-direction: column; gap: 12px; }
@@ -1158,6 +1159,10 @@ body.ovl-lock { overflow: hidden; }
 .lstep h3 span { font-family: var(--mono); font-weight: 400; font-size: 10.5px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--dim); margin-left: 9px; }
 .lstep p { font-size: 13.5px; color: var(--mute); margin-top: 3px; }
 .lstep p b { color: var(--text); }
+.loop-reset { display: flex; align-items: center; gap: 8px; margin-top: 14px; padding-top: 12px; border-top: 1px dashed var(--line2); font-family: var(--mono); font-size: 10.5px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--dim); }
+.loop-reset b { color: var(--signal); font-weight: 500; }
+.loop-reset-ic { display: inline-block; font-size: 14px; color: var(--signal); animation: loop-spin 2.2s linear infinite; }
+@keyframes loop-spin { to { transform: rotate(360deg); } }
 
 @media (max-width: 900px) {
   .adm-modgrid { grid-template-columns: 1fr 1fr; }

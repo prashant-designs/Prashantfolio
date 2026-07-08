@@ -66,10 +66,16 @@ export default function About() {
         const angle = parseFloat(node.style.getPropertyValue('--a'));
         node.style.transform = `translate(-50%,-50%) rotateZ(${angle}deg) translateY(calc(min(360px,72vw)/-2)) rotateZ(${-(angle - rotation)}deg) rotateX(-62deg)`;
       });
-      if (orbitCore) orbitCore.style.transform = `translate(-50%,-50%) rotateX(-62deg) rotateZ(${rotation}deg)`;
+      if (orbitCore) {
+        const sway = Math.sin((rotation * Math.PI) / 180) * 14;
+        orbitCore.style.transform = `translate(calc(-50% + ${sway}px), -50%) rotateX(-62deg)`;
+      }
       const active = clamp(Math.floor(progress * 5.01), 0, 4);
       lsteps.forEach((step, i) => step.classList.toggle('on', i <= active));
-      orbitNodes.forEach((node, i) => node.classList.toggle('on', i === active));
+      orbitNodes.forEach((node, i) => {
+        node.classList.toggle('on', i === active);
+        node.classList.toggle('peek', active === 4 && i === 0);
+      });
     };
     const onScroll = () => {
       if (raf) return;
@@ -201,8 +207,8 @@ export default function About() {
                   <div className="node" style={{ '--a': '144deg' }} data-ln="2"><b>Prototype</b></div>
                   <div className="node" style={{ '--a': '216deg' }} data-ln="3"><b>Validate</b></div>
                   <div className="node" style={{ '--a': '288deg' }} data-ln="4"><b>Deploy</b></div>
-                  <div className="orbit-core"><div className="c1">AI</div><div className="c2">in the loop</div></div>
                 </div>
+                <div className="orbit-core"><div className="c1">AI</div><div className="c2">in the loop</div></div>
               </div>
               <div className="loop-steps">
                 <div className="lstep" data-ls="0"><div className="n">01</div><div>
@@ -219,7 +225,9 @@ export default function About() {
                   <p>Customers click actual software in week one. Signals sharpen, feedback gets honest, and <b>bad ideas die cheap</b> — before they cost a sprint.</p></div></div>
                 <div className="lstep" data-ls="4"><div className="n">05</div><div>
                   <h3>Deploy <span>evidence, not opinions</span></h3>
-                  <p>Frontend changes shipped <b>directly via Claude + Figma in VS Code, deployed on Vercel</b>. Handoffs become head starts. Then the loop turns again.</p></div></div>
+                  <p>Frontend changes shipped <b>directly via Claude + Figma in VS Code, deployed on Vercel</b>. Handoffs become head starts.</p>
+                  <div className="loop-reset"><span className="loop-reset-ic" aria-hidden="true">↻</span> then the loop turns again — back to <b>01 Discover</b></div>
+                </div></div>
               </div>
             </div>
           </div>
