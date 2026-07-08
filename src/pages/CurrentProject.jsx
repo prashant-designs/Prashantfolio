@@ -327,8 +327,8 @@ export default function CurrentProject() {
             </div>
           </div>
           <p className="role-link rv d3">the full arc — three roles, four years — lives in{' '}
-            <a href="#/journey">My Journey · Ch.2 →</a>
-            <span>·</span> how I work: <a href="#/journey">Ch.4 →</a>
+            <a href="#/journey">My Journey →</a>
+            <span>·</span> how I work: <a href="#/about">my process →</a>
           </p>
         </div>
       </section>

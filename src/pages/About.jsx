@@ -21,6 +21,14 @@ const MIX = {
   },
 };
 
+const PROCESS = [
+  { n: '01', t: 'Discover', s: 'Support data, analytics & interviews — synthesized with Claude into themes I can rank' },
+  { n: '02', t: 'Define', s: 'PRDs, user stories & OKRs — AI as a sparring partner that pressure-tests the plan' },
+  { n: '03', t: 'Prototype', s: 'Rapid, high-fidelity POCs on the design system — Figma, Figma Make, Cursor' },
+  { n: '04', t: 'Validate', s: 'Real customers click real software in week one — bad ideas die cheap' },
+  { n: '05', t: 'Deploy', s: 'Shipped directly via Claude + Figma in VS Code, deployed on Vercel' },
+];
+
 const SKILLS = [
   { label: 'Figma', v: 95, c: 'var(--signal)' },
   { label: 'AI-assisted building', v: 92, c: 'var(--link)' },
@@ -146,6 +154,26 @@ export default function About() {
         </div>
       </section>
 
+      <section className="ab-split">
+        <div className="wrap">
+          <p className="eyebrow rv">— how I work</p>
+          <h2 className="ab-h rv d1">My process, <em>end to end.</em></h2>
+          <p className="ab-lede2 rv d2">One person, one loop — AI collapsing the distance between a question and a shipped answer.</p>
+          <div className="adm-loop rv d3" style={{ marginTop: '30px' }}>
+            {PROCESS.map((s, i) => (
+              <div className="adm-loop-step" key={s.n}>
+                <div className="adm-loop-card">
+                  <span className="adm-loop-n">{s.n}</span>
+                  <b>{s.t}</b>
+                  <p>{s.s}</p>
+                </div>
+                {i < PROCESS.length - 1 ? <span className="adm-loop-arrow">→</span> : <span className="adm-loop-arrow loopback">↩ back to 01</span>}
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
       <section className="ab-skills">
         <div className="wrap">
           <p className="eyebrow rv">— my skills, honestly</p>
@@ -182,8 +210,8 @@ export default function About() {
       <section className="ab-journey">
         <div className="wrap">
           <p className="eyebrow rv">— the long version</p>
-          <h2 className="ab-big rv d1">the full story lives<br />in <span>five chapters.</span></h2>
-          <p className="ab-lede rv d2" style={{ maxWidth: '56ch' }}>Pixel years — the crossing — the platform — the loop — the multiplier. How a designer became the product manager of the thing he designed — told as a scroll.</p>
+          <h2 className="ab-big rv d1">the full story lives<br />in <span>three chapters.</span></h2>
+          <p className="ab-lede rv d2" style={{ maxWidth: '56ch' }}>Pixel years — the crossing — the multiplier. How a designer became the product manager of the thing he designed — told as a scroll.</p>
           <div className="soon-ctas rv d3">
             <a className="btn-big" href="#/journey">Open My Journey →</a>
             <a className="btn-ghost" href="#/current">See what I&apos;m building →</a>
