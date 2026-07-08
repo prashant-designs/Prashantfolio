@@ -1,6 +1,12 @@
 import { useEffect, useRef, useState } from 'react';
 import ScrollHint from '../components/ScrollHint';
 
+const CHAPTER_NAV = [
+  { id: 'ch1', n: '01', t: 'Pixel Years', ic: '✎' },
+  { id: 'ch2', n: '02', t: 'The Crossing', ic: '⇄' },
+  { id: 'ch3', n: '03', t: 'The Multiplier', ic: '✺' },
+];
+
 const CROSSING = [
   {
     yr: '2022',
@@ -32,38 +38,9 @@ const CROSSING = [
 ];
 
 function PixelBlueprint() {
-  const svgRef = useRef(null);
-
-  useEffect(() => {
-    const el = svgRef.current;
-    if (!el) return undefined;
-    const paths = [...el.querySelectorAll('.sd')];
-    paths.forEach((p) => {
-      let len = 300;
-      try { len = p.getTotalLength(); } catch { /* non-path element */ }
-      p.style.strokeDasharray = len;
-      p.style.strokeDashoffset = len;
-    });
-    const obs = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          if (!entry.isIntersecting) return;
-          paths.forEach((p, i) => {
-            p.style.transition = `stroke-dashoffset 1s var(--ease) ${i * 0.05}s`;
-            p.style.strokeDashoffset = '0';
-          });
-          obs.disconnect();
-        });
-      },
-      { threshold: 0.35 },
-    );
-    obs.observe(el);
-    return () => obs.disconnect();
-  }, []);
-
   return (
     <div className="blueprint">
-      <svg ref={svgRef} viewBox="0 0 460 340" aria-hidden="true">
+      <svg viewBox="0 0 460 340" aria-hidden="true">
         <rect className="draw sd" x="10" y="10" width="440" height="320" rx="16" />
         <line className="draw faint sd" x1="10" y1="58" x2="450" y2="58" />
         <circle className="draw sd" cx="36" cy="34" r="9" />
@@ -168,52 +145,9 @@ function TheCrossing() {
 }
 
 function TheMultiplier() {
-  const svgRef = useRef(null);
-
-  useEffect(() => {
-    const el = svgRef.current;
-    if (!el) return undefined;
-    const threads = [...el.querySelectorAll('[data-th]')];
-    const outs = [...el.querySelectorAll('[data-out]')];
-    [...threads, ...outs].forEach((p) => {
-      const len = p.getTotalLength();
-      p.style.strokeDasharray = len;
-      p.style.strokeDashoffset = len;
-    });
-    const obs = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          if (!entry.isIntersecting) return;
-          threads.forEach((p, i) => {
-            p.style.transition = `stroke-dashoffset 0.9s var(--ease) ${i * 0.1}s`;
-            p.style.strokeDashoffset = '0';
-          });
-          const core = el.querySelector('#multCore');
-          setTimeout(() => core?.setAttribute('opacity', '1'), 600);
-          setTimeout(() => {
-            outs.forEach((p, i) => {
-              p.style.transition = `stroke-dashoffset 0.7s var(--ease) ${i * 0.15}s`;
-              p.style.strokeDashoffset = '0';
-            });
-          }, 700);
-          setTimeout(() => {
-            [...el.querySelectorAll('.out-g')].forEach((g, i) => {
-              g.style.transition = `opacity 0.5s ${i * 0.15}s`;
-              g.classList.add('on');
-            });
-          }, 1050);
-          obs.disconnect();
-        });
-      },
-      { threshold: 0.3 },
-    );
-    obs.observe(el);
-    return () => obs.disconnect();
-  }, []);
-
   return (
     <div className="wrap mult-stage">
-      <svg ref={svgRef} className="mult-svg" viewBox="0 0 1060 480" aria-hidden="true">
+      <svg className="mult-svg" viewBox="0 0 1060 480" aria-hidden="true">
         <path className="thread" data-th style={{ stroke: 'var(--link)' }} d="M150 70  C 330 70,  330 226, 500 232" />
         <path className="thread" data-th style={{ stroke: 'var(--rose)' }} d="M150 155 C 320 155, 330 230, 500 236" />
         <path className="thread" data-th style={{ stroke: 'var(--signal)' }} d="M150 240 C 320 240, 330 240, 500 240" />
@@ -246,7 +180,7 @@ function TheMultiplier() {
           <text className="out-label" x="895" y="402">dev handoffs per feature</text>
         </g>
       </svg>
-      <p className="mult-cap">Five skills. One PM. No handoffs.</p>
+      <p className="mult-cap" id="multCap">Five skills, entering the same node…</p>
       <div className="skill-strip">
         <span className="chip">product strategy</span><span className="chip">PRDs & user stories</span><span className="chip">roadmap planning</span>
         <span className="chip">OKRs</span><span className="chip">stakeholder management</span><span className="chip">customer discovery</span>
@@ -262,6 +196,9 @@ export default function MyJourney() {
   const heroCardRef = useRef(null);
 
   useEffect(() => {
+    const clamp = (v, a, b) => Math.min(b, Math.max(a, v));
+
+    // reveal-on-scroll (.rv)
     const rvObs = new IntersectionObserver(
       (entries) => {
         entries.forEach((entry) => {
@@ -279,7 +216,6 @@ export default function MyJourney() {
     const routeLine = document.getElementById('routeLine');
     const chSections = [...document.querySelectorAll('[data-ch]')];
     const createdTicks = [];
-    const clamp = (v, a, b) => Math.min(b, Math.max(a, v));
 
     if (routeLine) {
       chSections.forEach((section) => {
@@ -312,9 +248,10 @@ export default function MyJourney() {
       button.addEventListener('click', () => target.scrollIntoView({ behavior: 'smooth' }));
     });
 
-    // subtle hero tilt on mouse move (desktop only)
+    // subtle hero tilt + floating-glyph parallax on mouse move (desktop only)
     const hero = heroRef.current;
     const heroCard = heroCardRef.current;
+    const glyphEls = hero ? [...hero.querySelectorAll('.glyph')] : [];
     let onHeroMove;
     let onHeroLeave;
     if (window.matchMedia('(pointer:fine)').matches && hero && heroCard) {
@@ -326,13 +263,128 @@ export default function MyJourney() {
           const x = (event.clientX - rect.left) / rect.width - 0.5;
           const y = (event.clientY - rect.top) / rect.height - 0.5;
           heroCard.style.transform = `rotateY(${x * 5}deg) rotateX(${y * -4}deg)`;
+          glyphEls.forEach((g) => {
+            const depth = Number(g.dataset.depth || 20);
+            g.style.transform = `translate(${x * depth}px, ${y * depth}px)`;
+          });
           frame = null;
         });
       };
-      onHeroLeave = () => { heroCard.style.transform = ''; };
+      onHeroLeave = () => {
+        heroCard.style.transform = '';
+        glyphEls.forEach((g) => { g.style.transform = ''; });
+      };
       hero.addEventListener('mousemove', onHeroMove);
       hero.addEventListener('mouseleave', onHeroLeave);
     }
+
+    // --- scroll-scrubbed pinned scenes: Ch1 (Pixel Years) + Ch3 (The Multiplier) ---
+    const wrapWords = (el) => {
+      if (!el) return [];
+      const walk = (node) => {
+        [...node.childNodes].forEach((child) => {
+          if (child.nodeType === 3) {
+            const frag = document.createDocumentFragment();
+            child.textContent.split(/(\s+)/).forEach((chunk) => {
+              if (chunk.trim() === '') { frag.appendChild(document.createTextNode(chunk)); return; }
+              const span = document.createElement('span');
+              span.className = 'w';
+              span.textContent = chunk;
+              frag.appendChild(span);
+            });
+            child.replaceWith(frag);
+          } else if (child.nodeType === 1) {
+            if (child.tagName === 'I') {
+              const span = document.createElement('span');
+              span.className = `w ${child.className}`;
+              span.textContent = child.textContent;
+              child.replaceWith(span);
+            } else {
+              walk(child);
+            }
+          }
+        });
+      };
+      walk(el);
+      return [...el.querySelectorAll('.w')];
+    };
+
+    const wr1 = wrapWords(document.getElementById('wr1'));
+    const ch1Strokes = [...document.querySelectorAll('#scene-ch1 .sd')].map((p) => {
+      let len = 300;
+      try { len = p.getTotalLength(); } catch { /* non-path element */ }
+      p.style.strokeDasharray = len;
+      return { el: p, len };
+    });
+
+    const threads = [...document.querySelectorAll('#scene-ch3 [data-th]')].map((p) => {
+      const len = p.getTotalLength();
+      p.style.strokeDasharray = len;
+      return { el: p, len };
+    });
+    const outs = [...document.querySelectorAll('#scene-ch3 [data-out]')].map((p) => {
+      const len = p.getTotalLength();
+      p.style.strokeDasharray = len;
+      return { el: p, len };
+    });
+    const outGs = [...document.querySelectorAll('#scene-ch3 .out-g')];
+    const multCore = document.getElementById('multCore');
+    const multCap = document.getElementById('multCap');
+
+    const sceneProgress = (scene) => {
+      const rect = scene.getBoundingClientRect();
+      const total = scene.offsetHeight - window.innerHeight;
+      if (total <= 0) return 1;
+      return clamp(-rect.top / total, 0, 1);
+    };
+
+    const updateCh1 = (p) => {
+      const n = wr1.length || 1;
+      wr1.forEach((w, i) => { w.style.opacity = clamp(p * n * 1.2 - i, 0.13, 1); });
+      const sN = ch1Strokes.length || 1;
+      ch1Strokes.forEach((s, i) => {
+        const local = clamp(p * sN * 1.4 - i * 0.7, 0, 1);
+        s.el.style.strokeDashoffset = s.len * (1 - local);
+      });
+    };
+
+    const updateCh3 = (p) => {
+      threads.forEach((t, i) => {
+        const local = clamp(p * 2.6 - i * 0.12, 0, 1);
+        t.el.style.strokeDashoffset = t.len * (1 - local);
+      });
+      const coreV = clamp((p - 0.42) / 0.14, 0, 1);
+      multCore?.setAttribute('opacity', coreV);
+      outs.forEach((o, i) => {
+        const local = clamp((p - 0.56) * 3.2 - i * 0.16, 0, 1);
+        o.el.style.strokeDashoffset = o.len * (1 - local);
+      });
+      outGs.forEach((g, i) => { g.style.opacity = clamp((p - 0.68) * 4 - i * 0.45, 0, 1); });
+      if (multCap) {
+        multCap.textContent = p < 0.45
+          ? 'Five skills, entering the same node…'
+          : p < 0.72
+            ? 'No handoffs. No translation loss.'
+            : 'One PM. This is what POLO got back.';
+      }
+    };
+
+    const scenes = {
+      ch1: document.getElementById('scene-ch1'),
+      ch3: document.getElementById('scene-ch3'),
+    };
+    let raf = null;
+    let lastY = -1;
+    const tick = () => {
+      const y = window.scrollY;
+      if (y !== lastY) {
+        lastY = y;
+        if (scenes.ch1) updateCh1(sceneProgress(scenes.ch1));
+        if (scenes.ch3) updateCh3(sceneProgress(scenes.ch3));
+      }
+      raf = window.requestAnimationFrame(tick);
+    };
+    raf = window.requestAnimationFrame(tick);
 
     return () => {
       window.removeEventListener('resize', placeTicks);
@@ -340,6 +392,7 @@ export default function MyJourney() {
       if (hero && onHeroMove) hero.removeEventListener('mousemove', onHeroMove);
       if (hero && onHeroLeave) hero.removeEventListener('mouseleave', onHeroLeave);
       createdTicks.forEach((tickEl) => tickEl.remove());
+      if (raf) window.cancelAnimationFrame(raf);
     };
   }, []);
 
@@ -347,20 +400,25 @@ export default function MyJourney() {
     <main id="top">
       {/* PROLOGUE */}
       <section className="hero" id="hero" ref={heroRef} data-ch="Prologue">
+        <span className="glyph" data-depth="18" style={{ top: '20%', left: '5%' }}>⚡ portal-prd-v3.md</span>
+        <span className="glyph" data-depth="30" style={{ top: '68%', left: '9%' }}>✦ claude --pair</span>
+        <span className="glyph" data-depth="24" style={{ top: '28%', right: '6%' }}>▷ vercel --prod</span>
         <div className="wrap hero-inner">
           <div id="heroCard" ref={heroCardRef}>
-            <p className="hero-kicker">My Journey · <b>A portfolio in three chapters</b></p>
+            <p className="hero-kicker">My Journey · <b>three chapters</b></p>
             <h1>
               <span className="l1">Every product</span><br />
               <span className="l2">is a story.</span><br />
-              <span className="l3">I ship the plot.</span>
+              <span className="l3">I ship the plot.</span><span className="car" aria-hidden="true"></span>
             </h1>
-            <p className="hero-sub">First designer at <b>POLO</b>. Three promotions into full product ownership of the
-            <b> Polarin NaaS platform</b>. The whole loop, myself — with Claude, Figma, and Vercel as co-authors.</p>
-            <div className="hero-index">
-              <button data-go="ch1"><b>01</b> Pixel Years</button>
-              <button data-go="ch2"><b>02</b> The Crossing</button>
-              <button data-go="ch3"><b>03</b> The Multiplier</button>
+            <p className="hero-sub">First designer at <b>POLO</b>. Now I ship the whole loop myself.</p>
+            <div className="hero-chips">
+              {CHAPTER_NAV.map((c) => (
+                <button key={c.id} data-go={c.id}>
+                  <span className="hero-chip-ic">{c.ic}</span>
+                  <span><b>{c.n}</b> {c.t}</span>
+                </button>
+              ))}
             </div>
           </div>
         </div>
@@ -378,9 +436,13 @@ export default function MyJourney() {
             <span className="chip">UX-PM Certification · Level 1 & 2</span>
           </div>
         </div>
-        <div className="wrap ch1-grid" style={{ padding: '20px 0 100px' }}>
-          <p className="wr rv d2">A design degree, then the trenches at a Bangalore studio — redesigning three enterprise B2B products. Task completion rose 28%. Drop-off fell 35%. And one lesson stuck for good: <i className="hot">the interface is never the product.</i> <i className="lnk">The decision behind it is.</i></p>
-          <div className="rv d3"><PixelBlueprint /></div>
+        <div className="scene" id="scene-ch1" style={{ height: '220vh' }}>
+          <div className="pin">
+            <div className="wrap ch1-grid">
+              <p className="wr" id="wr1">A design degree, then the trenches at a Bangalore studio — redesigning three enterprise B2B products. Task completion rose 28%. Drop-off fell 35%. And one lesson stuck for good: <i className="hot">the interface is never the product.</i> <i className="lnk">The decision behind it is.</i></p>
+              <PixelBlueprint />
+            </div>
+          </div>
         </div>
       </section>
 
@@ -396,15 +458,17 @@ export default function MyJourney() {
         </div>
       </section>
 
-      {/* CH3 — THE MULTIPLIER (was Ch.5) */}
+      {/* CH3 — THE MULTIPLIER */}
       <section id="ch3" data-ch="Ch.3 — The Multiplier">
         <div className="wrap ch-head" style={{ textAlign: 'center' }}>
           <p className="ch-num rv" style={{ justifyContent: 'center' }}><b>Chapter 03</b> · Why it matters to an org</p>
           <h2 className="ch-title rv d1">The <span>Multiplier.</span></h2>
           <p style={{ color: 'var(--mute)', maxWidth: '60ch', margin: '14px auto 0' }} className="rv d2">Five disciplines usually live in five people, five backlogs, five handoffs. Here&apos;s what happened at POLO when they routed through one.</p>
         </div>
-        <div className="rv d2" style={{ paddingBottom: '100px' }}>
-          <TheMultiplier />
+        <div className="scene" id="scene-ch3" style={{ height: '300vh' }}>
+          <div className="pin">
+            <TheMultiplier />
+          </div>
         </div>
       </section>
 

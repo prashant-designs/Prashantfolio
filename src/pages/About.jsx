@@ -47,11 +47,41 @@ const FACTS = [
   { ic: '⚡', t: 'prototype → product — if I can spec it, I can ship it' },
 ];
 
+function useLoopProgress(count) {
+  const sceneRef = useRef(null);
+  const [active, setActive] = useState(0);
+
+  useEffect(() => {
+    const el = sceneRef.current;
+    if (!el) return undefined;
+    let raf = null;
+    const update = () => {
+      const rect = el.getBoundingClientRect();
+      const total = el.offsetHeight - window.innerHeight;
+      const p = total > 0 ? Math.min(1, Math.max(0, -rect.top / total)) : 0;
+      setActive(Math.min(count - 1, Math.floor(p * count)));
+    };
+    const onScroll = () => {
+      if (raf) return;
+      raf = window.requestAnimationFrame(() => { raf = null; update(); });
+    };
+    window.addEventListener('scroll', onScroll, { passive: true });
+    update();
+    return () => {
+      window.removeEventListener('scroll', onScroll);
+      if (raf) window.cancelAnimationFrame(raf);
+    };
+  }, [count]);
+
+  return [sceneRef, active];
+}
+
 export default function About() {
   const [mix, setMix] = useState('design');
   const chartRef = useRef(null);
   const [chartIn, setChartIn] = useState(false);
   const [vals, setVals] = useState(SKILLS.map(() => 0));
+  const [loopSceneRef, loopActive] = useLoopProgress(PROCESS.length);
 
   useEffect(() => {
     const el = chartRef.current;
@@ -158,18 +188,25 @@ export default function About() {
         <div className="wrap">
           <p className="eyebrow rv">— how I work</p>
           <h2 className="ab-h rv d1">My process, <em>end to end.</em></h2>
-          <p className="ab-lede2 rv d2">One person, one loop — AI collapsing the distance between a question and a shipped answer.</p>
-          <div className="adm-loop rv d3" style={{ marginTop: '30px' }}>
-            {PROCESS.map((s, i) => (
-              <div className="adm-loop-step" key={s.n}>
-                <div className="adm-loop-card">
-                  <span className="adm-loop-n">{s.n}</span>
-                  <b>{s.t}</b>
-                  <p>{s.s}</p>
-                </div>
-                {i < PROCESS.length - 1 ? <span className="adm-loop-arrow">→</span> : <span className="adm-loop-arrow loopback">↩ back to 01</span>}
+          <p className="ab-lede2 rv d2">One person, one loop — scroll to watch it run.</p>
+        </div>
+        <div className="scene proc-scene" ref={loopSceneRef} style={{ height: '220vh' }}>
+          <div className="pin">
+            <div className="wrap">
+              <div className="adm-loop proc-loop">
+                {PROCESS.map((s, i) => (
+                  <div className={`adm-loop-step ${i <= loopActive ? 'on' : ''}`} key={s.n}>
+                    <div className="adm-loop-card">
+                      <span className="adm-loop-n">{s.n}</span>
+                      <b>{s.t}</b>
+                      <p>{s.s}</p>
+                    </div>
+                    {i < PROCESS.length - 1 ? <span className="adm-loop-arrow">→</span> : <span className="adm-loop-arrow loopback">↩ back to 01</span>}
+                  </div>
+                ))}
               </div>
-            ))}
+              <p className="proc-hint">step <b>{loopActive + 1}</b> / {PROCESS.length} — keep scrolling</p>
+            </div>
           </div>
         </div>
       </section>
