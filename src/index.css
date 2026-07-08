@@ -1138,16 +1138,26 @@ body.ovl-lock { overflow: hidden; }
 .adm-loop-card p { color: var(--mute); font-size: 12px; margin-top: 6px; line-height: 1.35; }
 .adm-loop-arrow { color: var(--line2); font-size: 16px; flex-shrink: 0; }
 .adm-loop-arrow.loopback { font-family: var(--mono); font-size: 10px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--signal); white-space: nowrap; }
-.proc-loop .adm-loop-card { opacity: 0.3; transform: translateY(6px) scale(0.98); transition: opacity 0.35s var(--ease), transform 0.35s var(--ease), border-color 0.35s, background 0.35s; }
-.adm-loop-step.on .adm-loop-card { opacity: 1; transform: none; border-color: rgba(255, 196, 107, 0.45); background: var(--raise2); }
-.adm-loop-step.on .adm-loop-n { color: var(--signal); }
-.proc-hint { font-family: var(--mono); font-size: 11px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--dim); text-align: center; margin-top: 26px; }
-.proc-hint b { color: var(--signal); font-weight: 500; }
-@media (max-width: 980px) {
-  .proc-scene { height: auto !important; }
-  .proc-scene .pin { position: static; height: auto; overflow: visible; padding: 20px 0 0; }
-  .proc-loop .adm-loop-card { opacity: 1; transform: none; }
-}
+/* ================= MY PROCESS — orbit loop (About, scroll-scrubbed) ================= */
+.loop-grid { display: grid; grid-template-columns: minmax(280px, 440px) 1fr; gap: 64px; align-items: center; width: 100%; }
+.orbit-stage { perspective: 900px; display: grid; place-items: center; }
+.orbit { position: relative; width: min(360px, 72vw); height: min(360px, 72vw); transform-style: preserve-3d; transform: rotateX(62deg); will-change: transform; }
+.orbit .ring { position: absolute; inset: 0; border-radius: 50%; border: 1px dashed var(--line2); }
+.orbit .ring.r2 { inset: 13%; border-style: solid; border-color: var(--line); opacity: 0.7; }
+.orbit .node { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%) rotateZ(var(--a)) translateY(calc(min(360px, 72vw) / -2)) rotateZ(calc(var(--a) * -1)) rotateX(-62deg); }
+.orbit .node b { display: block; font-family: var(--mono); font-weight: 500; font-size: 11.5px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--mute); background: var(--raise2); border: 1px solid var(--line2); border-radius: 99px; padding: 8px 15px; white-space: nowrap; box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5); transition: all 0.35s; }
+.orbit .node.on b { color: var(--ink); background: var(--signal); border-color: var(--signal); box-shadow: 0 0 26px rgba(255, 196, 107, 0.4); }
+.orbit-core { position: absolute; top: 50%; left: 50%; text-align: center; transform: translate(-50%, -50%) rotateX(-62deg); }
+.orbit-core .c1 { font-family: var(--disp); font-weight: 700; font-size: 24px; color: var(--signal); letter-spacing: -0.02em; }
+.orbit-core .c2 { font-family: var(--mono); font-size: 10px; letter-spacing: 0.26em; text-transform: uppercase; color: var(--dim); margin-top: 4px; }
+.loop-steps { display: flex; flex-direction: column; gap: 12px; }
+.lstep { border: 1px solid var(--line); border-radius: 14px; background: var(--raise); padding: 16px 20px; display: grid; grid-template-columns: auto 1fr; gap: 16px; align-items: start; opacity: 0.28; transform: translateX(16px); transition: all 0.45s var(--ease); }
+.lstep.on { opacity: 1; transform: none; border-color: rgba(255, 196, 107, 0.4); background: var(--raise2); }
+.lstep .n { font-family: var(--mono); font-size: 11.5px; color: var(--signal); border: 1px solid rgba(255, 196, 107, 0.35); width: 30px; height: 30px; border-radius: 9px; display: grid; place-items: center; margin-top: 2px; }
+.lstep h3 { font-family: var(--disp); font-size: 16.5px; font-weight: 600; }
+.lstep h3 span { font-family: var(--mono); font-weight: 400; font-size: 10.5px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--dim); margin-left: 9px; }
+.lstep p { font-size: 13.5px; color: var(--mute); margin-top: 3px; }
+.lstep p b { color: var(--text); }
 
 @media (max-width: 900px) {
   .adm-modgrid { grid-template-columns: 1fr 1fr; }
@@ -1605,6 +1615,10 @@ body.static .scene { height: auto !important; }
   .panel { width: 90vw; }
   .scene .pin { align-items: flex-start; padding-top: 60px; }
   .hscroll .pin { padding-top: 0; align-items: stretch; }
+  .loop-grid { grid-template-columns: 1fr; gap: 30px; }
+  .orbit-stage { order: -1; }
+  .loop-scene { height: auto !important; }
+  .loop-scene .pin { position: static; height: auto; overflow: visible; padding: 40px 0; }
 }
 @media (max-width: 640px) {
   .tabs { gap: 0; }
@@ -1613,6 +1627,7 @@ body.static .scene { height: auto !important; }
   .cross-word span { font-size: 26vw; }
   .panel { padding: 60px 14px 46px; }
   .panel-card { max-height: calc(100vh - 150px); }
+  .lstep p { font-size: 12.5px; }
 }
 @media (prefers-reduced-motion: reduce) {
   * { animation: none !important; transition-duration: 0.01ms !important; }

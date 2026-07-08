@@ -21,13 +21,6 @@ const MIX = {
   },
 };
 
-const PROCESS = [
-  { n: '01', t: 'Discover', s: 'Support data, analytics & interviews — synthesized with Claude into themes I can rank' },
-  { n: '02', t: 'Define', s: 'PRDs, user stories & OKRs — AI as a sparring partner that pressure-tests the plan' },
-  { n: '03', t: 'Prototype', s: 'Rapid, high-fidelity POCs on the design system — Figma, Figma Make, Cursor' },
-  { n: '04', t: 'Validate', s: 'Real customers click real software in week one — bad ideas die cheap' },
-  { n: '05', t: 'Deploy', s: 'Shipped directly via Claude + Figma in VS Code, deployed on Vercel' },
-];
 
 const SKILLS = [
   { label: 'Figma', v: 95, c: 'var(--signal)' },
@@ -47,19 +40,36 @@ const FACTS = [
   { ic: '⚡', t: 'prototype → product — if I can spec it, I can ship it' },
 ];
 
-function useLoopProgress(count) {
-  const sceneRef = useRef(null);
-  const [active, setActive] = useState(0);
+export default function About() {
+  const [mix, setMix] = useState('design');
+  const chartRef = useRef(null);
+  const [chartIn, setChartIn] = useState(false);
+  const [vals, setVals] = useState(SKILLS.map(() => 0));
+  const loopSceneRef = useRef(null);
 
   useEffect(() => {
-    const el = sceneRef.current;
-    if (!el) return undefined;
+    const scene = loopSceneRef.current;
+    if (!scene) return undefined;
+    const clamp = (v, a, b) => Math.min(b, Math.max(a, v));
+    const orbit = scene.querySelector('#procOrbit');
+    const orbitCore = scene.querySelector('.orbit-core');
+    const orbitNodes = [...scene.querySelectorAll('[data-ln]')];
+    const lsteps = [...scene.querySelectorAll('[data-ls]')];
     let raf = null;
     const update = () => {
-      const rect = el.getBoundingClientRect();
-      const total = el.offsetHeight - window.innerHeight;
-      const p = total > 0 ? Math.min(1, Math.max(0, -rect.top / total)) : 0;
-      setActive(Math.min(count - 1, Math.floor(p * count)));
+      const rect = scene.getBoundingClientRect();
+      const total = scene.offsetHeight - window.innerHeight;
+      const progress = total > 0 ? clamp(-rect.top / total, 0, 1) : 0;
+      const rotation = progress * 360;
+      if (orbit) orbit.style.transform = `rotateX(62deg) rotateZ(${-rotation}deg)`;
+      orbitNodes.forEach((node) => {
+        const angle = parseFloat(node.style.getPropertyValue('--a'));
+        node.style.transform = `translate(-50%,-50%) rotateZ(${angle}deg) translateY(calc(min(360px,72vw)/-2)) rotateZ(${-(angle - rotation)}deg) rotateX(-62deg)`;
+      });
+      if (orbitCore) orbitCore.style.transform = `translate(-50%,-50%) rotateX(-62deg) rotateZ(${rotation}deg)`;
+      const active = clamp(Math.floor(progress * 5.01), 0, 4);
+      lsteps.forEach((step, i) => step.classList.toggle('on', i <= active));
+      orbitNodes.forEach((node, i) => node.classList.toggle('on', i === active));
     };
     const onScroll = () => {
       if (raf) return;
@@ -71,17 +81,7 @@ function useLoopProgress(count) {
       window.removeEventListener('scroll', onScroll);
       if (raf) window.cancelAnimationFrame(raf);
     };
-  }, [count]);
-
-  return [sceneRef, active];
-}
-
-export default function About() {
-  const [mix, setMix] = useState('design');
-  const chartRef = useRef(null);
-  const [chartIn, setChartIn] = useState(false);
-  const [vals, setVals] = useState(SKILLS.map(() => 0));
-  const [loopSceneRef, loopActive] = useLoopProgress(PROCESS.length);
+  }, []);
 
   useEffect(() => {
     const el = chartRef.current;
@@ -188,24 +188,39 @@ export default function About() {
         <div className="wrap">
           <p className="eyebrow rv">— how I work</p>
           <h2 className="ab-h rv d1">My process, <em>end to end.</em></h2>
-          <p className="ab-lede2 rv d2">One person, one loop — scroll to watch it run.</p>
+          <p className="ab-lede2 rv d2">One person, end to end — AI collapsing the distance between a question and a shipped answer. Scroll to run one full cycle; the orbit turns with you.</p>
         </div>
-        <div className="scene proc-scene" ref={loopSceneRef} style={{ height: '220vh' }}>
+        <div className="scene loop-scene" ref={loopSceneRef} style={{ height: '320vh' }}>
           <div className="pin">
-            <div className="wrap">
-              <div className="adm-loop proc-loop">
-                {PROCESS.map((s, i) => (
-                  <div className={`adm-loop-step ${i <= loopActive ? 'on' : ''}`} key={s.n}>
-                    <div className="adm-loop-card">
-                      <span className="adm-loop-n">{s.n}</span>
-                      <b>{s.t}</b>
-                      <p>{s.s}</p>
-                    </div>
-                    {i < PROCESS.length - 1 ? <span className="adm-loop-arrow">→</span> : <span className="adm-loop-arrow loopback">↩ back to 01</span>}
-                  </div>
-                ))}
+            <div className="wrap loop-grid">
+              <div className="orbit-stage" aria-hidden="true">
+                <div className="orbit" id="procOrbit">
+                  <div className="ring"></div><div className="ring r2"></div>
+                  <div className="node" style={{ '--a': '0deg' }} data-ln="0"><b>Discover</b></div>
+                  <div className="node" style={{ '--a': '72deg' }} data-ln="1"><b>Define</b></div>
+                  <div className="node" style={{ '--a': '144deg' }} data-ln="2"><b>Prototype</b></div>
+                  <div className="node" style={{ '--a': '216deg' }} data-ln="3"><b>Validate</b></div>
+                  <div className="node" style={{ '--a': '288deg' }} data-ln="4"><b>Deploy</b></div>
+                  <div className="orbit-core"><div className="c1">AI</div><div className="c2">in the loop</div></div>
+                </div>
               </div>
-              <p className="proc-hint">step <b>{loopActive + 1}</b> / {PROCESS.length} — keep scrolling</p>
+              <div className="loop-steps">
+                <div className="lstep" data-ls="0"><div className="n">01</div><div>
+                  <h3>Discover <span>hours, not weeks</span></h3>
+                  <p>Support data, usage analytics, and customer interviews — synthesized with <b>Claude</b> into friction themes and jobs-to-be-done I can interrogate, rank, and challenge.</p></div></div>
+                <div className="lstep" data-ls="1"><div className="n">02</div><div>
+                  <h3>Define <span>PRDs that argue back</span></h3>
+                  <p><b>PRDs, user stories, and OKRs</b> drafted with AI as a sparring partner — it red-teams assumptions and pressure-tests success metrics before engineering reads a word.</p></div></div>
+                <div className="lstep" data-ls="2"><div className="n">03</div><div>
+                  <h3>Prototype <span>high-fidelity, working</span></h3>
+                  <p>Not wireframes — <b>rapid POCs on the Polarin design system</b> with Figma, Figma Make, and Cursor. Design instincts from the pixel years, speed from AI pair-building.</p></div></div>
+                <div className="lstep" data-ls="3"><div className="n">04</div><div>
+                  <h3>Validate <span>test the real thing</span></h3>
+                  <p>Customers click actual software in week one. Signals sharpen, feedback gets honest, and <b>bad ideas die cheap</b> — before they cost a sprint.</p></div></div>
+                <div className="lstep" data-ls="4"><div className="n">05</div><div>
+                  <h3>Deploy <span>evidence, not opinions</span></h3>
+                  <p>Frontend changes shipped <b>directly via Claude + Figma in VS Code, deployed on Vercel</b>. Handoffs become head starts. Then the loop turns again.</p></div></div>
+              </div>
             </div>
           </div>
         </div>
