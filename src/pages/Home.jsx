@@ -1,18 +1,19 @@
 import { useState } from 'react';
 
 export default function Home() {
-  const [mode, setMode] = useState(null);
+  const [mode, setMode] = useState('both');
 
   return (
-    <section className="home-hero" data-mode={mode} onMouseLeave={() => setMode(null)}>
+    <section className="home-hero" data-mode={mode} onMouseLeave={() => setMode('both')}>
       <div className="home-kicker rv">
         <span className="home-status">
           <i></i>Prashant Kumar · Open to interesting problems · Gurugram
         </span>
       </div>
-      
+
       <div className="duo rv d1">
         <div className="hzone l" onMouseEnter={() => setMode('design')} aria-hidden="true"></div>
+        <div className="hzone c" onMouseEnter={() => setMode('both')} aria-hidden="true"></div>
         <div className="hzone r" onMouseEnter={() => setMode('pm')} aria-hidden="true"></div>
 
         <div className="side side-design">
