@@ -380,7 +380,7 @@ export default function MyJourney() {
       </section>
 
       {/* CH1 — THE PIXEL YEARS */}
-      <section id="ch1" data-ch="Ch.1 — The Pixel Years">
+      <section id="ch1" className="sec-cushion" data-ch="Ch.1 — The Pixel Years">
         <div className="wrap ch-head">
           <p className="ch-num rv"><b>Chapter 01</b> · 2017 — 2022 · Bangalore</p>
           <h2 className="ch-title rv d1">The Pixel <span>Years.</span></h2>
@@ -401,19 +401,19 @@ export default function MyJourney() {
       </section>
 
       {/* CH2 — THE CROSSING */}
-      <section id="ch2" data-ch="Ch.2 — The Crossing">
+      <section id="ch2" className="sec-cushion" data-ch="Ch.2 — The Crossing">
         <div className="wrap ch-head">
           <p className="ch-num rv"><b>Chapter 02</b> · Nov 2022 — Now · Lightstorm · Promoted 2×</p>
           <h2 className="ch-title rv d1">The <span>Crossing.</span></h2>
           <p style={{ color: 'var(--mute)', maxWidth: '58ch', marginTop: '14px' }} className="rv d2">I joined Lightstorm as its first designer. Three promotions later the title says product — but it was always the same question, asked three sizes bigger.</p>
         </div>
-        <div className="wrap" style={{ paddingBottom: '100px' }}>
+        <div className="wrap">
           <TheCrossing />
         </div>
       </section>
 
       {/* CH3 — THE MULTIPLIER */}
-      <section id="ch3" data-ch="Ch.3 — The Multiplier">
+      <section id="ch3" className="sec-cushion" data-ch="Ch.3 — The Multiplier">
         <div className="wrap ch-head" style={{ textAlign: 'center' }}>
           <p className="ch-num rv" style={{ justifyContent: 'center' }}><b>Chapter 03</b> · Why it matters to an org</p>
           <h2 className="ch-title rv d1">The <span>Multiplier.</span></h2>

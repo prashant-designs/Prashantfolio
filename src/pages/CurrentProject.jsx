@@ -340,7 +340,7 @@ export default function CurrentProject() {
       </section>
 
       {/* 04 · projects, horizontal */}
-      <section data-ch="Surfaces">
+      <section className="sec-cushion" data-ch="Surfaces">
         <div className="scene hscroll" data-scene="polx" style={{ height: '460vh' }}>
           <div className="pin">
             <div className="htrack" id="pxTrack">
@@ -460,7 +460,7 @@ export default function CurrentProject() {
 
       {/* 05 · overall metrics */}
       <section data-ch="Metrics">
-        <div className="wrap" style={{ padding: '80px 0 20px', textAlign: 'center' }}>
+        <div className="wrap metrics-sec">
           <p className="eyebrow rv" style={{ justifyContent: 'center' }}>Four years in</p>
           <h2 className="ch-title rv d1" style={{ fontSize: 'clamp(28px,4.6vw,54px)' }}>What <span>moved.</span></h2>
           <div className="cs-stats rv d2" style={{ justifyContent: 'center', marginTop: '34px' }}>
