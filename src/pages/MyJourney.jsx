@@ -1,12 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import ScrollHint from '../components/ScrollHint';
 
-const CHAPTER_NAV = [
-  { id: 'ch1', n: '01', t: 'Pixel Years', ic: '✎' },
-  { id: 'ch2', n: '02', t: 'The Crossing', ic: '⇄' },
-  { id: 'ch3', n: '03', t: 'The Multiplier', ic: '✺' },
-];
-
 const CROSSING = [
   {
     yr: '2022',
@@ -242,12 +236,6 @@ export default function MyJourney() {
     placeTicks();
     window.addEventListener('resize', placeTicks);
 
-    document.querySelectorAll('[data-go]').forEach((button) => {
-      const target = document.getElementById(button.dataset.go);
-      if (!target) return;
-      button.addEventListener('click', () => target.scrollIntoView({ behavior: 'smooth' }));
-    });
-
     // subtle hero tilt + floating-glyph parallax on mouse move (desktop only)
     const hero = heroRef.current;
     const heroCard = heroCardRef.current;
@@ -403,6 +391,12 @@ export default function MyJourney() {
         <span className="glyph" data-depth="18" style={{ top: '20%', left: '5%' }}>⚡ portal-prd-v3.md</span>
         <span className="glyph" data-depth="30" style={{ top: '68%', left: '9%' }}>✦ claude --pair</span>
         <span className="glyph" data-depth="24" style={{ top: '28%', right: '6%' }}>▷ vercel --prod</span>
+        <svg className="hero-map" viewBox="0 0 220 320" aria-hidden="true">
+          <path className="hm-path" d="M40 280 C 20 200, 140 220, 120 140 C 100 60, 200 80, 180 30" />
+          <circle className="hm-dot" cx="40" cy="280" r="6" />
+          <circle className="hm-dot d2" cx="120" cy="140" r="6" />
+          <circle className="hm-dot d3" cx="180" cy="30" r="6" />
+        </svg>
         <div className="wrap hero-inner">
           <div id="heroCard" ref={heroCardRef}>
             <p className="hero-kicker">My Journey · <b>three chapters</b></p>
@@ -412,14 +406,6 @@ export default function MyJourney() {
               <span className="l3">I ship the plot.</span><span className="car" aria-hidden="true"></span>
             </h1>
             <p className="hero-sub">First designer at <b>Lightstorm</b>. Now I ship the whole loop myself.</p>
-            <div className="hero-chips">
-              {CHAPTER_NAV.map((c) => (
-                <button key={c.id} data-go={c.id}>
-                  <span className="hero-chip-ic">{c.ic}</span>
-                  <span><b>{c.n}</b> {c.t}</span>
-                </button>
-              ))}
-            </div>
           </div>
         </div>
         <ScrollHint label="Scroll to begin" />

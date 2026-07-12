@@ -1661,14 +1661,15 @@ body.ovl-lock { overflow: hidden; }
 .hero-sub b { color: var(--text); }
 .hero h1 .car { display: inline-block; width: 0.46ch; height: 0.78em; background: var(--signal); margin-left: 6px; vertical-align: -0.06em; animation: blink 1s steps(1) infinite; }
 @keyframes blink { 50% { opacity: 0; } }
-.hero-chips { margin-top: 40px; transform: translateZ(12px); display: flex; flex-wrap: wrap; gap: 12px; }
-.hero-chip { display: flex; align-items: center; gap: 10px; font-family: var(--mono); font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--mute); background: var(--raise); border: 1px solid var(--line); border-radius: 999px; padding: 8px 16px 8px 8px; cursor: pointer; transition: border-color 0.25s, transform 0.25s var(--ease), color 0.25s; }
-.hero-chip b { color: var(--link); font-weight: 500; }
-.hero-chip-ic { display: grid; place-items: center; width: 26px; height: 26px; border-radius: 50%; background: var(--raise2); border: 1px solid var(--line2); font-size: 13px; color: var(--signal); flex-shrink: 0; transition: border-color 0.25s; }
-.hero-chip:hover { border-color: var(--signal); color: var(--text); transform: translateY(-2px); }
-.hero-chip:hover .hero-chip-ic { border-color: var(--signal); }
 @keyframes fall { 0% { transform: scaleY(0); transform-origin: top; } 45% { transform: scaleY(1); transform-origin: top; } 55% { transform: scaleY(1); transform-origin: bottom; } 100% { transform: scaleY(0); transform-origin: bottom; } }
 .glyph { position: absolute; font-family: var(--mono); font-size: 11.5px; color: var(--dim); opacity: 0.4; border: 1px solid var(--line); border-radius: 8px; padding: 6px 11px; background: rgba(15, 21, 36, 0.5); will-change: transform; pointer-events: none; white-space: nowrap; }
+.hero-map { position: absolute; right: clamp(20px, 7vw, 100px); top: 50%; transform: translateY(-50%); width: clamp(130px, 13vw, 190px); height: auto; pointer-events: none; z-index: 0; }
+.hm-path { fill: none; stroke: var(--line2); stroke-width: 1.5; stroke-dasharray: 4 7; }
+.hm-dot { fill: var(--ink); stroke: var(--link); stroke-width: 2; filter: drop-shadow(0 0 6px rgba(143, 160, 255, 0.5)); animation: hm-pulse 3.6s ease-in-out infinite; }
+.hm-dot.d2 { stroke: var(--signal); animation-delay: 1.2s; filter: drop-shadow(0 0 6px rgba(255, 196, 107, 0.5)); }
+.hm-dot.d3 { stroke: var(--up); animation-delay: 2.4s; filter: drop-shadow(0 0 6px rgba(92, 224, 168, 0.5)); }
+@keyframes hm-pulse { 0%, 100% { r: 6; } 50% { r: 9; } }
+@media (max-width: 1100px) { .hero-map { display: none; } }
 @media (max-width: 1100px) { .glyph { display: none; } }
 
 /* ================= PINNED SCAFFOLD ================= */
