@@ -60,6 +60,7 @@ export default function CurrentProject() {
   const globeSecRef = useRef(null);
   const baseGlobeRef = useRef(null);
   const hiGlobeRef = useRef(null);
+  const ovlPanelRef = useRef(null);
 
   const openStudy = (name) => {
     const idx = SURFACES.indexOf(name);
@@ -74,6 +75,11 @@ export default function CurrentProject() {
     document.body.classList.toggle('ovl-lock', studyOpen);
     return () => document.body.classList.remove('ovl-lock');
   }, [studyOpen]);
+
+  // jump back to the top of the case study whenever it opens or the surface changes
+  useEffect(() => {
+    ovlPanelRef.current?.scrollTo(0, 0);
+  }, [studyOpen, studyIdx]);
 
   useEffect(() => {
     if (!studyOpen) return undefined;
@@ -481,7 +487,7 @@ export default function CurrentProject() {
       <div className={`ovl ${studyOpen ? 'open' : ''}`} role="dialog" aria-modal="true" aria-labelledby="ovlTitle">
         <div className="ovl-scrim" onClick={closeStudy}></div>
         <button className="ovl-close" onClick={closeStudy} aria-label="Close">×</button>
-        <div className="ovl-panel">
+        <div className="ovl-panel" ref={ovlPanelRef}>
           {SURFACES[studyIdx] === 'Customer Portal' ? (
             <CustomerPortalCaseStudy onPrev={prevStudy} onNext={nextStudy} idx={studyIdx} total={SURFACES.length} />
           ) : SURFACES[studyIdx] === 'Admin Portal' ? (
