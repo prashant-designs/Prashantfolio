@@ -1,14 +1,19 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef, lazy, Suspense } from 'react';
 import { HashRouter, Routes, Route, useLocation } from 'react-router-dom';
-import Home from './pages/Home';
-import About from './pages/About';
-import CurrentProject from './pages/CurrentProject';
-import OtherProject from './pages/OtherProject';
-import MyJourney from './pages/MyJourney';
+import ErrorBoundary from './components/ErrorBoundary';
+import PageLoader from './components/PageLoader';
+
+const Home = lazy(() => import('./pages/Home'));
+const About = lazy(() => import('./pages/About'));
+const CurrentProject = lazy(() => import('./pages/CurrentProject'));
+const OtherProject = lazy(() => import('./pages/OtherProject'));
+const MyJourney = lazy(() => import('./pages/MyJourney'));
+const NotFound = lazy(() => import('./pages/NotFound'));
 
 function AppContent() {
   const location = useLocation();
   const [progress, setProgress] = useState(0);
+  const pageRef = useRef(null);
 
   const currentPage = location.pathname.replace('/', '') || 'home';
 
@@ -23,6 +28,21 @@ function AppContent() {
   }, []);
 
   useEffect(() => {
+    window.scrollTo(0, 0);
+  }, [location.pathname]);
+
+  // reveal-on-scroll (.rv) + section jump-ticks on the shared top-nav progress
+  // line. Both re-scan whenever the page's DOM actually changes (not just on
+  // route change) since pages mount asynchronously behind Suspense.
+  useEffect(() => {
+    const pageEl = pageRef.current;
+    if (!pageEl) return undefined;
+
+    const clamp = (v, a, b) => Math.min(b, Math.max(a, v));
+    const routeLine = document.getElementById('routeLine');
+    const observedRv = new Set();
+    let createdTicks = [];
+
     const rvObserver = new IntersectionObserver(
       (entries) => {
         entries.forEach((entry) => {
@@ -34,30 +54,18 @@ function AppContent() {
       },
       { threshold: 0.12 },
     );
-    document.querySelectorAll('.rv').forEach((el) => rvObserver.observe(el));
-    return () => rvObserver.disconnect();
-  }, [location.pathname]);
 
-  // section jump-ticks on the shared top-nav progress line — any page whose
-  // top-level sections carry a data-ch label gets these automatically
-  useEffect(() => {
-    const clamp = (v, a, b) => Math.min(b, Math.max(a, v));
-    const routeLine = document.getElementById('routeLine');
-    const chSections = [...document.querySelectorAll('[data-ch]')];
-    const createdTicks = [];
-
-    if (routeLine) {
-      chSections.forEach((section) => {
-        const tickEl = document.createElement('button');
-        tickEl.className = 'route-tick';
-        tickEl.dataset.ch = section.dataset.ch;
-        tickEl.setAttribute('aria-label', `Jump to ${section.dataset.ch}`);
-        tickEl.addEventListener('click', () => section.scrollIntoView({ behavior: 'smooth' }));
-        routeLine.appendChild(tickEl);
-        createdTicks.push(tickEl);
+    const scanRv = () => {
+      pageEl.querySelectorAll('.rv').forEach((el) => {
+        if (!observedRv.has(el)) {
+          observedRv.add(el);
+          rvObserver.observe(el);
+        }
       });
-    }
+    };
+
     const placeTicks = () => {
+      const chSections = [...pageEl.querySelectorAll('[data-ch]')];
       if (!routeLine || chSections.length === 0) return;
       const docHeight = document.documentElement.scrollHeight - window.innerHeight;
       if (docHeight <= 0) return;
@@ -68,11 +76,37 @@ function AppContent() {
         tickEl.style.left = `${clamp((top / docHeight) * 100, 0, 100)}%`;
       });
     };
-    placeTicks();
+
+    const rebuildTicks = () => {
+      createdTicks.forEach((tickEl) => tickEl.remove());
+      createdTicks = [];
+      if (!routeLine) return;
+      pageEl.querySelectorAll('[data-ch]').forEach((section) => {
+        const tickEl = document.createElement('button');
+        tickEl.className = 'route-tick';
+        tickEl.dataset.ch = section.dataset.ch;
+        tickEl.setAttribute('aria-label', `Jump to ${section.dataset.ch}`);
+        tickEl.addEventListener('click', () => section.scrollIntoView({ behavior: 'smooth' }));
+        routeLine.appendChild(tickEl);
+        createdTicks.push(tickEl);
+      });
+      placeTicks();
+    };
+
+    scanRv();
+    rebuildTicks();
     window.addEventListener('resize', placeTicks);
+
+    const mo = new MutationObserver(() => {
+      scanRv();
+      rebuildTicks();
+    });
+    mo.observe(pageEl, { childList: true, subtree: true });
 
     return () => {
       window.removeEventListener('resize', placeTicks);
+      mo.disconnect();
+      rvObserver.disconnect();
       createdTicks.forEach((tickEl) => tickEl.remove());
     };
   }, [location.pathname]);
@@ -126,14 +160,19 @@ function AppContent() {
         </div>
       </header>
 
-      <div className="page active">
-        <Routes>
-          <Route path="/" element={<Home />} />
-          <Route path="/about" element={<About />} />
-          <Route path="/current" element={<CurrentProject />} />
-          <Route path="/other" element={<OtherProject />} />
-          <Route path="/journey" element={<MyJourney />} />
-        </Routes>
+      <div className="page active" ref={pageRef}>
+        <ErrorBoundary key={location.pathname}>
+          <Suspense fallback={<PageLoader />}>
+            <Routes>
+              <Route path="/" element={<Home />} />
+              <Route path="/about" element={<About />} />
+              <Route path="/current" element={<CurrentProject />} />
+              <Route path="/other" element={<OtherProject />} />
+              <Route path="/journey" element={<MyJourney />} />
+              <Route path="*" element={<NotFound />} />
+            </Routes>
+          </Suspense>
+        </ErrorBoundary>
       </div>
 
       <footer>
