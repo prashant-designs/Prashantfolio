@@ -13,6 +13,7 @@ const NotFound = lazy(() => import('./pages/NotFound'));
 function AppContent() {
   const location = useLocation();
   const [progress, setProgress] = useState(0);
+  const [menuOpen, setMenuOpen] = useState(false);
   const pageRef = useRef(null);
 
   const currentPage = location.pathname.replace('/', '') || 'home';
@@ -29,7 +30,20 @@ function AppContent() {
 
   useEffect(() => {
     window.scrollTo(0, 0);
+    setMenuOpen(false);
   }, [location.pathname]);
+
+  useEffect(() => {
+    document.body.classList.toggle('ovl-lock', menuOpen);
+    return () => document.body.classList.remove('ovl-lock');
+  }, [menuOpen]);
+
+  useEffect(() => {
+    if (!menuOpen) return undefined;
+    const onKey = (e) => { if (e.key === 'Escape') setMenuOpen(false); };
+    window.addEventListener('keydown', onKey);
+    return () => window.removeEventListener('keydown', onKey);
+  }, [menuOpen]);
 
   // reveal-on-scroll (.rv) + section jump-ticks on the shared top-nav progress
   // line. Both re-scan whenever the page's DOM actually changes (not just on
@@ -115,19 +129,19 @@ function AppContent() {
     <>
       <header className="top">
         <div className="top-row">
+          <a
+            href="#/"
+            className={`tab-ic ${currentPage === 'home' ? 'active' : ''}`}
+            aria-label="Home"
+            title="Home"
+          >
+            <img
+              alt=""
+              src="/image.png"
+              onError={(e) => { e.target.onerror = null; e.target.src = 'data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 64 64%27%3E%3Crect width=%2764%27 height=%2764%27 fill=%27%23141A2B%27/%3E%3Ctext x=%2732%27 y=%2739%27 font-family=%27monospace%27 font-size=%2717%27 fill=%27%23EAEEF9%27 text-anchor=%27middle%27%3EPK%3C/text%3E%3C/svg%3E'; }}
+            />
+          </a>
           <nav className="tabs" aria-label="Main navigation">
-            <a
-              href="#/"
-              className={`tab tab-ic ${currentPage === 'home' ? 'active' : ''}`}
-              aria-label="Home"
-              title="Home"
-            >
-              <img
-                alt=""
-                src="/image.png"
-                onError={(e) => { e.target.onerror = null; e.target.src = 'data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 64 64%27%3E%3Crect width=%2764%27 height=%2764%27 fill=%27%23141A2B%27/%3E%3Ctext x=%2732%27 y=%2739%27 font-family=%27monospace%27 font-size=%2717%27 fill=%27%23EAEEF9%27 text-anchor=%27middle%27%3EPK%3C/text%3E%3C/svg%3E'; }}
-              />
-            </a>
             <a
               href="#/about"
               className={`tab ${currentPage === 'about' ? 'active' : ''}`}
@@ -153,12 +167,30 @@ function AppContent() {
               My Journey
             </a>
           </nav>
+          <button
+            type="button"
+            className={`mnav-toggle ${menuOpen ? 'open' : ''}`}
+            onClick={() => setMenuOpen((v) => !v)}
+            aria-label={menuOpen ? 'Close menu' : 'Open menu'}
+            aria-expanded={menuOpen}
+          >
+            <span></span><span></span><span></span>
+          </button>
         </div>
         <div className="route-line" id="routeLine">
           <div className="route-fill" style={{ width: `${progress}%` }}></div>
           <div className="route-packet" style={{ left: `${progress}%` }}></div>
         </div>
       </header>
+
+      <div className={`mnav ${menuOpen ? 'open' : ''}`}>
+        <nav className="mnav-list" aria-label="Mobile navigation">
+          <a href="#/about" className={currentPage === 'about' ? 'active' : ''}>About</a>
+          <a href="#/current" className={currentPage === 'current' ? 'active' : ''}>Current Project</a>
+          <a href="#/other" className={currentPage === 'other' ? 'active' : ''}>Other Projects <span className="soon">soon</span></a>
+          <a href="#/journey" className={currentPage === 'journey' ? 'active' : ''}>My Journey</a>
+        </nav>
+      </div>
 
       <div className="page active" ref={pageRef}>
         <ErrorBoundary key={location.pathname}>

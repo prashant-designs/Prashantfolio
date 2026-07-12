@@ -111,7 +111,7 @@ body::after {
 
 .tabs {
   display: flex;
-  gap: 22px;
+  gap: 18px;
   margin: 0 auto;
   align-items: center;
   overflow-x: auto;
@@ -267,6 +267,93 @@ body::after {
 .tab-ic.active {
   border-color: var(--signal);
   box-shadow: 0 0 0 3px rgba(255, 196, 107, 0.15);
+}
+
+/* ================= MOBILE NAV (hamburger + drawer) ================= */
+.mnav-toggle {
+  display: none;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 5px;
+  width: 40px;
+  height: 40px;
+  margin-left: auto;
+  background: none;
+  border: 1px solid var(--line2);
+  border-radius: 10px;
+  cursor: pointer;
+  padding: 0;
+  flex-shrink: 0;
+}
+
+.mnav-toggle span {
+  display: block;
+  width: 18px;
+  height: 1.5px;
+  background: var(--text);
+  transition: transform 0.3s var(--ease), opacity 0.2s;
+}
+
+.mnav-toggle.open span:nth-child(1) { transform: translateY(6.5px) rotate(45deg); }
+.mnav-toggle.open span:nth-child(2) { opacity: 0; }
+.mnav-toggle.open span:nth-child(3) { transform: translateY(-6.5px) rotate(-45deg); }
+
+.mnav {
+  position: fixed;
+  inset: var(--nav-h) 0 0 0;
+  z-index: 89;
+  background: var(--ink);
+  transform: translateY(-14px);
+  opacity: 0;
+  pointer-events: none;
+  transition: transform 0.3s var(--ease), opacity 0.3s;
+  overflow-y: auto;
+}
+
+.mnav.open {
+  transform: none;
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.mnav-list {
+  display: flex;
+  flex-direction: column;
+  padding: 6px clamp(20px, 6vw, 40px) 40px;
+}
+
+.mnav-list a {
+  font-family: var(--mono);
+  font-size: 16px;
+  letter-spacing: 0.02em;
+  color: var(--text);
+  text-decoration: none;
+  padding: 20px 2px;
+  border-bottom: 1px solid var(--line);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.mnav-list a.active {
+  color: var(--signal);
+}
+
+.mnav-list a .soon {
+  font-family: var(--mono);
+  font-size: 9px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--dim);
+  border: 1px solid var(--line);
+  border-radius: 99px;
+  padding: 2px 8px;
+}
+
+@media (max-width: 760px) {
+  .tabs { display: none; }
+  .mnav-toggle { display: flex; }
 }
 
 /* ================= PAGE ROUTER ================= */
@@ -1814,8 +1901,6 @@ body.static .scene { height: auto !important; }
   .loop-scene .pin { position: static; height: auto; overflow: visible; padding: 40px 0; }
 }
 @media (max-width: 640px) {
-  .tabs { gap: 0; }
-  .tab { padding: 8px 9px; font-size: 10.5px; }
   .cross-q p { display: none; }
   .cross-word span { font-size: 26vw; }
   .panel { padding: 60px 14px 46px; }
