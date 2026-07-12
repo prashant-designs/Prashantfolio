@@ -569,8 +569,8 @@ body::after {
 .face {
   position: absolute;
   inset: 0;
-  -webkit-mask-image: radial-gradient(50% 50% at 50% 50%, #000 45%, transparent 88%);
-  mask-image: radial-gradient(50% 50% at 50% 50%, #000 45%, transparent 88%);
+  -webkit-mask-image: radial-gradient(circle farthest-corner at 50% 50%, #000 62%, transparent 100%);
+  mask-image: radial-gradient(circle farthest-corner at 50% 50%, #000 62%, transparent 100%);
 }
 
 .face-vignette {
@@ -578,7 +578,7 @@ body::after {
   inset: 0;
   z-index: 2;
   pointer-events: none;
-  background: radial-gradient(50% 50% at 50% 50%, transparent 18%, var(--ink) 78%);
+  background: radial-gradient(circle farthest-corner at 50% 50%, transparent 55%, var(--ink) 100%);
   mix-blend-mode: multiply;
 }
 
@@ -586,7 +586,7 @@ body::after {
   content: '';
   position: absolute;
   inset: 0;
-  background: radial-gradient(50% 50% at 50% 50%, transparent 45%, var(--ink) 88%);
+  background: radial-gradient(circle farthest-corner at 50% 50%, transparent 72%, var(--ink) 100%);
 }
 
 .face .layer {
@@ -612,7 +612,7 @@ body::after {
 }
 
 .face-paint img {
-  filter: saturate(1.5) contrast(1.1) sepia(0.14) brightness(1.02);
+  filter: contrast(1.06) brightness(1.02);
 }
 
 .face-systems img {
@@ -712,76 +712,6 @@ body::after {
 .face-tag-pm {
   color: var(--link);
   border: 1px solid rgba(143, 160, 255, 0.4);
-}
-
-.collage {
-  position: absolute;
-  inset: 0;
-  z-index: 3;
-  pointer-events: none;
-}
-
-.collage-chip {
-  position: absolute;
-  opacity: 0;
-  border-radius: 10px;
-  box-shadow: 0 14px 30px rgba(0, 0, 0, 0.5);
-  transition: opacity 0.5s var(--ease), transform 0.5s var(--ease);
-}
-
-.home-hero[data-mode="design"] .collage-chip {
-  opacity: 1;
-}
-
-.chip-color {
-  width: 15%;
-  aspect-ratio: 1 / 1;
-  top: 2%;
-  left: -4%;
-  background: var(--signal);
-  transform: rotate(-10deg) scale(1);
-}
-
-.home-hero:not([data-mode="design"]) .chip-color {
-  transform: rotate(-10deg) scale(0.75);
-}
-
-.chip-grid {
-  width: 17%;
-  aspect-ratio: 1 / 1;
-  bottom: 6%;
-  right: -5%;
-  background-color: var(--raise);
-  background-image:
-    linear-gradient(var(--line2) 1px, transparent 1px),
-    linear-gradient(90deg, var(--line2) 1px, transparent 1px);
-  background-size: 8px 8px;
-  border: 1px solid var(--line2);
-  transform: rotate(9deg) scale(1);
-}
-
-.home-hero:not([data-mode="design"]) .chip-grid {
-  transform: rotate(9deg) scale(0.75);
-}
-
-.chip-type {
-  width: 16%;
-  aspect-ratio: 1 / 1;
-  top: 32%;
-  right: -6%;
-  background: var(--ink2);
-  border: 1px solid var(--line2);
-  display: grid;
-  place-items: center;
-  font-family: var(--disp);
-  font-weight: 700;
-  font-size: clamp(16px, 2vw, 22px);
-  color: var(--link);
-  transform: rotate(-6deg) scale(1);
-}
-
-.home-hero:not([data-mode="design"]) .chip-type {
-  transform: rotate(-6deg) scale(0.75);
 }
 
 .face-cap {

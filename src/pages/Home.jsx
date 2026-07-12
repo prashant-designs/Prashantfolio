@@ -56,7 +56,7 @@ export default function Home() {
             </div>
 
             <div className="layer face-paint" aria-hidden="true">
-              <img src="/image.png" alt="" />
+              <img src="/image-designer.png" alt="" />
             </div>
 
             <div className="layer face-systems" aria-hidden="true">
@@ -68,13 +68,7 @@ export default function Home() {
             <div className="face-vignette" aria-hidden="true"></div>
           </div>
 
-          <div className="collage" aria-hidden="true">
-            <span className="collage-chip chip-color"></span>
-            <span className="collage-chip chip-grid"></span>
-            <span className="collage-chip chip-type">Aa</span>
-          </div>
-
-          <span className="face-tag face-tag-design" aria-hidden="true">painted · daily craft</span>
+          <span className="face-tag face-tag-design" aria-hidden="true">in motion · daily craft</span>
 
           <div className="face-hud" aria-hidden="true">
             <span className="face-bracket tl"></span>
