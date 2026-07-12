@@ -555,7 +555,7 @@ body::after {
   opacity: 0.22;
 }
 
-.face {
+.face-wrap {
   position: relative;
   grid-column: 2;
   grid-row: 1;
@@ -564,8 +564,29 @@ body::after {
   aspect-ratio: 1 / 1;
   justify-self: center;
   z-index: 1;
-  -webkit-mask-image: radial-gradient(50% 50% at 50% 50%, #000 88%, transparent 100%);
-  mask-image: radial-gradient(50% 50% at 50% 50%, #000 88%, transparent 100%);
+}
+
+.face {
+  position: absolute;
+  inset: 0;
+  -webkit-mask-image: radial-gradient(50% 50% at 50% 50%, #000 45%, transparent 88%);
+  mask-image: radial-gradient(50% 50% at 50% 50%, #000 45%, transparent 88%);
+}
+
+.face-vignette {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  pointer-events: none;
+  background: radial-gradient(50% 50% at 50% 50%, transparent 18%, var(--ink) 78%);
+  mix-blend-mode: multiply;
+}
+
+.face-vignette::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(50% 50% at 50% 50%, transparent 45%, var(--ink) 88%);
 }
 
 .face .layer {
@@ -591,7 +612,7 @@ body::after {
 }
 
 .face-paint img {
-  filter: url(#paintize) saturate(1.55) contrast(1.08) brightness(1.03);
+  filter: saturate(1.5) contrast(1.1) sepia(0.14) brightness(1.02);
 }
 
 .face-systems img {
@@ -633,6 +654,18 @@ body::after {
   100% { top: 100%; }
 }
 
+.face-hud {
+  position: absolute;
+  inset: 0;
+  z-index: 4;
+  opacity: 0;
+  transition: opacity 0.5s var(--ease);
+}
+
+.home-hero[data-mode="pm"] .face-hud {
+  opacity: 1;
+}
+
 .face-bracket {
   position: absolute;
   width: 20px;
@@ -648,6 +681,7 @@ body::after {
 
 .face-tag {
   position: absolute;
+  z-index: 4;
   bottom: 16px;
   left: 50%;
   transform: translateX(-50%);
@@ -658,7 +692,16 @@ body::after {
   white-space: nowrap;
   padding: 5px 11px;
   border-radius: 5px;
-  background: rgba(12, 16, 27, 0.65);
+  background: rgba(12, 16, 27, 0.85);
+}
+
+.face-tag-design {
+  opacity: 0;
+  transition: opacity 0.5s var(--ease);
+}
+
+.home-hero[data-mode="design"] .face-tag-design {
+  opacity: 1;
 }
 
 .face-tag-design {
@@ -669,6 +712,76 @@ body::after {
 .face-tag-pm {
   color: var(--link);
   border: 1px solid rgba(143, 160, 255, 0.4);
+}
+
+.collage {
+  position: absolute;
+  inset: 0;
+  z-index: 3;
+  pointer-events: none;
+}
+
+.collage-chip {
+  position: absolute;
+  opacity: 0;
+  border-radius: 10px;
+  box-shadow: 0 14px 30px rgba(0, 0, 0, 0.5);
+  transition: opacity 0.5s var(--ease), transform 0.5s var(--ease);
+}
+
+.home-hero[data-mode="design"] .collage-chip {
+  opacity: 1;
+}
+
+.chip-color {
+  width: 15%;
+  aspect-ratio: 1 / 1;
+  top: 2%;
+  left: -4%;
+  background: var(--signal);
+  transform: rotate(-10deg) scale(1);
+}
+
+.home-hero:not([data-mode="design"]) .chip-color {
+  transform: rotate(-10deg) scale(0.75);
+}
+
+.chip-grid {
+  width: 17%;
+  aspect-ratio: 1 / 1;
+  bottom: 6%;
+  right: -5%;
+  background-color: var(--raise);
+  background-image:
+    linear-gradient(var(--line2) 1px, transparent 1px),
+    linear-gradient(90deg, var(--line2) 1px, transparent 1px);
+  background-size: 8px 8px;
+  border: 1px solid var(--line2);
+  transform: rotate(9deg) scale(1);
+}
+
+.home-hero:not([data-mode="design"]) .chip-grid {
+  transform: rotate(9deg) scale(0.75);
+}
+
+.chip-type {
+  width: 16%;
+  aspect-ratio: 1 / 1;
+  top: 32%;
+  right: -6%;
+  background: var(--ink2);
+  border: 1px solid var(--line2);
+  display: grid;
+  place-items: center;
+  font-family: var(--disp);
+  font-weight: 700;
+  font-size: clamp(16px, 2vw, 22px);
+  color: var(--link);
+  transform: rotate(-6deg) scale(1);
+}
+
+.home-hero:not([data-mode="design"]) .chip-type {
+  transform: rotate(-6deg) scale(0.75);
 }
 
 .face-cap {
@@ -914,12 +1027,12 @@ footer .g {
     display: none;
   }
   .side-design,
-  .face,
+  .face-wrap,
   .side-pm {
     grid-column: auto;
     grid-row: auto;
   }
-  .face {
+  .face-wrap {
     order: -1;
     width: min(280px, 72vw);
   }
