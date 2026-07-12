@@ -436,6 +436,7 @@ export default function MyJourney() {
           <div className="epi-row rv d3">
             <a className="btn-big" href="mailto:prashant.kumar3058@gmail.com">prashant.kumar3058@gmail.com <span aria-hidden="true">→</span></a>
             <a className="btn-ghost" href="https://www.linkedin.com/in/prashant-kumar100/" target="_blank" rel="noopener noreferrer">LinkedIn</a>
+            <a className="btn-ghost" href="/Prashant_Resume.pdf" target="_blank" rel="noopener noreferrer">Résumé</a>
           </div>
         </div>
       </section>

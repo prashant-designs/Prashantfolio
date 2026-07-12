@@ -177,6 +177,7 @@ function AppContent() {
 
       <footer>
         <span>© 2026 Prashant Kumar · Gurugram / New Delhi, IN</span>
+        <a className="footer-link" href="/Prashant_Resume.pdf" target="_blank" rel="noopener noreferrer">Résumé ↓</a>
         <span><span className="g">●</span> made with love, fun & a dash of curiosity</span>
       </footer>
     </>

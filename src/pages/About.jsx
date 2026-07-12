@@ -134,6 +134,7 @@ export default function About() {
             <div>
               <p className="ab-lede rv d2">I&apos;m Prashant — product manager at Lightstorm, building <b>Polarin</b>, India&apos;s first self-serve NaaS platform. Designer by training, builder by habit: I ship the things I spec.</p>
               <p className="ab-lede2 rv d3">Four years ago I was the first designer on a whiteboard idea. Now I run its roadmap — and still push its frontend to production myself.</p>
+              <a className="btn-ghost ab-resume rv d3" href="/Prashant_Resume.pdf" target="_blank" rel="noopener noreferrer">Download résumé <span aria-hidden="true">↓</span></a>
             </div>
           </div>
         </div>
