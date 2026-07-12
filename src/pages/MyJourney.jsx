@@ -365,7 +365,7 @@ export default function MyJourney() {
           ? 'Five skills, entering the same node…'
           : p < 0.72
             ? 'No handoffs. No translation loss.'
-            : 'One PM. This is what POLO got back.';
+            : 'One PM. This is what Lightstorm got back.';
       }
     };
 
@@ -411,7 +411,7 @@ export default function MyJourney() {
               <span className="l2">is a story.</span><br />
               <span className="l3">I ship the plot.</span><span className="car" aria-hidden="true"></span>
             </h1>
-            <p className="hero-sub">First designer at <b>POLO</b>. Now I ship the whole loop myself.</p>
+            <p className="hero-sub">First designer at <b>Lightstorm</b>. Now I ship the whole loop myself.</p>
             <div className="hero-chips">
               {CHAPTER_NAV.map((c) => (
                 <button key={c.id} data-go={c.id}>
@@ -449,9 +449,9 @@ export default function MyJourney() {
       {/* CH2 — THE CROSSING */}
       <section id="ch2" data-ch="Ch.2 — The Crossing">
         <div className="wrap ch-head">
-          <p className="ch-num rv"><b>Chapter 02</b> · Nov 2022 — Now · POLO · Promoted 2×</p>
+          <p className="ch-num rv"><b>Chapter 02</b> · Nov 2022 — Now · Lightstorm · Promoted 2×</p>
           <h2 className="ch-title rv d1">The <span>Crossing.</span></h2>
-          <p style={{ color: 'var(--mute)', maxWidth: '58ch', marginTop: '14px' }} className="rv d2">I joined POLO as its first designer. Three promotions later the title says product — but it was always the same question, asked three sizes bigger.</p>
+          <p style={{ color: 'var(--mute)', maxWidth: '58ch', marginTop: '14px' }} className="rv d2">I joined Lightstorm as its first designer. Three promotions later the title says product — but it was always the same question, asked three sizes bigger.</p>
         </div>
         <div className="wrap" style={{ paddingBottom: '100px' }}>
           <TheCrossing />
@@ -463,7 +463,7 @@ export default function MyJourney() {
         <div className="wrap ch-head" style={{ textAlign: 'center' }}>
           <p className="ch-num rv" style={{ justifyContent: 'center' }}><b>Chapter 03</b> · Why it matters to an org</p>
           <h2 className="ch-title rv d1">The <span>Multiplier.</span></h2>
-          <p style={{ color: 'var(--mute)', maxWidth: '60ch', margin: '14px auto 0' }} className="rv d2">Five disciplines usually live in five people, five backlogs, five handoffs. Here&apos;s what happened at POLO when they routed through one.</p>
+          <p style={{ color: 'var(--mute)', maxWidth: '60ch', margin: '14px auto 0' }} className="rv d2">Five disciplines usually live in five people, five backlogs, five handoffs. Here&apos;s what happened at Lightstorm when they routed through one.</p>
         </div>
         <div className="scene" id="scene-ch3" style={{ height: '300vh' }}>
           <div className="pin">

@@ -256,7 +256,7 @@ export default function CustomerPortalCaseStudy({ onPrev, onNext, idx, total }) 
       <div className="inv-hero">
         <p className="eyebrow">Polarin · Customer Portal</p>
         <h2>90 days → 10 minutes.</h2>
-        <p>In 2022, ordering enterprise connectivity in India meant phone calls, PDF forms and ~90 days of waiting — an industry running on processes unchanged since the 1990s. Polarin was a name on a whiteboard, and I was POLO&apos;s first designer, with no telecom background and no template to copy. Four years later it&apos;s a live platform enterprises trust, and I&apos;ve gone from designing it to running it.</p>
+        <p>In 2022, ordering enterprise connectivity in India meant phone calls, PDF forms and ~90 days of waiting — an industry running on processes unchanged since the 1990s. Polarin was a name on a whiteboard, and I was Lightstorm&apos;s first designer, with no telecom background and no template to copy. Four years later it&apos;s a live platform enterprises trust, and I&apos;ve gone from designing it to running it.</p>
         <div className="inv-meta">
           <div><span>My role</span><b>First designer, 0 → 1 → now Product Manager</b></div>
           <div><span>Team</span><b>1 designer · 3 PMs · 12 devs</b></div>

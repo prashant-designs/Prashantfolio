@@ -271,7 +271,7 @@ export default function CurrentProject() {
         <div className="wrap globe-copy">
           <p className="eyebrow rv" style={{ justifyContent: 'center' }}>What is Polarin</p>
           <p className="lede-big rv d1" style={{ margin: '0 auto', textAlign: 'center', maxWidth: '30ch' }}>Enterprise connectivity that provisions
-          <i> like cloud</i> — a Network-as-a-Service platform by <em>POLO</em>, connecting businesses across the globe
+          <i> like cloud</i> — a Network-as-a-Service platform by <em>Lightstorm</em>, connecting businesses across the globe
           <i> in clicks, not contracts.</i></p>
           <div className="pol-sub rv d2" style={{ justifyContent: 'center', marginTop: '24px' }}>
             <span><b>NaaS</b> platform</span><span><b>global</b> connectivity</span><span><b>self-serve</b> by design</span>

@@ -71,7 +71,7 @@ export default function About() {
         orbitCore.style.transform = `translate(calc(-50% + ${sway}px), -50%) rotateX(-62deg)`;
       }
       const active = clamp(Math.floor(progress * 5.01), 0, 4);
-      lsteps.forEach((step, i) => step.classList.toggle('on', i <= active));
+      lsteps.forEach((step, i) => step.classList.toggle('on', i === active));
       orbitNodes.forEach((node, i) => {
         node.classList.toggle('on', i === active);
         node.classList.toggle('peek', active === 4 && i === 0);
@@ -132,7 +132,7 @@ export default function About() {
               onError={(e) => { e.target.style.display = 'none'; }}
             />
             <div>
-              <p className="ab-lede rv d2">I&apos;m Prashant — product manager at POLO, building <b>Polarin</b>, India&apos;s first self-serve NaaS platform. Designer by training, builder by habit: I ship the things I spec.</p>
+              <p className="ab-lede rv d2">I&apos;m Prashant — product manager at Lightstorm, building <b>Polarin</b>, India&apos;s first self-serve NaaS platform. Designer by training, builder by habit: I ship the things I spec.</p>
               <p className="ab-lede2 rv d3">Four years ago I was the first designer on a whiteboard idea. Now I run its roadmap — and still push its frontend to production myself.</p>
             </div>
           </div>
@@ -144,6 +144,7 @@ export default function About() {
           <p className="eyebrow rv">— what I&apos;m made of</p>
           <h2 className="ab-h rv d1">Part designer. Part PM.<br /><em>All builder.</em></h2>
           <div className="ab-mix rv d2">
+            <div className="ab-mix-word" aria-hidden="true"><span>{d.name}</span></div>
             <svg className="ab-donut" viewBox="0 0 200 200" aria-hidden="true">
               <circle className="ab-ring" cx="100" cy="100" r="70" />
               <circle

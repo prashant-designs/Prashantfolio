@@ -4,7 +4,7 @@ const PIPELINE = ['requirements', 'PRD', 'pricing + volumetrics', 'DX design', '
 
 const FAILS = [
   { code: 'GET /safe-test-environment', status: '500', body: 'every test call hits live production — one wrong call is a real order' },
-  { code: 'GET /api-key', status: '403', body: '"contact POLO support" — days of delay for a two-minute task' },
+  { code: 'GET /api-key', status: '403', body: '"contact Lightstorm support" — days of delay for a two-minute task' },
   { code: 'GET /change-bandwidth', status: '404', body: 'lost in hundreds of endpoints organised by tech, not by task' },
   { code: 'GET /breaking-changes', status: '410', body: 'customers find out an API changed when their integration breaks' },
 ];
@@ -19,7 +19,7 @@ const PRINCIPLES = [
 const LEDGER = [
   { q: 'Where do requirements come from?', a: 'journeys, not wishlists', d: 'two journeys wrote the PRD — a network engineer wiring Grafana, an IT team automating operations. every requirement had to serve one of them, benchmarked against the best developer platforms.' },
   { q: 'UAT data — shared demo or per-customer snapshots?', a: 'shared · phase 1', d: 'shared demo circuits with a nightly reset ship faster and answer every integration question. per-customer production snapshots flagged for phase 2 — richer, not required for launch.' },
-  { q: 'Docs — public or behind login?', a: 'public · recommended', d: 'like the platforms developers already trust: docs, reference & Postman collection open to read, so integration code gets written in parallel with procurement. keys still require full POLO onboarding & KYC.' },
+  { q: 'Docs — public or behind login?', a: 'public · recommended', d: 'like the platforms developers already trust: docs, reference & Postman collection open to read, so integration code gets written in parallel with procurement. keys still require full Lightstorm onboarding & KYC.' },
   { q: 'What gets metered?', a: 'monitoring only', d: 'charging an ordering API adds friction to revenue — free. high-volume monitoring is a premium usage pattern — metered above the daily pool. unit rate settled with commercial; the model settled here.' },
   { q: 'How big is the pool?', a: 'sized with engineering', d: 'volumetrics worked backwards from gateway capacity and real polling patterns (Grafana scrape intervals × circuits). pool = per-circuit limit × active circuits, recalculated live as the network grows. hard 429 at the cap, midnight reset — predictable for both sides.' },
   { q: 'Key rotation — how long do old keys live?', a: 'overlap window', d: 'old key stays valid through a fixed overlap after rotation, so a live Grafana board never goes dark mid-swap. revoke is instant when a key is compromised.' },
@@ -116,7 +116,7 @@ export default function DeveloperPortalCaseStudy({ onPrev, onNext, idx, total })
       <div className="inv-section">
         <div className="inv-step-tag"><i></i>Pricing & volumetrics</div>
         <h3 className="dv-h" style={{ marginTop: '10px' }}>The framework</h3>
-        <p className="dv-p">One principle: <b style={{ color: 'var(--text)' }}>never charge the call that earns us money.</b> Ordering, changes, billing, admin — all free; POLO earns from the services, not the calls. Only monitoring is metered, and only above a daily pool that scales with the customer&apos;s network:</p>
+        <p className="dv-p">One principle: <b style={{ color: 'var(--text)' }}>never charge the call that earns us money.</b> Ordering, changes, billing, admin — all free; Lightstorm earns from the services, not the calls. Only monitoring is metered, and only above a daily pool that scales with the customer&apos;s network:</p>
         <div className="dv-vol">
           <div className="dvv-row">
             <label htmlFor="dvCirc">circuits on VISTA</label>
