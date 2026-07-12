@@ -206,36 +206,6 @@ export default function MyJourney() {
     );
     document.querySelectorAll('.rv').forEach((el) => rvObs.observe(el));
 
-    // chapter jump-ticks on the shared top-nav progress line
-    const routeLine = document.getElementById('routeLine');
-    const chSections = [...document.querySelectorAll('[data-ch]')];
-    const createdTicks = [];
-
-    if (routeLine) {
-      chSections.forEach((section) => {
-        const tickEl = document.createElement('button');
-        tickEl.className = 'route-tick';
-        tickEl.dataset.ch = section.dataset.ch;
-        tickEl.setAttribute('aria-label', `Jump to ${section.dataset.ch}`);
-        tickEl.addEventListener('click', () => section.scrollIntoView({ behavior: 'smooth' }));
-        routeLine.appendChild(tickEl);
-        createdTicks.push(tickEl);
-      });
-    }
-    const placeTicks = () => {
-      if (!routeLine || chSections.length === 0) return;
-      const docHeight = document.documentElement.scrollHeight - window.innerHeight;
-      if (docHeight <= 0) return;
-      createdTicks.forEach((tickEl, i) => {
-        const section = chSections[i];
-        if (!section) return;
-        const top = section.getBoundingClientRect().top + window.scrollY;
-        tickEl.style.left = `${clamp((top / docHeight) * 100, 0, 100)}%`;
-      });
-    };
-    placeTicks();
-    window.addEventListener('resize', placeTicks);
-
     // subtle hero tilt + floating-glyph parallax on mouse move (desktop only)
     const hero = heroRef.current;
     const heroCard = heroCardRef.current;
@@ -375,11 +345,9 @@ export default function MyJourney() {
     raf = window.requestAnimationFrame(tick);
 
     return () => {
-      window.removeEventListener('resize', placeTicks);
       rvObs.disconnect();
       if (hero && onHeroMove) hero.removeEventListener('mousemove', onHeroMove);
       if (hero && onHeroLeave) hero.removeEventListener('mouseleave', onHeroLeave);
-      createdTicks.forEach((tickEl) => tickEl.remove());
       if (raf) window.cancelAnimationFrame(raf);
     };
   }, []);
@@ -466,9 +434,8 @@ export default function MyJourney() {
           <p className="rv d2">Enterprise B2B, 5+ years, and one conviction: product, design, and AI-speed delivery should be
           one job, not three. If you&apos;re building something that agrees — let&apos;s talk.</p>
           <div className="epi-row rv d3">
-            <a className="btn-big" href="mailto:hello@prashant.design">hello@prashant.design <span aria-hidden="true">→</span></a>
-            <a className="btn-ghost" href="#" onClick={(e) => e.preventDefault()}>LinkedIn</a>
-            <a className="btn-ghost" href="#" onClick={(e) => e.preventDefault()}>prashantfolio.in</a>
+            <a className="btn-big" href="mailto:prashant.kumar3058@gmail.com">prashant.kumar3058@gmail.com <span aria-hidden="true">→</span></a>
+            <a className="btn-ghost" href="https://www.linkedin.com/in/prashant-kumar100/" target="_blank" rel="noopener noreferrer">LinkedIn</a>
           </div>
         </div>
       </section>

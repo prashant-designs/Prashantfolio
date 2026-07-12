@@ -224,7 +224,7 @@ export default function CurrentProject() {
   return (
     <div>
       {/* 01 · simple open */}
-      <section className="pol-open">
+      <section className="pol-open" data-ch="Intro">
         <div className="wrap">
           <p className="pol-kicker rv">Current Project · 2022 — now</p>
           <h2 className="pol-title rv d1">
@@ -238,7 +238,7 @@ export default function CurrentProject() {
       </section>
 
       {/* 02 · what is polarin (half globe) */}
-      <section className="globe-sec" ref={globeSecRef}>
+      <section className="globe-sec" ref={globeSecRef} data-ch="What is Polarin">
         <svg className="globe" ref={baseGlobeRef} viewBox="0 0 1000 480" aria-hidden="true">
           <defs>
             <clipPath id="dome"><rect x="0" y="0" width="1000" height="478" /></clipPath>
@@ -280,7 +280,7 @@ export default function CurrentProject() {
       </section>
 
       {/* 03 · my role, brief */}
-      <section className="role-sec">
+      <section className="role-sec" data-ch="My Role">
         <div className="wrap" style={{ textAlign: 'center' }}>
           <p className="eyebrow rv" style={{ justifyContent: 'center' }}>My input</p>
           <h2 className="ch-title rv d1" style={{ fontSize: 'clamp(26px,4.4vw,50px)' }}>Its first designer.<br />Now its <span>product manager.</span></h2>
@@ -334,7 +334,7 @@ export default function CurrentProject() {
       </section>
 
       {/* 04 · projects, horizontal */}
-      <section>
+      <section data-ch="Surfaces">
         <div className="scene hscroll" data-scene="polx" style={{ height: '460vh' }}>
           <div className="pin">
             <div className="htrack" id="pxTrack">
@@ -453,7 +453,7 @@ export default function CurrentProject() {
       </section>
 
       {/* 05 · overall metrics */}
-      <section>
+      <section data-ch="Metrics">
         <div className="wrap" style={{ padding: '80px 0 20px', textAlign: 'center' }}>
           <p className="eyebrow rv" style={{ justifyContent: 'center' }}>Four years in</p>
           <h2 className="ch-title rv d1" style={{ fontSize: 'clamp(28px,4.6vw,54px)' }}>What <span>moved.</span></h2>
@@ -466,7 +466,7 @@ export default function CurrentProject() {
       </section>
 
       {/* 06 · still building */}
-      <section className="still-sec">
+      <section className="still-sec" data-ch="Still Building">
         <div className="wrap" style={{ textAlign: 'center' }}>
           <h2 className="still-t rv">still building<i className="tcur"></i></h2>
           <div className="soon-bar rv d1" style={{ maxWidth: '280px', margin: '22px auto 0' }}><i></i></div>

@@ -120,7 +120,7 @@ export default function About() {
 
   return (
     <>
-      <section className="ab-hero">
+      <section className="ab-hero" data-ch="Intro">
         <div className="wrap">
           <p className="eyebrow rv">Page 02 · About · Gurugram, IN</p>
           <h1 className="ab-title rv d1">about<span>.</span></h1>
@@ -139,7 +139,7 @@ export default function About() {
         </div>
       </section>
 
-      <section className="ab-split">
+      <section className="ab-split" data-ch="The Mix">
         <div className="wrap">
           <p className="eyebrow rv">— what I&apos;m made of</p>
           <h2 className="ab-h rv d1">Part designer. Part PM.<br /><em>All builder.</em></h2>
@@ -191,7 +191,7 @@ export default function About() {
         </div>
       </section>
 
-      <section className="ab-split">
+      <section className="ab-split" data-ch="My Process">
         <div className="wrap">
           <p className="eyebrow rv">— how I work</p>
           <h2 className="ab-h rv d1">My process, <em>end to end.</em></h2>
@@ -235,7 +235,7 @@ export default function About() {
         </div>
       </section>
 
-      <section className="ab-skills">
+      <section className="ab-skills" data-ch="Skills">
         <div className="wrap">
           <p className="eyebrow rv">— my skills, honestly</p>
           <h2 className="ab-h rv d1">The chart HR never asks for.</h2>
@@ -253,7 +253,7 @@ export default function About() {
         </div>
       </section>
 
-      <section className="ab-facts">
+      <section className="ab-facts" data-ch="Facts">
         <div className="wrap">
           <p className="eyebrow rv">— off the clock</p>
           <h2 className="ab-h rv d1">Random facts.</h2>
@@ -268,7 +268,7 @@ export default function About() {
         </div>
       </section>
 
-      <section className="ab-journey">
+      <section className="ab-journey" data-ch="My Journey">
         <div className="wrap">
           <p className="eyebrow rv">— the long version</p>
           <h2 className="ab-big rv d1">the full story lives<br />in <span>three chapters.</span></h2>

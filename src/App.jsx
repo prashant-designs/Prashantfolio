@@ -38,6 +38,45 @@ function AppContent() {
     return () => rvObserver.disconnect();
   }, [location.pathname]);
 
+  // section jump-ticks on the shared top-nav progress line — any page whose
+  // top-level sections carry a data-ch label gets these automatically
+  useEffect(() => {
+    const clamp = (v, a, b) => Math.min(b, Math.max(a, v));
+    const routeLine = document.getElementById('routeLine');
+    const chSections = [...document.querySelectorAll('[data-ch]')];
+    const createdTicks = [];
+
+    if (routeLine) {
+      chSections.forEach((section) => {
+        const tickEl = document.createElement('button');
+        tickEl.className = 'route-tick';
+        tickEl.dataset.ch = section.dataset.ch;
+        tickEl.setAttribute('aria-label', `Jump to ${section.dataset.ch}`);
+        tickEl.addEventListener('click', () => section.scrollIntoView({ behavior: 'smooth' }));
+        routeLine.appendChild(tickEl);
+        createdTicks.push(tickEl);
+      });
+    }
+    const placeTicks = () => {
+      if (!routeLine || chSections.length === 0) return;
+      const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+      if (docHeight <= 0) return;
+      createdTicks.forEach((tickEl, i) => {
+        const section = chSections[i];
+        if (!section) return;
+        const top = section.getBoundingClientRect().top + window.scrollY;
+        tickEl.style.left = `${clamp((top / docHeight) * 100, 0, 100)}%`;
+      });
+    };
+    placeTicks();
+    window.addEventListener('resize', placeTicks);
+
+    return () => {
+      window.removeEventListener('resize', placeTicks);
+      createdTicks.forEach((tickEl) => tickEl.remove());
+    };
+  }, [location.pathname]);
+
   return (
     <>
       <header className="top">
