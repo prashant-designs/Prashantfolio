@@ -127,7 +127,7 @@ export default function About() {
           <div className="ab-intro">
             <img
               className="ab-photo rv d2"
-              src="/profile.jpg"
+              src="/image.png"
               alt="Prashant Kumar"
               onError={(e) => { e.target.style.display = 'none'; }}
             />
