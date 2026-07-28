@@ -229,21 +229,23 @@ function ScreensScene() {
           ))}
         </div>
         <figure className="cs-shot">
-          {imgOk ? (
-            <img src={sh.src} alt="Polarin customer portal screen" loading="lazy" onError={() => setImgOk(false)} />
-          ) : (
-            <div className="dv-shot" aria-hidden="true" style={{ marginTop: 0 }}>
-              <div className="shot-bar"><i></i><i></i><i></i><em></em></div>
-              <div className="shot-body">
-                <div className="shot-side"><i></i><i className="on"></i><i></i><i></i><i></i></div>
-                <div className="shot-main">
-                  <div className="shot-code"><i style={{ '--w': '68%' }}></i><i style={{ '--w': '48%' }}></i><i style={{ '--w': '58%' }}></i></div>
-                  <div className="shot-run"></div>
+          <div className="cs-shot-frame">
+            {imgOk ? (
+              <img key={key} src={sh.src} alt="Polarin customer portal screen" loading="lazy" onError={() => setImgOk(false)} />
+            ) : (
+              <div className="dv-shot" aria-hidden="true" style={{ marginTop: 0 }}>
+                <div className="shot-bar"><i></i><i></i><i></i><em></em></div>
+                <div className="shot-body">
+                  <div className="shot-side"><i></i><i className="on"></i><i></i><i></i><i></i></div>
+                  <div className="shot-main">
+                    <div className="shot-code"><i style={{ '--w': '68%' }}></i><i style={{ '--w': '48%' }}></i><i style={{ '--w': '58%' }}></i></div>
+                    <div className="shot-run"></div>
+                  </div>
                 </div>
               </div>
-            </div>
-          )}
-          <figcaption>{sh.cap}</figcaption>
+            )}
+          </div>
+          <figcaption key={`${key}-cap`}>{sh.cap}</figcaption>
         </figure>
       </div>
     </div>

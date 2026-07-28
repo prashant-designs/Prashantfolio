@@ -1162,8 +1162,11 @@ footer .g {
 
 /* ---- 04 · horizontal project cards ---- */
 .panel-sm { width: min(80vw, 560px); }
-.pxcard { max-height: none; overflow: visible; }
-.px-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px; }
+.pxcard { max-height: none; overflow: visible; cursor: pointer; }
+.pxcard:focus-visible { outline: 2px solid var(--signal); outline-offset: 3px; }
+.pxcard-icon { display: inline-grid; place-items: center; width: 54px; height: 54px; border-radius: 14px; border: 1px solid var(--line2); background: var(--raise2); color: var(--link); transition: all 0.3s; }
+.pxcard-icon svg { width: 27px; height: 27px; display: block; }
+.pxcard:hover .pxcard-icon { color: var(--signal); border-color: rgba(255, 196, 107, 0.4); }
 .pxcard h3 { font-family: var(--disp); font-weight: 700; font-size: clamp(20px, 2.4vw, 27px); letter-spacing: -0.015em; margin: 14px 0 12px; }
 .krow { display: grid; grid-template-columns: 64px 1fr; gap: 14px; align-items: baseline; padding: 8px 0; border-top: 1px dashed var(--line); }
 .krow span { font-family: var(--mono); font-size: 9.5px; letter-spacing: 0.18em; text-transform: uppercase; color: var(--signal); }
@@ -1173,9 +1176,12 @@ footer .g {
 .krow.im p.big small { font-family: var(--mono); font-weight: 400; font-size: 10px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--dim); margin-left: 10px; }
 .mg-tag { position: absolute; right: 10px; bottom: 8px; font-family: var(--mono); font-size: 8.5px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--dim); background: rgba(12, 16, 27, 0.7); border: 1px dashed var(--line); border-radius: 6px; padding: 3px 8px; pointer-events: none; z-index: 2; }
 .mg-inv .mg-tag { bottom: auto; top: 8px; }
-.proj-foot { display: flex; justify-content: space-between; align-items: center; border-top: 1px dashed var(--line); padding-top: 14px; margin-top: 4px; }
-.cs-link { font-family: var(--mono); font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase; text-decoration: none; color: var(--link); display: inline-flex; gap: 8px; align-items: center; transition: color 0.25s; background: none; border: none; cursor: pointer; padding: 0; }
-.cs-link:hover { color: var(--signal); }
+.proj-foot { display: flex; justify-content: space-between; align-items: center; border-top: 1px dashed var(--line); padding-top: 14px; margin-top: 4px; transition: border-color 0.3s; }
+.pxcard:hover .proj-foot { border-top-color: rgba(255, 196, 107, 0.35); }
+.cs-link { font-family: var(--mono); font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase; text-decoration: none; color: var(--link); display: inline-flex; gap: 8px; align-items: center; transition: color 0.25s, transform 0.25s var(--ease); background: none; border: none; cursor: pointer; padding: 0; position: relative; }
+.cs-link::after { content: ''; position: absolute; left: 0; right: 100%; bottom: -3px; height: 1.5px; background: var(--signal); transition: right 0.35s var(--ease); }
+.pxcard:hover .cs-link, .cs-link:hover { color: var(--signal); transform: translateX(3px); }
+.pxcard:hover .cs-link::after, .cs-link:hover::after { right: 0; }
 
 /* ---- mini graphics ---- */
 .mg { height: 112px; border: 1px solid var(--line); border-radius: 12px; background: var(--ink2); padding: 13px 15px; position: relative; overflow: hidden; display: flex; flex-direction: column; gap: 8px; }
@@ -1677,8 +1683,10 @@ body.ovl-lock { overflow: hidden; }
 .cs-tabs button:hover { color: var(--text); }
 .cs-tabs button.on { color: var(--ink); background: var(--signal); border-color: var(--signal); }
 .cs-shot { margin: 14px 0 0; }
-.cs-shot img { width: 100%; display: block; border: 1px solid var(--line2); border-radius: 16px; background: var(--raise); transition: opacity 0.3s; min-height: 120px; }
-.cs-shot figcaption { font-family: var(--mono); font-size: 11px; letter-spacing: 0.05em; color: var(--dim); margin-top: 10px; }
+.cs-shot-frame { position: relative; border-radius: 22px; background: var(--ink2); padding: 12px; box-shadow: inset 0 0 0 1px var(--line2), inset 0 1px 0 rgba(255, 255, 255, 0.04), 0 24px 60px rgba(0, 0, 0, 0.35); overflow: hidden; display: flex; justify-content: center; }
+.cs-shot img { max-width: 100%; height: auto; display: block; border-radius: 14px; background: var(--raise); animation: shotFadeIn 0.5s var(--ease); }
+.cs-shot figcaption { font-family: var(--mono); font-size: 11px; letter-spacing: 0.05em; color: var(--dim); margin-top: 10px; animation: shotFadeIn 0.5s var(--ease); }
+@keyframes shotFadeIn { from { opacity: 0; transform: scale(0.99); } to { opacity: 1; transform: scale(1); } }
 
 /* ---- pinned scroll scenes (inside the overlay panel) ---- */
 .oscn { position: relative; margin-top: 16px; height: calc(var(--beats, 5) * 46vh); }
@@ -1700,7 +1708,8 @@ body.ovl-lock { overflow: hidden; }
 .aud-stage .aud-p.on { box-shadow: inset 0 0 30px rgba(255, 196, 107, 0.06); }
 
 .shots-stage { justify-content: center; gap: 14px; }
-.shots-stage .cs-shot img { max-height: 52vh; object-fit: contain; }
+.shots-stage .cs-shot { width: 100%; max-width: 640px; margin-left: auto; margin-right: auto; }
+.shots-stage .cs-shot img { max-height: 52vh; }
 
 /* ---- alex journey: pinned scroll story ---- */
 .cjx { position: relative; margin-top: 16px; height: 340vh; }

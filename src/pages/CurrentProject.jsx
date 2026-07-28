@@ -135,11 +135,11 @@ export default function CurrentProject() {
     return () => window.cancelAnimationFrame(rafId);
   }, []);
 
-  // playable globe: dots that light up near the cursor
+  // playable globe: a highlight that auto-roams the globe, and follows the cursor on hover
   useEffect(() => {
     const noMotion = window.matchMedia('(prefers-reduced-motion:reduce)').matches;
     const finePointer = window.matchMedia('(pointer:fine)').matches;
-    if (noMotion || !finePointer) return undefined;
+    if (noMotion) return undefined;
     const gsec = globeSecRef.current;
     const base = baseGlobeRef.current;
     const hi = hiGlobeRef.current;
@@ -147,80 +147,89 @@ export default function CurrentProject() {
 
     const NS = 'http://www.w3.org/2000/svg';
     const dots = [];
-    let inited = false;
+    let hovering = false;
     let raf = null;
 
-    const initDots = () => {
-      if (inited) return;
-      inited = true;
-      base.querySelectorAll('.g-line').forEach((ln) => {
-        let length = 0;
-        try {
-          length = ln.getTotalLength();
-        } catch {
-          return;
-        }
-        if (!length) return;
-        for (let d = 23; d < length; d += 46) {
-          const p = ln.getPointAtLength(d);
-          if (p.y < -10 || p.y > 478) continue;
-          const c = document.createElementNS(NS, 'circle');
-          c.setAttribute('cx', p.x);
-          c.setAttribute('cy', p.y);
-          c.setAttribute('r', '1.6');
-          c.setAttribute('class', 'g-dot');
-          base.appendChild(c);
-          dots.push({ c, x: p.x, y: p.y });
+    base.querySelectorAll('.g-line').forEach((ln) => {
+      let length = 0;
+      try {
+        length = ln.getTotalLength();
+      } catch {
+        return;
+      }
+      if (!length) return;
+      for (let d = 23; d < length; d += 46) {
+        const p = ln.getPointAtLength(d);
+        if (p.y < -10 || p.y > 478) continue;
+        const c = document.createElementNS(NS, 'circle');
+        c.setAttribute('cx', p.x);
+        c.setAttribute('cy', p.y);
+        c.setAttribute('r', '1.6');
+        c.setAttribute('class', 'g-dot');
+        base.appendChild(c);
+        dots.push({ c, x: p.x, y: p.y });
+      }
+    });
+
+    // px/py: on-screen pixel position (for the --gx/--gy mask centre). mx/my: matching position in the 1000x480 viewBox (for dot distance).
+    const applyGlow = (px, py, mx, my) => {
+      hi.style.setProperty('--gx', `${px}px`);
+      hi.style.setProperty('--gy', `${py}px`);
+      hi.style.opacity = 1;
+      const R = 130;
+      dots.forEach((d) => {
+        const dist = Math.hypot(d.x - mx, d.y - my);
+        if (dist < R) {
+          const k = 1 - dist / R;
+          d.c.setAttribute('transform', `translate(0 ${(-16 * k).toFixed(1)})`);
+          d.c.setAttribute('r', (1.6 + 2.8 * k).toFixed(2));
+          d.c.style.fill = 'var(--signal)';
+          d.c.style.opacity = (0.35 + 0.65 * k).toFixed(2);
+        } else if (d.c.hasAttribute('transform')) {
+          d.c.removeAttribute('transform');
+          d.c.setAttribute('r', '1.6');
+          d.c.style.fill = '';
+          d.c.style.opacity = '';
         }
       });
     };
 
+    const startTime = performance.now();
+    const tick = (now) => {
+      raf = window.requestAnimationFrame(tick);
+      if (hovering) return;
+      const t = now - startTime;
+      const mx = 500 + 300 * Math.sin(t * 0.00025);
+      const my = 300 + 90 * Math.sin(t * 0.00037 + 1.3);
+      const r = base.getBoundingClientRect();
+      applyGlow((mx / 1000) * r.width, (my / 480) * r.height, mx, my);
+    };
+    raf = window.requestAnimationFrame(tick);
+
+    let moveRaf = null;
     const onMove = (e) => {
-      if (raf) return;
-      raf = window.requestAnimationFrame(() => {
-        raf = null;
+      hovering = true;
+      if (moveRaf) return;
+      moveRaf = window.requestAnimationFrame(() => {
+        moveRaf = null;
         const r = base.getBoundingClientRect();
         const px = e.clientX - r.left;
         const py = e.clientY - r.top;
-        hi.style.setProperty('--gx', `${px}px`);
-        hi.style.setProperty('--gy', `${py}px`);
-        hi.style.opacity = 1;
-        const mx = px * (1000 / r.width);
-        const my = py * (480 / r.height);
-        const R = 130;
-        dots.forEach((d) => {
-          const dist = Math.hypot(d.x - mx, d.y - my);
-          if (dist < R) {
-            const k = 1 - dist / R;
-            d.c.setAttribute('transform', `translate(0 ${(-16 * k).toFixed(1)})`);
-            d.c.setAttribute('r', (1.6 + 2.8 * k).toFixed(2));
-            d.c.style.fill = 'var(--signal)';
-            d.c.style.opacity = (0.35 + 0.65 * k).toFixed(2);
-          } else if (d.c.hasAttribute('transform')) {
-            d.c.removeAttribute('transform');
-            d.c.setAttribute('r', '1.6');
-            d.c.style.fill = '';
-            d.c.style.opacity = '';
-          }
-        });
+        applyGlow(px, py, px * (1000 / r.width), py * (480 / r.height));
       });
     };
 
     const onLeave = () => {
-      hi.style.opacity = 0;
-      dots.forEach((d) => {
-        d.c.removeAttribute('transform');
-        d.c.setAttribute('r', '1.6');
-        d.c.style.fill = '';
-        d.c.style.opacity = '';
-      });
+      hovering = false;
     };
 
-    gsec.addEventListener('mouseenter', initDots);
-    gsec.addEventListener('mousemove', onMove);
-    gsec.addEventListener('mouseleave', onLeave);
+    if (finePointer) {
+      gsec.addEventListener('mousemove', onMove);
+      gsec.addEventListener('mouseleave', onLeave);
+    }
     return () => {
-      gsec.removeEventListener('mouseenter', initDots);
+      window.cancelAnimationFrame(raf);
+      if (moveRaf) window.cancelAnimationFrame(moveRaf);
       gsec.removeEventListener('mousemove', onMove);
       gsec.removeEventListener('mouseleave', onLeave);
       dots.forEach((d) => d.c.remove());
@@ -353,103 +362,131 @@ export default function CurrentProject() {
               </div>
 
               <div className="panel panel-sm">
-                <article className="panel-card pxcard">
-                  <div className="px-top"><span className="glyphbox">⌂</span></div>
-                  <div className="mg" aria-hidden="true">
-                    <span className="mg-tag">— platform animation — placeholder</span>
-                    <div className="mgbar"><i></i><i></i><i></i></div>
-                    <span className="mgl w6"></span>
-                    <div className="mgrow"><span className="mgbox"></span><span className="mgbox"></span></div>
-                    <span className="mgbtn"></span>
-                  </div>
+                <article
+                  className="panel-card pxcard"
+                  role="button"
+                  tabIndex={0}
+                  onClick={() => openStudy('Customer Portal')}
+                  onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); openStudy('Customer Portal'); } }}
+                >
+                  <span className="pxcard-icon" aria-hidden="true">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round">
+                      <circle cx="5" cy="12" r="2.3" />
+                      <circle cx="19" cy="12" r="2.3" />
+                      <path d="M7.3 12h9.4" strokeDasharray="2.2 3">
+                        <animate attributeName="stroke-dashoffset" from="10.4" to="0" dur="1.1s" repeatCount="indefinite" />
+                      </path>
+                      <circle r="1.5" fill="currentColor" stroke="none">
+                        <animateMotion path="M7.3 12h9.4" dur="1.8s" repeatCount="indefinite" />
+                      </circle>
+                    </svg>
+                  </span>
                   <h3>Customer Portal</h3>
                   <div className="krow"><span>about</span><p>the self-serve front door — order, manage, monitor connectivity</p></div>
                   <div className="krow"><span>my role</span><p>designed it 0 → 1 · now own its roadmap & ship its frontend</p></div>
                   <div className="krow im"><span>impact</span><p className="big">3× <small>self-serve adoption</small></p></div>
-                  <div className="proj-foot"><button type="button" className="cs-link" onClick={() => openStudy('Customer Portal')}>Deep dive →</button></div>
+                  <div className="proj-foot"><span className="cs-link">Deep dive →</span></div>
                 </article>
               </div>
 
               <div className="panel panel-sm">
-                <article className="panel-card pxcard">
-                  <div className="px-top"><span className="glyphbox">⚙</span></div>
-                  <div className="mg mg-admin" aria-hidden="true">
-                    <span className="mg-tag">internal data — no preview</span>
-                    <div className="port-chrome"><i></i><i></i><i></i><span>admin.polarin.internal</span></div>
-                    <div className="port-body">
-                      <div className="port-side">
-                        <span className="port-nav"></span>
-                        <span className="port-nav"></span>
-                        <span className="port-nav"></span>
-                        <span className="port-nav"></span>
-                      </div>
-                      <div className="port-main">
-                        <span className="mgl shimmer w7"></span>
-                        <span className="mgl shimmer w5"></span>
-                        <div className="port-lastrow">
-                          <span className="mgl shimmer w6"></span>
-                          <span className="port-approve">✓</span>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
+                <article
+                  className="panel-card pxcard"
+                  role="button"
+                  tabIndex={0}
+                  onClick={() => openStudy('Admin Portal')}
+                  onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); openStudy('Admin Portal'); } }}
+                >
+                  <span className="pxcard-icon" aria-hidden="true">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+                      <g>
+                        <animateTransform attributeName="transform" type="rotate" from="0 12 12" to="360 12 12" dur="7s" repeatCount="indefinite" />
+                        <circle cx="12" cy="12" r="3.4" />
+                        <path d="M12 3v2.4M12 18.6V21M21 12h-2.4M5.4 12H3M18.1 5.9l-1.7 1.7M7.6 16.5l-1.7 1.7M18.1 18.1l-1.7-1.7M7.6 7.5L5.9 5.9" />
+                      </g>
+                    </svg>
+                  </span>
                   <h3>Admin Portal</h3>
                   <div className="krow"><span>about</span><p>the internal ops console — user management & KYC approvals, inventory, reports, billing & invoicing</p></div>
                   <div className="krow"><span>my role</span><p>understood internal users, defined & designed the flows — then built and deployed them</p></div>
                   <div className="krow im"><span>impact</span><p className="big">faster <small>order → delivery cycle · clearer NaaS billing ops</small></p></div>
-                  <div className="proj-foot"><button type="button" className="cs-link" onClick={() => openStudy('Admin Portal')}>Deep dive →</button></div>
+                  <div className="proj-foot"><span className="cs-link">Deep dive →</span></div>
                 </article>
               </div>
 
               <div className="panel panel-sm">
-                <article className="panel-card pxcard">
-                  <div className="px-top"><span className="glyphbox">₹</span></div>
-                  <div className="mg mg-inv" aria-hidden="true">
-                    <span className="mg-tag">— invoice image — placeholder</span>
-                    <span className="mgl shimmer w7" style={{ animationDelay: '0s' }}></span>
-                    <span className="mgl shimmer w5" style={{ animationDelay: '.25s' }}></span>
-                    <span className="mgl shimmer w6" style={{ animationDelay: '.5s' }}></span>
-                    <span className="mgdash"></span>
-                    <div className="mgtotal"><span>total</span><b>₹ <span className="tdots"><i></i><i></i><i></i></span></b></div>
-                  </div>
+                <article
+                  className="panel-card pxcard"
+                  role="button"
+                  tabIndex={0}
+                  onClick={() => openStudy('Invoice Design')}
+                  onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); openStudy('Invoice Design'); } }}
+                >
+                  <span className="pxcard-icon" aria-hidden="true">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round">
+                      <path d="M6 3h9l3 3v15H6z" />
+                      <path d="M9 9h6M9 12.5h6M9 16h3.5" opacity="0.55" />
+                      <path d="M14.3 15.2l1.8 1.8 3.3-3.7" strokeDasharray="8.4" strokeDashoffset="8.4">
+                        <animate attributeName="stroke-dashoffset" values="8.4;0;0;8.4" keyTimes="0;.4;.8;1" dur="2.6s" repeatCount="indefinite" />
+                      </path>
+                    </svg>
+                  </span>
                   <h3>Invoice Design</h3>
                   <div className="krow"><span>about</span><p>transparency for high-ticket billing — clarity for every second billed</p></div>
                   <div className="krow"><span>my role</span><p>designed a template that adapts complicated billing to complicated products</p></div>
                   <div className="krow im"><span>impact</span><p className="big">trust <small>transparent · readable · scalable — for users & finance</small></p></div>
-                  <div className="proj-foot"><button type="button" className="cs-link" onClick={() => openStudy('Invoice Design')}>Deep dive →</button></div>
+                  <div className="proj-foot"><span className="cs-link">Deep dive →</span></div>
                 </article>
               </div>
 
               <div className="panel panel-sm">
-                <article className="panel-card pxcard">
-                  <div className="px-top"><span className="glyphbox">λ</span></div>
-                  <div className="mg mg-dev" aria-hidden="true">
-                    <span className="mg-tag">— portal animation — placeholder</span>
-                    <p><span className="c1">POST</span> /v1/circuits</p>
-                    <p><span className="c2">{'{'}</span> bandwidth: <span className="c3">"10G"</span> <span className="c2">{'}'}</span></p>
-                    <p><span className="c4">201</span> provisioned <i className="tcur s"></i></p>
-                  </div>
+                <article
+                  className="panel-card pxcard"
+                  role="button"
+                  tabIndex={0}
+                  onClick={() => openStudy('Developer Portal')}
+                  onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); openStudy('Developer Portal'); } }}
+                >
+                  <span className="pxcard-icon" aria-hidden="true">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round">
+                      <path d="M8.5 6L3 12l5.5 6" />
+                      <path d="M15.5 6L21 12l-5.5 6" />
+                      <line x1="12" y1="7.5" x2="12" y2="16.5" strokeWidth="2">
+                        <animate attributeName="opacity" values="1;1;0;0;1" keyTimes="0;.45;.5;.95;1" dur="1.1s" repeatCount="indefinite" />
+                      </line>
+                    </svg>
+                  </span>
                   <h3>Developer Portal</h3>
                   <div className="krow"><span>about</span><p>APIs, docs, keys, sandboxes — customers order & provision via API</p></div>
                   <div className="krow"><span>my role</span><p>DX design, docs & frontend · PRD + pricing framework · volumetrics with engineering</p></div>
                   <div className="krow im"><span>impact</span><p className="big">revenue <small>in testing — opens segments with in-house NMS tools</small></p></div>
-                  <div className="proj-foot"><button type="button" className="cs-link" onClick={() => openStudy('Developer Portal')}>Deep dive →</button></div>
+                  <div className="proj-foot"><span className="cs-link">Deep dive →</span></div>
                 </article>
               </div>
 
               <div className="panel panel-sm">
-                <article className="panel-card pxcard">
-                  <div className="px-top"><span className="glyphbox">▤</span></div>
-                  <div className="mg mg-kb" aria-hidden="true">
-                    <span className="mg-tag">— portal animation — placeholder</span>
-                    <div className="mgsearch"><span></span></div>
-                    <div className="mgpage p1"></div><div className="mgpage p2"></div><div className="mgpage p3"></div>
-                  </div>
+                <article
+                  className="panel-card pxcard"
+                  role="button"
+                  tabIndex={0}
+                  onClick={() => openStudy('Knowledge Base')}
+                  onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); openStudy('Knowledge Base'); } }}
+                >
+                  <span className="pxcard-icon" aria-hidden="true">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round">
+                      <path d="M4 5.5h11M4 9.5h8M4 13.5h9" opacity="0.55" />
+                      <g>
+                        <animateTransform attributeName="transform" type="translate" values="-2 -1; 2 1; -2 -1" dur="3.2s" repeatCount="indefinite" />
+                        <circle cx="14.6" cy="14.6" r="4.1" />
+                        <line x1="17.6" y1="17.6" x2="21" y2="21" />
+                      </g>
+                    </svg>
+                  </span>
                   <h3>Knowledge Base</h3>
                   <div className="krow"><span>about</span><p>answers before tickets — self-help designed into the product</p></div>
                   <div className="krow"><span>my role</span><p>content architecture, design & frontend — findable, skimmable, honest</p></div>
                   <div className="krow im"><span>impact</span><p className="big">deflect <small>fewer tickets — customers help themselves</small></p></div>
-                  <div className="proj-foot"><button type="button" className="cs-link" onClick={() => openStudy('Knowledge Base')}>Deep dive →</button></div>
+                  <div className="proj-foot"><span className="cs-link">Deep dive →</span></div>
                 </article>
               </div>
             </div>
