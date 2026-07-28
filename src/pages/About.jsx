@@ -51,30 +51,21 @@ export default function About() {
     const scene = loopSceneRef.current;
     if (!scene) return undefined;
     const clamp = (v, a, b) => Math.min(b, Math.max(a, v));
-    const orbit = scene.querySelector('#procOrbit');
-    const orbitCore = scene.querySelector('.orbit-core');
     const orbitNodes = [...scene.querySelectorAll('[data-ln]')];
     const lsteps = [...scene.querySelectorAll('[data-ls]')];
+    const ringSlot = (angle) => `translate(-50%,-50%) rotateZ(${angle}deg) translateY(calc(min(360px,72vw)/-2)) rotateZ(${-angle}deg) rotateX(-62deg)`;
     let raf = null;
     const update = () => {
       const rect = scene.getBoundingClientRect();
       const total = scene.offsetHeight - window.innerHeight;
       const progress = total > 0 ? clamp(-rect.top / total, 0, 1) : 0;
-      const rotation = progress * 360;
-      if (orbit) orbit.style.transform = `rotateX(62deg) rotateZ(${-rotation}deg)`;
-      orbitNodes.forEach((node) => {
-        const angle = parseFloat(node.style.getPropertyValue('--a'));
-        node.style.transform = `translate(-50%,-50%) rotateZ(${angle}deg) translateY(calc(min(360px,72vw)/-2)) rotateZ(${-(angle - rotation)}deg) rotateX(-62deg)`;
-      });
-      if (orbitCore) {
-        const sway = Math.sin((rotation * Math.PI) / 180) * 14;
-        orbitCore.style.transform = `translate(calc(-50% + ${sway}px), -50%) rotateX(-62deg)`;
-      }
       const active = clamp(Math.floor(progress * 5.01), 0, 4);
       lsteps.forEach((step, i) => step.classList.toggle('on', i === active));
       orbitNodes.forEach((node, i) => {
+        const baseAngle = parseFloat(node.style.getPropertyValue('--a'));
         node.classList.toggle('on', i === active);
         node.classList.toggle('peek', active === 4 && i === 0);
+        node.style.transform = ringSlot(baseAngle - active * 72);
       });
     };
     const onScroll = () => {
