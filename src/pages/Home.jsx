@@ -19,7 +19,7 @@ export default function Home() {
         <div className="side side-design">
           <span className="tagl">2021 - 2024</span>
           <h2>designer</h2>
-          <p>Three years of pixels - enterprise UI, the Polarin design system, every portal module taken 0 → 1.</p>
+          <p>Three years of pixels - enterprise UI, a design system built from scratch, every portal module taken 0 → 1.</p>
           <div className="side-skills">
             <span className="chip">Figma</span>
             <span className="chip">Design systems</span>
