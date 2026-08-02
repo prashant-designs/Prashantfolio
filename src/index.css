@@ -1353,7 +1353,7 @@ body.ovl-lock { overflow: hidden; }
 .inv-learn-card h4 { font-family: var(--disp); font-weight: 600; font-size: 15.5px; line-height: 1.3; }
 .inv-learn-card p { color: var(--mute); font-size: 13px; margin-top: 10px; }
 
-.inv-step-tag { display: inline-flex; align-items: center; gap: 8px; font-family: var(--mono); font-size: 10.5px; letter-spacing: 0.18em; text-transform: uppercase; color: var(--link); }
+.inv-step-tag { display: flex; width: fit-content; margin-left: auto; margin-right: auto; align-items: center; gap: 8px; font-family: var(--mono); font-size: 10.5px; letter-spacing: 0.18em; text-transform: uppercase; color: var(--link); }
 .inv-step-tag i { width: 20px; height: 1px; background: var(--link); display: inline-block; }
 .inv-section h3.plain { font-family: var(--disp); font-weight: 700; font-size: clamp(22px, 3vw, 32px); letter-spacing: -0.02em; margin-top: 10px; max-width: 22ch; }
 .inv-section h3.plain span { color: var(--signal); }
@@ -1562,6 +1562,26 @@ body.ovl-lock { overflow: hidden; }
 .dv-h small { font-family: var(--mono); font-weight: 400; font-size: 11px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--dim); margin-left: 8px; }
 .dv-p { color: var(--mute); font-size: 14.5px; max-width: 64ch; }
 .dv-p.dim { font-family: var(--mono); font-size: 12px; letter-spacing: 0.02em; margin-top: 14px; }
+
+/* case-study intro copy (tag + heading + lead paragraph) reads as a
+   centered block, matching the site's other section-intro pattern -
+   otherwise ch-capped text just hugs the left edge of the wide overlay */
+.inv-hero,
+.inv-section h3.plain,
+.dv-h,
+.dv-p,
+.inv-highlight {
+  text-align: center;
+}
+.inv-hero h2,
+.inv-hero p,
+.inv-section h3.plain,
+.dv-p,
+.inv-highlight {
+  margin-left: auto;
+  margin-right: auto;
+}
+.inv-meta { justify-content: center; }
 
 .dv-fails { display: grid; gap: 10px; margin-top: 16px; }
 .dvf { display: grid; grid-template-columns: auto auto 1fr; gap: 14px; align-items: baseline; border: 1px solid var(--line); border-radius: 12px; padding: 12px 16px; background: var(--ink2); transition: border-color 0.3s; }
