@@ -8,7 +8,7 @@ const CROSSING = [
     qPre: 'Does it ',
     qEm: 'look',
     qPost: ' right?',
-    body: 'First designer in the building. Every customer-portal module taken 0 → 1 — structure, core flows, screens — from a truly blank canvas.',
+    body: 'First designer in the building. Every customer-portal module taken 0 → 1 - structure, core flows, screens - from a truly blank canvas.',
     word: 'PIXELS',
   },
   {
@@ -17,7 +17,7 @@ const CROSSING = [
     qPre: 'Does it ',
     qEm: 'scale',
     qPost: ' right?',
-    body: 'Built the Polarin design system — tokens, components, patterns — that every product surface still runs on. Screens became a language.',
+    body: 'Built the Polarin design system - tokens, components, patterns - that every product surface still runs on. Screens became a language.',
     word: 'SYSTEMS',
   },
   {
@@ -26,7 +26,7 @@ const CROSSING = [
     qPre: 'Is it the ',
     qEm: 'right thing',
     qPost: ' at all?',
-    body: 'Full product ownership: the developer & customer portal roadmap end to end — priorities shaped by support data, usage analytics, and customer interviews.',
+    body: 'Full product ownership: the developer & customer portal roadmap end to end - priorities shaped by support data, usage analytics, and customer interviews.',
     word: 'OUTCOMES',
   },
 ];
@@ -56,7 +56,7 @@ function PixelBlueprint() {
         <circle className="draw amber sd" cx="230" cy="266" r="16" />
         <circle className="draw amber sd" cx="366" cy="266" r="16" />
       </svg>
-      <p className="bp-cap">fig. 1 — three enterprise products, redrawn — <b>+28% task completion · −35% drop-off</b></p>
+      <p className="bp-cap">fig. 1 - three enterprise products, redrawn - <b>+28% task completion · −35% drop-off</b></p>
     </div>
   );
 }
@@ -379,41 +379,41 @@ export default function MyJourney() {
         <ScrollHint label="Scroll to begin" />
       </section>
 
-      {/* CH1 — THE PIXEL YEARS */}
-      <section id="ch1" className="sec-cushion" data-ch="Ch.1 — The Pixel Years">
+      {/* CH1 - THE PIXEL YEARS */}
+      <section id="ch1" className="sec-cushion" data-ch="Ch.1 - The Pixel Years">
         <div className="wrap ch-head">
-          <p className="ch-num rv"><b>Chapter 01</b> · 2017 — 2022 · Bangalore</p>
+          <p className="ch-num rv"><b>Chapter 01</b> · 2017 - 2022 · Bangalore</p>
           <h2 className="ch-title rv d1">The Pixel <span>Years.</span></h2>
           <div className="ch1-creds rv d2">
-            <span className="chip">B.Des · FDDI Noida · 2017—2021</span>
-            <span className="chip">UI/UX Designer · Peepal Design · 2021—2022</span>
+            <span className="chip">B.Des · FDDI Noida · 2017-2021</span>
+            <span className="chip">UI/UX Designer · Peepal Design · 2021-2022</span>
             <span className="chip">UX-PM Certification · Level 1 & 2</span>
           </div>
         </div>
         <div className="scene" id="scene-ch1" style={{ height: '220vh' }}>
           <div className="pin">
             <div className="wrap ch1-grid">
-              <p className="wr" id="wr1">A design degree, then the trenches at a Bangalore studio — redesigning three enterprise B2B products. Task completion rose 28%. Drop-off fell 35%. And one lesson stuck for good: <i className="hot">the interface is never the product.</i> <i className="lnk">The decision behind it is.</i></p>
+              <p className="wr" id="wr1">A design degree, then the trenches at a Bangalore studio - redesigning three enterprise B2B products. Task completion rose 28%. Drop-off fell 35%. And one lesson stuck for good: <i className="hot">the interface is never the product.</i> <i className="lnk">The decision behind it is.</i></p>
               <PixelBlueprint />
             </div>
           </div>
         </div>
       </section>
 
-      {/* CH2 — THE CROSSING */}
-      <section id="ch2" className="sec-cushion" data-ch="Ch.2 — The Crossing">
+      {/* CH2 - THE CROSSING */}
+      <section id="ch2" className="sec-cushion" data-ch="Ch.2 - The Crossing">
         <div className="wrap ch-head">
-          <p className="ch-num rv"><b>Chapter 02</b> · Nov 2022 — Now · Lightstorm · Promoted 2×</p>
+          <p className="ch-num rv"><b>Chapter 02</b> · Nov 2022 - Now · Lightstorm · Promoted 2×</p>
           <h2 className="ch-title rv d1">The <span>Crossing.</span></h2>
-          <p style={{ color: 'var(--mute)', maxWidth: '58ch', marginTop: '14px' }} className="rv d2">I joined Lightstorm as its first designer. Three promotions later the title says product — but it was always the same question, asked three sizes bigger.</p>
+          <p style={{ color: 'var(--mute)', maxWidth: '58ch', marginTop: '14px' }} className="rv d2">I joined Lightstorm as its first designer. Three promotions later the title says product - but it was always the same question, asked three sizes bigger.</p>
         </div>
         <div className="wrap">
           <TheCrossing />
         </div>
       </section>
 
-      {/* CH3 — THE MULTIPLIER */}
-      <section id="ch3" className="sec-cushion" data-ch="Ch.3 — The Multiplier">
+      {/* CH3 - THE MULTIPLIER */}
+      <section id="ch3" className="sec-cushion" data-ch="Ch.3 - The Multiplier">
         <div className="wrap ch-head" style={{ textAlign: 'center' }}>
           <p className="ch-num rv" style={{ justifyContent: 'center' }}><b>Chapter 03</b> · Why it matters to an org</p>
           <h2 className="ch-title rv d1">The <span>Multiplier.</span></h2>
@@ -432,7 +432,7 @@ export default function MyJourney() {
           <p className="eyebrow rv">Epilogue · Your move</p>
           <h2 className="rv d1">The next chapter is <span className="hot">unwritten.</span></h2>
           <p className="rv d2">Enterprise B2B, 5+ years, and one conviction: product, design, and AI-speed delivery should be
-          one job, not three. If you&apos;re building something that agrees — let&apos;s talk.</p>
+          one job, not three. If you&apos;re building something that agrees - let&apos;s talk.</p>
           <div className="epi-row rv d3">
             <a className="btn-big" href="mailto:prashant.kumar3058@gmail.com">prashant.kumar3058@gmail.com <span aria-hidden="true">→</span></a>
             <a className="btn-ghost" href="https://www.linkedin.com/in/prashant-kumar100/" target="_blank" rel="noopener noreferrer">LinkedIn</a>

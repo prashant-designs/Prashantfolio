@@ -34,7 +34,7 @@ export default function AdminPortalCaseStudy({ onPrev, onNext, idx, total }) {
       <div className="inv-hero">
         <p className="eyebrow">Polarin · Internal Ops</p>
         <h2>One console. Every team that keeps Polarin running.</h2>
-        <p>Built from a blank screen for the people who never see a sales deck — the teams who approve, provision, and bill every order after it&apos;s signed.</p>
+        <p>Built from a blank screen for the people who never see a sales deck - the teams who approve, provision, and bill every order after it&apos;s signed.</p>
         <div className="inv-meta">
           <div><span>My role</span><b>Designer, 0 → 1 → now Product Manager</b></div>
           <div><span>Output</span><b>6-module internal console</b></div>
@@ -58,7 +58,7 @@ export default function AdminPortalCaseStudy({ onPrev, onNext, idx, total }) {
       <div className="inv-section">
         <div className="inv-brm">
           <span className="icon">🔒</span>
-          <p>This one runs on Polarin&apos;s internal network, so I can&apos;t show real screens here — the modules, teams and loop above are exactly what shipped.</p>
+          <p>This one runs on Polarin&apos;s internal network, so I can&apos;t show real screens here - the modules, teams and loop above are exactly what shipped.</p>
         </div>
       </div>
 
@@ -99,7 +99,7 @@ export default function AdminPortalCaseStudy({ onPrev, onNext, idx, total }) {
             <div className="adm-chiprow">
               <span className="chip">Wireframes → shipped UI</span>
               <span className="chip">All 6 modules, end to end</span>
-              <span className="chip">KYC, inventory & billing flows — from scratch</span>
+              <span className="chip">KYC, inventory & billing flows - from scratch</span>
             </div>
           </div>
           <div className="adm-duo-card">
@@ -134,7 +134,7 @@ export default function AdminPortalCaseStudy({ onPrev, onNext, idx, total }) {
       <div className="inv-section">
         <div className="inv-step-tag"><i></i>Final result</div>
         <h3 className="plain">What changed</h3>
-        <div className="inv-result">One console instead of four teams working off spreadsheets and Slack threads — every user, circuit, order and rupee traceable end to end, by the people who actually run the network.</div>
+        <div className="inv-result">One console instead of four teams working off spreadsheets and Slack threads - every user, circuit, order and rupee traceable end to end, by the people who actually run the network.</div>
       </div>
 
       <div className="ovl-nav">

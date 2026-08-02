@@ -77,7 +77,7 @@ export default function CompareSlider({ beforeSrc, afterSrc, beforeLabel = 'Exis
           <span className="cmp-knob">↔</span>
         </div>
       </div>
-      <p className="cmp-hint">Drag to compare — existing invoice vs. the new design</p>
+      <p className="cmp-hint">Drag to compare - existing invoice vs. the new design</p>
     </div>
   );
 }

@@ -47,26 +47,26 @@ function ZoomableShot({ src, alt, children }) {
 }
 
 const REQUIREMENTS = [
-  { n: '01', title: 'Every product', body: 'Whatever a customer buys — one product or ten — it all had to show up clearly on one bill, not a pile of separate ones.' },
-  { n: '02', title: 'Every contract length', body: 'From pay-as-you-go by the hour to a 5-year (60-month) lock-in — both needed an invoice that made sense for their deal.' },
+  { n: '01', title: 'Every product', body: 'Whatever a customer buys - one product or ten - it all had to show up clearly on one bill, not a pile of separate ones.' },
+  { n: '02', title: 'Every contract length', body: 'From pay-as-you-go by the hour to a 5-year (60-month) lock-in - both needed an invoice that made sense for their deal.' },
   { n: '03', title: 'Every billing rhythm', body: 'Some customers get billed every month. Others every quarter, or twice a year. Same invoice logic had to work for all of them.' },
-  { n: '04', title: 'Every way people pay', body: 'Pay it all upfront, pay nothing upfront, or split it 50/50 — three very different payment styles, one invoice format.' },
-  { n: '05', title: 'Every mid-month change', body: "People upgrade or downgrade their plan whenever they want — sometimes more than once a month. The invoice had to show every change honestly, not just the final number." },
+  { n: '04', title: 'Every way people pay', body: 'Pay it all upfront, pay nothing upfront, or split it 50/50 - three very different payment styles, one invoice format.' },
+  { n: '05', title: 'Every mid-month change', body: "People upgrade or downgrade their plan whenever they want - sometimes more than once a month. The invoice had to show every change honestly, not just the final number." },
   { n: '06', title: 'Every currency', body: 'Customers outside India pay in dollars; customers inside India pay in rupees, with tax rules that change by state. Same invoice, different math underneath.' },
-  { n: '07', title: 'How it reads', body: 'Even the font and layout mattered — a total had to be unmistakable at a glance, for someone in finance and someone in network ops.' },
+  { n: '07', title: 'How it reads', body: 'Even the font and layout mattered - a total had to be unmistakable at a glance, for someone in finance and someone in network ops.' },
 ];
 
 const PAGES = [
   {
     tag: 'Page 1',
-    title: 'What do I owe — and where do I pay?',
-    body: 'Billed by, billed to, invoice reference, billing period, total payable in large type, due date, bank details, QR. For USD invoices — an INR equivalent at the live exchange rate.',
+    title: 'What do I owe - and where do I pay?',
+    body: 'Billed by, billed to, invoice reference, billing period, total payable in large type, due date, bank details, QR. For USD invoices - an INR equivalent at the live exchange rate.',
     tags: ['Finance-first', 'Legal'],
   },
   {
     tag: 'Page 2',
     title: 'What am I being charged for?',
-    body: 'Each product as a numbered row — parent › sub-product › location, service ID, recurring charges, one-time charges, discounts, tax, row total. Every row number maps to Page 3.',
+    body: 'Each product as a numbered row - parent › sub-product › location, service ID, recurring charges, one-time charges, discounts, tax, row total. Every row number maps to Page 3.',
     tags: ['Ops', 'Audit'],
   },
   {
@@ -127,13 +127,13 @@ export default function InvoiceCaseStudy({ onPrev, onNext, idx, total }) {
       <div className="inv-section">
         <div className="inv-step-tag"><i></i>Step 1 · The problem</div>
         <h3 className="plain">Where it started</h3>
-        <p className="body">Two teams kept flagging the same bill — for opposite reasons. Finance said they couldn't tell if a number was right without calling someone. Customers said they didn't know what they were being charged for until they called support. Same invoice, two very different complaints — which meant the real problem wasn't the numbers. It was that one page was trying to answer two completely different questions at once.</p>
+        <p className="body">Two teams kept flagging the same bill - for opposite reasons. Finance said they couldn't tell if a number was right without calling someone. Customers said they didn't know what they were being charged for until they called support. Same invoice, two very different complaints - which meant the real problem wasn't the numbers. It was that one page was trying to answer two completely different questions at once.</p>
       </div>
 
       <div className="inv-section">
         <div className="inv-step-tag"><i></i>Step 2 · Listening first</div>
         <h3 className="plain">Talking to the people who read it</h3>
-        <p className="body">Before sketching anything, I sat with both sides — pulled real invoices, walked through actual disputes, and wrote down every scenario a bill needed to survive.</p>
+        <p className="body">Before sketching anything, I sat with both sides - pulled real invoices, walked through actual disputes, and wrote down every scenario a bill needed to survive.</p>
         <div className="inv-quotes">
           <div className="inv-quote">
             <span className="who">Finance team</span>
@@ -141,7 +141,7 @@ export default function InvoiceCaseStudy({ onPrev, onNext, idx, total }) {
           </div>
           <div className="inv-quote">
             <span className="who">Customer</span>
-            <p>"My bill went up and I have no idea why — did I get charged twice?"</p>
+            <p>"My bill went up and I have no idea why - did I get charged twice?"</p>
           </div>
         </div>
       </div>
@@ -149,7 +149,7 @@ export default function InvoiceCaseStudy({ onPrev, onNext, idx, total }) {
       <div className="inv-section">
         <div className="inv-step-tag"><i></i>Step 3 · Writing it down</div>
         <h3 className="plain">Turning conversations into <span>requirements</span></h3>
-        <p className="body">Every conversation became a rule the new invoice had to follow — not just for the common cases, but for every scenario Polarin actually sells.</p>
+        <p className="body">Every conversation became a rule the new invoice had to follow - not just for the common cases, but for every scenario Polarin actually sells.</p>
         <div className="inv-problems">
           {REQUIREMENTS.map((r) => (
             <div className="inv-problem" key={r.n}>
@@ -164,7 +164,7 @@ export default function InvoiceCaseStudy({ onPrev, onNext, idx, total }) {
       <div className="inv-section">
         <div className="inv-step-tag"><i></i>Step 4 · Designing it</div>
         <h3 className="ch-title" style={{ fontSize: 'clamp(24px,3.4vw,38px)' }}>Three pages. <span>One job each.</span></h3>
-        <p className="body">One page can't answer "what do I owe," "what am I paying for," and "why did it change" at the same time — so it stopped trying to.</p>
+        <p className="body">One page can't answer "what do I owe," "what am I paying for," and "why did it change" at the same time - so it stopped trying to.</p>
         <div className="inv-pages">
           {PAGES.map((p) => (
             <div className="inv-page-card" key={p.tag}>
@@ -189,14 +189,14 @@ export default function InvoiceCaseStudy({ onPrev, onNext, idx, total }) {
         </div>
 
         <div className="inv-page-shot" ref={(el) => { sectionRefs.current[1] = el; }} data-sec-id="1">
-          <ZoomableShot src="/invoice/page1.png" alt="Page 1 — invoice snapshot">
+          <ZoomableShot src="/invoice/page1.png" alt="Page 1 - invoice snapshot">
             <div className="inv-mock">
               <div className="inv-mock-brand"><i></i>Polarin <span className="inv-mock-tag">Tax Invoice</span></div>
               <div className="inv-mock-grid">
                 <div><span>Billed by</span><b>XXX Communications Pvt Ltd</b></div>
                 <div><span>Billed to</span><b>XXX Enterprises Ltd</b></div>
                 <div><span>Invoice number</span><b>XX-XXLTXXXX#####</b></div>
-                <div><span>Billing period</span><b>XX Mon — XX Mon 2026</b></div>
+                <div><span>Billing period</span><b>XX Mon - XX Mon 2026</b></div>
               </div>
               <div className="inv-mock-amount">
                 <div>
@@ -210,14 +210,14 @@ export default function InvoiceCaseStudy({ onPrev, onNext, idx, total }) {
         </div>
 
         <div className="inv-page-shot" ref={(el) => { sectionRefs.current[2] = el; }} data-sec-id="2">
-          <ZoomableShot src="/invoice/page2.png" alt="Page 2 — charge breakdown">
+          <ZoomableShot src="/invoice/page2.png" alt="Page 2 - charge breakdown">
             <div className="inv-mock">
               <div className="inv-mock-brand"><i></i>Polarin <span className="inv-mock-tag">Charge breakdown</span></div>
               <div className="inv-mock-table">
                 <div className="inv-mock-row head"><span>Sl. · product</span><span>Recurring</span><span>Total</span></div>
-                <div className="inv-mock-row"><span>01 · Port — <b>XXX</b></span><span>₹X,XX,XXX</span><b>₹X,XX,XXX</b></div>
+                <div className="inv-mock-row"><span>01 · Port - <b>XXX</b></span><span>₹X,XX,XXX</span><b>₹X,XX,XXX</b></div>
                 <div className="inv-mock-row"><span>02 · Virtual Connection</span><span>₹X,XX,XXX</span><b>₹X,XX,XXX</b></div>
-                <div className="inv-mock-row"><span>03 · Port — <b>XXX</b></span><span>₹X,XX,XXX</span><b>₹X,XX,XXX</b></div>
+                <div className="inv-mock-row"><span>03 · Port - <b>XXX</b></span><span>₹X,XX,XXX</span><b>₹X,XX,XXX</b></div>
               </div>
               <div className="inv-mock-total"><span>Final payable amount</span><b>₹X,XX,XXX.XX</b></div>
             </div>
@@ -225,7 +225,7 @@ export default function InvoiceCaseStudy({ onPrev, onNext, idx, total }) {
         </div>
 
         <div className="inv-page-shot" ref={(el) => { sectionRefs.current[3] = el; }} data-sec-id="3">
-          <ZoomableShot src="/invoice/page3.png" alt="Page 3 — annexure">
+          <ZoomableShot src="/invoice/page3.png" alt="Page 3 - annexure">
             <div className="inv-mock">
               <div className="inv-mock-brand"><i></i>Polarin <span className="inv-mock-tag">Annexure · per-service</span></div>
               <div className="inv-mock-tiers">
@@ -243,14 +243,14 @@ export default function InvoiceCaseStudy({ onPrev, onNext, idx, total }) {
         <h3 className="plain">A design doesn't ship itself</h3>
         <div className="inv-brm">
           <span className="icon">🤝</span>
-          <p>A new format doesn't matter until it's actually on the bill. I worked with the <b>BRM (Business Relationship Management) team</b> — who own how invoices actually get generated — walking them through every rule so the new template could go live for every customer, not just the ones in my mockups.</p>
+          <p>A new format doesn't matter until it's actually on the bill. I worked with the <b>BRM (Business Relationship Management) team</b> - who own how invoices actually get generated - walking them through every rule so the new template could go live for every customer, not just the ones in my mockups.</p>
         </div>
       </div>
 
       <div className="inv-section">
         <div className="inv-step-tag"><i></i>Final result</div>
         <h3 className="plain">What changed</h3>
-        <div className="inv-result">One invoice format that finance trusts and customers understand — built to handle every contract Polarin sells, from a one-month trial to a five-year deal.</div>
+        <div className="inv-result">One invoice format that finance trusts and customers understand - built to handle every contract Polarin sells, from a one-month trial to a five-year deal.</div>
         <div className="inv-learn">
           <div className="inv-learn-card">
             <h4>One page can't serve two readers.</h4>
@@ -258,11 +258,11 @@ export default function InvoiceCaseStudy({ onPrev, onNext, idx, total }) {
           </div>
           <div className="inv-learn-card">
             <h4>Duplicate numbers read as contradictions.</h4>
-            <p>The summary and the detail table used to show the same number differently. Finance filed tickets asking which was correct — removing it wasn't a design choice, it was conflict resolution.</p>
+            <p>The summary and the detail table used to show the same number differently. Finance filed tickets asking which was correct - removing it wasn't a design choice, it was conflict resolution.</p>
           </div>
           <div className="inv-learn-card">
             <h4>Scalability isn't optional.</h4>
-            <p>The old format assumed one simple product. The new one handles every term, every currency, every payment style — from the same system.</p>
+            <p>The old format assumed one simple product. The new one handles every term, every currency, every payment style - from the same system.</p>
           </div>
         </div>
       </div>

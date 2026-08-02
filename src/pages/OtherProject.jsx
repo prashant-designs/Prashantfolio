@@ -1,10 +1,10 @@
 import { useEffect, useState } from 'react';
 
 const PROJECTS = [
-  'Jeevika App — empowering street vendors',
-  'Enote — seamless e-paper note-taking',
-  'Portico — HR & payroll suite',
-  'Giesecke + Devrient — cash counting UI',
+  'Jeevika App - empowering street vendors',
+  'Enote - seamless e-paper note-taking',
+  'Portico - HR & payroll suite',
+  'Giesecke + Devrient - cash counting UI',
 ];
 
 function useTypewriter(words) {
@@ -68,7 +68,7 @@ export default function OtherProject() {
       <div className="wrap">
         <div className="soon-box rv">
           <h2>More projects, <ComingBuilder /></h2>
-          <p>Design work from before and alongside Polarin — full case studies are being written up, one at a time.</p>
+          <p>Design work from before and alongside Polarin - full case studies are being written up, one at a time.</p>
           <div className="soon-term">
             <span className="k">$</span> writing-case-study.sh<br />
             <span className="k">&gt;</span> <span className="a">{typed}</span><span className="cur"></span>

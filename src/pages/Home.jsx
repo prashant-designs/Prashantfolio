@@ -17,9 +17,9 @@ export default function Home() {
         <div className="hzone r" onMouseEnter={() => setMode('pm')} aria-hidden="true"></div>
 
         <div className="side side-design">
-          <span className="tagl">2021 — 2024</span>
+          <span className="tagl">2021 - 2024</span>
           <h2>designer</h2>
-          <p>Three years of pixels — enterprise UI, the Polarin design system, every portal module taken 0 → 1.</p>
+          <p>Three years of pixels - enterprise UI, the Polarin design system, every portal module taken 0 → 1.</p>
           <div className="side-skills">
             <span className="chip">Figma</span>
             <span className="chip">Design systems</span>
@@ -80,13 +80,13 @@ export default function Home() {
         </div>
 
         <div className="side side-pm">
-          <span className="tagl">2025 — Now</span>
+          <span className="tagl">2025 - Now</span>
           <h2><span className="br">&lt;</span>product manager<span className="br">/&gt;</span></h2>
-          <p>AI-native PM who ships the whole loop on Polarin NaaS — discovery, PRDs, prototypes, deploys — with Claude, Figma & Vercel.</p>
+          <p>AI-assisted product manager who owns the full loop - discovery, PRDs, prototypes, frontend builds, and every deploy. One pair of hands, end to end.</p>
           <div className="side-skills">
             <span className="chip">PRDs & roadmaps</span>
             <span className="chip">Customer discovery</span>
-            <span className="chip">Claude + Vercel</span>
+            <span className="chip">Ships to prod</span>
           </div>
         </div>
       </div>
@@ -98,7 +98,7 @@ export default function Home() {
         <span style={{ animationDelay: '6s' }}>growing the business</span>
       </div>
 
-      <p className="face-cap rv d2">hover a side — <b>same person, both halves</b></p>
+      <p className="face-cap rv d2">hover a side - <b>same person, both halves</b></p>
       
       <div className="home-foot rv d2">
         <div className="home-ctas">

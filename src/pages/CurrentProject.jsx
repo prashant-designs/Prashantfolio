@@ -241,7 +241,7 @@ export default function CurrentProject() {
       {/* 01 · simple open */}
       <section className="pol-open" data-ch="Intro">
         <div className="wrap">
-          <p className="pol-kicker rv">Current Project · 2022 — now</p>
+          <p className="pol-kicker rv">Current Project · 2022 - now</p>
           <h2 className="pol-title rv d1">
             <span className="bt">{'Building'.split('').map((ch, i) => <b key={i}>{ch}</b>)}</span><br />
             <span className="pw">Polarin</span>
@@ -286,7 +286,7 @@ export default function CurrentProject() {
         <div className="wrap globe-copy">
           <p className="eyebrow rv" style={{ justifyContent: 'center' }}>What is Polarin</p>
           <p className="lede-big rv d1" style={{ margin: '0 auto', textAlign: 'center', maxWidth: '30ch' }}>Enterprise connectivity that provisions
-          <i> like cloud</i> — a Network-as-a-Service platform by <em>Lightstorm</em>, connecting businesses across the globe
+          <i> like cloud</i> - a Network-as-a-Service platform by <em>Lightstorm</em>, connecting businesses across the globe
           <i> in clicks, not contracts.</i></p>
           <div className="pol-sub rv d2" style={{ justifyContent: 'center', marginTop: '24px' }}>
             <span><b>NaaS</b> platform</span><span><b>global</b> connectivity</span><span><b>self-serve</b> by design</span>
@@ -327,7 +327,7 @@ export default function CurrentProject() {
                 </svg>
               </span>
               <b>Product</b>
-              <p>roadmap, priorities & releases — end to end</p>
+              <p>roadmap, priorities & releases - end to end</p>
             </div>
             <div className="h3t">
               <span className="h3g">
@@ -341,7 +341,7 @@ export default function CurrentProject() {
               <p>requirement → frontend → deploy, myself</p>
             </div>
           </div>
-          <p className="role-link rv d3">the full arc — three roles, four years — lives in{' '}
+          <p className="role-link rv d3">the full arc - three roles, four years - lives in{' '}
             <a href="#/journey">My Journey →</a>
             <span>·</span> how I work: <a href="#/about">my process →</a>
           </p>
@@ -357,7 +357,7 @@ export default function CurrentProject() {
                 <div className="panel-intro">
                   <p className="ch-num"><b>The surfaces</b> · complete design ownership</p>
                   <h2 className="ch-title" style={{ marginTop: '12px' }}>Five fronts.<br />One <span>owner.</span></h2>
-                  <p style={{ color: 'var(--mute)', marginTop: '18px', maxWidth: '38ch' }}>What each one is, what I did, what moved. Scroll down — the roadmap moves sideways. →</p>
+                  <p style={{ color: 'var(--mute)', marginTop: '18px', maxWidth: '38ch' }}>What each one is, what I did, what moved. Scroll down - the roadmap moves sideways. →</p>
                 </div>
               </div>
 
@@ -382,7 +382,7 @@ export default function CurrentProject() {
                     </svg>
                   </span>
                   <h3>Customer Portal</h3>
-                  <div className="krow"><span>about</span><p>the self-serve front door — order, manage, monitor connectivity</p></div>
+                  <div className="krow"><span>about</span><p>the self-serve front door - order, manage, monitor connectivity</p></div>
                   <div className="krow"><span>my role</span><p>designed it 0 → 1 · now own its roadmap & ship its frontend</p></div>
                   <div className="krow im"><span>impact</span><p className="big">3× <small>self-serve adoption</small></p></div>
                   <div className="proj-foot"><span className="cs-link">Deep dive →</span></div>
@@ -407,8 +407,8 @@ export default function CurrentProject() {
                     </svg>
                   </span>
                   <h3>Admin Portal</h3>
-                  <div className="krow"><span>about</span><p>the internal ops console — user management & KYC approvals, inventory, reports, billing & invoicing</p></div>
-                  <div className="krow"><span>my role</span><p>understood internal users, defined & designed the flows — then built and deployed them</p></div>
+                  <div className="krow"><span>about</span><p>the internal ops console - user management & KYC approvals, inventory, reports, billing & invoicing</p></div>
+                  <div className="krow"><span>my role</span><p>understood internal users, defined & designed the flows - then built and deployed them</p></div>
                   <div className="krow im"><span>impact</span><p className="big">faster <small>order → delivery cycle · clearer NaaS billing ops</small></p></div>
                   <div className="proj-foot"><span className="cs-link">Deep dive →</span></div>
                 </article>
@@ -432,9 +432,9 @@ export default function CurrentProject() {
                     </svg>
                   </span>
                   <h3>Invoice Design</h3>
-                  <div className="krow"><span>about</span><p>transparency for high-ticket billing — clarity for every second billed</p></div>
+                  <div className="krow"><span>about</span><p>transparency for high-ticket billing - clarity for every second billed</p></div>
                   <div className="krow"><span>my role</span><p>designed a template that adapts complicated billing to complicated products</p></div>
-                  <div className="krow im"><span>impact</span><p className="big">trust <small>transparent · readable · scalable — for users & finance</small></p></div>
+                  <div className="krow im"><span>impact</span><p className="big">trust <small>transparent · readable · scalable - for users & finance</small></p></div>
                   <div className="proj-foot"><span className="cs-link">Deep dive →</span></div>
                 </article>
               </div>
@@ -457,9 +457,9 @@ export default function CurrentProject() {
                     </svg>
                   </span>
                   <h3>Developer Portal</h3>
-                  <div className="krow"><span>about</span><p>APIs, docs, keys, sandboxes — customers order & provision via API</p></div>
+                  <div className="krow"><span>about</span><p>APIs, docs, keys, sandboxes - customers order & provision via API</p></div>
                   <div className="krow"><span>my role</span><p>DX design, docs & frontend · PRD + pricing framework · volumetrics with engineering</p></div>
-                  <div className="krow im"><span>impact</span><p className="big">revenue <small>in testing — opens segments with in-house NMS tools</small></p></div>
+                  <div className="krow im"><span>impact</span><p className="big">revenue <small>in testing - opens segments with in-house NMS tools</small></p></div>
                   <div className="proj-foot"><span className="cs-link">Deep dive →</span></div>
                 </article>
               </div>
@@ -483,9 +483,9 @@ export default function CurrentProject() {
                     </svg>
                   </span>
                   <h3>Knowledge Base</h3>
-                  <div className="krow"><span>about</span><p>answers before tickets — self-help designed into the product</p></div>
-                  <div className="krow"><span>my role</span><p>content architecture, design & frontend — findable, skimmable, honest</p></div>
-                  <div className="krow im"><span>impact</span><p className="big">deflect <small>fewer tickets — customers help themselves</small></p></div>
+                  <div className="krow"><span>about</span><p>answers before tickets - self-help designed into the product</p></div>
+                  <div className="krow"><span>my role</span><p>content architecture, design & frontend - findable, skimmable, honest</p></div>
+                  <div className="krow im"><span>impact</span><p className="big">deflect <small>fewer tickets - customers help themselves</small></p></div>
                   <div className="proj-foot"><span className="cs-link">Deep dive →</span></div>
                 </article>
               </div>
@@ -514,7 +514,7 @@ export default function CurrentProject() {
           <h2 className="still-t rv">still building<i className="tcur"></i></h2>
           <div className="soon-bar rv d1" style={{ maxWidth: '280px', margin: '22px auto 0' }}><i></i></div>
           <div className="soon-ctas rv d2" style={{ justifyContent: 'center', marginTop: '34px' }}>
-            <a className="btn-big" href="#/journey">The whole story — My Journey <span aria-hidden="true">→</span></a>
+            <a className="btn-big" href="#/journey">The whole story - My Journey <span aria-hidden="true">→</span></a>
             <a className="btn-ghost" href="#/">Home</a>
           </div>
         </div>

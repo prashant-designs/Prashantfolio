@@ -6,13 +6,13 @@ const prefersReducedMotion = typeof window !== 'undefined'
 const CJ_STEPS = [
   { d: 0, i: '📢', t: 'the need', x: 'Alex needs to connect their new Mumbai datacenter to AWS ap-south-1.', w: '' },
   { d: 3, i: '🔍', t: 'research vendors', x: 'Googling begins. Every pricing page says "Contact Sales."', w: 'no way to compare options, pricing or availability in one place' },
-  { d: 10, i: '📞', t: 'call vendor #1', x: 'Transferred 3 times. Finally a rep — who asks for a Letter of Authorization and a site survey.', w: '47-minute average hold time · no self-serve · no portal' },
-  { d: 14, i: '📞', t: 'call vendor #2', x: 'A backup quote from another carrier. Different process, different forms, different timelines.', w: 'every vendor has its own workflow — nothing is standardised' },
-  { d: 16, i: '📝', t: 'fill out forms', x: 'PDF order forms over email. Circuit IDs, cross-connects, billing codes — typed by hand.', w: '~34% error rate in manual forms · one typo = weeks of delay' },
-  { d: 21, i: '💰', t: 'negotiate pricing', x: 'A quote arrives. Alex asks for a discount — forwarded to "the commercial team." Email chains.', w: 'pricing is opaque · no benchmarks · no market visibility' },
+  { d: 10, i: '📞', t: 'call vendor #1', x: 'Transferred 3 times. Finally a rep - who asks for a Letter of Authorization and a site survey.', w: '47-minute average hold time · no self-serve · no portal' },
+  { d: 14, i: '📞', t: 'call vendor #2', x: 'A backup quote from another carrier. Different process, different forms, different timelines.', w: 'every vendor has its own workflow - nothing is standardised' },
+  { d: 16, i: '📝', t: 'fill out forms', x: 'PDF order forms over email. Circuit IDs, cross-connects, billing codes - typed by hand.', w: '~34% error rate in manual forms · one typo = weeks of delay' },
+  { d: 21, i: '💰', t: 'negotiate pricing', x: 'A quote arrives. Alex asks for a discount - forwarded to "the commercial team." Email chains.', w: 'pricing is opaque · no benchmarks · no market visibility' },
   { d: 66, i: '⏳', t: 'wait', x: 'Order placed. ETA? "4–6 weeks." Then… silence.', w: 'zero real-time visibility · status updates by email, if at all' },
-  { d: 80, i: '🔧', t: 'installation day', x: 'A technician arrives — but the form had a typo in the rack ID. The technician leaves.', w: 'a new ticket is raised · back in the queue' },
-  { d: 90, i: '🔁', t: 'start over', x: 'Three months in. The circuit still is not live. Alex picks up the phone again.', w: 'the entire cycle repeats — for every single connection' },
+  { d: 80, i: '🔧', t: 'installation day', x: 'A technician arrives - but the form had a typo in the rack ID. The technician leaves.', w: 'a new ticket is raised · back in the queue' },
+  { d: 90, i: '🔁', t: 'start over', x: 'Three months in. The circuit still is not live. Alex picks up the phone again.', w: 'the entire cycle repeats - for every single connection' },
 ];
 
 const AUDIT = [
@@ -23,16 +23,16 @@ const AUDIT = [
 ];
 
 const SHOTS = {
-  globe: { src: 'https://framerusercontent.com/images/iNQgdhiTrGehsbW3uNIK6gccao.gif', cap: "the customer's network, alive — global connections, regions & performance alerts at a glance", label: '3D globe' },
-  map: { src: 'https://framerusercontent.com/images/N28toXGNVp0F6zjQVyvnzOtfPp4.gif', cap: 'the flat view — service locations, active connections & alerts, manageable at a glance', label: '2D map' },
-  order: { src: 'https://framerusercontent.com/images/fI6NHQWcKIbiG4ZvJjYJfmjLPYY.gif', cap: 'pick both endpoints, check committed availability upfront — feasibility before commitment', label: 'order flow' },
-  services: { src: 'https://framerusercontent.com/images/qOOUZKo67cDJ1Gv7BzoImGUWtkU.gif', cap: 'the full connectivity portfolio — explore, understand use cases, choose the right service', label: 'all services' },
+  globe: { src: 'https://framerusercontent.com/images/iNQgdhiTrGehsbW3uNIK6gccao.gif', cap: "the customer's network, alive - global connections, regions & performance alerts at a glance", label: '3D globe' },
+  map: { src: 'https://framerusercontent.com/images/N28toXGNVp0F6zjQVyvnzOtfPp4.gif', cap: 'the flat view - service locations, active connections & alerts, manageable at a glance', label: '2D map' },
+  order: { src: 'https://framerusercontent.com/images/fI6NHQWcKIbiG4ZvJjYJfmjLPYY.gif', cap: 'pick both endpoints, check committed availability upfront - feasibility before commitment', label: 'order flow' },
+  services: { src: 'https://framerusercontent.com/images/qOOUZKo67cDJ1Gv7BzoImGUWtkU.gif', cap: 'the full connectivity portfolio - explore, understand use cases, choose the right service', label: 'all services' },
 };
 const SHOT_ORDER = ['globe', 'map', 'order', 'services'];
 
 const LEARNED = [
-  { t: 'simplicity is a decision', p: "complexity doesn't simplify itself — someone does that work, and it's invisible to the person who benefits" },
-  { t: 'visibility is a feature', p: 'when enterprises can watch their network work in real time, they relax — visual feedback builds trust' },
+  { t: 'simplicity is a decision', p: "complexity doesn't simplify itself - someone does that work, and it's invisible to the person who benefits" },
+  { t: 'visibility is a feature', p: 'when enterprises can watch their network work in real time, they relax - visual feedback builds trust' },
   { t: 'systems are the product', p: 'screens age and get replaced; the system built in month one is what made four years of solo delivery possible' },
 ];
 
@@ -199,7 +199,7 @@ function AuditScene() {
   return (
     <div className="oscn" ref={ref} style={{ '--beats': 7 }}>
       <div className="oscn-stage aud-stage">
-        <p className={`aud-lead obeat ${on(0)}`}>4 global platforms audited — every gap in their UX became a design requirement:</p>
+        <p className={`aud-lead obeat ${on(0)}`}>4 global platforms audited - every gap in their UX became a design requirement:</p>
         <div className="aud">
           <div className={`aud-r aud-h obeat ${on(0)}`}><span>platform</span><span>self-serve</span><span>onboarding</span><span>india</span></div>
           {AUDIT.map((a, i) => (
@@ -258,7 +258,7 @@ export default function CustomerPortalCaseStudy({ onPrev, onNext, idx, total }) 
       <div className="inv-hero">
         <p className="eyebrow">Polarin · Customer Portal</p>
         <h2>90 days → 10 minutes.</h2>
-        <p>In 2022, ordering enterprise connectivity in India meant phone calls, PDF forms and ~90 days of waiting — an industry running on processes unchanged since the 1990s. Polarin was a name on a whiteboard, and I was Lightstorm&apos;s first designer, with no telecom background and no template to copy. Four years later it&apos;s a live platform enterprises trust, and I&apos;ve gone from designing it to running it.</p>
+        <p>In 2022, ordering enterprise connectivity in India meant phone calls, PDF forms and ~90 days of waiting - an industry running on processes unchanged since the 1990s. Polarin was a name on a whiteboard, and I was Lightstorm&apos;s first designer, with no telecom background and no template to copy. Four years later it&apos;s a live platform enterprises trust, and I&apos;ve gone from designing it to running it.</p>
         <div className="inv-meta">
           <div><span>My role</span><b>First designer, 0 → 1 → now Product Manager</b></div>
           <div><span>Team</span><b>1 designer · 3 PMs · 12 devs</b></div>
@@ -268,7 +268,7 @@ export default function CustomerPortalCaseStudy({ onPrev, onNext, idx, total }) 
       <div className="inv-section">
         <div className="inv-step-tag"><i></i>Meet Alex</div>
         <h3 className="plain">What &quot;before&quot; felt like</h3>
-        <p className="dv-p">A VP of Infrastructure at a Mumbai fintech needs one connection: datacenter → AWS ap-south-1. Keep scrolling — and watch the days pile up.</p>
+        <p className="dv-p">A VP of Infrastructure at a Mumbai fintech needs one connection: datacenter → AWS ap-south-1. Keep scrolling - and watch the days pile up.</p>
         <AlexJourney />
         <div className="cj-result">
           <span><b>~90</b> days to provision</span>
@@ -282,7 +282,7 @@ export default function CustomerPortalCaseStudy({ onPrev, onNext, idx, total }) 
       <div className="inv-section">
         <div className="inv-step-tag"><i></i>The bet</div>
         <h3 className="plain">What happens instead</h3>
-        <p className="dv-p">A Network-as-a-Service platform with pre-established NNIs across datacenters, cloud on-ramps and PoPs — the fabric already connects everywhere Alex needs. Keep scrolling:</p>
+        <p className="dv-p">A Network-as-a-Service platform with pre-established NNIs across datacenters, cloud on-ramps and PoPs - the fabric already connects everywhere Alex needs. Keep scrolling:</p>
         <TheBetScene />
       </div>
 
@@ -290,9 +290,9 @@ export default function CustomerPortalCaseStudy({ onPrev, onNext, idx, total }) 
         <div className="inv-step-tag"><i></i>Discovery</div>
         <h3 className="dv-h" style={{ marginTop: '10px' }}>4 months before touching Figma</h3>
         <div className="ivx-principles">
-          <div className="ivp"><b>technical immersion</b><p>learned networking from the architects — L1/L2/L3, ports, VRs, VCs — sat in sales calls, walked the manual provisioning workflows</p></div>
-          <div className="ivp"><b>12 user interviews</b><p>IT managers, network engineers, enterprise buyers — mapped where every competitor demo broke</p></div>
-          <div className="ivp"><b>competitive audit</b><p>4 global NaaS platforms — every UX gap became a design requirement</p></div>
+          <div className="ivp"><b>technical immersion</b><p>learned networking from the architects - L1/L2/L3, ports, VRs, VCs - sat in sales calls, walked the manual provisioning workflows</p></div>
+          <div className="ivp"><b>12 user interviews</b><p>IT managers, network engineers, enterprise buyers - mapped where every competitor demo broke</p></div>
+          <div className="ivp"><b>competitive audit</b><p>4 global NaaS platforms - every UX gap became a design requirement</p></div>
         </div>
         <AuditScene />
       </div>
@@ -306,20 +306,20 @@ export default function CustomerPortalCaseStudy({ onPrev, onNext, idx, total }) 
       <div className="inv-section">
         <div className="inv-step-tag"><i></i>Why solo scaled</div>
         <h3 className="dv-h" style={{ marginTop: '10px' }}>The system before the screens</h3>
-        <p className="dv-p">With 12 developers and 3 PMs shipping against one designer, consistency wasn&apos;t optional — it was survival. Before a single product screen, I built the design system:</p>
+        <p className="dv-p">With 12 developers and 3 PMs shipping against one designer, consistency wasn&apos;t optional - it was survival. Before a single product screen, I built the design system:</p>
         <div className="cj-result" style={{ marginTop: '16px' }}>
           <span><b>100+</b> reusable components</span>
           <span><b>20+</b> design tokens</span>
           <span><b>4 yrs</b> of solo delivery, scaled by it</span>
         </div>
-        <p className="dv-p dim">systems are the real product — screens age and get replaced; the system is what made four years of great screens fast to build.</p>
+        <p className="dv-p dim">systems are the real product - screens age and get replaced; the system is what made four years of great screens fast to build.</p>
       </div>
 
       <div className="inv-section">
         <div className="inv-step-tag"><i></i>What moved</div>
         <h3 className="dv-h" style={{ marginTop: '10px' }}>Impact</h3>
         <div className="ivx-principles dv4">
-          <div className="ivp"><b>95% faster</b><p>onboarding & deployment — 5–7 days → 15 minutes</p></div>
+          <div className="ivp"><b>95% faster</b><p>onboarding & deployment - 5–7 days → 15 minutes</p></div>
           <div className="ivp"><b>3× self-serve</b><p>non-technical users now order & manage independently</p></div>
           <div className="ivp"><b>40% handoff cut</b><p>design-to-dev time reduced by the system</p></div>
           <div className="ivp"><b>CSAT 6.2 → 9.1</b><p>enterprise customers rate the experience</p></div>

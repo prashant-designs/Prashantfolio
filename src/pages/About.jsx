@@ -17,7 +17,7 @@ const MIX = {
     name: 'builder',
     pct: '25%',
     title: 'Part builder',
-    list: ['AI-native builds — Claude · Cursor', 'frontend that ships to prod', '3D, motion & prototypes', 'hands-on craft — leather & tools'],
+    list: ['AI-native builds - Claude · Cursor', 'frontend that ships to prod', '3D, motion & prototypes', 'hands-on craft - leather & tools'],
   },
 };
 
@@ -32,12 +32,12 @@ const SKILLS = [
 ];
 
 const FACTS = [
-  { ic: '🎬', t: 'free time = films — the longer, the better' },
+  { ic: '🎬', t: 'free time = films - the longer, the better' },
   { ic: '🚗', t: 'love to drive · playlists are non-negotiable' },
-  { ic: '🤖', t: 'love to build — AI tools are my workshop' },
+  { ic: '🤖', t: 'love to build - AI tools are my workshop' },
   { ic: '🧠', t: '3D models & animation, purely for the joy of it' },
-  { ic: '🧵', t: 'I craft accessories by hand — wallets, bags, straps' },
-  { ic: '⚡', t: 'prototype → product — if I can spec it, I can ship it' },
+  { ic: '🧵', t: 'I craft accessories by hand - wallets, bags, straps' },
+  { ic: '⚡', t: 'prototype → product - if I can spec it, I can ship it' },
 ];
 
 export default function About() {
@@ -123,8 +123,8 @@ export default function About() {
               onError={(e) => { e.target.style.display = 'none'; }}
             />
             <div>
-              <p className="ab-lede rv d2">I&apos;m Prashant — product manager at Lightstorm, building <b>Polarin</b>, India&apos;s first self-serve NaaS platform. Designer by training, builder by habit: I ship the things I spec.</p>
-              <p className="ab-lede2 rv d3">Four years ago I was the first designer on a whiteboard idea. Now I run its roadmap — and still push its frontend to production myself.</p>
+              <p className="ab-lede rv d2">I&apos;m Prashant - product manager at Lightstorm, building <b>Polarin</b>, India&apos;s first self-serve NaaS platform. Designer by training, builder by habit: I ship the things I spec.</p>
+              <p className="ab-lede2 rv d3">Four years ago I was the first designer on a whiteboard idea. Now I run its roadmap - and still push its frontend to production myself.</p>
               <a className="btn-ghost ab-resume rv d3" href="/Prashant_Resume.pdf" target="_blank" rel="noopener noreferrer">Download résumé <span aria-hidden="true">↓</span></a>
             </div>
           </div>
@@ -133,7 +133,7 @@ export default function About() {
 
       <section className="ab-split" data-ch="The Mix">
         <div className="wrap">
-          <p className="eyebrow rv">— what I&apos;m made of</p>
+          <p className="eyebrow rv">- what I&apos;m made of</p>
           <h2 className="ab-h rv d1">Part designer. Part PM.<br /><em>All builder.</em></h2>
           <div className="ab-mix rv d2">
             <div className="ab-mix-word" aria-hidden="true"><span>{d.name}</span></div>
@@ -185,9 +185,9 @@ export default function About() {
 
       <section className="ab-split" data-ch="My Process">
         <div className="wrap">
-          <p className="eyebrow rv">— how I work</p>
+          <p className="eyebrow rv">- how I work</p>
           <h2 className="ab-h rv d1">My process, <em>end to end.</em></h2>
-          <p className="ab-lede2 rv d2">One person, end to end — AI collapsing the distance between a question and a shipped answer. Scroll to run one full cycle; the orbit turns with you.</p>
+          <p className="ab-lede2 rv d2">One person, end to end - AI collapsing the distance between a question and a shipped answer. Scroll to run one full cycle; the orbit turns with you.</p>
         </div>
         <div className="scene loop-scene" ref={loopSceneRef} style={{ height: '320vh' }}>
           <div className="pin">
@@ -206,20 +206,20 @@ export default function About() {
               <div className="loop-steps">
                 <div className="lstep" data-ls="0"><div className="n">01</div><div>
                   <h3>Discover <span>hours, not weeks</span></h3>
-                  <p>Support data, usage analytics, and customer interviews — synthesized with <b>Claude</b> into friction themes and jobs-to-be-done I can interrogate, rank, and challenge.</p></div></div>
+                  <p>Support data, usage analytics, and customer interviews - synthesized with <b>Claude</b> into friction themes and jobs-to-be-done I can interrogate, rank, and challenge.</p></div></div>
                 <div className="lstep" data-ls="1"><div className="n">02</div><div>
                   <h3>Define <span>PRDs that argue back</span></h3>
-                  <p><b>PRDs, user stories, and OKRs</b> drafted with AI as a sparring partner — it red-teams assumptions and pressure-tests success metrics before engineering reads a word.</p></div></div>
+                  <p><b>PRDs, user stories, and OKRs</b> drafted with AI as a sparring partner - it red-teams assumptions and pressure-tests success metrics before engineering reads a word.</p></div></div>
                 <div className="lstep" data-ls="2"><div className="n">03</div><div>
                   <h3>Prototype <span>high-fidelity, working</span></h3>
-                  <p>Not wireframes — <b>rapid POCs on the Polarin design system</b> with Figma, Figma Make, and Cursor. Design instincts from the pixel years, speed from AI pair-building.</p></div></div>
+                  <p>Not wireframes - <b>rapid POCs on the Polarin design system</b> with Figma, Figma Make, and Cursor. Design instincts from the pixel years, speed from AI pair-building.</p></div></div>
                 <div className="lstep" data-ls="3"><div className="n">04</div><div>
                   <h3>Validate <span>test the real thing</span></h3>
-                  <p>Customers click actual software in week one. Signals sharpen, feedback gets honest, and <b>bad ideas die cheap</b> — before they cost a sprint.</p></div></div>
+                  <p>Customers click actual software in week one. Signals sharpen, feedback gets honest, and <b>bad ideas die cheap</b> - before they cost a sprint.</p></div></div>
                 <div className="lstep" data-ls="4"><div className="n">05</div><div>
                   <h3>Deploy <span>evidence, not opinions</span></h3>
                   <p>Frontend changes shipped <b>directly via Claude + Figma in VS Code, deployed on Vercel</b>. Handoffs become head starts.</p>
-                  <div className="loop-reset"><span className="loop-reset-ic" aria-hidden="true">↻</span> then the loop turns again — back to <b>01 Discover</b></div>
+                  <div className="loop-reset"><span className="loop-reset-ic" aria-hidden="true">↻</span> then the loop turns again - back to <b>01 Discover</b></div>
                 </div></div>
               </div>
             </div>
@@ -229,7 +229,7 @@ export default function About() {
 
       <section className="ab-skills" data-ch="Skills">
         <div className="wrap">
-          <p className="eyebrow rv">— my skills, honestly</p>
+          <p className="eyebrow rv">- my skills, honestly</p>
           <h2 className="ab-h rv d1">The chart HR never asks for.</h2>
           <div className={`ab-chart rv d2 ${chartIn ? 'in' : ''}`} ref={chartRef}>
             <div className="ab-axis"><span>jedi</span><span>ninja</span><span>geek</span><span>newbie</span></div>
@@ -247,7 +247,7 @@ export default function About() {
 
       <section className="ab-facts" data-ch="Facts">
         <div className="wrap">
-          <p className="eyebrow rv">— off the clock</p>
+          <p className="eyebrow rv">- off the clock</p>
           <h2 className="ab-h rv d1">Random facts.</h2>
           <div className="ab-grid">
             {FACTS.map((f, i) => (
@@ -262,9 +262,9 @@ export default function About() {
 
       <section className="ab-journey" data-ch="My Journey">
         <div className="wrap">
-          <p className="eyebrow rv">— the long version</p>
+          <p className="eyebrow rv">- the long version</p>
           <h2 className="ab-big rv d1">the full story lives<br />in <span>three chapters.</span></h2>
-          <p className="ab-lede rv d2" style={{ maxWidth: '56ch' }}>Pixel years — the crossing — the multiplier. How a designer became the product manager of the thing he designed — told as a scroll.</p>
+          <p className="ab-lede rv d2" style={{ maxWidth: '56ch' }}>Pixel years - the crossing - the multiplier. How a designer became the product manager of the thing he designed - told as a scroll.</p>
           <div className="soon-ctas rv d3">
             <a className="btn-big" href="#/journey">Open My Journey →</a>
             <a className="btn-ghost" href="#/current">See what I&apos;m building →</a>
