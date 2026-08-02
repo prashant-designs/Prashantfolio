@@ -66,7 +66,7 @@ function AppContent() {
           }
         });
       },
-      { threshold: 0.12 },
+      { threshold: 0.12, rootMargin: '0px 0px -60px 0px' },
     );
 
     const scanRv = () => {

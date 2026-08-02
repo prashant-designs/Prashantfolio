@@ -463,8 +463,9 @@ body::after {
 
 .rv {
   opacity: 0;
-  transform: translateY(24px);
-  transition: opacity 0.8s var(--ease), transform 0.8s var(--ease);
+  transform: translateY(32px) scale(0.985);
+  transition: opacity 0.75s var(--ease), transform 1s var(--ease);
+  will-change: opacity, transform;
 }
 
 .rv.in {
@@ -1086,11 +1087,6 @@ footer .g {
 .pol-kicker { font-family: var(--mono); font-size: 11.5px; letter-spacing: 0.26em; text-transform: uppercase; color: var(--dim); }
 .pol-kicker b { color: var(--link); font-weight: 500; }
 .pol-title { font-family: var(--disp); font-weight: 800; font-size: clamp(64px, 13vw, 180px); letter-spacing: -0.045em; line-height: 0.95; margin-top: 10px; }
-.pol-sub { display: flex; flex-wrap: wrap; gap: 8px 26px; margin-top: 26px; font-family: var(--mono); font-size: 11.5px; letter-spacing: 0.16em; text-transform: uppercase; color: var(--mute); }
-.pol-sub b { color: var(--signal); font-weight: 500; }
-.lede-big { font-family: var(--disp); font-weight: 500; font-size: clamp(20px, 2.8vw, 32px); line-height: 1.42; letter-spacing: -0.01em; max-width: 26ch; }
-.lede-big i { font-style: normal; color: var(--signal); }
-.lede-big em { font-style: normal; color: var(--link); }
 
 .ch-head { padding: 90px 0 46px; }
 .ch-num { font-family: var(--mono); font-size: 12px; letter-spacing: 0.3em; text-transform: uppercase; color: var(--dim); }
@@ -1104,8 +1100,6 @@ footer .g {
 .cstat .n .sfx { color: var(--signal); }
 .cstat .l { font-family: var(--mono); font-size: 10px; letter-spacing: 0.16em; text-transform: uppercase; color: var(--dim); margin-top: 4px; }
 
-/* ---- 01 · simple open ---- */
-.pol-open { min-height: calc(100vh - var(--nav-h) - 2px); display: flex; align-items: center; position: relative; overflow: hidden; }
 .pol-title .bt b { display: inline-block; color: transparent; -webkit-text-stroke: 2px var(--link); transition: color 0.45s ease, -webkit-text-stroke-color 0.45s ease, transform 0.45s var(--ease); cursor: default; }
 .pol-title .bt b:hover { color: var(--signal); -webkit-text-stroke-color: var(--signal); transform: translateY(-4px); }
 .pol-title .pw { display: inline-block; background: linear-gradient(100deg, var(--text) 15%, var(--link) 42%, var(--signal) 62%, var(--text) 88%); background-size: 230% 100%; -webkit-background-clip: text; background-clip: text; color: transparent; animation: gsweep 5.5s ease-in-out infinite; }
@@ -1129,59 +1123,164 @@ footer .g {
 .still-sec { min-height: 60vh; display: flex; align-items: center; padding-bottom: 60px; }
 .still-t { font-family: var(--disp); font-weight: 800; font-size: clamp(40px, 8vw, 110px); letter-spacing: -0.04em; color: transparent; -webkit-text-stroke: 1.2px var(--link); }
 
-/* ---- 02 · globe section ---- */
-.globe-sec { position: relative; min-height: 92vh; display: flex; align-items: center; overflow: hidden; padding: 70px 0; }
-.globe { position: absolute; left: 50%; bottom: -4%; transform: translateX(-50%); width: min(1150px, 140%); opacity: 0.55; pointer-events: none; }
-.globe .g-line { stroke: rgba(143, 160, 255, 0.2); stroke-width: 1; fill: none; }
-.globe .g-node { fill: var(--link); animation: npulse 2.6s ease-in-out infinite; }
-.globe .g-node.n2 { animation-delay: 0.8s; }
-.globe .g-node.n3 { animation-delay: 1.5s; }
-@keyframes npulse { 0%, 100% { opacity: 0.5; } 50% { opacity: 1; } }
-.globe .g-dot { fill: var(--link); opacity: 0.35; transition: opacity 0.25s; }
-.globe.globe-hi { opacity: 0; transition: opacity 0.35s; -webkit-mask-image: radial-gradient(circle 140px at var(--gx, 50%) var(--gy, 50%), black 0%, transparent 72%); mask-image: radial-gradient(circle 140px at var(--gx, 50%) var(--gy, 50%), black 0%, transparent 72%); }
-.globe.globe-hi .g-line { stroke: rgba(255, 196, 107, 0.75); stroke-width: 1.4; filter: drop-shadow(0 0 6px rgba(255, 196, 107, 0.5)); }
-.globe-copy { position: relative; z-index: 1; width: 100%; }
-.globe-sec::after { content: ""; position: absolute; left: 0; right: 0; bottom: 0; height: 120px; background: linear-gradient(transparent, var(--ink)); pointer-events: none; }
-
-/* ---- 03 · role tiles ---- */
-.role-sec { padding: 90px 0 70px; }
-
 .metrics-sec { padding: 80px 0 20px; text-align: center; }
-.hats3 { display: flex; gap: 16px; justify-content: center; margin-top: 38px; flex-wrap: wrap; }
-.h3t { border: 1px solid var(--line); border-radius: 16px; background: var(--raise); padding: 22px 24px; width: 230px; transition: transform 0.35s var(--ease), border-color 0.3s; }
-.h3t:hover { transform: translateY(-6px); border-color: rgba(255, 196, 107, 0.4); }
-.h3t .h3g { display: grid; place-items: center; width: 44px; height: 44px; margin: 0 auto 12px; border-radius: 12px; border: 1px solid var(--line2); background: var(--raise2); font-size: 18px; color: var(--link); transition: all 0.3s; }
-.h3t .h3g svg { width: 22px; height: 22px; display: block; }
-.h3t:hover .h3g { color: var(--signal); border-color: rgba(255, 196, 107, 0.4); background: var(--raise2); }
-.h3t b { font-family: var(--disp); font-size: 16px; font-weight: 600; display: block; }
-.h3t p { font-size: 12.5px; color: var(--mute); margin-top: 6px; }
-.role-link { font-family: var(--mono); font-size: 11.5px; letter-spacing: 0.06em; color: var(--dim); margin-top: 34px; text-align: center; }
-.role-link a { color: var(--signal); text-decoration: none; }
-.role-link a:hover { text-decoration: underline; }
-.role-link span { margin: 0 8px; color: var(--dim); }
 
-/* ---- 04 · horizontal project cards ---- */
-.panel-sm { width: min(80vw, 560px); }
-.pxcard { max-height: none; overflow: visible; cursor: pointer; }
-.pxcard:focus-visible { outline: 2px solid var(--signal); outline-offset: 3px; }
-.pxcard-icon { display: inline-grid; place-items: center; width: 54px; height: 54px; border-radius: 14px; border: 1px solid var(--line2); background: var(--raise2); color: var(--link); transition: all 0.3s; }
-.pxcard-icon svg { width: 27px; height: 27px; display: block; }
-.pxcard:hover .pxcard-icon { color: var(--signal); border-color: rgba(255, 196, 107, 0.4); }
-.pxcard h3 { font-family: var(--disp); font-weight: 700; font-size: clamp(20px, 2.4vw, 27px); letter-spacing: -0.015em; margin: 14px 0 12px; }
-.krow { display: grid; grid-template-columns: 64px 1fr; gap: 14px; align-items: baseline; padding: 8px 0; border-top: 1px dashed var(--line); }
-.krow span { font-family: var(--mono); font-size: 9.5px; letter-spacing: 0.18em; text-transform: uppercase; color: var(--signal); }
-.krow p { font-size: 13.5px; color: var(--mute); }
-.krow p b { color: var(--text); }
-.krow.im p.big { font-family: var(--disp); font-weight: 700; font-size: 24px; color: var(--up); letter-spacing: -0.01em; }
-.krow.im p.big small { font-family: var(--mono); font-weight: 400; font-size: 10px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--dim); margin-left: 10px; }
+/* ---- 01 · Building Polarin intro (full fold) + pinned timeline scene ---- */
+.tl-hero { min-height: calc(100vh - var(--nav-h) - 2px); display: flex; align-items: center; position: relative; overflow: hidden; }
+.timeline-sec { padding: 60px 0 40px; }
+
+/* the tall track. scrolling through it advances the rail one stop per beat
+   while .tl-stage stays pinned in the viewport. */
+.tl-scene { position: relative; height: calc(var(--beats, 5) * 62vh); }
+.tl-stage { position: sticky; top: var(--nav-h); height: calc(100vh - var(--nav-h)); min-height: 480px; display: flex; align-items: center; overflow: hidden; }
+
+/* its own wide container, not the site's standard 1240px .wrap - this is a
+   large-format pinned scene and needs more room than a prose section. */
+.tl-shell { max-width: 1560px; margin: 0 auto; padding: 0 clamp(24px, 5vw, 70px); display: grid; grid-template-columns: 280px 1fr; gap: 56px; width: 100%; align-items: center; box-sizing: border-box; }
+.tl-rail { position: relative; display: flex; flex-direction: column; gap: 2px; }
+/* the spine sits behind the dots (z-index 0 vs .tl-stop's 1) - pseudo-elements
+   paint last among a positioned parent's children by default, which put the
+   line on top of every dot. its top/bottom match the dot's own vertical
+   centre (28px = half of .tl-stop's fixed 56px row height), so it starts and
+   ends exactly on the first/last dot instead of overshooting past them. */
+.tl-rail::before { content: ""; position: absolute; z-index: 0; left: 7px; top: 28px; bottom: 28px; width: 2px; border-radius: 2px; background: var(--line2); }
+/* scroll progress running down the spine - --tlp is set inline, 0 → 1 */
+.tl-rail::after { content: ""; position: absolute; z-index: 0; left: 7px; top: 28px; width: 2px; border-radius: 2px; background: var(--signal); height: calc((100% - 56px) * var(--tlp, 0)); transition: height 0.5s var(--ease); }
+
+/* one accent colour for every stop, done or current - no more mixing gold,
+   blue and white depending on era. */
+.tl-stop { --era: var(--signal); position: relative; z-index: 1; display: block; width: 100%; min-height: 56px; padding: 11px 14px 11px 56px; text-align: left; background: none; border: 0; border-radius: 12px; cursor: pointer; color: inherit; }
+/* the highlight is its own layer, a full 24px clear of the dot's right edge
+   (dot spans 0-16px) so it never reads as touching the spine. */
+.tl-stop::before { content: ""; position: absolute; left: 40px; right: 0; top: 2px; bottom: 2px; border-radius: 12px; background: var(--raise); border: 1px solid transparent; opacity: 0; transition: opacity 0.28s var(--ease), border-color 0.28s; }
+.tl-stop:hover::before { opacity: 0.6; }
+.tl-stop.on::before { opacity: 1; border-color: var(--line); }
+.tl-stop:focus-visible { outline: none; }
+.tl-stop:focus-visible::before { opacity: 1; border-color: var(--era); }
+/* three real states, not just on/off - upcoming (not reached yet, dim and
+   hollow), done (passed, filled solid in its era colour), on (current,
+   filled + a light ring, like a step-indicator's "you are here"). */
+.tl-dot { position: absolute; left: 0; top: 50%; transform: translateY(-50%); width: 16px; height: 16px; border-radius: 50%; background: var(--ink2); border: 2px solid var(--line2); opacity: 0.55; transition: background 0.3s, border-color 0.3s, box-shadow 0.3s, transform 0.3s var(--ease), opacity 0.3s; }
+.tl-stop.done .tl-dot { background: var(--era); border-color: var(--era); opacity: 1; }
+.tl-stop.on .tl-dot { background: var(--era); border-color: var(--era); opacity: 1; transform: translateY(-50%) scale(1.2); box-shadow: 0 0 0 3px var(--ink2), 0 0 0 5px var(--era), 0 0 14px color-mix(in srgb, var(--era) 55%, transparent); animation: tlPulse 2.4s var(--ease) infinite; }
+@keyframes tlPulse { 0%, 100% { box-shadow: 0 0 0 3px var(--ink2), 0 0 0 5px var(--era), 0 0 14px color-mix(in srgb, var(--era) 55%, transparent); } 50% { box-shadow: 0 0 0 3px var(--ink2), 0 0 0 5px var(--era), 0 0 20px color-mix(in srgb, var(--era) 75%, transparent); } }
+@media (prefers-reduced-motion: reduce) { .tl-stop.on .tl-dot { animation: none; } }
+
+.tl-stop-txt { position: relative; display: block; font-family: var(--disp); font-size: 14.5px; font-weight: 600; line-height: 1.25; color: var(--mute); opacity: 0.55; transition: color 0.25s, opacity 0.25s; }
+.tl-stop-txt b { display: block; font-family: var(--mono); font-size: 9.5px; font-weight: 500; letter-spacing: 0.14em; text-transform: uppercase; color: var(--dim); margin-bottom: 4px; transition: color 0.25s; }
+.tl-stop.done .tl-stop-txt, .tl-stop.on .tl-stop-txt { opacity: 1; }
+.tl-stop.on .tl-stop-txt { color: var(--text); }
+.tl-stop.on .tl-stop-txt b { color: var(--era); }
+.tl-stop.done .tl-stop-txt b { color: var(--mute); }
+
+.tl-detail { min-width: 0; animation: invfade 0.4s var(--ease); }
+.tl-detail h3 { font-family: var(--disp); font-weight: 700; font-size: clamp(26px, 3.4vw, 42px); line-height: 1.15; letter-spacing: -0.02em; }
+.tl-detail p { color: var(--mute); font-size: clamp(15px, 1.3vw, 17px); margin-top: 14px; max-width: 70ch; line-height: 1.65; }
+.tl-detail .btn-ghost { margin-top: 14px; }
+/* ---- step 01 · what is Polarin (the original playable globe, rescoped to
+   the timeline's detail panel instead of a full-viewport section) ---- */
+.tl-globe-sec { position: relative; min-height: 420px; height: min(52vh, 460px); display: flex; align-items: center; overflow: hidden; margin-top: 18px; border-radius: 18px; }
+.tl-globe { position: absolute; left: 50%; bottom: -6%; transform: translateX(-50%); width: min(1100px, 165%); opacity: 0.55; pointer-events: none; }
+.tl-globe .g-line { stroke: rgba(143, 160, 255, 0.2); stroke-width: 1; fill: none; }
+.tl-globe .g-node { fill: var(--link); animation: tlNodePulse 2.6s ease-in-out infinite; }
+.tl-globe .g-node.n2 { animation-delay: 0.8s; }
+.tl-globe .g-node.n3 { animation-delay: 1.5s; }
+@keyframes tlNodePulse { 0%, 100% { opacity: 0.5; } 50% { opacity: 1; } }
+.tl-globe .g-dot { fill: var(--link); opacity: 0.35; transition: opacity 0.25s; }
+.tl-globe.tl-globe-hi { opacity: 0; transition: opacity 0.35s; -webkit-mask-image: radial-gradient(circle 130px at var(--gx, 50%) var(--gy, 50%), black 0%, transparent 72%); mask-image: radial-gradient(circle 130px at var(--gx, 50%) var(--gy, 50%), black 0%, transparent 72%); }
+.tl-globe.tl-globe-hi .g-line { stroke: rgba(255, 196, 107, 0.75); stroke-width: 1.4; filter: drop-shadow(0 0 6px rgba(255, 196, 107, 0.5)); }
+/* a soft scrim behind the copy, not a hard card - the globe's auto-roaming
+   highlight drifts straight through this area and the text needs to stay
+   legible regardless of where the glow currently sits. */
+.tl-globe-copy { position: relative; z-index: 1; max-width: 620px; padding: 28px clamp(20px, 4vw, 40px); background: linear-gradient(120deg, color-mix(in srgb, var(--ink) 90%, transparent) 0%, color-mix(in srgb, var(--ink) 78%, transparent) 62%, transparent 100%); backdrop-filter: blur(3px); border-radius: 18px; }
+.tl-globe-sec::after { content: ""; position: absolute; left: 0; right: 0; bottom: 0; height: 90px; background: linear-gradient(transparent, var(--ink)); pointer-events: none; }
+@media (prefers-reduced-motion: reduce) { .tl-globe .g-node { animation: none; opacity: 0.8; } }
+@media (max-width: 760px) { .tl-globe-sec { height: 320px; margin: -8px 0 0; } }
+
+/* ---- step 02 · fog → fluency (joining with no telecom background) ---- */
+.tl-fog { display: flex; flex-wrap: wrap; align-items: center; gap: 9px; margin-top: 20px; }
+.tl-fog-l { font-family: var(--mono); font-size: 11px; letter-spacing: 0.18em; text-transform: uppercase; color: var(--dim); margin-right: 2px; }
+.tl-fog-w { font-family: var(--mono); font-size: 13.5px; letter-spacing: 0.08em; color: var(--text); background: var(--ink2); border: 1px dashed var(--line2); border-radius: 9px; padding: 7px 13px; opacity: 0.24; filter: blur(4px); animation: tlDefog 0.85s var(--ease) forwards; transition: color 0.25s, border-color 0.25s, transform 0.25s var(--ease); }
+.tl-fog-w:hover { color: var(--signal); border-color: rgba(255, 196, 107, 0.45); transform: translateY(-2px); }
+@keyframes tlDefog { to { opacity: 1; filter: blur(0); } }
+.tl-detail .tl-fog-cap { margin-top: 12px; font-family: var(--mono); font-size: 11.5px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--dim); max-width: none; }
+.tl-detail .tl-fog-cap b { color: var(--signal); font-weight: 500; }
+
+/* three inputs converge into one artefact, then the first screen */
+.tl-arc { display: grid; grid-template-columns: minmax(0, 1.05fr) 64px minmax(0, 1fr); align-items: center; margin-top: 22px; gap: 6px; }
+.tl-arc-streams { display: flex; flex-direction: column; gap: 10px; }
+.tl-stream { display: grid; grid-template-columns: 22px minmax(0, 1fr); gap: 12px; align-items: start; border: 1px solid var(--line); border-left: 2px solid var(--signal); border-radius: 0 12px 12px 0; background: var(--raise); padding: 13px 16px; transition: border-color 0.3s, transform 0.3s var(--ease); }
+.tl-stream:hover { transform: translateX(3px); border-color: rgba(255, 196, 107, 0.3); border-left-color: var(--signal); }
+.tl-stream i { font-style: normal; font-family: var(--mono); font-size: 10.5px; letter-spacing: 0.1em; color: var(--dim); padding-top: 2px; }
+.tl-stream b { display: block; font-family: var(--mono); font-size: 11.5px; font-weight: 500; letter-spacing: 0.16em; text-transform: uppercase; color: var(--signal); margin-bottom: 5px; }
+.tl-arc .tl-stream p { margin: 0; max-width: none; font-size: 14px; line-height: 1.5; color: var(--mute); }
+.tl-arc-join { position: relative; align-self: stretch; min-height: 140px; }
+.tl-arc-join svg { position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; }
+.tl-arc-join path { fill: none; stroke: var(--line2); stroke-width: 1.4; stroke-dasharray: 3 5; vector-effect: non-scaling-stroke; }
+.tl-arc-join path.lead { stroke: var(--signal); stroke-dasharray: none; }
+/* the junction node lives in CSS, not the svg - the svg is stretched on the
+   y axis (preserveAspectRatio: none) and would squash a circle into an oval. */
+.tl-arc-join::after { content: ""; position: absolute; top: 50%; right: 10.5px; width: 8px; height: 8px; margin-top: -4px; border-radius: 50%; background: var(--ink); border: 1.5px solid var(--signal); }
+.tl-doc { position: relative; border: 1px dashed var(--line2); border-radius: 14px; background: linear-gradient(180deg, var(--raise2), var(--raise)); padding: 20px 22px 18px; }
+.tl-doc-tag { position: absolute; top: -9px; left: 16px; font-family: var(--mono); font-size: 9.5px; letter-spacing: 0.18em; text-transform: uppercase; color: var(--ink); background: var(--signal); border-radius: 5px; padding: 2px 8px; }
+.tl-doc b { display: block; font-family: var(--disp); font-size: 19px; font-weight: 700; letter-spacing: -0.01em; color: var(--text); }
+.tl-arc .tl-doc p { margin-top: 8px; max-width: none; font-size: 14px; line-height: 1.5; color: var(--mute); }
+.tl-arc .tl-then { display: flex; align-items: center; gap: 8px; margin-top: 14px; padding-left: 2px; font-family: var(--mono); font-size: 11.5px; letter-spacing: 0.16em; text-transform: uppercase; color: var(--dim); }
+.tl-arc .tl-then em { font-style: normal; color: var(--signal); }
+
+/* ---- steps 03/04 · deep-dive cards read as case-study previews, not plain
+   text boxes - icon, about/role rows, an impact stat and a real link ---- */
+/* plain stats, not cards - same numbers as .cj-result elsewhere, no box */
+.tl-stats { display: flex; flex-wrap: wrap; gap: 32px; margin-top: 20px; }
+.tl-stats span { font-family: var(--mono); font-size: 10.5px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--dim); }
+.tl-stats b { display: block; font-family: var(--disp); font-size: 22px; letter-spacing: -0.02em; color: var(--text); margin-bottom: 4px; font-weight: 800; }
+
+.tl-cs-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin-top: 22px; }
+.tl-cs-grid.tl-cs-grid-2 { grid-template-columns: repeat(2, 1fr); }
+.tl-cs-card { border: 1px solid var(--line); border-radius: 20px; background: var(--raise); padding: 22px 24px; cursor: pointer; transition: transform 0.3s var(--ease), border-color 0.3s; }
+.tl-cs-card:hover, .tl-cs-card:focus-visible { transform: translateY(-4px); border-color: rgba(255, 196, 107, 0.4); outline: none; }
+.tl-cs-icon { display: inline-grid; place-items: center; width: 46px; height: 46px; border-radius: 13px; border: 1px solid var(--line2); background: var(--raise2); color: var(--link); transition: all 0.3s; }
+.tl-cs-icon svg { width: 23px; height: 23px; display: block; }
+.tl-cs-card:hover .tl-cs-icon { color: var(--signal); border-color: rgba(255, 196, 107, 0.4); }
+.tl-cs-card h4 { font-family: var(--disp); font-weight: 700; font-size: clamp(17px, 1.7vw, 20px); letter-spacing: -0.01em; margin: 14px 0 10px; }
+.tl-cs-row { display: grid; grid-template-columns: 46px 1fr; gap: 12px; align-items: baseline; padding: 8px 0; border-top: 1px dashed var(--line); }
+.tl-cs-row span { font-family: var(--mono); font-size: 9px; letter-spacing: 0.16em; text-transform: uppercase; color: var(--signal); }
+.tl-cs-row p { font-size: 12.8px; color: var(--mute); line-height: 1.45; }
+.tl-cs-foot { display: flex; justify-content: space-between; align-items: center; gap: 10px; border-top: 1px dashed var(--line); padding-top: 13px; margin-top: 4px; transition: border-color 0.3s; }
+.tl-cs-card:hover .tl-cs-foot { border-top-color: rgba(255, 196, 107, 0.35); }
+.tl-cs-impact { font-family: var(--disp); font-weight: 700; font-size: 15.5px; color: var(--up); letter-spacing: -0.01em; white-space: nowrap; }
+.tl-cs-impact small { font-family: var(--mono); font-weight: 400; font-size: 9.5px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--dim); margin-left: 6px; white-space: normal; }
+.tl-cs-link { position: relative; font-family: var(--mono); font-size: 10.5px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--link); transition: color 0.25s, transform 0.25s var(--ease); flex-shrink: 0; }
+.tl-cs-link::after { content: ''; position: absolute; left: 0; right: 100%; bottom: -3px; height: 1.5px; background: var(--signal); transition: right 0.35s var(--ease); }
+.tl-cs-card:hover .tl-cs-link { color: var(--signal); transform: translateX(3px); }
+.tl-cs-card:hover .tl-cs-link::after { right: 0; }
+@media (max-width: 960px) { .tl-cs-grid, .tl-cs-grid.tl-cs-grid-2 { grid-template-columns: 1fr; } }
+
+@media (prefers-reduced-motion: reduce) {
+  .tl-fog-w { animation: none; opacity: 1; filter: none; }
+}
+
+@media (max-width: 960px) {
+  .tl-shell { grid-template-columns: 210px 1fr; gap: 26px; }
+}
+@media (max-width: 760px) {
+  /* pinning costs more than it gives on a phone - fall back to a plain
+     stacked section where the rail is tap-only again. */
+  .tl-scene { height: auto; margin-top: 16px; }
+  .tl-stage { position: static; display: block; height: auto; min-height: 0; overflow: visible; }
+  .tl-shell { grid-template-columns: 1fr; gap: 18px; }
+  .tl-rail { flex-direction: row; flex-wrap: wrap; gap: 6px; }
+  .tl-rail::before, .tl-rail::after { display: none; }
+  .tl-stop { width: auto; padding: 9px 14px; }
+  .tl-stop::before { left: 0; }
+  .tl-stop-txt { font-size: 13px; }
+  .tl-dot { display: none; }
+  .tl-arc { grid-template-columns: 1fr; gap: 12px; }
+  .tl-arc-join { display: none; }
+}
+
 .mg-tag { position: absolute; right: 10px; bottom: 8px; font-family: var(--mono); font-size: 8.5px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--dim); background: rgba(12, 16, 27, 0.7); border: 1px dashed var(--line); border-radius: 6px; padding: 3px 8px; pointer-events: none; z-index: 2; }
 .mg-inv .mg-tag { bottom: auto; top: 8px; }
-.proj-foot { display: flex; justify-content: space-between; align-items: center; border-top: 1px dashed var(--line); padding-top: 14px; margin-top: 4px; transition: border-color 0.3s; }
-.pxcard:hover .proj-foot { border-top-color: rgba(255, 196, 107, 0.35); }
-.cs-link { font-family: var(--mono); font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase; text-decoration: none; color: var(--link); display: inline-flex; gap: 8px; align-items: center; transition: color 0.25s, transform 0.25s var(--ease); background: none; border: none; cursor: pointer; padding: 0; position: relative; }
-.cs-link::after { content: ''; position: absolute; left: 0; right: 100%; bottom: -3px; height: 1.5px; background: var(--signal); transition: right 0.35s var(--ease); }
-.pxcard:hover .cs-link, .cs-link:hover { color: var(--signal); transform: translateX(3px); }
-.pxcard:hover .cs-link::after, .cs-link:hover::after { right: 0; }
 
 /* ---- mini graphics ---- */
 .mg { height: 112px; border: 1px solid var(--line); border-radius: 12px; background: var(--ink2); padding: 13px 15px; position: relative; overflow: hidden; display: flex; flex-direction: column; gap: 8px; }
@@ -1232,11 +1331,6 @@ footer .g {
 .mgsearch { height: 20px; border: 1px solid var(--line2); border-radius: 99px; width: 70%; position: relative; overflow: hidden; }
 .mgsearch span { position: absolute; left: 8px; top: 5px; width: 34%; height: 8px; border-radius: 4px; background: rgba(143, 160, 255, 0.4); animation: ksearch 3s var(--ease) infinite; }
 @keyframes ksearch { 0%, 100% { width: 20%; } 50% { width: 52%; } }
-.mgpage { position: absolute; width: 52%; height: 56px; border: 1px solid var(--line2); border-radius: 8px; background: var(--raise); transition: transform 0.4s var(--ease); }
-.mgpage.p1 { right: 52px; bottom: -14px; transform: rotate(-5deg); }
-.mgpage.p2 { right: 34px; bottom: -10px; transform: rotate(2deg); }
-.mgpage.p3 { right: 16px; bottom: -6px; transform: rotate(7deg); border-color: rgba(255, 196, 107, 0.5); }
-.pxcard:hover .mgpage.p3 { transform: rotate(7deg) translateY(-6px); }
 
 @media (max-width: 640px) {
   .hats3 { gap: 10px; }
@@ -1265,13 +1359,18 @@ body.ovl-lock { overflow: hidden; }
 
 /* ================= INVOICE CASE STUDY ================= */
 .inv-wrap { max-width: 1080px; margin: 0 auto; padding: clamp(46px, 8vh, 90px) clamp(22px, 5.5vw, 80px) 70px; }
-.inv-hero h2 { font-family: var(--disp); font-weight: 700; font-size: clamp(28px, 4.2vw, 46px); letter-spacing: -0.02em; line-height: 1.1; margin-top: 14px; max-width: 20ch; }
+/* fills the first fold of the overlay on its own, so the next section (Meet
+   Alex) only appears once the person actually scrolls, not by accident. */
+.inv-hero { min-height: calc(100vh - 200px); display: flex; flex-direction: column; justify-content: center; }
+.inv-hero h2 { font-family: var(--disp); font-weight: 700; font-size: clamp(24px, 3.4vw, 38px); letter-spacing: -0.02em; line-height: 1.1; margin-top: 14px; max-width: 20ch; }
 .inv-hero p { color: var(--mute); max-width: 62ch; margin-top: 16px; font-size: 15px; }
 .inv-meta { display: flex; gap: 40px; margin-top: 26px; flex-wrap: wrap; }
 .inv-meta div span { display: block; font-family: var(--mono); font-size: 10px; letter-spacing: 0.18em; text-transform: uppercase; color: var(--dim); margin-bottom: 4px; }
 .inv-meta div b { font-family: var(--disp); font-size: 15px; font-weight: 600; }
+.inv-meta-devices { display: inline-flex; align-items: center; gap: 9px; }
+.inv-meta-devices svg { width: 26px; height: 17px; color: var(--link); flex-shrink: 0; }
 
-.inv-section { margin-top: 64px; }
+.inv-section { margin-top: 112px; }
 .inv-highlight { font-family: var(--disp); font-weight: 700; font-size: clamp(24px, 3.6vw, 38px); line-height: 1.15; letter-spacing: -0.02em; max-width: 20ch; }
 .inv-highlight mark { background: rgba(255, 143, 168, 0.18); color: var(--rose); padding: 0 8px; border-radius: 4px; box-decoration-break: clone; -webkit-box-decoration-break: clone; }
 .inv-section p.body { color: var(--mute); font-size: 15px; max-width: 66ch; margin-top: 18px; }
@@ -1674,6 +1773,18 @@ body.ovl-lock { overflow: hidden; }
 .cj-t { font-family: var(--disp); font-weight: 700; font-size: 16px; letter-spacing: -0.01em; display: block; margin-bottom: 6px; }
 .cj-x { font-size: 13.5px; color: var(--mute); }
 .cj-w { font-family: var(--mono); font-size: 11px; letter-spacing: 0.04em; color: var(--rose); margin-top: 9px; }
+
+/* process steps lean on a big icon + a progress bar, not paragraphs - a
+   scoped modifier so AlexJourney's own .cj cards (day counter, icon beside
+   text) stay untouched. */
+.cj-process { padding: 32px 26px; text-align: center; }
+.cj-process .cj-track { height: 3px; border-radius: 3px; background: var(--raise2); overflow: hidden; margin-bottom: 22px; }
+.cj-process .cj-track i { display: block; height: 100%; background: var(--signal); transition: width 0.5s var(--ease); }
+.cj-process .cj-body { display: flex; flex-direction: column; align-items: center; gap: 6px; }
+.cj-process .cj-ico { width: 76px; height: 76px; border-radius: 20px; font-size: 38px; margin-bottom: 6px; }
+.cj-process .cj-day { font-size: 10px; }
+.cj-process .cj-t { font-size: clamp(20px, 2.6vw, 26px); margin: 2px 0 4px; }
+.cj-process .cj-x { font-size: 14px; max-width: 46ch; }
 .cj-result { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 20px; }
 .cj-result span { flex: 1; min-width: 130px; border: 1px solid var(--line); border-radius: 12px; background: var(--raise); padding: 13px 15px; font-family: var(--mono); font-size: 10.5px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--dim); }
 .cj-result b { display: block; font-family: var(--disp); font-size: 22px; letter-spacing: -0.02em; color: var(--text); margin-bottom: 4px; font-weight: 800; }
@@ -1722,11 +1833,15 @@ body.ovl-lock { overflow: hidden; }
 
 /* ---- pinned scroll scenes (inside the overlay panel) ---- */
 .oscn { position: relative; margin-top: 16px; height: calc(var(--beats, 5) * 46vh); }
+/* more scroll distance per beat than the default - each reveal here carries
+   real narrative weight, and 46vh let people scroll straight past it. */
+.oscn.bet-oscn { height: calc(var(--beats, 7) * 72vh); }
 .oscn-stage { position: sticky; top: 5vh; height: 74vh; display: flex; flex-direction: column; justify-content: center; overflow: hidden; }
 .obeat { opacity: 0; transform: translateY(20px); transition: opacity 0.55s var(--ease), transform 0.55s var(--ease); }
 .obeat.on { opacity: 1; transform: none; }
 
 .bet-stage { text-align: center; gap: 8px; }
+.bet-stage .cj-result { justify-content: center; }
 .bet-l1 { font-family: var(--disp); font-weight: 800; font-size: clamp(24px, 3.8vw, 46px); letter-spacing: -0.03em; }
 .bet-l2 { font-family: var(--disp); font-weight: 800; font-size: clamp(28px, 4.6vw, 56px); letter-spacing: -0.03em; margin-bottom: 14px; }
 .bet-l2 em { font-style: normal; background: linear-gradient(100deg, var(--link), var(--signal)); -webkit-background-clip: text; background-clip: text; color: transparent; }
@@ -1887,16 +2002,6 @@ body.static .scene { height: auto !important; }
 .db-note { font-family: var(--mono); font-size: 10px; color: var(--dim); margin-top: 12px; }
 .db-note b { color: var(--up); font-weight: 500; }
 
-/* ================= horizontal panel carousel (shared: Current Project surfaces) ================= */
-.hscroll .pin { align-items: stretch; }
-.htrack { display: flex; height: 100%; will-change: transform; }
-.panel { flex: 0 0 auto; width: min(88vw, 880px); height: 100%; display: flex; align-items: center; padding: 70px clamp(20px, 4vw, 60px) 50px; }
-.panel-intro { width: min(70vw, 640px); }
-.panel-card { width: 100%; border: 1px solid var(--line); border-radius: 22px; background: var(--raise); padding: clamp(24px, 3.4vw, 44px); position: relative; overflow: hidden; max-height: calc(100vh - 180px); overflow-y: auto; }
-.hs-progress { position: absolute; bottom: 22px; left: 50%; transform: translateX(-50%); z-index: 3; display: flex; align-items: center; gap: 12px; font-family: var(--mono); font-size: 10px; letter-spacing: 0.2em; text-transform: uppercase; color: var(--dim); }
-.hs-progress .bar { width: 130px; height: 2px; background: rgba(143, 160, 255, 0.18); border-radius: 2px; overflow: hidden; }
-.hs-progress .bar i { display: block; height: 100%; width: 0%; background: var(--signal); }
-
 /* ================= THE MULTIPLIER (scroll-scrubbed, pinned) ================= */
 .mult-stage { width: 100%; text-align: center; }
 .mult-svg { width: 100%; max-width: 1060px; margin: 0 auto; display: block; }
@@ -1944,9 +2049,7 @@ body.static .scene { height: auto !important; }
   .cross-right { order: -1; position: static; height: auto; margin-bottom: 20px; }
   .artifact { position: relative; inset: auto; margin: 0; height: 260px; width: 100%; display: none; }
   .artifact.on { display: flex; }
-  .panel { width: 90vw; }
   .scene .pin { align-items: flex-start; padding-top: 60px; }
-  .hscroll .pin { padding-top: 0; align-items: stretch; }
   .loop-grid { grid-template-columns: 1fr; gap: 30px; }
   .orbit-stage { order: -1; }
   .loop-scene { height: auto !important; }
@@ -1955,8 +2058,6 @@ body.static .scene { height: auto !important; }
 @media (max-width: 640px) {
   .cross-q p { display: none; }
   .cross-word span { font-size: 26vw; }
-  .panel { padding: 60px 14px 46px; }
-  .panel-card { max-height: calc(100vh - 150px); }
   .lstep p { font-size: 12.5px; }
 }
 @media (prefers-reduced-motion: reduce) {

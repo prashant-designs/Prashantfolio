@@ -174,27 +174,53 @@ function AlexJourney() {
 
 function TheBetScene() {
   const ref = useRef(null);
-  const [beat] = useScrollBeat(ref, 5);
+  const [beat] = useScrollBeat(ref, 7);
   const on = (b) => `obeat ${beat >= b ? 'on' : ''}`;
 
   return (
-    <div className="oscn" ref={ref} style={{ '--beats': 5 }}>
-      <div className="oscn-stage bet-stage">
-        <p className={`bet-l1 ${on(0)}`}>Alex doesn&apos;t call anyone.</p>
-        <p className={`bet-l2 ${on(1)}`}>He opens <em>Polarin.</em></p>
-        <div className={`dv-pipe bet-pipe ${on(2)}`}>
-          <span className="dvp"><b>discover</b></span><em>→</em>
-          <span className="dvp"><b>compare</b></span><em>→</em>
-          <span className="dvp"><b>order</b></span><em>→</em>
-          <span className="dvp"><b>provision</b></span><em>→</em>
-          <span className="dvp last"><b>manage</b><i>live</i></span>
-        </div>
-        <p className={`bet-90 ${on(3)}`}><s className="from">~90 days</s><span className="arr">→</span><b className="to">10 minutes.</b></p>
-        <div className={`bet-swaps ${on(4)}`}>
-          <span><s>5+ vendor calls</s><b>1 platform</b></span>
-          <span><s>PDF order forms</s><b>self-serve</b></span>
-          <span><s>zero visibility</s><b>real-time tracking</b></span>
-        </div>
+    <div className="oscn bet-oscn" ref={ref} style={{ '--beats': 7 }}>
+      <div className="oscn-stage bet-stage" key={beat < 2 ? beat : 'combo'}>
+        {beat === 0 && (
+          <>
+            <div className="cj-result obeat on">
+              <span><b>~90</b> days to provision</span>
+              <span><b>5+</b> vendors contacted</span>
+              <span><b>34%</b> form error rate</span>
+              <span><b>0</b> visibility into status</span>
+            </div>
+            <p className="dv-p dim obeat on">this was the standard. for decades.</p>
+          </>
+        )}
+
+        {beat === 1 && (
+          <>
+            <div className="inv-step-tag obeat on"><i></i>The bet</div>
+            <h3 className="plain obeat on">What happens instead</h3>
+            <p className="dv-p obeat on">A Network-as-a-Service platform with pre-established NNIs across datacenters, cloud on-ramps and PoPs - the fabric already connects everywhere Alex needs. Keep scrolling:</p>
+          </>
+        )}
+
+        {/* Alex opens Polarin → the swaps: builds up as one combined scene,
+            each piece staying visible as the next fades in - not a replace. */}
+        {beat >= 2 && (
+          <>
+            <p className={`bet-l1 ${on(2)}`}>Alex doesn&apos;t call anyone.</p>
+            <p className={`bet-l2 ${on(3)}`}>He opens <em>Polarin.</em></p>
+            <div className={`dv-pipe bet-pipe ${on(4)}`}>
+              <span className="dvp"><b>discover</b></span><em>→</em>
+              <span className="dvp"><b>compare</b></span><em>→</em>
+              <span className="dvp"><b>order</b></span><em>→</em>
+              <span className="dvp"><b>provision</b></span><em>→</em>
+              <span className="dvp last"><b>manage</b><i>live</i></span>
+            </div>
+            <p className={`bet-90 ${on(5)}`}><s className="from">~90 days</s><span className="arr">→</span><b className="to">10 minutes.</b></p>
+            <div className={`bet-swaps ${on(6)}`}>
+              <span><s>5+ vendor calls</s><b>1 platform</b></span>
+              <span><s>PDF order forms</s><b>self-serve</b></span>
+              <span><s>zero visibility</s><b>real-time tracking</b></span>
+            </div>
+          </>
+        )}
       </div>
     </div>
   );
@@ -231,6 +257,49 @@ function AuditScene() {
         </div>
 
         <p className={`aud-next obeat ${on(8)}`}>next: benchmarking doesn&apos;t stop at features - it&apos;s extending to the experience itself, tracked every quarter as competitors ship and expectations move.</p>
+      </div>
+    </div>
+  );
+}
+
+const PROCESS_STEPS = [
+  { i: '📚', t: 'desk research', x: 'regs, market maps, competitor docs' },
+  { i: '🗣️', t: 'primary research', x: '12 interviews - users + internal stakeholders' },
+  { i: '📊', t: 'benchmarking', x: '4 platforms, feature-by-feature' },
+  { i: '⚡', t: 'quick prototypes', x: 'low-fi Figma, built fast' },
+  { i: '👀', t: 'internal review', x: 'sales, ops, engineering - before shipping' },
+  { i: '🔁', t: 'feedback loop', x: 'three rounds, before "final"' },
+  { i: '✅', t: 'final designs', x: 'evidence-backed - the easy part, by now' },
+];
+
+function ProcessScene() {
+  const ref = useRef(null);
+  const [beat] = useScrollBeat(ref, 9);
+  const on = (b) => (beat >= b ? 'on' : '');
+  const stepIdx = Math.min(beat, PROCESS_STEPS.length - 1);
+  const step = PROCESS_STEPS[stepIdx];
+
+  return (
+    <div className="oscn" ref={ref} style={{ '--beats': 9 }}>
+      <div className="oscn-stage">
+        {beat < PROCESS_STEPS.length ? (
+          <div className="cj cj-process">
+            <div className="cj-track" aria-hidden="true">
+              <i style={{ width: `${((stepIdx + 1) / PROCESS_STEPS.length) * 100}%` }}></i>
+            </div>
+            <div className="cj-body">
+              <span className="cj-ico">{step.i}</span>
+              <span className="cj-day">step {String(stepIdx + 1).padStart(2, '0')} / 07</span>
+              <b className="cj-t">{step.t}</b>
+              <p className="cj-x">{step.x}</p>
+            </div>
+          </div>
+        ) : (
+          <div>
+            <p className="dv-p">seven stages in, one thing was obvious: a solo designer against 12 developers doesn&apos;t scale on screens alone. before the final designs shipped, a design system came first - not for visual polish, but for build speed: a component library so consistency, uniformity and look-and-feel didn&apos;t depend on reviewing every PR.</p>
+            <p className={`dv-p dim obeat ${on(8)}`} style={{ marginTop: '16px' }}>the vertical is design - four years deep, screens to systems to interaction. AI stretched the horizontal wide enough to run discovery, PRDs, frontend and deploys alone, without diluting the vertical.</p>
+          </div>
+        )}
       </div>
     </div>
   );
@@ -281,10 +350,23 @@ export default function CustomerPortalCaseStudy({ onPrev, onNext, idx, total }) 
       <div className="inv-hero">
         <p className="eyebrow">Polarin · Customer Portal</p>
         <h2>90 days → 10 minutes.</h2>
-        <p>In 2022, ordering enterprise connectivity in India meant phone calls, PDF forms and ~90 days of waiting - an industry running on processes unchanged since the 1990s. Polarin was a name on a whiteboard, and I was Lightstorm&apos;s first designer, with no telecom background and no template to copy. Four years later it&apos;s a live platform enterprises trust, and I&apos;ve gone from designing it to running it.</p>
+        <p>Polarin was a name on a whiteboard in 2022. I was Lightstorm&apos;s first designer, no telecom background, no template to copy. Four years later it&apos;s live, trusted, and I&apos;ve gone from designing it to running it.</p>
         <div className="inv-meta">
           <div><span>My role</span><b>First designer, 0 → 1 → now Product Manager</b></div>
           <div><span>Team</span><b>1 designer · 3 PMs · 12 devs</b></div>
+          <div>
+            <span>Devices</span>
+            <b className="inv-meta-devices">
+              <svg viewBox="0 0 32 20" aria-hidden="true" fill="none" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round">
+                <rect x="1" y="1" width="19" height="12.5" rx="1.6" />
+                <rect x="23" y="3.5" width="8" height="15" rx="2" />
+                <circle cx="27" cy="16" r="0.7" fill="currentColor" stroke="none">
+                  <animate attributeName="opacity" values="1;0.15;1" dur="1.8s" repeatCount="indefinite" />
+                </circle>
+              </svg>
+              responsive - desktop & mobile
+            </b>
+          </div>
         </div>
       </div>
 
@@ -293,19 +375,9 @@ export default function CustomerPortalCaseStudy({ onPrev, onNext, idx, total }) 
         <h3 className="plain">What &quot;before&quot; felt like</h3>
         <p className="dv-p">A VP of Infrastructure at a Mumbai fintech needs one connection: datacenter → AWS ap-south-1. Keep scrolling - and watch the days pile up.</p>
         <AlexJourney />
-        <div className="cj-result">
-          <span><b>~90</b> days to provision</span>
-          <span><b>5+</b> vendors contacted</span>
-          <span><b>34%</b> form error rate</span>
-          <span><b>0</b> visibility into status</span>
-        </div>
-        <p className="dv-p dim">this was the standard. for decades.</p>
       </div>
 
       <div className="inv-section">
-        <div className="inv-step-tag"><i></i>The bet</div>
-        <h3 className="plain">What happens instead</h3>
-        <p className="dv-p">A Network-as-a-Service platform with pre-established NNIs across datacenters, cloud on-ramps and PoPs - the fabric already connects everywhere Alex needs. Keep scrolling:</p>
         <TheBetScene />
       </div>
 
@@ -318,6 +390,13 @@ export default function CustomerPortalCaseStudy({ onPrev, onNext, idx, total }) 
           <div className="ivp"><b>competitive audit</b><p>4 global NaaS platforms - every UX gap became a design requirement</p></div>
         </div>
         <AuditScene />
+      </div>
+
+      <div className="inv-section">
+        <div className="inv-step-tag"><i></i>Process</div>
+        <h3 className="dv-h" style={{ marginTop: '10px' }}>From research to first pixel</h3>
+        <p className="dv-p">Desk research, primary research, benchmarking, quick prototypes, internal review, feedback, then final designs - seven stages, each shaping the next. Scroll through it:</p>
+        <ProcessScene />
       </div>
 
       <div className="inv-section">
