@@ -22,6 +22,15 @@ const AUDIT = [
   { name: 'Equinix Fabric', serve: 'partial', onboard: 'moderate', india: 'limited' },
 ];
 
+const AUDIT_GAPS = [
+  { gap: 'network monitoring', found: 'no live visibility into availability, packet loss, jitter or latency once a circuit went live', built: 'a per-circuit health dashboard - availability, packets in/out, traffic in/out, jitter & latency' },
+  { gap: 'plan flexibility', found: 'locked into whatever was ordered, no self-serve way to scale', built: 'upgrade or downgrade an active service without raising a ticket' },
+  { gap: 'payment terms', found: 'one rigid payment model, take it or leave it', built: 'flexible payment terms and options at checkout' },
+  { gap: 'multi-location billing', found: 'no way to consolidate spend across locations for GST input-credit claims', built: 'billing that rolls up multi-location purchases the way Indian tax filing actually needs' },
+  { gap: 'API sandbox', found: 'nothing to test before committing budget', built: 'a live sandbox - try the API before you buy' },
+  { gap: 'assisted ordering', found: 'enterprise buyers still needed a human, but reps had no tool to help them', built: "a sales-assist flow - our team places and manages orders on a customer's behalf" },
+];
+
 const SHOTS = {
   globe: { src: 'https://framerusercontent.com/images/iNQgdhiTrGehsbW3uNIK6gccao.gif', cap: "the customer's network, alive - global connections, regions & performance alerts at a glance", label: '3D globe' },
   map: { src: 'https://framerusercontent.com/images/N28toXGNVp0F6zjQVyvnzOtfPp4.gif', cap: 'the flat view - service locations, active connections & alerts, manageable at a glance', label: '2D map' },
@@ -193,13 +202,13 @@ function TheBetScene() {
 
 function AuditScene() {
   const ref = useRef(null);
-  const [beat] = useScrollBeat(ref, 7);
+  const [beat] = useScrollBeat(ref, 9);
   const on = (b) => (beat >= b ? 'on' : '');
 
   return (
-    <div className="oscn" ref={ref} style={{ '--beats': 7 }}>
+    <div className="oscn" ref={ref} style={{ '--beats': 9 }}>
       <div className="oscn-stage aud-stage">
-        <p className={`aud-lead obeat ${on(0)}`}>4 global platforms audited - every gap in their UX became a design requirement:</p>
+        <p className={`aud-lead obeat ${on(0)}`}>4 global platforms audited feature-by-feature - every gap became a design requirement:</p>
         <div className="aud">
           <div className={`aud-r aud-h obeat ${on(0)}`}><span>platform</span><span>self-serve</span><span>onboarding</span><span>india</span></div>
           {AUDIT.map((a, i) => (
@@ -208,6 +217,20 @@ function AuditScene() {
           <div className={`aud-r aud-p obeat ${on(5)}`}><span>Polarin →</span><span>full</span><span>15 minutes</span><span>native</span></div>
         </div>
         <p className={`aud-insight obeat ${on(6)}`}>every one of them chose engineering power over buyer accessibility. the person who approves a ₹50L contract <em>can&apos;t place an order without help.</em> that&apos;s the gap Polarin closes.</p>
+
+        <div className={`aud-gaps obeat ${on(7)}`}>
+          <p className="aud-gaps-lead">the audit went past onboarding - every feature area, across all four:</p>
+          <div className="aud-gap-grid">
+            {AUDIT_GAPS.map((g) => (
+              <div className="aud-gap" key={g.gap}>
+                <b>{g.gap}</b>
+                <p><span className="aud-gap-found">{g.found}</span><span className="aud-gap-arrow">→ built:</span> {g.built}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        <p className={`aud-next obeat ${on(8)}`}>next: benchmarking doesn&apos;t stop at features - it&apos;s extending to the experience itself, tracked every quarter as competitors ship and expectations move.</p>
       </div>
     </div>
   );

@@ -1698,6 +1698,18 @@ body.ovl-lock { overflow: hidden; }
 .aud-insight em { font-style: normal; color: var(--signal); }
 @media (max-width: 640px) { .aud-r { grid-template-columns: 1.2fr 0.8fr 0.9fr 0.6fr; font-size: 11px; padding: 10px 12px; } }
 
+.aud-gaps { margin-top: 32px; }
+.aud-gaps-lead { font-family: var(--mono); font-size: 11px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--dim); margin-bottom: 14px; }
+.aud-gap-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
+.aud-gap { border: 1px solid var(--line); border-radius: 14px; background: var(--raise); padding: 16px 18px; text-align: left; transition: transform 0.3s var(--ease), border-color 0.3s; }
+.aud-gap:hover { transform: translateY(-4px); border-color: rgba(255, 196, 107, 0.35); }
+.aud-gap b { font-family: var(--mono); font-size: 10.5px; letter-spacing: 0.16em; text-transform: uppercase; color: var(--signal); display: block; margin-bottom: 8px; }
+.aud-gap p { font-size: 12.5px; color: var(--mute); line-height: 1.5; }
+.aud-gap-found { color: var(--dim); }
+.aud-gap-arrow { display: block; color: var(--link); font-size: 11px; margin: 6px 0 4px; }
+.aud-next { margin-top: 20px; font-size: clamp(13.5px, 1.5vw, 16px); color: var(--mute); max-width: 62ch; }
+@media (max-width: 760px) { .aud-gap-grid { grid-template-columns: 1fr; } }
+
 .cs-tabs { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 22px; }
 .cs-tabs button { font-family: var(--mono); font-size: 10.5px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--mute); background: var(--raise); border: 1px solid var(--line2); border-radius: 99px; padding: 9px 16px; cursor: pointer; transition: all 0.3s; }
 .cs-tabs button:hover { color: var(--text); }
