@@ -36,6 +36,18 @@ export default function Home() {
         </div>
 
         <div className="face-wrap">
+          {/* the "systems" half of the portrait: flattened to luminance, then
+              mapped shadows → highlights through a two-stop ramp, so it reads as
+              a technical print of the same face rather than the painted one
+              beside it. the ramp used to end on pure blue (0.56 / 0.63 / 1.00),
+              which made this the single largest piece of blue on the site - and
+              blue is not an accent here any more, see --link in src/index.css.
+              it ends on near-white now, with only 2-3 points of blue over red
+              held through the ramp - the same whisper of tint the neutral ladder
+              itself carries, enough to keep the print reading cool against the
+              warm painted layer without being a colour. the two halves are still
+              told apart the way they always actually were: one is painted and
+              one is monochrome. */}
           <svg width="0" height="0" style={{ position: 'absolute' }} aria-hidden="true">
             <defs>
               <filter id="duotoneSystems" colorInterpolationFilters="sRGB">
@@ -48,9 +60,9 @@ export default function Home() {
                   result="gray"
                 />
                 <feComponentTransfer>
-                  <feFuncR type="table" tableValues="0.04 0.56" />
-                  <feFuncG type="table" tableValues="0.07 0.63" />
-                  <feFuncB type="table" tableValues="0.16 1" />
+                  <feFuncR type="table" tableValues="0.05 0.94" />
+                  <feFuncG type="table" tableValues="0.06 0.95" />
+                  <feFuncB type="table" tableValues="0.08 0.97" />
                 </feComponentTransfer>
               </filter>
             </defs>
@@ -59,7 +71,7 @@ export default function Home() {
           <div className="face" id="face">
             <div className="layer face-real">
               <img src="/image.png" alt="Prashant Kumar"
-                onError={(e) => { e.target.src = 'data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 400 460%27%3E%3Crect width=%27400%27 height=%27460%27 fill=%27%23202020%27/%3E%3Ccircle cx=%27200%27 cy=%27170%27 r=%2768%27 fill=%27none%27 stroke=%27%23A6B8FF%27 stroke-width=%272.5%27/%3E%3Cpath d=%27M85 400 C 115 305, 285 305, 315 400%27 fill=%27none%27 stroke=%27%23A6B8FF%27 stroke-width=%272.5%27/%3E%3Ctext x=%27200%27 y=%27182%27 font-family=%27monospace%27 font-size=%2732%27 fill=%27%23F5F4F2%27 text-anchor=%27middle%27%3EPK%3C/text%3E%3C/svg%3E' }}
+                onError={(e) => { e.target.src = 'data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 400 460%27%3E%3Crect width=%27400%27 height=%27460%27 fill=%27%23202020%27/%3E%3Ccircle cx=%27200%27 cy=%27170%27 r=%2768%27 fill=%27none%27 stroke=%27%23A3A3A3%27 stroke-width=%272.5%27/%3E%3Cpath d=%27M85 400 C 115 305, 285 305, 315 400%27 fill=%27none%27 stroke=%27%23A3A3A3%27 stroke-width=%272.5%27/%3E%3Ctext x=%27200%27 y=%27182%27 font-family=%27monospace%27 font-size=%2732%27 fill=%27%23F5F4F2%27 text-anchor=%27middle%27%3EPK%3C/text%3E%3C/svg%3E' }}
               />
             </div>
 

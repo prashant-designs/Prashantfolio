@@ -321,8 +321,13 @@ export default function CurrentProject() {
 
   return (
     <div>
-      {/* 01a · full-fold open */}
-      <section className="tl-hero zone zone-sink" data-ch="Intro">
+      {/* 01a · full-fold open. zone-cool, like the closing metrics fold's
+          zone-cool-r: zone-sink alone resolves to a near-flat #0b0c0f over the
+          whole fold, and this is the one page whose opening type is already
+          carrying the accent (the outlined "Building", the gradient in
+          "Polarin"). the wash is whisper strength - a change in the air of the
+          fold, not a visible circle on it. */}
+      <section className="tl-hero zone zone-sink zone-cool" data-ch="Intro">
         <div className="wrap tl-head">
           <p className="pol-kicker rv">Current Project · 2022 - now</p>
           <h2 className="pol-title rv d1">

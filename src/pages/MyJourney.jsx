@@ -97,7 +97,7 @@ function TheCrossing() {
       </div>
       <div className="cross-right" aria-hidden="true">
         <div className={`artifact ${active === 0 ? 'on' : ''}`}>
-          <div className="art-bar"><i style={{ background: 'var(--link)' }}></i>portal-module-v1.fig · first designer</div>
+          <div className="art-bar"><i style={{ background: 'var(--mute)' }}></i>portal-module-v1.fig · first designer</div>
           <div className="art-body">
             <div className="wf-el bar"></div>
             <div className="wf-el hero">MODULE / 0 → 1</div>
@@ -142,7 +142,7 @@ function TheMultiplier() {
   return (
     <div className="wrap mult-stage">
       <svg className="mult-svg" viewBox="0 0 1060 480" aria-hidden="true">
-        <path className="thread" data-th style={{ stroke: 'var(--link)' }} d="M150 70  C 330 70,  330 226, 500 232" />
+        <path className="thread" data-th style={{ stroke: 'var(--mute)' }} d="M150 70  C 330 70,  330 226, 500 232" />
         <path className="thread" data-th style={{ stroke: 'var(--rose)' }} d="M150 155 C 320 155, 330 230, 500 236" />
         <path className="thread" data-th style={{ stroke: 'var(--text)' }} d="M150 240 C 320 240, 330 240, 500 240" />
         <path className="thread" data-th style={{ stroke: 'var(--up)' }} d="M150 325 C 320 325, 330 250, 500 244" />

@@ -7,19 +7,23 @@
      a tinted rectangle drawn on the page rather than an object sitting on
      it. still all dark neutrals, just with room to breathe between them.
 
-     the four steps also carry a whisper of blue now, and that is worth
+     the four steps also carry a whisper of blue, and that is worth
      explaining because the numbers look like a rounding error. they used to
-     be pure greys - R=G=B on all four - while the light ladder below is
-     deliberately warm (#F7F6F4 → #E2DED7, red running 3-11 points ahead of
-     blue). so the paper state read as chosen and the dark state read as
-     "whatever #121212 is", which is the difference the reference sites keep
-     showing: a considered dark is a deep tinted black, never a flat one.
-     the tint ramps the same way the paper's does, just mirrored - blue runs
-     4 / 8 / 10 / 12 points ahead of red as the ladder climbs - and green is
-     held at each step's old value, so every contrast ratio measured for the
-     old greys still holds. it also agrees with what is already painted over
-     these four: the fixed dot-grid, every .zone-cool wash and the overlay
-     scrim are all cool. */
+     be pure greys - R=G=B on all four - which read as "whatever #121212 is"
+     rather than as a chosen colour, and that is the difference the reference
+     sites keep showing: a considered dark is a deep tinted black, never a
+     flat one. blue runs 4 / 8 / 10 / 12 points ahead of red as the ladder
+     climbs, and green is held at each step's old value, so every contrast
+     ratio measured for the old greys still holds.
+
+     this tint used to be described here as the mirror of a deliberately warm
+     paper ladder. it is not a mirror any more - the light ladder below was
+     re-cut cool (#F5F6F8 → #E0E3E9, blue 3-9 points ahead of red) against a
+     reference whose page is a very light neutral grey, so both states now
+     lean the same way and the page keeps one temperature through the flip
+     instead of swinging warm/cool with it. nothing here had to move for that:
+     the dark ladder was already cool, and so is everything painted over it -
+     the fixed dot-grid, every zone wash and the overlay scrim. */
   --ink: #111215;
   --ink2: #1A1C22;
   --raise: #22242C;
@@ -34,6 +38,14 @@
      hard-coded so it tracks --surface automatically - at the default it
      resolves to exactly --raise2, which is what those used to name. */
   --surface2: color-mix(in srgb, var(--surface) 95%, #ffffff);
+  /* what the CARD SYSTEM recipe actually paints a raised card with. equals
+     --surface here on purpose - no visual change in the dark palette - but
+     .theme-light breaks it away from the grey --raise ladder, so a card can
+     read as genuinely crisp on paper without --surface itself (and every
+     zone that steps it) having to move. registered as its own @property
+     below so that break still animates through the crossfade instead of
+     cutting. */
+  --card-fill: var(--surface);
 
   /* ---------------- ELEVATION ----------------
      two steps, and both are three-layer shadows on purpose. --lift is what
@@ -57,22 +69,37 @@
      the standard three: a 1-2px contact shadow that pins the card's bottom
      edge to the surface, a mid layer that reads at a glance, and a wide
      ambient layer whose negative spread is kept well inside its blur so it
-     actually bleeds 14-18px past the card on every side. that last layer is
+     actually bleeds 18-30px past the card on every side. that last layer is
      the one doing the "physical object floating above the page" work.
      alphas stay low per layer - they compose, so three soft layers read as
      one soft shadow rather than three visible edges.
+
+     softened repeatedly against a reference whose cards barely announce their
+     own edge - but widening the blur to get there overshot: the ambient
+     layer's bleed (blur minus the negative spread pulls it in, so a 76px
+     blur at -22px spread still reaches ~54px past the card) went well past
+     the 16-22px gap between cards in every row on the site, so neighbouring
+     cards' halos overlapped in the gaps and read as one continuous grey wash
+     under the whole row rather than individual cards lifting off the page -
+     exactly the "grey background shadow" that got flagged. the fix is
+     containment, not softness: every blur pulled back in so the ambient
+     layer's bleed stays under the tightest gap on the site (.tl-cs-grid's
+     16px) with room to spare, alphas nudged back up slightly since a tighter
+     shadow needs a touch more density to still read at a glance. still
+     contact / mid / ambient, still three layers, still not taken to zero - a
+     card with no shadow at all goes back to being printed on the page.
 
      both are declared here as plain shadow lists rather than registered
      @property values: box-shadow is animatable on its own, and the only
      place either is transitioned is a card's own hover. */
   --lift:
-    0 2px 4px -1px rgba(0, 0, 0, 0.26),
-    0 10px 22px -8px rgba(0, 0, 0, 0.36),
-    0 30px 60px -16px rgba(0, 0, 0, 0.48);
+    0 1px 2px -1px rgba(0, 0, 0, 0.22),
+    0 6px 14px -8px rgba(0, 0, 0, 0.24),
+    0 12px 24px -12px rgba(0, 0, 0, 0.22);
   --lift-lg:
-    0 4px 8px -2px rgba(0, 0, 0, 0.3),
-    0 18px 36px -12px rgba(0, 0, 0, 0.42),
-    0 48px 92px -24px rgba(0, 0, 0, 0.55);
+    0 2px 4px -1px rgba(0, 0, 0, 0.26),
+    0 10px 20px -10px rgba(0, 0, 0, 0.28),
+    0 18px 34px -16px rgba(0, 0, 0, 0.26);
 
   /* the flat colour a zone's tint actually resolves to over --ink. only
      needed by the few gradients that have to fade out into "whatever this
@@ -86,15 +113,21 @@
   --tint-lift: rgba(255, 255, 255, 0.032);
   --tint-lift-hi: rgba(255, 255, 255, 0.055);
   --tint-sink: rgba(0, 0, 0, 0.34);
-  /* the cool wash is still a section-level atmosphere (see SECTION ZONES).
-     the warm one is not - red now belongs to the single decisive action on a
-     screen, so the only ambient warmth left on the site is the narrative
-     "two halves meeting" wash in .zone-duo, at roughly a third of its old
-     strength. --glow-duo-cool brings that pair's cool half down with it so
-     the two sides still read as one balanced device. */
+  /* the "cool" wash is still a section-level atmosphere (see SECTION ZONES),
+     but it is no longer a hue: it was a blue bloom (rgba(76, 130, 255, 0.08))
+     and it is now plain white at low alpha, because blue is not an accent on
+     this site any more - see --link. the name is kept rather than churned
+     through .zone-cool / .zone-cool-r / the pinned stages; read "cool" as
+     "the neutral half of the pair" wherever it appears below.
+     the warm wash survives only as narrative - red belongs to the single
+     decisive action on a screen, so the one ambient warmth left is the
+     "two halves meeting" device in .zone-duo, at roughly a third of its old
+     strength. that pair now reads warm-red against cool-neutral rather than
+     warm against blue, which is still two halves meeting and still the only
+     place on the site where two tones share a section. */
   --glow-warm: rgba(232, 73, 45, 0.028);
-  --glow-duo-cool: rgba(166, 184, 255, 0.03);
-  --glow-cool: rgba(166, 184, 255, 0.08);
+  --glow-duo-cool: rgba(255, 255, 255, 0.03);
+  --glow-cool: rgba(255, 255, 255, 0.045);
 
   --line: rgba(255, 255, 255, 0.08);
   --line2: rgba(255, 255, 255, 0.16);
@@ -130,40 +163,72 @@
        --glow-warm           - whisper-strength, .zone-duo only
        .home-hero            - whisper-strength, the two-halves fold */
   --signal: #E8492D;
-  --link: #A6B8FF;
+  /* NOT an accent, and not blue. --link used to be the site's second colour -
+     a vivid #4C82FF on dark, #2F5FE0 on paper - carrying links, icon tints,
+     chart series, decorative glows and (most recently) the whole Polarin
+     timeline rail. blue next to --signal read as two accents competing, worst
+     of all in that rail where a blue spine ran through a red "you are here",
+     so the same one-colour discipline --signal already documents above now
+     applies to blue by removing it: there is no hue on this site except red,
+     and red only in the nine places listed above.
+     what replaced it, by category, is the neutral ladder - an interactive
+     label is --mute at rest and --text on hover (confidence, not hue), the
+     rail is --mute / --line2 / --card-fill with --signal only on the current
+     stop, chart series are the --bar-* ramp below, and every glow is white or
+     black at low alpha. the token itself survives, pointed at a plain light
+     grey, purely as a safety net: anything that still reads it - or any future
+     pass that reaches for it out of habit - gets a neutral rather than a blue.
+     nothing in this file uses it on purpose any more. */
+  --link: #C9C8C5;
   --up: #5CE0A8;
   --rose: #FF8FA8;
 
-  /* the honest-skills chart palette. the first four are aliases of tokens
-     that already exist rather than new colours - the point of naming them
-     at all is that a section which re-points the palette (see SECTION THEME
-     FLIP) can re-point the two bars that are neither of those, instead of
-     leaving two raw hexes buried in About.jsx. --bar-num is the value label
-     that rides on top of a bar. */
-  --bar-1: var(--text);
-  --bar-2: var(--link);
-  --bar-3: var(--up);
-  --bar-4: var(--rose);
-  --bar-5: #b48ef0;
-  --bar-6: #6fd3e8;
+  /* the honest-skills chart palette: six series, six pastel hues.
+     a monochrome lightness ramp (tried right after blue was retired as an
+     accent) turned out to solve the wrong problem - it kept the one-accent
+     rule technically intact, but a reader can no longer tell "Figma" from
+     "3D & animation" at a glance, only rank them, which is what the axis and
+     the printed % are already for. data legibility is its own category,
+     separate from the UI-chrome accent rule: --signal still means exactly
+     one thing everywhere it appears, and these six only ever label an axis -
+     they never sit on a button, a link, or a nav state, so they can't be
+     confused for "the one decisive action" the way a second UI accent would.
+     soft/desaturated on purpose (pastel, not the vivid brand blue that got
+     retired) so none of the six reads as a second brand colour - they read as
+     a chart. donut segments alias three of the six (see .ab-seg below) so the
+     two charts share one vocabulary instead of inventing a second palette.
+     all six are registered @property colours on the crossfade list so they
+     turn over with the page; the paper set is in .theme-light, deepened for
+     contrast on white rather than just carried over. */
+  --bar-1: #FF9E8A;
+  --bar-2: #FFCB7D;
+  --bar-3: #9BE0B0;
+  --bar-4: #9DC4FF;
+  --bar-5: #C3AEFF;
+  --bar-6: #8FE0DA;
   /* dark ink riding on top of a bright chart bar - the page floor at 85%, so
      it tracks --ink's tint rather than staying the pure grey it was. */
   --bar-num: rgba(17, 18, 21, 0.85);
 
   /* the outline-only ghost word behind About's mix donut - and behind Ch.2's
      "The Crossing" stage, which used to carry its own near-identical hex. a
-     token because it is the one place a colour has to be light-on-dark
-     rather than a neutral that flips with the palette. */
-  --ghost-stroke: rgba(166, 184, 255, 0.16);
+     token because it has to be light-on-dark here and dark-on-paper in
+     .theme-light, which no single hairline value does. it was a 16% blue; it
+     is the same 16% in plain white now, which is what it always read as at
+     that alpha behind a 170px outlined word. */
+  --ghost-stroke: rgba(255, 255, 255, 0.16);
 
   /* the fixed nav's own frosted panel, its progress track and its tab hover
      wash. tokens rather than the three buried rgba()s they used to be,
      because the bar is no longer a constant: it flips with whatever section
      is passing under it (see NAV THEME SYNC), and a fixed element that stays
-     dark over light paper reads as a bug rather than as chrome. */
+     dark over light paper reads as a bug rather than as chrome. the track and
+     the hover wash were blue-tinted; they are white at low alpha now, which is
+     what chrome on a frosted dark bar should have been all along - the paper
+     pair in .theme-light was already neutral black. */
   --nav-bg: rgba(17, 18, 21, 0.88);
-  --nav-track: rgba(166, 184, 255, 0.12);
-  --nav-hover: rgba(166, 184, 255, 0.08);
+  --nav-track: rgba(255, 255, 255, 0.14);
+  --nav-hover: rgba(255, 255, 255, 0.07);
 
   --disp: "Bricolage Grotesque", sans-serif;
   --body: "Instrument Sans", -apple-system, "Segoe UI", sans-serif;
@@ -407,12 +472,17 @@ p {
   border-radius: 4px;
 }
 
+/* the site's fixed dot-grid. the dots were a 9% blue - the largest single
+   surface of blue on the site, since this layer is behind every screen of it -
+   and are plain white at 5.5% now: the same visible weight (white carries
+   further than a mid blue at equal alpha, hence the lower number) with no hue
+   under the whole page. */
 body::before {
   content: "";
   position: fixed;
   inset: 0;
   z-index: -2;
-  background-image: radial-gradient(rgba(166, 184, 255, 0.09) 1px, transparent 1px);
+  background-image: radial-gradient(rgba(255, 255, 255, 0.055) 1px, transparent 1px);
   background-size: 36px 36px;
   mask-image: radial-gradient(ellipse 90% 75% at 50% 30%, black, transparent);
   -webkit-mask-image: radial-gradient(ellipse 90% 75% at 50% 30%, black, transparent);
@@ -812,11 +882,14 @@ body::before {
   --zone-base: #0b0c0f;
 }
 
-/* atmospheric accent. cool = the product / AI half of the story. kept huge
-   and faint on purpose: the intent is a change in the air of a section, never
-   a visible circle on it. the warm (red-tinted) twins of these two are gone -
-   an ambient red wash on a dozen sections is decoration, and red is reserved
-   for the one decisive action on a screen. */
+/* atmospheric depth, on the two corners a section can lean into. kept huge and
+   faint on purpose: the intent is a change in the air of a section, never a
+   visible circle on it. neither of these is a tint any more - the warm
+   (red-tinted) twins went first, because an ambient red wash on a dozen
+   sections is decoration and red is reserved for the one decisive action, and
+   the blue that was left in --glow-cool has now gone the same way for the same
+   reason. what is left is white at 4.5%, i.e. light rather than colour. the
+   class names are unchanged - see the note on --glow-cool in TOKENS. */
 .zone-cool {
   --zone-glow: radial-gradient(1150px 700px at 10% 6%, var(--glow-cool), transparent 64%);
 }
@@ -825,11 +898,14 @@ body::before {
   --zone-glow: radial-gradient(1050px 640px at 92% 10%, var(--glow-cool), transparent 62%);
 }
 
-/* both accents at opposite corners - the one section-level place warm light
-   survives, and only because the warm-meets-cool pair IS the point being
+/* two tones at opposite corners - the one section-level place warm light
+   survives, and only because the two-halves-meeting pair IS the point being
    made: it lights Ch.2 "The Crossing", the chapter about design and product
-   meeting. both halves run at whisper strength - see --glow-warm and
-   --glow-duo-cool. */
+   meeting. the pair is warm-red against cool-neutral now rather than warm
+   against blue, and the device still works: what the fold needs is two lights
+   converging from opposite sides, not two hues, and the warm half is the one
+   carrying the meaning ("the design side"). both run at whisper strength - see
+   --glow-warm and --glow-duo-cool. */
 .zone-duo {
   --zone-glow:
     radial-gradient(860px 560px at 3% 4%, var(--glow-warm), transparent 60%),
@@ -903,14 +979,18 @@ body::before {
       untouched. (body's own `color: var(--text)` now re-resolves too, since
       the flag sits above it - the declaration here is what guarantees it
       whether the flag ends up on the root or anywhere else.)
-   2. an alias token (`--bar-1: var(--text)`) is substituted where it is
-      *declared*, not where it is used, so the aliases in :root all froze at
-      dark hexes too. .theme-light restates them, which re-substitutes them
-      against the light palette. same failure, same fix, one level down.
-      note that .theme-light and :root are now the same element, and the tie
-      in specificity between them is broken by source order - which is why
-      the light block below has to stay *after* the :root block at the top of
-      this file. */
+   2. an alias token used to sit in this group (`--bar-1: var(--text)`),
+      substituted where it is *declared* rather than where it is used, so the
+      alias in :root froze at a dark hex too. .theme-light restated it, which
+      re-substituted it against the light palette. same failure, same fix,
+      one level down - moot now that all six bars are their own pastel
+      colours (see TOKENS) rather than aliases of --text/--link/--up/--rose,
+      but the note stays because it's the reason all six are registered below
+      and listed on the crossfade individually instead of riding another
+      token's. note that .theme-light and :root are now the same element, and
+      the tie in specificity between them is broken by source order - which is
+      why the light block below has to stay *after* the :root block at the
+      top of this file. */
 @property --ink2 { syntax: '<color>'; inherits: true; initial-value: #1A1C22; }
 @property --raise { syntax: '<color>'; inherits: true; initial-value: #22242C; }
 @property --raise2 { syntax: '<color>'; inherits: true; initial-value: #2D2F39; }
@@ -919,13 +999,18 @@ body::before {
 @property --text { syntax: '<color>'; inherits: true; initial-value: #F5F4F2; }
 @property --mute { syntax: '<color>'; inherits: true; initial-value: #A3A3A3; }
 @property --dim { syntax: '<color>'; inherits: true; initial-value: #757575; }
-@property --link { syntax: '<color>'; inherits: true; initial-value: #A6B8FF; }
+@property --link { syntax: '<color>'; inherits: true; initial-value: #C9C8C5; }
 @property --up { syntax: '<color>'; inherits: true; initial-value: #5CE0A8; }
 @property --rose { syntax: '<color>'; inherits: true; initial-value: #FF8FA8; }
-@property --bar-5 { syntax: '<color>'; inherits: true; initial-value: #b48ef0; }
-@property --bar-6 { syntax: '<color>'; inherits: true; initial-value: #6fd3e8; }
+@property --bar-1 { syntax: '<color>'; inherits: true; initial-value: #FF9E8A; }
+@property --bar-2 { syntax: '<color>'; inherits: true; initial-value: #FFCB7D; }
+@property --bar-3 { syntax: '<color>'; inherits: true; initial-value: #9BE0B0; }
+@property --bar-4 { syntax: '<color>'; inherits: true; initial-value: #9DC4FF; }
+@property --bar-5 { syntax: '<color>'; inherits: true; initial-value: #C3AEFF; }
+@property --bar-6 { syntax: '<color>'; inherits: true; initial-value: #8FE0DA; }
 @property --bar-num { syntax: '<color>'; inherits: true; initial-value: rgba(17, 18, 21, 0.85); }
-@property --ghost-stroke { syntax: '<color>'; inherits: true; initial-value: rgba(166, 184, 255, 0.16); }
+@property --ghost-stroke { syntax: '<color>'; inherits: true; initial-value: rgba(255, 255, 255, 0.16); }
+@property --card-fill { syntax: '<color>'; inherits: true; initial-value: #22242C; }
 
 /* .flip and .flip-lock have no declarations at all, on purpose. they are
    markers that JS reads (see useGlobalTheme in src/App.jsx) to decide the one
@@ -955,10 +1040,15 @@ body::before {
     --link 0.5s ease,
     --up 0.5s ease,
     --rose 0.5s ease,
+    --bar-1 0.5s ease,
+    --bar-2 0.5s ease,
+    --bar-3 0.5s ease,
+    --bar-4 0.5s ease,
     --bar-5 0.5s ease,
     --bar-6 0.5s ease,
     --bar-num 0.5s ease,
-    --ghost-stroke 0.5s ease;
+    --ghost-stroke 0.5s ease,
+    --card-fill 0.55s ease;
 }
 
 /* THE BACKDROP. the page's stock is one thing, not a patchwork: <html> and
@@ -1018,38 +1108,74 @@ body {
   /* the neutral ladder, inverted. same four steps, same meaning - "further
      from the page floor" - but on paper that reads as a slightly deeper
      panel rather than a lighter one, so the ladder runs light to dark and
-     --surface2 steps toward black instead of white. the warm tint here is
-     the model the dark ladder now mirrors in the cool direction - see the
-     note on --ink at the top of this file. */
-  --ink: #F7F6F4;
-  --ink2: #F0EEE9;
-  --raise: #EBE8E2;
-  --raise2: #E2DED7;
-  --surface2: color-mix(in srgb, var(--surface) 95%, #000000);
+     --surface2 steps toward black instead of white.
 
-  /* elevation on paper: the same three-layer shape as the dark set, at
-     roughly a quarter of the alpha. that ratio is the whole trick - a card
-     on paper is #EBE8E2 sitting on #F7F6F4, twelve points of separation, so
-     the shadow is not a supporting cue here, it is the only cue, and it is
-     also the one thing that will read as dirt if it is overdone. the pair
-     this replaces (a single 22% layer at -20px spread against a 32px blur)
-     had the same geometry problem as its dark twin - the sides finished
-     inside the card, so a raised card on paper was a bordered rectangle and
-     nothing more, which is exactly the flatness the reference does not have.
-     the contact layer is kept at 5% rather than dropped: on paper it is what
-     stops a card looking like it is printed on the page. */
+     re-cut cool in this pass. it used to be warm-beige (#F7F6F4 → #E2DED7,
+     red 3-11 points ahead of blue), which was a deliberate choice at the time
+     but the reference the page is now measured against - naukri.com - sits on
+     a very light, faintly cool neutral grey, and beige next to it reads as
+     aged paper rather than as a clean surface. only the temperature moved:
+     the four steps keep the same count and the same separation they had
+     (7 / 5 / 9 points of red between rungs, exactly as before), so every
+     depth relationship on the site is unchanged and only the hue is
+     different. blue now runs 3 / 6 / 7 / 9 points ahead of red as the ladder
+     descends, which is the same order of tint the old ladder had in the warm
+     direction - subtle enough to read as "neutral grey", not as "blue page".
+     the dark ladder is untouched: it was already cool (see the note on --ink
+     at the top of this file), so the two states now agree instead of
+     swapping temperature at the flip.
+
+     contrast against these four is in the type note below, recomputed rather
+     than carried over. */
+  --ink: #F5F6F8;
+  --ink2: #EEF0F4;
+  --raise: #E9EBF0;
+  --raise2: #E0E3E9;
+  --surface2: color-mix(in srgb, var(--surface) 95%, #000000);
+  /* the one deliberate break from the ladder above: a raised card on paper
+     paints pure white rather than stepping down the grey --raise ladder
+     with everything else. #E9EBF0-on-#F5F6F8 is only twelve points of
+     separation - correct depth-wise (the shadow pair above carries it) but
+     it reads as one more shade of the same grey rather than an object
+     sitting on the page, which is the flatness the Meter/Naukri references
+     do not have. it matters more now the page is cool, not less: white on a
+     faintly cool grey is exactly the card/page relationship the reference
+     uses, and it is the reason the ladder could be cooled without the cards
+     going with it. registered as --card-fill (not a flat background swap) so
+     it still rides the 0.6s crossfade instead of cutting straight to white
+     mid-transition. */
+  --card-fill: #FFFFFF;
+
+  /* elevation on paper. two passes of "soften" here both widened the ambient
+     layer's blur to get a gentler edge, and both overshot the same way the
+     dark set did (see the ELEVATION note at the top of this file): a 76px
+     blur at -22px spread bleeds ~54px past the card, well past the 16-22px
+     gap between cards in every row on the site, so the halo from one card
+     ran into the next and read as a grey wash under the whole row instead of
+     each card lifting individually - the actual bug behind "remove that grey
+     background shadow." fixed by containment rather than more softening:
+     blurs pulled back in so the ambient layer's bleed stays under the
+     tightest gap on the site (.tl-cs-grid's 16px), alphas brought back up
+     slightly since a tighter shadow needs a bit more density to read at all
+     against paper. the contact layer is kept, not dropped: it's still what
+     stops a card looking printed on the page rather than sitting on it. */
   --lift:
     0 1px 2px rgba(0, 0, 0, 0.05),
-    0 8px 18px -6px rgba(0, 0, 0, 0.09),
-    0 24px 48px -14px rgba(0, 0, 0, 0.13);
+    0 6px 12px -8px rgba(0, 0, 0, 0.06),
+    0 12px 22px -12px rgba(0, 0, 0, 0.05);
   --lift-lg:
-    0 2px 4px -1px rgba(0, 0, 0, 0.06),
-    0 14px 30px -10px rgba(0, 0, 0, 0.1),
-    0 40px 76px -22px rgba(0, 0, 0, 0.16);
+    0 2px 4px rgba(0, 0, 0, 0.06),
+    0 8px 16px -10px rgba(0, 0, 0, 0.08),
+    0 16px 28px -14px rgba(0, 0, 0, 0.07);
 
-  /* zone tints invert from white-on-dark to black-on-paper - the depth
-     variation between sections survives the flip, it just shades down from
-     paper instead of up from ink. --tint-sink matters most: at its dark value
+  /* zone tints and glows invert from white-on-dark to black-on-paper - the
+     depth variation between sections survives the flip, it just shades down
+     from paper instead of up from ink. that now includes --glow-cool and
+     --glow-duo-cool: they were mid-blue on paper (rgba(47, 95, 224, 0.06 /
+     0.05)) and are plain black at 2% here, so a "cool" section is a section
+     with slightly deeper air in one corner rather than a blue-washed one.
+     --glow-warm keeps its hue, alone, in .zone-duo only.
+     --tint-sink matters most: at its dark value
      (34% black) it would paint a paper section mud, and every sink zone on
      the site is now in scope, not just the flipped ones - Ch.2, the Epilogue,
      About's hero and My Process, the whole Other Projects page.
@@ -1064,9 +1190,9 @@ body {
   --tint-lift: rgba(0, 0, 0, 0.022);
   --tint-lift-hi: rgba(0, 0, 0, 0.04);
   --tint-sink: rgba(0, 0, 0, 0.06);
-  --glow-cool: rgba(58, 80, 200, 0.06);
+  --glow-cool: rgba(0, 0, 0, 0.022);
   --glow-warm: rgba(232, 73, 45, 0.05);
-  --glow-duo-cool: rgba(58, 80, 200, 0.05);
+  --glow-duo-cool: rgba(0, 0, 0, 0.02);
   --glow-soft: rgba(0, 0, 0, 0.3);
   --dot-light: rgba(0, 0, 0, 0.055);
 
@@ -1075,57 +1201,72 @@ body {
   --line: rgba(0, 0, 0, 0.10);
   --line2: rgba(0, 0, 0, 0.20);
 
-  /* type, against #F7F6F4 paper: --text ~16:1, --mute ~6.8:1, --dim ~5:1.
-     --dim only ever carries 9.5-12px mono labels, which is exactly why it
-     is kept clear of the 4.5:1 floor rather than sat on it - the naive
-     inversion of #757575 would land near 3:1. */
-  --text: #1A1917;
-  --mute: #565350;
-  --dim: #6B675F;
+  /* type, recomputed against the cooled paper above rather than carried over.
+     the three were warm greys (#1A1917 / #565350 / #6B675F) which read faintly
+     olive on a cool page, so each moved to its cool-neutral twin at the same
+     luminance - a hue change, not a contrast change, which the numbers show:
+
+                    on --ink   on --card-fill   on --raise2 (the deepest rung)
+       --text        16.1:1        17.4:1            13.5:1
+       --mute         6.8:1         7.4:1             5.7:1
+       --dim          5.0:1         5.4:1             4.2:1
+
+     (the old warm set measured 16.3 / 7.1 / 5.2 on the old --ink, i.e. every
+     rung landed within 0.3 of where it was.)
+     --dim only ever carries 9.5-12px mono labels, which is exactly why it is
+     kept clear of the 4.5:1 floor on the page rather than sat on it - it drops
+     to 4.2:1 on --raise2, and a naive inversion of #757575 would land near 3:1.
+     --signal is unchanged and still ~3.6:1 against the page. */
+  --text: #191A1D;
+  --mute: #545659;
+  --dim: #676A70;
 
   /* accents. --signal stays #E8492D: a saturated red on paper is ~3.6:1
      against the page and unmissable at CTA size, and the one decisive
      action on a screen should not change identity halfway down a scroll.
-     --link cannot stay - #A6B8FF is a light-mode-only blue and lands near
-     1.6:1 on paper, i.e. gone - so it drops to a mid-tone that still reads
-     as the same blue at ~6.2:1. --up and --rose get the same treatment:
-     both are carrying graphics here (donut segments, chart bars) that would
-     otherwise wash out to nothing, and so are --bar-5 / --bar-6.
+     it is also the only hue left in this block - --link is a neutral grey in
+     both palettes now and used on purpose nowhere (see the note on it in
+     TOKENS), so it is here only to keep the token's two states consistent for
+     anything that still reads it.
 
-     all four were then taken one step deeper than the naive inversion. they
-     do double duty - a bar or donut segment in one place, a small bold label
-     in another (.prd-metric b, .db-note b, .db-kpi .v.g) - so each has to
-     clear 3:1 as a graphic *and* 4.5:1 as text. the first pass' green was the
-     tell: #0F8F60 read 3.8:1 as a label and only 2.6:1 as an 85%-opacity bar
-     against the chart card, i.e. the "clear coloured bar" was neither. these
-     land at 4.9-6.7:1 as labels and 3.2-4.1:1 as bars. */
-  --link: #3A50C8;
+     --up and --rose are still deepened for paper: both carry small bold labels
+     (.prd-metric b, .db-note b, .db-kpi .v.g) plus a couple of 8px status dots,
+     and the naive inversion of a dark-mode pastel lands near 2:1 here. they no
+     longer carry chart series - that moved to the neutral --bar-* ramp - so the
+     "clear 3:1 as a graphic and 4.5:1 as text" double duty is now only about
+     the labels, which they clear at 4.9-5.5:1.
+
+     the chart palette is restated below for the same reason as --up/--rose -
+     the dark-mode pastels are tuned to glow against near-black and land
+     nowhere near 3:1 as a graphic against white, so each of the six is taken
+     to a deeper, more saturated version of the same hue rather than carried
+     over as-is. all six stay registered @property colours (see just above
+     TOKENS) so the deepen-on-flip still animates through the crossfade
+     instead of cutting. */
+  --link: #3B3D42;
   --up: #0C7A50;
   --rose: #AE3450;
-  --bar-5: #6B3FB5;
-  --bar-6: #115E75;
-  --bar-num: rgba(26, 25, 23, 0.9);
+  --bar-num: rgba(25, 26, 29, 0.9);
   --ghost-stroke: rgba(0, 0, 0, 0.13);
 
-  /* the four alias bars, restated so they re-substitute here (trap 2 above).
-     without this line the chart's tallest bar stayed --text's *dark-mode*
-     near-white on a near-white card - a 1.1:1 ghost outline where a 95% bar
-     should be - and bars 2-4 kept their pastel dark-mode blues and pinks at
-     roughly 1.5-2:1. they now inherit the flipped ink and accents: bar 1 lands
-     ~15:1 on the card, the rest 4.5-7:1, and the value labels stay legible
-     because --bar-num flips with them (see the mix-blend note on .ab-bar). */
-  --bar-1: var(--text);
-  --bar-2: var(--link);
-  --bar-3: var(--up);
-  --bar-4: var(--rose);
+  /* six deepened pastels, same hues as the dark set, each pulled down until
+     it clears roughly 3:1 as a bar (once .ab-bar's own 0.85 opacity is
+     applied) and reads as the same colour family rather than a different
+     chart. */
+  --bar-1: #E8735A;
+  --bar-2: #D99A2B;
+  --bar-3: #4FA873;
+  --bar-4: #4C82C9;
+  --bar-5: #8A6FD9;
+  --bar-6: #2E9C93;
 
   /* the nav's frosted panel while it is light: brighter and slightly more
      opaque than the paper it sits on (pure white, not the paper's off-white)
      so the bar reads as a raised pane of glass rather than the same stock as
      the page - the earlier version matched the paper almost exactly, which
-     is what made it read flat instead of elevated. track/hover are
-     neutral-on-paper rather than the cool blue tint that only reads on a
-     dark bar. */
+     is what made it read flat instead of elevated. track/hover were already
+     neutral black here - the dark pair has now joined them in plain white,
+     rather than the blue tint it used to carry. */
   --nav-bg: rgba(255, 255, 255, 0.78);
   --nav-track: rgba(0, 0, 0, 0.16);
   --nav-hover: rgba(0, 0, 0, 0.055);
@@ -1225,12 +1366,18 @@ body {
   display: inline-block;
 }
 
+/* the shared kicker above a heading, on nine pages and case studies. it was
+   --link with a --link rule beside it, i.e. the single most repeated piece of
+   blue on the site: a coloured label on every fold, which is decoration by
+   volume alone. it is --mute over the neutral hairline now - an eyebrow's job
+   is to be read before the heading, not instead of it, and the tracking and
+   the rule already do that work without a hue. */
 .eyebrow {
   font-family: var(--mono);
   font-size: var(--t-eyebrow);
   letter-spacing: 0.24em;
   text-transform: uppercase;
-  color: var(--link);
+  color: var(--mute);
   display: flex;
   align-items: center;
   gap: 12px;
@@ -1241,7 +1388,7 @@ body {
   content: "";
   width: 28px;
   height: 1px;
-  background: var(--link);
+  background: var(--line2);
 }
 
 .rv {
@@ -1286,10 +1433,22 @@ body {
      both halves were dialled down to roughly 40% of their old alpha: this is
      the only warm light left on the home page, and it has to stay well under
      the one thing on this screen that is allowed to be red - the CTA pill.
-     the cool half comes down with it so the two halves stay balanced. */
+     the cool half comes down with it so the two halves stay balanced.
+
+     that cool half is plain white now rather than the blue it used to be -
+     same reasoning as .zone-duo, which is the other place the two-halves
+     device survives: what the fold needs is light arriving from two sides,
+     and the warm side is the one carrying an idea. at 2-5% it is a lean in
+     the air rather than a colour either way, and the *warm* half is what
+     makes the pair legible as a pair. worth knowing that on paper the white
+     half flattens out entirely while the warm one still whispers - which is
+     acceptable at this strength (the page's own light already reads as the
+     "product" side of the fold) and is the one place a token could not do
+     better, since these two alphas animate as <number>s and rgba() cannot
+     take a var() colour. */
   background-image:
     radial-gradient(860px 620px at 0% 42%, rgba(232, 73, 45, var(--hg-warm, 0.022)), transparent 58%),
-    radial-gradient(860px 620px at 100% 42%, rgba(166, 184, 255, var(--hg-cool, 0.024)), transparent 58%);
+    radial-gradient(860px 620px at 100% 42%, rgba(255, 255, 255, var(--hg-cool, 0.024)), transparent 58%);
   transition: --hg-warm 0.55s var(--ease), --hg-cool 0.55s var(--ease);
 }
 
@@ -1425,7 +1584,7 @@ body {
 }
 
 .side-pm h2 .br {
-  color: var(--link);
+  color: var(--mute);
   transition: color 0.4s;
 }
 
@@ -1550,8 +1709,8 @@ body {
   position: absolute;
   inset: 0;
   background-image:
-    linear-gradient(rgba(166, 184, 255, 0.2) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(166, 184, 255, 0.2) 1px, transparent 1px);
+    linear-gradient(rgba(255, 255, 255, 0.14) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.14) 1px, transparent 1px);
   background-size: 16px 16px;
   mix-blend-mode: screen;
   opacity: 0.55;
@@ -1563,7 +1722,7 @@ body {
   right: 0;
   top: -35%;
   height: 35%;
-  background: linear-gradient(rgba(166, 184, 255, 0), rgba(166, 184, 255, 0.4), rgba(166, 184, 255, 0));
+  background: linear-gradient(rgba(255, 255, 255, 0), rgba(255, 255, 255, 0.3), rgba(255, 255, 255, 0));
   mix-blend-mode: screen;
   animation: face-scan-move 2.6s linear infinite;
 }
@@ -1589,7 +1748,7 @@ body {
   position: absolute;
   width: 20px;
   height: 20px;
-  border: 2px solid var(--link);
+  border: 2px solid var(--text);
   opacity: 0.85;
 }
 
@@ -1650,11 +1809,24 @@ body {
   font-weight: 500;
 }
 
+/* the chip row itself: just a wrapping flex row, visible wherever it is used. */
 .side-skills {
   display: flex;
   flex-wrap: wrap;
   gap: 7px;
   margin-top: 16px;
+}
+
+/* hidden-until-its-half-is-active belongs to Home's two-halves hero, and only
+   there. it used to live on .side-skills itself, with the only opacity: 1 in the
+   file gated behind .home-hero[data-mode=...] - so the second consumer of this
+   class, the PM chip row on stop 04 of Current Project's timeline, rendered at
+   opacity: 0 for good. five chips ("PRDs & roadmaps", "Prioritisation", "UAT
+   testing", "AI-assisted design", "Frontend + deploy") were in the DOM, taking
+   up their line of vertical space in the pinned stage, and completely invisible.
+   the two reveal rules below are three classes plus an attribute deep, so they
+   still outrank this. */
+.home-hero .side-skills {
   opacity: 0;
   transform: translateY(6px);
   transition: opacity 0.4s var(--ease), transform 0.4s var(--ease);
@@ -1757,7 +1929,7 @@ body {
 
 .soon-box h2 span {
   color: transparent;
-  -webkit-text-stroke: 1.2px var(--link);
+  -webkit-text-stroke: 1.2px var(--mute);
 }
 
 .soon-box p {
@@ -1780,7 +1952,7 @@ body {
 }
 
 .soon-term .k {
-  color: var(--link);
+  color: var(--mute);
 }
 
 .soon-term .a {
@@ -1914,14 +2086,14 @@ footer .g {
 
 /* ================= CURRENT PROJECT (Polarin) ================= */
 .pol-kicker { font-family: var(--mono); font-size: var(--t-eyebrow); letter-spacing: 0.24em; text-transform: uppercase; color: var(--dim); }
-.pol-kicker b { color: var(--link); font-weight: 500; }
+.pol-kicker b { color: var(--text); font-weight: 500; }
 .pol-title { font-family: var(--disp); font-weight: 800; font-size: var(--t-hero); letter-spacing: -0.035em; line-height: 1; margin-top: 10px; }
 
 .ch-head { padding: var(--sp-sec) 0 var(--sp-head); }
 .ch-num { font-family: var(--mono); font-size: var(--t-eyebrow); letter-spacing: 0.24em; text-transform: uppercase; color: var(--dim); }
 .ch-num b { color: var(--text); font-weight: 500; }
 .ch-title { font-family: var(--disp); font-weight: 800; font-size: var(--t-chapter); letter-spacing: -0.03em; line-height: 1; margin-top: 12px; }
-.ch-title span { color: var(--link); }
+.ch-title span { color: var(--mute); }
 /* the paragraph under a chapter title. it was written inline twice on My
    Journey - `color: var(--mute); max-width: 58ch; margin-top: 14px` on Ch.2
    and the same three with 60ch on Ch.3 - which is one paragraph style invented
@@ -1944,13 +2116,28 @@ footer .g {
 .cstat .n .sfx { color: var(--mute); }
 .cstat .l { font-family: var(--mono); font-size: 10px; letter-spacing: 0.16em; text-transform: uppercase; color: var(--dim); margin-top: 4px; }
 
-.pol-title .bt b { display: inline-block; color: transparent; -webkit-text-stroke: 2px var(--link); transition: color 0.45s ease, -webkit-text-stroke-color 0.45s ease, transform 0.45s var(--ease); cursor: default; }
+.pol-title .bt b { display: inline-block; color: transparent; -webkit-text-stroke: 2px var(--mute); transition: color 0.45s ease, -webkit-text-stroke-color 0.45s ease, transform 0.45s var(--ease); cursor: default; }
 .pol-title .bt b:hover { color: var(--text); -webkit-text-stroke-color: var(--text); transform: translateY(-4px); }
-.pol-title .pw { display: inline-block; background: linear-gradient(100deg, var(--text) 15%, var(--link) 42%, var(--text) 88%); background-size: 230% 100%; -webkit-background-clip: text; background-clip: text; color: transparent; animation: gsweep 5.5s ease-in-out infinite; }
+.pol-title .pw { display: inline-block; background: linear-gradient(100deg, var(--text) 15%, var(--mute) 42%, var(--text) 88%); background-size: 230% 100%; -webkit-background-clip: text; background-clip: text; color: transparent; animation: gsweep 5.5s ease-in-out infinite; }
 @keyframes gsweep { 0%, 100% { background-position: 0% 0; } 50% { background-position: 100% 0; } }
 .pol-open-sub { font-family: var(--mono); font-size: var(--t-eyebrow); letter-spacing: 0.24em; text-transform: uppercase; color: var(--dim); margin-top: 22px; }
 
-.tl-head .btn-ghost { display: inline-block; margin-top: 24px; }
+/* the hero's action sits on --sp-fold, the rung the spacing scale defines for
+   exactly this - "the gap above the row of actions a full fold closes on". it
+   was a hand-rolled 24px, which was tuned when a featured card followed the
+   button and closed the fold for it; with that card gone the button *is* the
+   last thing in the fold and 24px read as an orphan hanging off the lede. */
+.tl-head .btn-ghost { display: inline-block; margin-top: var(--sp-fold); }
+
+/* the two secondary CTAs on this page - the hero's "see case studies" and the
+   globe's "see how it's built" - used to be scoped away from shared .btn-ghost
+   so they could carry a blue fill and a blue-washed hover, on the argument that
+   the page around them was already blue-accented. it is not any more, and two
+   buttons that are the only accented thing left in a fold read as a second CTA
+   competing with the page's one red action. both rules are gone rather than
+   re-tinted: .btn-ghost is grey-on-hairline going to full-contrast --text on
+   hover, which is the affordance every other secondary action on the site uses,
+   and six other folds were already using it unchanged. */
 
 /* ---- shared scroll hint (bottom-of-hero "scroll" indicator) ---- */
 .scroll-hint { position: absolute; bottom: 26px; left: 50%; transform: translateX(-50%); display: flex; flex-direction: column; align-items: center; gap: 10px; font-family: var(--mono); pointer-events: none; }
@@ -1967,7 +2154,16 @@ footer .g {
 
 /* ---- 06 · still building ---- */
 .still-sec { min-height: 60vh; display: flex; align-items: center; padding: var(--sp-sec) 0; }
-.still-t { font-family: var(--disp); font-weight: 800; font-size: var(--t-chapter); letter-spacing: -0.03em; color: transparent; -webkit-text-stroke: 1.2px var(--link); }
+.still-t { font-family: var(--disp); font-weight: 800; font-size: var(--t-chapter); letter-spacing: -0.03em; color: transparent; -webkit-text-stroke: 1.2px var(--mute); }
+/* the progress bar under "still building" is the one thing in this fold that
+   carries meaning, and it was --mute inside a --raise2 track: two neutrals four
+   steps apart, i.e. a grey bar in a grey slot. it briefly filled with blue; it
+   fills with --text now, which is the same fix without a hue - full-contrast
+   ink in a grey slot is unmissable, and it agrees with the timeline's own
+   progress spine one fold up (--mute in a --line2 track) by being one rung
+   further apart, not by being a different colour. scoped to .still-sec:
+   .soon-bar is shared with Other Projects. */
+.still-sec .soon-bar i { background: var(--text); }
 
 .metrics-sec { padding: var(--sp-sec) 0; text-align: center; }
 
@@ -1989,11 +2185,30 @@ footer .g {
 .tl-featured { position: relative; isolation: isolate; }
 /* the ring is masked down to just the border band (padding + exclude), so
    the drop-shadow glow it casts hugs that thin band only - it can't wash
-   over the card's own interior since there's no fill left to blur. */
-.tl-featured::before { content: ''; position: absolute; inset: 0; border-radius: inherit; z-index: -1; padding: 1.5px; background: conic-gradient(from var(--tlf-a), transparent 0deg, transparent 35deg, var(--text) 70deg, transparent 105deg, transparent 250deg, var(--mute) 285deg, transparent 320deg, transparent 360deg); animation: tlfSpin 6s linear infinite; -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0); -webkit-mask-composite: xor; mask-composite: exclude; filter: drop-shadow(0 0 4px var(--glow-soft)); transition: filter 0.3s; }
+   over the card's own interior since there's no fill left to blur.
+
+   its two sweep colours and its glow are neutral, and the value they sit at is
+   the whole point. --text was tried and was wrong: it inverts with the palette,
+   so on paper it is a near-black ring spinning around a white card under a
+   black bloom - the heaviest object in the row, on the card meant to read as
+   the brightest. blue was tried next and is now out with every other blue on
+   the site. it is --mute for the leading arc, 45% of --mute for the trailing
+   one, and the glow mixed off --mute: one rung down from ink, so on paper it is
+   a mid-grey ring rather than a black one and in the dark state it is still
+   clearly lit. same geometry, same animation as both earlier versions. */
+.tl-featured::before { content: ''; position: absolute; inset: 0; border-radius: inherit; z-index: -1; padding: 1.5px; background: conic-gradient(from var(--tlf-a), transparent 0deg, transparent 35deg, var(--mute) 70deg, transparent 105deg, transparent 250deg, color-mix(in srgb, var(--mute) 45%, transparent) 285deg, transparent 320deg, transparent 360deg); animation: tlfSpin 6s linear infinite; -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0); -webkit-mask-composite: xor; mask-composite: exclude; filter: drop-shadow(0 0 4px color-mix(in srgb, var(--mute) 40%, transparent)); transition: filter 0.3s; }
 @keyframes tlfSpin { to { --tlf-a: 360deg; } }
-.tl-featured:hover::before, .tl-featured:focus-visible::before { animation-duration: 2.4s; filter: drop-shadow(0 0 7px var(--glow-soft)); }
-.tl-featured-tag { display: inline-block; align-self: flex-start; font-family: var(--mono); font-size: 10.5px; letter-spacing: 0.16em; text-transform: uppercase; color: var(--text); background: var(--raise2); border-radius: 99px; padding: 5px 12px; margin-bottom: 14px; }
+.tl-featured:hover::before, .tl-featured:focus-visible::before { animation-duration: 2.4s; filter: drop-shadow(0 0 7px color-mix(in srgb, var(--mute) 55%, transparent)); }
+/* a filled badge, not a tinted pill. --raise2 is the deepest rung of the ladder
+   on paper, so the one badge on the page that has to say "start here" was the
+   same grey the cards themselves had just stopped being - and it sat on a
+   #FFFFFF card, which is where that fill has the least to work with. it was
+   filled with --link for a pass; it is the inverted-neutral badge now - solid
+   --text with --ink as its ink, which is exactly what .tl-doc-tag and
+   .dvc-toggle-btn.on already do, and clears ~16:1 in both palettes rather than
+   the ~5:1 the blue fill managed. a filled badge is a strong signal on its own;
+   it never needed a hue to be the loudest chip in the row. */
+.tl-featured-tag { display: inline-block; align-self: flex-start; font-family: var(--mono); font-size: 10.5px; letter-spacing: 0.16em; text-transform: uppercase; color: var(--ink); background: var(--text); border-radius: 99px; padding: 5px 12px; margin-bottom: 14px; }
 @media (prefers-reduced-motion: reduce) { .tl-featured::before { animation: none; } }
 
 /* the tall track. scrolling through it advances the rail one stop per beat
@@ -2015,34 +2230,76 @@ footer .g {
    centre (28px = half of .tl-stop's fixed 56px row height), so it starts and
    ends exactly on the first/last dot instead of overshooting past them. */
 .tl-rail::before { content: ""; position: absolute; z-index: 0; left: 7px; top: 28px; bottom: 28px; width: 2px; border-radius: 2px; background: var(--line2); }
-/* scroll progress running down the spine - --tlp is set inline, 0 → 1 */
+/* scroll progress running down the spine - --tlp is set inline, 0 → 1.
+
+   it carries --mute over the --line2 track, and this rail is the reason the
+   whole blue direction was reversed: it briefly ran blue against the red "you
+   are here" bead, and a blue spine through a red dot is two accents arguing in
+   the one component on the site that most needs a single reading. the objection
+   the blue was answering was real, though - --mute over a bare --line2 track
+   was two neutrals a hairline apart - so the fix is separation inside the
+   neutral scale rather than a hue: --mute against rgba(0, 0, 0, 0.2) resolves
+   to #545659 on a #C4C5C6 track on paper, 4.3:1, which is a travelled line you
+   can see at a glance. red stays spent exactly once in this scene. */
 .tl-rail::after { content: ""; position: absolute; z-index: 0; left: 7px; top: 28px; width: 2px; border-radius: 2px; background: var(--mute); height: calc((100% - 56px) * var(--tlp, 0)); transition: height 0.5s var(--ease); }
 
-/* --era is the stop's own accent, and it is deliberately grey for every
-   stop except the current one. this timeline is the one sequential UI on the
-   site that earns red, and it earns it exactly once: for the single "you are
-   here" dot, set on .tl-stop.on below. stops you have already passed are
-   filled grey - they are history, not the next thing to do. */
+/* --era is the stop's own colour. red is spent exactly once here - the single
+   "you are here" dot on .tl-stop.on below - which is what makes this timeline
+   one of the two sequential UIs on the site that earn it (.orbit .node.on in
+   About is the other, and follows the same rule: neutral sequence, one red
+   step). every other state is neutral, and that is the whole pattern:
+     upcoming  hollow, --card-fill behind a 40%-of---mute ring
+     done      filled --mute
+     on        filled --signal, ringed, pulsing
+   a pass in between filled the done stops with blue and tinted the upcoming
+   ring with it, which made history legible at the cost of a second accent in
+   the scene. --mute does the same job: a filled bead one rung down from ink
+   next to an empty one is already the difference between "passed" and "not
+   reached", and red is the only colour in the rail, so it can only mean the
+   one thing. */
 .tl-stop { --era: var(--mute); position: relative; z-index: 1; display: block; width: 100%; min-height: 56px; padding: 11px 14px 11px 56px; text-align: left; background: none; border: 0; border-radius: var(--r-sm); cursor: pointer; color: inherit; }
 /* the one red thing in this scene: the current stop. */
 .tl-stop.on { --era: var(--signal); }
 /* the highlight is its own layer, a full 24px clear of the dot's right edge
-   (dot spans 0-16px) so it never reads as touching the spine. */
-.tl-stop::before { content: ""; position: absolute; left: 40px; right: 0; top: 2px; bottom: 2px; border-radius: var(--r-sm); background: var(--surface); border: 1px solid transparent; opacity: 0; transition: opacity 0.28s var(--ease), border-color 0.28s; }
+   (dot spans 0-16px) so it never reads as touching the spine.
+
+   it paints a neutral wash over --card-fill rather than the zone's --surface.
+   --surface on this section resolves to --raise2, the deepest rung of the
+   ladder: a grey pill sitting beside a row of genuinely white cards, which is
+   the exact flatness --card-fill was introduced to get rid of. 8% of --mute over
+   the card fill lands on #F1F1F2 on paper and #2C2E36 in the dark state - a
+   selected row in both - and it tracks the flip because both inputs are
+   registered tokens on the crossfade list.
+   the wash was 8% blue for a pass. it is neutral for the same reason the spine
+   above is: the active step already has the one red bead beside it, and a
+   tinted pill behind a red dot is the second accent this scene cannot afford.
+   what marks "on" is opacity 1 plus the 30%-of---mute border, against 0.6 and no
+   border for hover - state by weight, not by colour. */
+.tl-stop::before { content: ""; position: absolute; left: 40px; right: 0; top: 2px; bottom: 2px; border-radius: var(--r-sm); background: color-mix(in srgb, var(--mute) 8%, var(--card-fill)); border: 1px solid transparent; opacity: 0; transition: opacity 0.28s var(--ease), border-color 0.28s; }
 .tl-stop:hover::before { opacity: 0.6; }
-.tl-stop.on::before { opacity: 1; border-color: var(--line); }
+.tl-stop.on::before { opacity: 1; border-color: color-mix(in srgb, var(--mute) 30%, transparent); }
 .tl-stop:focus-visible { outline: none; }
 .tl-stop:focus-visible::before { opacity: 1; border-color: var(--text); }
-/* three real states, not just on/off - upcoming (not reached yet, dim and
-   hollow), done (passed, filled solid grey), on (current, filled red + a
-   light ring, like a step-indicator's "you are here"). */
-.tl-dot { position: absolute; left: 0; top: 50%; transform: translateY(-50%); width: 16px; height: 16px; border-radius: 50%; background: var(--ink2); border: 2px solid var(--line2); opacity: 0.55; transition: background 0.3s, border-color 0.3s, box-shadow 0.3s, transform 0.3s var(--ease), opacity 0.3s; }
+/* three real states, not just on/off - upcoming (not reached yet, hollow, a
+   40%-of---mute ring on the card fill), done (passed, filled --mute), on
+   (current, filled red + a light ring, like a step-indicator's "you are here").
+   the upcoming bead used to be --ink2 inside a bare --line2 ring at 0.55
+   opacity, which on paper is a tinted disc behind an 11%-black hairline - close
+   enough to invisible that the rail looked like it started at the current stop.
+   the fill is the card fill now (white on paper) and the ring is 40% of --mute
+   mixed into --line2, so an unvisited stop reads as an empty bead rather than a
+   smudge. that mix was 40% of --link; the percentage did the work, not the
+   hue. */
+.tl-dot { position: absolute; left: 0; top: 50%; transform: translateY(-50%); width: 16px; height: 16px; border-radius: 50%; background: var(--card-fill); border: 2px solid color-mix(in srgb, var(--mute) 40%, var(--line2)); opacity: 0.7; transition: background 0.3s, border-color 0.3s, box-shadow 0.3s, transform 0.3s var(--ease), opacity 0.3s; }
 .tl-stop.done .tl-dot { background: var(--era); border-color: var(--era); opacity: 1; }
 .tl-stop.on .tl-dot { background: var(--era); border-color: var(--era); opacity: 1; transform: translateY(-50%) scale(1.2); box-shadow: 0 0 0 3px var(--ink2), 0 0 0 5px var(--era), 0 0 14px color-mix(in srgb, var(--era) 55%, transparent); animation: tlPulse 2.4s var(--ease) infinite; }
 @keyframes tlPulse { 0%, 100% { box-shadow: 0 0 0 3px var(--ink2), 0 0 0 5px var(--era), 0 0 14px color-mix(in srgb, var(--era) 55%, transparent); } 50% { box-shadow: 0 0 0 3px var(--ink2), 0 0 0 5px var(--era), 0 0 20px color-mix(in srgb, var(--era) 75%, transparent); } }
 @media (prefers-reduced-motion: reduce) { .tl-stop.on .tl-dot { animation: none; } }
 
-.tl-stop-txt { position: relative; display: block; font-family: var(--disp); font-size: 14.5px; font-weight: 600; line-height: 1.25; color: var(--mute); opacity: 0.55; transition: color 0.25s, opacity 0.25s; }
+/* 0.72, not 0.55: at 0.55 an upcoming stop's label was --mute knocked back to
+   roughly #A5A29F on paper - about 2.4:1, i.e. a button label you have to hunt
+   for. it is still clearly the quiet state next to .done / .on at opacity 1. */
+.tl-stop-txt { position: relative; display: block; font-family: var(--disp); font-size: 14.5px; font-weight: 600; line-height: 1.25; color: var(--mute); opacity: 0.72; transition: color 0.25s, opacity 0.25s; }
 .tl-stop-txt b { display: block; font-family: var(--mono); font-size: 9.5px; font-weight: 500; letter-spacing: 0.14em; text-transform: uppercase; color: var(--dim); margin-bottom: 4px; transition: color 0.25s; }
 .tl-stop.done .tl-stop-txt, .tl-stop.on .tl-stop-txt { opacity: 1; }
 .tl-stop.on .tl-stop-txt { color: var(--text); }
@@ -2057,12 +2314,23 @@ footer .g {
    the timeline's detail panel instead of a full-viewport section) ---- */
 .tl-globe-sec { position: relative; min-height: 420px; height: min(52vh, 460px); display: flex; align-items: center; overflow: hidden; margin-top: 18px; }
 .tl-globe { position: absolute; left: 50%; bottom: -6%; transform: translateX(-50%); width: min(1100px, 165%); opacity: 0.55; pointer-events: none; }
-.tl-globe .g-line { stroke: var(--ghost-stroke); stroke-width: 1; fill: none; }
-.tl-globe .g-node { fill: var(--link); animation: tlNodePulse 2.6s ease-in-out infinite; }
+/* the wireframe reads as a drawing, not as --ghost-stroke. that token is the
+   outline-only ghost *word* behind About's donut and Ch.2's stage - on paper it
+   is rgba(0,0,0,0.13), and multiplied by the .tl-globe group's own 0.55 opacity
+   the globe's lines landed at about 7% black: gone, against a page that is now
+   genuinely white. 45% of --mute through the same 0.55 gives ~0.25 in both
+   palettes, which is line art you can actually see.
+   the whole globe was blue for a pass - lines, nodes and roaming dots. it is
+   three rungs of the neutral scale now: --mute at 45% for the wire, --text for
+   the three pulsing nodes (the only thing in the drawing that should draw the
+   eye) and --mute at 0.35 for the dots that travel between them. a wireframe
+   globe is line art, and line art does not need a hue to read as drawn. */
+.tl-globe .g-line { stroke: color-mix(in srgb, var(--mute) 45%, transparent); stroke-width: 1; fill: none; }
+.tl-globe .g-node { fill: var(--text); animation: tlNodePulse 2.6s ease-in-out infinite; }
 .tl-globe .g-node.n2 { animation-delay: 0.8s; }
 .tl-globe .g-node.n3 { animation-delay: 1.5s; }
 @keyframes tlNodePulse { 0%, 100% { opacity: 0.5; } 50% { opacity: 1; } }
-.tl-globe .g-dot { fill: var(--link); opacity: 0.35; transition: opacity 0.25s; }
+.tl-globe .g-dot { fill: var(--mute); opacity: 0.35; transition: opacity 0.25s; }
 .tl-globe.tl-globe-hi { opacity: 0; transition: opacity 0.35s; -webkit-mask-image: radial-gradient(circle 130px at var(--gx, 50%) var(--gy, 50%), black 0%, transparent 72%); mask-image: radial-gradient(circle 130px at var(--gx, 50%) var(--gy, 50%), black 0%, transparent 72%); }
 .tl-globe.tl-globe-hi .g-line { stroke: var(--text); stroke-width: 1.4; filter: drop-shadow(0 0 6px var(--glow-soft)); }
 /* plain text over the globe, no card, no fade scrim beneath it - overflow
@@ -2084,7 +2352,16 @@ footer .g {
 /* three inputs converge into one artefact, then the first screen */
 .tl-arc { display: grid; grid-template-columns: minmax(0, 1.05fr) 64px minmax(0, 1fr); align-items: center; margin-top: 22px; gap: 6px; }
 .tl-arc-streams { display: flex; flex-direction: column; gap: 10px; }
-.tl-stream { display: grid; grid-template-columns: 22px minmax(0, 1fr); gap: 12px; align-items: start; border: 1px solid var(--line); border-left: 2px solid var(--line2); border-radius: 0 var(--r-sm) var(--r-sm) 0; background: var(--raise); padding: 13px 16px; transition: border-color 0.3s, transform 0.3s var(--ease); }
+/* background comes from the CARD SYSTEM recipe at the bottom of this file, not
+   from here - the --raise below is the pre---card-fill fallback and is
+   overridden by it. the 2px left rule is this card's only ornament, so it needs
+   more weight than a plain hairline: --line2 on a white card is rgba(0,0,0,0.2),
+   i.e. three white cards each with a barely-there tick on the left. it runs 45%
+   of --mute at rest and full --text on hover, which is the site's standard
+   interactive move - the ornament gets more confident, it does not change hue.
+   (it was 45% of --link going to full --link for a pass, which made the rest
+   state a colour and the hover a brighter version of the same colour.) */
+.tl-stream { display: grid; grid-template-columns: 22px minmax(0, 1fr); gap: 12px; align-items: start; border: 1px solid var(--line); border-left: 2px solid color-mix(in srgb, var(--mute) 45%, transparent); border-radius: 0 var(--r-sm) var(--r-sm) 0; background: var(--raise); padding: 13px 16px; transition: border-color 0.3s, transform 0.3s var(--ease); }
 .tl-stream:hover { transform: translateX(3px); border-color: var(--line2); border-left-color: var(--text); }
 .tl-stream i { font-style: normal; font-family: var(--mono); font-size: 10.5px; letter-spacing: 0.1em; color: var(--dim); padding-top: 2px; }
 .tl-stream b { display: block; font-family: var(--mono); font-size: 11.5px; font-weight: 500; letter-spacing: 0.16em; text-transform: uppercase; color: var(--text); margin-bottom: 5px; }
@@ -2092,13 +2369,28 @@ footer .g {
 .tl-arc-join { position: relative; align-self: stretch; min-height: 140px; }
 .tl-arc-join svg { position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; }
 .tl-arc-join path { fill: none; stroke: var(--line2); stroke-width: 1.4; stroke-dasharray: 3 5; vector-effect: non-scaling-stroke; }
-.tl-arc-join path.lead { stroke: var(--mute); stroke-dasharray: none; }
+/* the three feeder paths stay a dashed --line2 hint; the solid lead - the one
+   that actually points at the artefact - and the junction node it starts from
+   step up to --text, so "three inputs converge into one thing" has a direction
+   you can read at a glance instead of four lines of equal weight. the step is
+   dashed-hairline → solid-ink, which is two moves (pattern and weight) and
+   needs no third one in colour. */
+.tl-arc-join path.lead { stroke: var(--text); stroke-dasharray: none; }
 /* the junction node lives in CSS, not the svg - the svg is stretched on the
    y axis (preserveAspectRatio: none) and would squash a circle into an oval. */
-.tl-arc-join::after { content: ""; position: absolute; top: 50%; right: 10.5px; width: 8px; height: 8px; margin-top: -4px; border-radius: 50%; background: var(--ink); border: 1.5px solid var(--mute); }
-.tl-doc { position: relative; border: 1px dashed var(--line2); border-radius: var(--r-md); background: linear-gradient(180deg, var(--raise2), var(--raise)); padding: 20px 22px 18px; }
+.tl-arc-join::after { content: ""; position: absolute; top: 50%; right: 10.5px; width: 8px; height: 8px; margin-top: -4px; border-radius: 50%; background: var(--card-fill); border: 1.5px solid var(--text); }
+/* the doc keeps its own fill (see the note in CARD SYSTEM) but the fill is now
+   built off --card-fill instead of the --raise2 → --raise ladder. that gradient
+   ran down the paper ladder's two deepest rungs: the one tinted panel left in a
+   pinned scene where .tl-stream sits right next to it at #FFFFFF, which read as
+   the doc being a different, dirtier material rather than a sheet of paper. it
+   is still a gradient - top-lit sheet, dashed edge, tag pinned over the top
+   border - just from the card fill into a 4% --mute shade of it (#FFFFFF →
+   #F8F8F8 on paper, #22242C → #272931 in the dark state), so it belongs to the
+   same family as every card beside it. */
+.tl-doc { position: relative; border: 1px dashed var(--line2); border-radius: var(--r-md); background: linear-gradient(180deg, var(--card-fill), color-mix(in srgb, var(--card-fill) 96%, var(--mute))); padding: 20px 22px 18px; }
 .tl-doc-tag { position: absolute; top: -9px; left: 16px; font-family: var(--mono); font-size: 9.5px; letter-spacing: 0.18em; text-transform: uppercase; color: var(--ink); background: var(--text); border-radius: 5px; padding: 2px 8px; }
-.tl-doc b { display: block; font-family: var(--disp); font-size: 19px; font-weight: 700; letter-spacing: -0.01em; color: var(--text); }
+.tl-doc b { display: block; font-family: var(--disp); font-size: var(--t-card); font-weight: 700; letter-spacing: -0.01em; color: var(--text); }
 .tl-arc .tl-doc p { margin-top: 8px; max-width: none; font-size: 14px; line-height: 1.5; color: var(--mute); }
 .tl-arc .tl-then { display: flex; align-items: center; gap: 8px; margin-top: 14px; padding-left: 2px; font-family: var(--mono); font-size: 11.5px; letter-spacing: 0.16em; text-transform: uppercase; color: var(--dim); }
 .tl-arc .tl-then em { font-style: normal; color: var(--text); }
@@ -2110,12 +2402,34 @@ footer .g {
 .tl-stats span { font-family: var(--mono); font-size: 10.5px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--dim); }
 .tl-stats b { display: block; font-family: var(--disp); font-size: var(--t-stat-sm); letter-spacing: -0.02em; color: var(--text); margin-bottom: 4px; font-weight: 800; }
 
+/* the PM chip row on stop 04 sits directly on the page rather than inside a
+   card, which is where the shared .chip is weakest: no fill at all, and a --line
+   edge that is rgba(0, 0, 0, 0.1) against paper. five chips you have to look for,
+   an inch above a row of cards at #FFFFFF. they get the card fill and the heavier
+   hairline here only - .chip is left as it is for its five other consumers,
+   every one of which already sits on a card. */
+.tl-detail .side-skills .chip { background: var(--card-fill); border-color: var(--line2); }
+
 /* a scroll row, not a grid: the AI-product-manager instance mixes three
    compact cards with the wider .tl-featured card, and a fixed column grid
    has no good way to fit a card that wants more room without cramping its
    siblings - a horizontal scroll keeps every card its natural width and
    lets the row grow past the viewport instead of squeezing everything down. */
-.tl-cs-grid { display: flex; gap: 16px; margin-top: 22px; overflow-x: auto; scroll-snap-type: x proximity; padding-bottom: 6px; }
+/* padding-bottom is the room the cards' shadow needs, not decoration: this is a
+   scroll container, so it clips at its own padding box - at 6px the widest layer
+   of --lift (which reaches ~50px below a resting card: 36px down, 80px blur,
+   -22px spread on the dark pair, 32/76/-22 on paper) was sliced off in a
+   straight line under the row, which is exactly what makes a soft shadow read as
+   a hard edge. 14px is the most that can be given back without pushing the row
+   out of the pinned stage on a short viewport - it does not fit the whole
+   ambient layer and never could, which is survivable only because that layer is
+   now soft enough (6% on paper) that its cut edge is not findable. */
+/* overflow-x: auto here forces overflow-y to clip too (a scroll container
+   can't scroll one axis and stay visible on the other), so a card's shadow
+   was getting cut off flat on whichever edge had no padding to render into -
+   padding-top added to match padding-bottom, so the shadow has room on all
+   four sides instead of just the bottom. */
+.tl-cs-grid { display: flex; gap: 16px; margin-top: 22px; overflow-x: auto; scroll-snap-type: x proximity; padding: 14px 2px; }
 .tl-cs-card { display: flex; flex-direction: column; flex: 0 0 300px; scroll-snap-align: start; border: 1px solid var(--line); border-radius: var(--r-lg); background: var(--raise); padding: var(--pad-card-lg); cursor: pointer; transition: transform 0.3s var(--ease), border-color 0.3s, background 0.3s, box-shadow 0.3s; }
 /* this card used to carry two extra light-paper declarations here - a #fff
    fill and its own drop shadow - which made it the one card family on the site
@@ -2125,9 +2439,27 @@ footer .g {
    instead of cutting to a flat hex. */
 .tl-cs-grid .tl-featured { flex: 0 0 380px; scroll-snap-align: start; margin-top: 0; }
 .tl-cs-card:hover, .tl-cs-card:focus-visible { transform: translateY(-4px); border-color: var(--line2); outline: none; }
-.tl-cs-icon { display: inline-grid; place-items: center; width: var(--chip-lg); height: var(--chip-lg); border-radius: var(--r-md); color: var(--link); transition: all 0.3s; }
+/* the badge on a case-study card, and the one chip on the site with its own
+   rule rather than the shared chip recipe at the bottom of this file. it has
+   been three things: a flat --surface2 chip (muddy - a grey square on a grey
+   card), then a 14%-blue wash with a blue glyph (clean, but blue), and now a
+   neutral version of that same wash, which is the treatment that was actually
+   wanted. 10% of --text over --card-fill resolves to #E8E8E8 on paper and
+   #373940 in the dark state, with the glyph itself at --text: a clean
+   light-grey badge holding a near-black icon at 14:1 on paper, and its
+   inverse in the dark. the hover deepens the wash to 16% and brings the
+   hairline up to 30% of --text over --line2, so the badge lifts with the card
+   instead of changing colour. color-mix off two registered tokens keeps the
+   whole thing riding the flip. deliberately NOT folded back into the shared
+   chip recipe: --surface2 is what read muddy here, and a card this size wants
+   the brighter badge. */
+.tl-cs-icon { display: inline-grid; place-items: center; width: var(--chip-lg); height: var(--chip-lg); border-radius: var(--r-md); color: var(--text); background: color-mix(in srgb, var(--text) 10%, var(--card-fill)); border: 1px solid var(--line2); transition: all 0.3s; }
+.tl-cs-card:hover .tl-cs-icon { background: color-mix(in srgb, var(--text) 16%, var(--card-fill)); border-color: color-mix(in srgb, var(--text) 30%, var(--line2)); }
 .tl-cs-icon svg { width: 23px; height: 23px; display: block; }
-.tl-cs-card:hover .tl-cs-icon { color: var(--text); border-color: var(--line2); }
+/* the second .tl-cs-card:hover .tl-cs-icon rule that used to sit here is gone.
+   it was left over from the era when the badge was a flat --surface2 chip, and
+   being later in the file it won: it undid the rule above one line after it was
+   set. the hover state lives with the rest of the badge now. */
 .tl-cs-card h4 { font-family: var(--disp); font-weight: 700; font-size: var(--t-card); letter-spacing: -0.01em; margin: 14px 0 10px; }
 .tl-cs-row { display: grid; grid-template-columns: 46px 1fr; gap: 12px; align-items: baseline; padding: 8px 0; border-top: 1px dashed var(--line); }
 .tl-cs-row span { font-family: var(--mono); font-size: 9px; letter-spacing: 0.16em; text-transform: uppercase; color: var(--dim); }
@@ -2140,7 +2472,16 @@ footer .g {
 .tl-cs-card:hover .tl-cs-foot { border-top-color: var(--line2); }
 .tl-cs-impact { font-family: var(--disp); font-weight: 700; font-size: 15.5px; color: var(--up); letter-spacing: -0.01em; white-space: nowrap; }
 .tl-cs-impact small { font-family: var(--mono); font-weight: 400; font-size: 9.5px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--dim); margin-left: 6px; white-space: normal; }
-.tl-cs-link { position: relative; font-family: var(--mono); font-size: 10.5px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--link); transition: color 0.25s, transform 0.25s var(--ease); flex-shrink: 0; }
+.tl-cs-link { position: relative; font-family: var(--mono); font-size: 10.5px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--mute); transition: color 0.25s, transform 0.25s var(--ease); flex-shrink: 0; }
+/* "Deep dive →" is the one actual call to action on a card, and it is the
+   model for how every interactive label on this site signals itself without a
+   hue. three non-colour affordances carry it: the arrow glyph, already in the
+   markup; the underline, which wipes in left-to-right on hover (right: 100% →
+   0); and the 3px nudge. the colour move is only a step up the neutral scale -
+   --mute at rest, --text on hover - i.e. the link gets more confident rather
+   than going blue. an earlier pass had it at --link rest / 85%---link hover,
+   which is a hue *and* a barely-perceptible 15% shift, so the affordance was
+   doing less work while looking like it did more. */
 .tl-cs-link::after { content: ''; position: absolute; left: 0; right: 100%; bottom: -3px; height: 1.5px; background: var(--text); transition: right 0.35s var(--ease); }
 .tl-cs-card:hover .tl-cs-link { color: var(--text); transform: translateX(3px); }
 .tl-cs-card:hover .tl-cs-link::after { right: 0; }
@@ -2179,12 +2520,18 @@ footer .g {
 .mgbar i:first-child { background: var(--rose); }
 .mgbar i:nth-child(2) { background: var(--mute); }
 .mgbar i:nth-child(3) { background: var(--up); }
-.mgl { display: block; height: 8px; border-radius: 4px; background: rgba(150, 160, 186, 0.25); }
+/* the placeholder bars, nav ticks and shimmer inside the mini mock-ups were a
+   blue-grey (rgba(150, 160, 186, ...)) - 36 points of blue over red, i.e. a
+   visible tint on every one of them, and they are the most repeated element in
+   these graphics. all four are mixes of --mute now, at the alphas that keep
+   their old weight, so a placeholder bar is a grey bar and it inverts with the
+   page like everything else. */
+.mgl { display: block; height: 8px; border-radius: 4px; background: color-mix(in srgb, var(--mute) 28%, transparent); }
 .mgl.w5 { width: 50%; }
 .mgl.w6 { width: 62%; }
 .mgl.w7 { width: 74%; }
 .mgrow { display: flex; gap: 8px; flex: 1; }
-.mgbox { flex: 1; border: 1.2px solid rgba(166, 184, 255, 0.45); border-radius: 6px; }
+.mgbox { flex: 1; border: 1.2px solid color-mix(in srgb, var(--mute) 55%, transparent); border-radius: 6px; }
 .mgbtn { width: 64px; height: 16px; border-radius: 8px; background: var(--mute); }
 .port-chrome { display: flex; align-items: center; gap: 5px; }
 .port-chrome i { width: 7px; height: 7px; border-radius: 50%; background: var(--dim); opacity: 0.6; }
@@ -2194,12 +2541,12 @@ footer .g {
 .port-chrome span { margin-left: 6px; font-family: var(--mono); font-size: 8.5px; letter-spacing: 0.1em; color: var(--dim); }
 .port-body { display: flex; gap: 10px; flex: 1; }
 .port-side { display: flex; flex-direction: column; gap: 8px; padding-top: 2px; }
-.port-nav { width: 16px; height: 5px; border-radius: 3px; background: rgba(150, 160, 186, 0.25); animation: navcycle 3.2s ease-in-out infinite; }
+.port-nav { width: 16px; height: 5px; border-radius: 3px; background: color-mix(in srgb, var(--mute) 28%, transparent); animation: navcycle 3.2s ease-in-out infinite; }
 .port-nav:nth-child(1) { animation-delay: 0s; }
 .port-nav:nth-child(2) { animation-delay: 0.8s; }
 .port-nav:nth-child(3) { animation-delay: 1.6s; }
 .port-nav:nth-child(4) { animation-delay: 2.4s; }
-@keyframes navcycle { 0%, 80%, 100% { background: rgba(150, 160, 186, 0.25); } 15% { background: var(--text); } }
+@keyframes navcycle { 0%, 80%, 100% { background: color-mix(in srgb, var(--mute) 28%, transparent); } 15% { background: var(--text); } }
 .port-main { flex: 1; display: flex; flex-direction: column; gap: 8px; justify-content: center; }
 .port-lastrow { display: flex; align-items: center; gap: 8px; }
 .port-approve { flex-shrink: 0; width: 14px; height: 14px; border-radius: 50%; display: grid; place-items: center; background: rgba(92, 224, 168, 0.15); border: 1px solid rgba(92, 224, 168, 0.5); color: var(--up); font-size: 9px; line-height: 1; animation: npulse 2.4s ease-in-out infinite; }
@@ -2210,16 +2557,16 @@ footer .g {
 .mgdash { display: block; height: 0; border-top: 1px dashed var(--line2); margin: 2px 0; }
 .mgtotal { display: flex; justify-content: space-between; align-items: center; font-family: var(--mono); font-size: 11px; color: var(--dim); text-transform: uppercase; letter-spacing: 0.14em; }
 .mgtotal b { display: inline-flex; align-items: center; gap: 4px; color: var(--text); }
-.mgl.shimmer { background: linear-gradient(90deg, rgba(150, 160, 186, 0.18) 0%, rgba(205, 214, 240, 0.55) 50%, rgba(150, 160, 186, 0.18) 100%); background-size: 250% 100%; animation: shimmer 2.4s ease-in-out infinite; }
+.mgl.shimmer { background: linear-gradient(90deg, color-mix(in srgb, var(--mute) 20%, transparent) 0%, color-mix(in srgb, var(--text) 55%, transparent) 50%, color-mix(in srgb, var(--mute) 20%, transparent) 100%); background-size: 250% 100%; animation: shimmer 2.4s ease-in-out infinite; }
 @keyframes shimmer { 0% { background-position: 150% 0; } 100% { background-position: -150% 0; } }
 .mg-dev { font-family: var(--mono); font-size: 11.5px; color: var(--mute); gap: 5px; justify-content: center; }
 .mg-dev .c1 { color: var(--rose); }
-.mg-dev .c2 { color: var(--link); }
+.mg-dev .c2 { color: var(--mute); }
 .mg-dev .c3 { color: var(--text); }
 .mg-dev .c4 { color: var(--up); }
 .mg-kb { position: relative; }
 .mgsearch { height: 20px; border: 1px solid var(--line2); border-radius: 99px; width: 70%; position: relative; overflow: hidden; }
-.mgsearch span { position: absolute; left: 8px; top: 5px; width: 34%; height: 8px; border-radius: 4px; background: rgba(166, 184, 255, 0.4); animation: ksearch 3s var(--ease) infinite; }
+.mgsearch span { position: absolute; left: 8px; top: 5px; width: 34%; height: 8px; border-radius: 4px; background: color-mix(in srgb, var(--mute) 45%, transparent); animation: ksearch 3s var(--ease) infinite; }
 @keyframes ksearch { 0%, 100% { width: 20%; } 50% { width: 52%; } }
 
 @media (max-width: 640px) {
@@ -2248,36 +2595,36 @@ footer .g {
      and if it were left out they would resolve the *paper* shadow whenever
      the page behind the overlay happened to be light. */
   --lift:
-    0 2px 4px -1px rgba(0, 0, 0, 0.26),
-    0 10px 22px -8px rgba(0, 0, 0, 0.36),
-    0 30px 60px -16px rgba(0, 0, 0, 0.48);
+    0 1px 2px -1px rgba(0, 0, 0, 0.22),
+    0 6px 14px -8px rgba(0, 0, 0, 0.24),
+    0 12px 24px -12px rgba(0, 0, 0, 0.22);
   --lift-lg:
-    0 4px 8px -2px rgba(0, 0, 0, 0.3),
-    0 18px 36px -12px rgba(0, 0, 0, 0.42),
-    0 48px 92px -24px rgba(0, 0, 0, 0.55);
+    0 2px 4px -1px rgba(0, 0, 0, 0.26),
+    0 10px 20px -10px rgba(0, 0, 0, 0.28),
+    0 18px 34px -16px rgba(0, 0, 0, 0.26);
   --tint-lift: rgba(255, 255, 255, 0.032);
   --tint-lift-hi: rgba(255, 255, 255, 0.055);
   --tint-sink: rgba(0, 0, 0, 0.34);
-  --glow-cool: rgba(166, 184, 255, 0.08);
+  --glow-cool: rgba(255, 255, 255, 0.045);
   --glow-warm: rgba(232, 73, 45, 0.028);
-  --glow-duo-cool: rgba(166, 184, 255, 0.03);
+  --glow-duo-cool: rgba(255, 255, 255, 0.03);
   --glow-soft: rgba(255, 255, 255, 0.4);
   --line: rgba(255, 255, 255, 0.08);
   --line2: rgba(255, 255, 255, 0.16);
   --text: #F5F4F2;
   --mute: #A3A3A3;
   --dim: #757575;
-  --link: #A6B8FF;
+  --link: #C9C8C5;
   --up: #5CE0A8;
   --rose: #FF8FA8;
-  --bar-1: var(--text);
-  --bar-2: var(--link);
-  --bar-3: var(--up);
-  --bar-4: var(--rose);
-  --bar-5: #b48ef0;
-  --bar-6: #6fd3e8;
+  --bar-1: #FF9E8A;
+  --bar-2: #FFCB7D;
+  --bar-3: #9BE0B0;
+  --bar-4: #9DC4FF;
+  --bar-5: #C3AEFF;
+  --bar-6: #8FE0DA;
   --bar-num: rgba(17, 18, 21, 0.85);
-  --ghost-stroke: rgba(166, 184, 255, 0.16);
+  --ghost-stroke: rgba(255, 255, 255, 0.16);
   color: var(--text);
   position: fixed;
   inset: 0;
@@ -2301,7 +2648,7 @@ footer .g {
 .ovl-close:hover { color: var(--ink); background: var(--text); border-color: var(--text); transform: rotate(90deg); }
 .ovl-inner { max-width: 860px; margin: 0 auto; padding: clamp(46px, 8vh, 90px) clamp(22px, 5vw, 60px) 60px; min-height: 100%; display: flex; flex-direction: column; justify-content: center; }
 .ovl-inner h2 { font-family: var(--disp); font-weight: 800; font-size: var(--t-chapter); letter-spacing: -0.03em; line-height: 1.02; }
-.ovl-inner h2 em { font-style: normal; color: transparent; -webkit-text-stroke: 1.2px var(--link); }
+.ovl-inner h2 em { font-style: normal; color: transparent; -webkit-text-stroke: 1.2px var(--mute); }
 .ovl-inner .lede { color: var(--mute); max-width: 54ch; margin-top: 18px; font-size: var(--t-body); }
 .ovl-nav { display: flex; justify-content: space-between; align-items: center; margin-top: 44px; padding-top: 22px; border-top: 1px dashed var(--line); }
 .ovl-nav button { font-family: var(--mono); font-size: 11.5px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--mute); background: none; border: 1px solid var(--line2); border-radius: 99px; padding: 11px 20px; cursor: pointer; transition: all 0.3s; display: inline-flex; gap: 9px; align-items: center; }
@@ -2324,7 +2671,7 @@ body.ovl-lock { overflow: hidden; }
 .inv-meta div span { display: block; font-family: var(--mono); font-size: 10px; letter-spacing: 0.18em; text-transform: uppercase; color: var(--dim); margin-bottom: 4px; }
 .inv-meta div b { font-family: var(--disp); font-size: 15px; font-weight: 600; }
 .inv-meta-devices { display: inline-flex; align-items: center; gap: 9px; }
-.inv-meta-devices svg { width: 26px; height: 17px; color: var(--link); flex-shrink: 0; }
+.inv-meta-devices svg { width: 26px; height: 17px; color: var(--mute); flex-shrink: 0; }
 
 .inv-section { margin-top: var(--sp-sec-lg); }
 .inv-highlight { font-family: var(--disp); font-weight: 700; font-size: var(--t-lead); line-height: 1.15; letter-spacing: -0.02em; max-width: 20ch; }
@@ -2341,7 +2688,7 @@ body.ovl-lock { overflow: hidden; }
 
 .inv-pages { display: flex; flex-direction: column; gap: 14px; margin-top: var(--sp-block); }
 .inv-page-card { border: 1px solid var(--line); border-radius: var(--r-md); background: var(--raise); padding: var(--pad-card); }
-.inv-page-card b.pn { font-family: var(--mono); font-size: 10.5px; letter-spacing: 0.16em; text-transform: uppercase; color: var(--link); }
+.inv-page-card b.pn { font-family: var(--mono); font-size: 10.5px; letter-spacing: 0.16em; text-transform: uppercase; color: var(--dim); }
 .inv-page-card h4 { font-family: var(--disp); font-weight: 700; font-size: var(--t-card); letter-spacing: -0.01em; margin-top: 8px; }
 .inv-page-card p { color: var(--mute); font-size: var(--t-body-sm); margin-top: 8px; }
 .inv-page-card .chip { font-size: 10px; margin-top: 12px; margin-right: 6px; }
@@ -2364,9 +2711,19 @@ body.ovl-lock { overflow: hidden; }
   .zoom-lens { display: none; }
   .zoom-wrap { cursor: default; }
 }
-/* Invoice mockup renders as a light "paper" document — matching the
-   real Polarin invoice's own palette — deliberately breaking from the
-   site's dark theme so it reads as an actual document, not a themed UI. */
+/* Invoice mockup renders as a light "paper" document - matching the
+   real Polarin invoice's own palette - deliberately breaking from the
+   site's dark theme so it reads as an actual document, not a themed UI.
+
+   these five --doc-* values are the one place blue survives on the site, and
+   the exception is worth naming explicitly now that there is a no-blue rule to
+   be an exception to (see --link in TOKENS). they are not site colours being
+   spent on site chrome: this is a facsimile of a real artefact, in the same
+   category as the screenshots in .cs-shot, and #0A3954 is Polarin's invoice
+   ink rather than an accent chosen for this page. re-tinting it would make the
+   mock stop being a picture of the thing it is a picture of. everything around
+   it - the frame, the tabs, the captions, the case study's own chrome - is on
+   the neutral palette. nothing should read these tokens outside .inv-mock. */
 .inv-mock {
   --doc-ink: #0A3954;
   --doc-mute: #7E93B2;
@@ -2408,8 +2765,8 @@ body.ovl-lock { overflow: hidden; }
 .inv-learn-card h4 { font-family: var(--disp); font-weight: 600; font-size: var(--t-card-sm); line-height: 1.3; }
 .inv-learn-card p { color: var(--mute); font-size: var(--t-body-sm); margin-top: 10px; }
 
-.inv-step-tag { display: flex; width: fit-content; margin-left: auto; margin-right: auto; align-items: center; gap: 8px; font-family: var(--mono); font-size: 10.5px; letter-spacing: 0.18em; text-transform: uppercase; color: var(--link); }
-.inv-step-tag i { width: 20px; height: 1px; background: var(--link); display: inline-block; }
+.inv-step-tag { display: flex; width: fit-content; margin-left: auto; margin-right: auto; align-items: center; gap: 8px; font-family: var(--mono); font-size: 10.5px; letter-spacing: 0.18em; text-transform: uppercase; color: var(--mute); }
+.inv-step-tag i { width: 20px; height: 1px; background: var(--line2); display: inline-block; }
 .inv-section h3.plain { font-family: var(--disp); font-weight: 700; font-size: var(--t-sub); letter-spacing: -0.02em; margin-top: 10px; max-width: 22ch; }
 .inv-section h3.plain span { color: var(--mute); }
 
@@ -2438,7 +2795,7 @@ body.ovl-lock { overflow: hidden; }
 
 .adm-teams { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; margin-top: var(--sp-block); }
 .adm-team { border: 1px solid var(--line); border-radius: var(--r-md); background: var(--raise); padding: var(--pad-card-sm); }
-.adm-team b { font-family: var(--mono); font-size: 13px; color: var(--link); letter-spacing: 0.04em; }
+.adm-team b { font-family: var(--mono); font-size: 13px; color: var(--text); letter-spacing: 0.04em; }
 .adm-team span { display: block; font-size: 11px; color: var(--dim); margin-top: 4px; }
 .adm-team p { color: var(--mute); font-size: var(--t-body-xs); margin-top: 10px; }
 
@@ -2524,7 +2881,7 @@ body.ovl-lock { overflow: hidden; }
 .cmp-knob { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 36px; height: 36px; border-radius: 50%; background: var(--text); color: var(--ink); display: grid; place-items: center; font-size: 14px; box-shadow: 0 6px 20px rgba(0, 0, 0, 0.4); }
 .cmp-placeholder { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 6px; background: var(--raise); color: var(--dim); font-family: var(--mono); font-size: 10.5px; text-align: center; padding: 20px; }
 .cmp-placeholder.alt { background: var(--raise2); }
-.cmp-placeholder span:first-child { font-size: 20px; color: var(--link); }
+.cmp-placeholder span:first-child { font-size: 20px; color: var(--mute); }
 .cmp-placeholder b { color: var(--mute); font-size: 13.5px; font-family: var(--body); font-weight: 600; }
 .cmp-hint { text-align: center; margin-top: 12px; font-family: var(--mono); font-size: 11px; color: var(--dim); }
 
@@ -2561,9 +2918,20 @@ body.ovl-lock { overflow: hidden; }
 .ab-donut { width: 100%; max-width: 340px; }
 .ab-ring { fill: none; stroke: var(--raise2); stroke-width: 16; }
 .ab-seg { fill: none; stroke-width: 16; opacity: 0.35; cursor: pointer; pointer-events: stroke; transform: rotate(-90deg); transform-origin: 100px 100px; transition: opacity 0.35s, stroke-width 0.35s; }
-.ab-seg[data-mix="design"] { stroke: var(--text); }
-.ab-seg[data-mix="product"] { stroke: var(--link); }
-.ab-seg[data-mix="build"] { stroke: var(--up); }
+/* the three donut segments read three rungs of the chart ramp - 1 / 3 / 5, i.e.
+   every other step, so they are as far apart as that ramp goes for three series
+   (13.5 / 6.4 / 3.9:1 against the --raise2 ring on paper, 12.1 / 7.5 / 4.4:1 in
+   the dark). they were --text / --link / --up, which is what a donut usually
+   does - one hue per slice - and is exactly what a single-accent palette cannot
+   afford: blue is gone from the site and red means "the one thing to do", so a
+   three-hue chart would have had to invent a colour for each slice. lightness
+   carries it instead, and the interaction is what actually identifies a segment
+   here anyway - hovering one takes it to opacity 1 and stroke-width 24 while its
+   label appears in the panel beside it. the tokens are the shared --bar-* ramp,
+   not private values, so the donut and the skills chart below stay one system. */
+.ab-seg[data-mix="design"] { stroke: var(--bar-1); }
+.ab-seg[data-mix="product"] { stroke: var(--bar-3); }
+.ab-seg[data-mix="build"] { stroke: var(--bar-5); }
 .ab-seg.on { opacity: 1; stroke-width: 24; }
 .ab-donut-t { font-family: var(--mono); font-size: 11px; letter-spacing: 0.2em; text-transform: uppercase; fill: var(--dim); }
 .ab-donut-p { font-family: var(--disp); font-weight: 800; font-size: 24px; fill: var(--text); }
@@ -2597,7 +2965,7 @@ body.ovl-lock { overflow: hidden; }
 .ab-fact p { color: var(--mute); font-size: var(--t-body-sm); }
 
 .ab-big { font-family: var(--disp); font-weight: 800; font-size: var(--t-chapter); letter-spacing: -0.03em; line-height: 1.02; margin: 10px 0 20px; }
-.ab-big span { color: transparent; -webkit-text-stroke: 1.4px var(--link); transition: color 0.5s, -webkit-text-stroke-color 0.5s; }
+.ab-big span { color: transparent; -webkit-text-stroke: 1.4px var(--mute); transition: color 0.5s, -webkit-text-stroke-color 0.5s; }
 .ab-big:hover span { color: var(--text); -webkit-text-stroke-color: var(--text); }
 
 @media (max-width: 760px) {
@@ -2680,7 +3048,7 @@ body.ovl-lock { overflow: hidden; }
 .dvv-row input[type=range] { flex: 1; min-width: 140px; accent-color: var(--text); }
 .dvv-row output { font-family: var(--mono); font-size: 13px; color: var(--text); min-width: 2ch; }
 .dvv-bar { height: 6px; border-radius: 4px; background: var(--raise2); border: 1px solid var(--line); overflow: hidden; margin: 4px 0 14px; }
-.dvv-bar i { display: block; height: 100%; border-radius: 4px; background: linear-gradient(90deg, var(--link), var(--up)); transition: width 0.45s var(--ease); }
+.dvv-bar i { display: block; height: 100%; border-radius: 4px; background: linear-gradient(90deg, var(--mute), var(--text)); transition: width 0.45s var(--ease); }
 .dvv-out { font-family: var(--mono); font-size: 12px; letter-spacing: 0.06em; color: var(--mute); border-top: 1px dashed var(--line); padding-top: 14px; }
 .dvv-out b { font-family: var(--disp); font-size: var(--t-stat-sm); letter-spacing: -0.01em; color: var(--up); margin: 0 6px; }
 .dvv-note { font-family: var(--mono); font-size: 10.5px; letter-spacing: 0.04em; color: var(--dim); margin-top: 10px; }
@@ -2695,7 +3063,7 @@ body.ovl-lock { overflow: hidden; }
 .dv-ledger { margin-top: var(--sp-block); border-top: 1px dashed var(--line); }
 .li { border-bottom: 1px dashed var(--line); }
 .li-row { display: grid; grid-template-columns: 1fr minmax(60px, 150px) auto; gap: 16px; align-items: center; padding: 13px 2px; transition: background 0.25s; }
-.li:hover .li-row { background: rgba(166, 184, 255, 0.04); }
+.li:hover .li-row { background: color-mix(in srgb, var(--text) 5%, transparent); }
 .li-name { font-size: 14px; color: var(--text); }
 .li-detail { max-height: 0; overflow: hidden; transition: max-height 0.4s var(--ease), padding 0.4s var(--ease); font-family: var(--mono); font-size: 11.5px; color: var(--mute); letter-spacing: 0.03em; padding: 0 2px; }
 .li:hover .li-detail, .li:focus-within .li-detail { max-height: 60px; padding: 0 2px 12px; }
@@ -2788,7 +3156,7 @@ body.ovl-lock { overflow: hidden; }
 .aud-gap b { font-family: var(--mono); font-size: 10.5px; letter-spacing: 0.16em; text-transform: uppercase; color: var(--text); display: block; margin-bottom: 8px; }
 .aud-gap p { font-size: var(--t-body-xs); color: var(--mute); line-height: 1.5; }
 .aud-gap-found { color: var(--dim); }
-.aud-gap-arrow { display: block; color: var(--link); font-size: 11px; margin: 6px 0 4px; }
+.aud-gap-arrow { display: block; color: var(--mute); font-size: 11px; margin: 6px 0 4px; }
 .aud-next { margin-top: 20px; font-size: var(--t-body); color: var(--mute); max-width: 62ch; }
 @media (max-width: 760px) { .aud-gap-grid { grid-template-columns: 1fr; } }
 
@@ -2952,12 +3320,12 @@ body.ovl-lock { overflow: hidden; }
 .gac-lane-h { align-items: center; margin-bottom: 12px; }
 .gac-lane-h span { font-family: var(--mono); font-size: 10.5px; letter-spacing: 0.16em; text-transform: uppercase; }
 .gac-lane-h .mine { color: var(--text); text-align: right; }
-.gac-lane-h .theirs { color: var(--link); }
+.gac-lane-h .theirs { color: var(--mute); }
 .gac-lane-h em { font-style: normal; text-align: center; font-family: var(--mono); font-size: 10px; color: var(--dim); }
 .gac-row + .gac-row { margin-top: 8px; }
 .gac-cell { display: flex; align-items: center; border: 1px solid var(--line); border-radius: var(--r-sm); background: var(--ink); padding: 12px 15px; font-size: 13px; line-height: 1.45; color: var(--mute); transition: color 0.3s, border-color 0.3s, transform 0.3s var(--ease); }
 .gac-cell.mine { justify-content: flex-end; text-align: right; border-right: 2px solid var(--mute); }
-.gac-cell.theirs { border-left: 2px solid var(--link); }
+.gac-cell.theirs { border-left: 2px solid var(--line2); }
 .gac-cell:hover { color: var(--text); transform: translateY(-2px); }
 .gac-spine { position: relative; }
 .gac-spine::before { content: ""; position: absolute; left: 50%; top: -8px; bottom: -8px; border-left: 1px dashed var(--line2); }
@@ -2966,7 +3334,7 @@ body.ovl-lock { overflow: hidden; }
 /* the jargon, and what it actually meant */
 .gac-tr { display: grid; gap: 10px; margin-top: var(--sp-block); text-align: left; }
 .gac-trr { display: grid; grid-template-columns: 178px 20px minmax(0, 1fr); gap: 14px; align-items: center; border: 1px solid var(--line); border-radius: var(--r-md); background: var(--ink); padding: var(--pad-card-sm); transition: border-color 0.3s, background 0.3s; }
-.gac-trr:hover { border-color: rgba(166, 184, 255, 0.32); background: var(--ink2); }
+.gac-trr:hover { border-color: var(--line2); background: var(--ink2); }
 .gac-jarg { font-family: var(--mono); font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--dim); text-align: right; opacity: 0.22; filter: blur(3.5px); }
 .gac-tr.on .gac-jarg { animation: gacDefog 0.9s var(--ease) forwards; }
 @keyframes gacDefog { to { opacity: 1; filter: blur(0); } }
@@ -3012,7 +3380,7 @@ body.ovl-lock { overflow: hidden; }
   .gac-cell::before { font-family: var(--mono); font-size: 9.5px; letter-spacing: 0.16em; text-transform: uppercase; }
   .gac-cell.mine { justify-content: flex-start; text-align: left; border-right: 1px solid var(--line); border-left: 2px solid var(--mute); }
   .gac-cell.mine::before { content: "i decided"; color: var(--text); }
-  .gac-cell.theirs::before { content: "they built"; color: var(--link); }
+  .gac-cell.theirs::before { content: "they built"; color: var(--mute); }
   .gac-trr { grid-template-columns: 1fr; gap: 7px; }
   .gac-jarg { text-align: left; }
   .gac-arrow { display: none; }
@@ -3027,19 +3395,19 @@ body.ovl-lock { overflow: hidden; }
 .hero-inner { width: 100%; perspective: 1000px; }
 #heroCard { transform-style: preserve-3d; will-change: transform; transition: transform 0.15s ease-out; max-width: 900px; }
 .hero-kicker { font-family: var(--mono); font-size: var(--t-eyebrow); letter-spacing: 0.24em; text-transform: uppercase; color: var(--dim); margin-bottom: 26px; transform: translateZ(26px); }
-.hero-kicker b { color: var(--link); font-weight: 500; }
+.hero-kicker b { color: var(--text); font-weight: 500; }
 .hero h1 { font-family: var(--disp); font-weight: 800; font-size: var(--t-hero); line-height: 1; letter-spacing: -0.035em; transform: translateZ(55px); }
 .hero h1 .l2 { color: var(--mute); }
-.hero h1 .l3 { color: transparent; -webkit-text-stroke: 1.2px var(--link); }
+.hero h1 .l3 { color: transparent; -webkit-text-stroke: 1.2px var(--mute); }
 .hero-sub { margin-top: 22px; color: var(--mute); max-width: 46ch; font-size: var(--t-body); transform: translateZ(20px); }
 .hero-sub b { color: var(--text); }
 .hero h1 .car { display: inline-block; width: 0.46ch; height: 0.78em; background: var(--text); margin-left: 6px; vertical-align: -0.06em; animation: blink 1s steps(1) infinite; }
 @keyframes blink { 50% { opacity: 0; } }
 @keyframes fall { 0% { transform: scaleY(0); transform-origin: top; } 45% { transform: scaleY(1); transform-origin: top; } 55% { transform: scaleY(1); transform-origin: bottom; } 100% { transform: scaleY(0); transform-origin: bottom; } }
-.glyph { position: absolute; font-family: var(--mono); font-size: 11.5px; color: var(--dim); opacity: 0.4; border: 1px solid var(--line); border-radius: var(--r-xs); padding: 6px 11px; background: rgba(15, 21, 36, 0.5); will-change: transform; pointer-events: none; white-space: nowrap; }
+.glyph { position: absolute; font-family: var(--mono); font-size: 11.5px; color: var(--dim); opacity: 0.4; border: 1px solid var(--line); border-radius: var(--r-xs); padding: 6px 11px; background: color-mix(in srgb, var(--ink) 55%, transparent); will-change: transform; pointer-events: none; white-space: nowrap; }
 .hero-map { position: absolute; right: clamp(20px, 7vw, 100px); top: 50%; transform: translateY(-50%); width: clamp(130px, 13vw, 190px); height: auto; pointer-events: none; z-index: 0; }
 .hm-path { fill: none; stroke: var(--line2); stroke-width: 1.5; stroke-dasharray: 4 7; }
-.hm-dot { fill: var(--ink); stroke: var(--link); stroke-width: 2; filter: drop-shadow(0 0 6px rgba(166, 184, 255, 0.5)); animation: hm-pulse 3.6s ease-in-out infinite; }
+.hm-dot { fill: var(--ink); stroke: var(--mute); stroke-width: 2; filter: drop-shadow(0 0 6px var(--glow-soft)); animation: hm-pulse 3.6s ease-in-out infinite; }
 .hm-dot.d2 { stroke: var(--text); animation-delay: 1.2s; filter: drop-shadow(0 0 6px var(--glow-soft)); }
 .hm-dot.d3 { stroke: var(--up); animation-delay: 2.4s; filter: drop-shadow(0 0 6px rgba(92, 224, 168, 0.5)); }
 @keyframes hm-pulse { 0%, 100% { r: 6; } 50% { r: 9; } }
@@ -3056,23 +3424,25 @@ body.static .scene { height: auto !important; }
 .ch1-grid { display: grid; grid-template-columns: 1.05fr 0.95fr; gap: 70px; align-items: center; width: 100%; }
 .blueprint { width: 100%; max-width: 520px; justify-self: center; }
 .blueprint svg { width: 100%; height: auto; display: block; }
-.blueprint .draw { stroke: var(--link); stroke-width: 1.6; fill: none; stroke-linecap: round; }
+.blueprint .draw { stroke: var(--mute); stroke-width: 1.6; fill: none; stroke-linecap: round; }
 .blueprint .draw.amber { stroke: var(--text); }
-/* a mix of --link rather than the raw rgba it used to be: identical at the
-   dark palette (--link *is* #A6B8FF there), but now it inverts with the page.
-   Ch.1 is not a light chapter itself, yet its pinned blueprint is still on
-   screen while Ch.2 owns the centre and turns the whole frame to paper - a
-   fixed 35% pale blue simply vanished at that moment. */
-.blueprint .draw.faint { stroke: color-mix(in srgb, var(--link) 35%, transparent); }
+/* a mix of a palette token rather than the raw rgba it used to be, which is
+   what makes it invert with the page: Ch.1 is not a light chapter itself, yet
+   its pinned blueprint is still on screen while Ch.2 owns the centre and turns
+   the whole frame to paper - a fixed pale blue simply vanished at that moment.
+   the drawing is a neutral now (--mute for the solid lines, --text for the
+   .amber highlight, 45% of --mute for the faint ones): a blueprint is line art
+   at three weights, and the three weights are the drawing. */
+.blueprint .draw.faint { stroke: color-mix(in srgb, var(--mute) 45%, transparent); }
 .bp-cap { font-family: var(--mono); font-size: 11px; letter-spacing: 0.18em; text-transform: uppercase; color: var(--dim); text-align: center; margin-top: 16px; }
 .bp-cap b { color: var(--text); font-weight: 500; }
 .ch1-creds { display: flex; gap: 9px; flex-wrap: wrap; margin-top: 16px; }
 .wr { font-family: var(--disp); font-weight: 500; font-size: clamp(20px, 3.1vw, 36px); line-height: 1.4; letter-spacing: -0.01em; max-width: 24ch; }
 .wr i.hot { font-style: normal; color: var(--text); }
-.wr i.lnk { font-style: normal; color: var(--link); }
+.wr i.lnk { font-style: normal; color: var(--mute); }
 .wr .w { opacity: 0.13; transition: opacity 0.15s linear; }
 .wr .w.hot { color: var(--text); }
-.wr .w.lnk { color: var(--link); }
+.wr .w.lnk { color: var(--mute); }
 
 /* ================= CH2 — THE CROSSING (simplified: scroll-spy + sticky artifact) ================= */
 .cross-stage { position: relative; display: grid; grid-template-columns: 1fr 1fr; gap: 60px; align-items: start; width: 100%; }
@@ -3084,7 +3454,7 @@ body.static .scene { height: auto !important; }
 .cross-q .yr { font-family: var(--mono); font-size: 11.5px; letter-spacing: 0.22em; color: var(--dim); text-transform: uppercase; }
 .cross-q .yr b { color: var(--text); font-weight: 500; }
 .cross-q h3 { font-family: var(--disp); font-weight: 700; font-size: var(--t-sub); letter-spacing: -0.02em; line-height: 1.15; margin-top: 6px; }
-.cross-q h3 em { font-style: normal; color: var(--link); }
+.cross-q h3 em { font-style: normal; color: var(--mute); }
 .cross-q.on h3 em { color: var(--text); }
 .cross-q p { color: var(--mute); font-size: 14.5px; max-width: 46ch; margin-top: 8px; }
 .cross-right { position: sticky; top: calc(var(--nav-h) + 40px); z-index: 2; height: 420px; }
@@ -3100,9 +3470,14 @@ body.static .scene { height: auto !important; }
 /* the three artifact mock-ups inside Ch.2 used to be drawn in fixed
    light-on-dark rgba()s - a blue wireframe, two grey PRD bars, a blue bar
    chart - all of which vanished into the card the moment the chapter flipped
-   to paper. each is now a mix of the token it was imitating, so it keeps its
-   exact dark-mode weight and inverts with the section. */
-.wf-el { border: 1.4px solid color-mix(in srgb, var(--link) 50%, transparent); border-radius: 7px; margin-bottom: 12px; }
+   to paper. each is a mix of a palette token now, so it keeps its dark-mode
+   weight and inverts with the section - and all three are mixes of --mute
+   rather than of a hue: the wireframe and the dashboard were the last two
+   blue-tinted drawings on My Journey. the percentages are nudged up a few
+   points from the blue ones they replace (50 → 55, 25/70 → 30/75) because a
+   grey at equal alpha sits closer to the card it is drawn on than a blue
+   did. */
+.wf-el { border: 1.4px solid color-mix(in srgb, var(--mute) 55%, transparent); border-radius: 7px; margin-bottom: 12px; }
 .wf-el.bar { height: 14px; width: 55%; }
 .wf-el.hero { height: 100px; display: grid; place-items: center; color: var(--dim); font-family: var(--mono); font-size: 10px; letter-spacing: 0.2em; }
 .wf-row { display: flex; gap: 12px; }
@@ -3120,11 +3495,11 @@ body.static .scene { height: auto !important; }
 .db-kpi .v.a { color: var(--text); }
 .db-kpi .l { font-family: var(--mono); font-size: 8.5px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--dim); margin-top: 2px; }
 .db-chart { display: flex; align-items: flex-end; gap: 7px; height: 130px; border-bottom: 1px solid var(--line2); padding-bottom: 2px; }
-.db-chart i { flex: 1; background: linear-gradient(to top, color-mix(in srgb, var(--link) 25%, transparent), color-mix(in srgb, var(--link) 70%, transparent)); border-radius: 4px 4px 0 0; }
+.db-chart i { flex: 1; background: linear-gradient(to top, color-mix(in srgb, var(--mute) 30%, transparent), color-mix(in srgb, var(--mute) 75%, transparent)); border-radius: 4px 4px 0 0; }
 .db-chart i.hot { background: linear-gradient(to top, var(--line2), var(--text)); }
 /* the same three mock-ups on paper: a low-alpha mix that reads as a soft
-   wireframe over #242424 turns into nothing over #EBE8E2, because the card it
-   sits on is now the bright end of the scale rather than the dark one. the
+   wireframe over #242424 turns into nothing over a near-white card, because the
+   card it sits on is now the bright end of the scale rather than the dark. the
    ratios, not the colours, are what has to change - so only the alphas are
    re-cut here and the dark state is left exactly as it was above.
 
@@ -3132,9 +3507,9 @@ body.static .scene { height: auto !important; }
    purpose - the wireframe's CTA block, the PRD's heading bar, the two "hot"
    columns - all three of which already invert through their own token, and
    all three of which these overrides would otherwise outrank. */
-.theme-light .wf-el:not(.btn) { border-color: color-mix(in srgb, var(--link) 80%, transparent); }
+.theme-light .wf-el:not(.btn) { border-color: color-mix(in srgb, var(--mute) 75%, transparent); }
 .theme-light .prd-line:not(.prd-h) { background: color-mix(in srgb, var(--mute) 60%, transparent); }
-.theme-light .db-chart i:not(.hot) { background: linear-gradient(to top, color-mix(in srgb, var(--link) 40%, transparent), color-mix(in srgb, var(--link) 95%, transparent)); }
+.theme-light .db-chart i:not(.hot) { background: linear-gradient(to top, color-mix(in srgb, var(--mute) 45%, transparent), color-mix(in srgb, var(--mute) 95%, transparent)); }
 .db-note { font-family: var(--mono); font-size: 10px; color: var(--dim); margin-top: 12px; }
 .db-note b { color: var(--up); font-weight: 500; }
 
@@ -3231,22 +3606,38 @@ body.static .scene { height: auto !important; }
    shadow, which is what actually sells "floating above" rather than "drawn
    onto".
 
-   ONE fill, both palettes - that is the part that changed in this pass. this
-   family used to have an exception: .tl-cs-card alone was overridden to #fff
-   with its own hand-written shadow while the page was light, so the timeline
-   row lifted off the paper and every other card family on the site stayed a
-   beige rectangle on it. the exception is gone rather than copied to the other
-   22 families, for a reason worth keeping in mind before anyone re-adds it: a
-   flat hex cannot ride the flip. --surface resolves through --raise /
-   --raise2, which are registered @property colours listed in the one
-   crossfade on :root (see SECTION THEME FLIP), so a card's fill *animates*
-   across the 0.6s the page takes to turn over. a hard #fff would cut at frame
-   one instead, leaving white cards sitting on a still-dark page for ~300ms.
-   what carries "raised" on paper is the pair the light palette already tunes
-   for it: the --line hairline and --lift, which .theme-light re-cuts to about
-   a quarter of the dark alphas. if a brighter card on paper is genuinely
-   wanted, it needs a registered --card-fill token declared per zone (so the
-   zone stepping survives) and added to the crossfade list - not a flat hex.
+   ONE fill, both palettes, and it is --card-fill rather than --surface. the
+   history is worth keeping because it is the trap: .tl-cs-card alone used to be
+   overridden to a flat #fff with its own hand-written shadow while the page was
+   light, so the timeline row lifted off the paper and every other card family on
+   the site stayed a tinted rectangle on it. a consolidation pass then removed
+   that exception rather than copy it to the other 22 families - correct, because
+   a flat hex cannot ride the flip: --surface resolves through --raise / --raise2,
+   which are registered @property colours listed in the one crossfade on :root
+   (see SECTION THEME FLIP), so a card's fill *animates* across the 0.6s the page
+   takes to turn over, where a hard #fff cuts at frame one and leaves white cards
+   on a still-dark page for ~300ms. what it cost was the crispness: every card on
+   paper went back to the ladder's two deepest rungs on the page's lightest one.
+   --card-fill is the way both things are true at once. it is a registered
+   <color> on the crossfade list, it equals --surface in the dark palette (so
+   nothing there moved), and .theme-light points it at #FFFFFF - a genuinely
+   white card that still fades in rather than cutting, and the relationship the
+   page's cooled grey ladder is built around (see .theme-light's --ink). the
+   --line hairline and --lift carry "raised" alongside it, both re-cut on paper
+   to roughly a fifth of the dark alphas (0.03 / 0.042 / 0.062 against 0.16 /
+   0.2 / 0.28 - see ELEVATION, both pairs were softened again). anything that
+   wants a brighter card belongs in that token, never in a flat hex on a
+   component.
+   one thing --card-fill does NOT do yet, and it is worth writing down rather
+   than assuming: `--card-fill: var(--surface)` is substituted where it is
+   *declared*, on :root, exactly like the alias trap named in SECTION THEME FLIP.
+   so a zone that re-points --surface (any .zone-lift) no longer lifts its cards
+   one step with it while the page is dark - they all paint --raise. .zone already
+   restates `--surface: var(--raise)` for the same reason; restating --card-fill
+   there too would restore the stepping, and it is left out of this pass only
+   because that one line changes every .zone-lift card on the site, not just this
+   page's. on paper the question does not arise: --card-fill is a flat #FFFFFF
+   there by design, for every zone.
 
    what is deliberately NOT in this list: the recessed boxes (.dvf, .gac-cell,
    .gac-trr, .gac-v, .kbc, .cj, .dv-console, .mg, .gac-out, .gac-pane,
@@ -3302,7 +3693,7 @@ body.static .scene { height: auto !important; }
 .kb-map,
 .lstep,
 .soon-term {
-  background: var(--surface);
+  background: var(--card-fill);
   box-shadow: var(--lift);
 }
 
@@ -3315,9 +3706,12 @@ body.static .scene { height: auto !important; }
      .inv-result  the one green-tinted closing panel each case study ends on
      .aud         the competitor table, whose fills live on its rows
      .tl-doc      the "one self-authored knowledge doc" mock on stop 01 of the
-                  Polarin timeline - a --raise2 → --raise gradient with a
-                  dashed edge and a tag pinned over its top border, i.e. a
-                  sheet of paper lying on the stage. it is the one raised
+                  Polarin timeline - a top-lit gradient with a dashed edge and a
+                  tag pinned over its top border, i.e. a sheet of paper lying on
+                  the stage. the gradient is built off --card-fill now (it was
+                  the --raise2 → --raise ladder, which read as a tinted panel
+                  beside white .tl-stream cards), so it belongs to the family
+                  even though it paints its own fill. it is the one raised
                   object in that pinned scene that had no shadow: .tl-stream
                   and the whole .tl-cs-card row beside it read --lift, so the
                   doc was the only thing in the stage that looked drawn on
@@ -3360,7 +3754,6 @@ body.static .scene { height: auto !important; }
    always exactly one step above the card it sits on and tracks it through the
    flip (--surface2 is derived from --surface, so it inverts direction on paper
    with the rest of the ladder). */
-.tl-cs-icon,
 .cj-ico,
 .gac-card > i,
 .adm-mod-ic {

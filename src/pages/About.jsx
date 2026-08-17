@@ -23,8 +23,14 @@ const MIX = {
 
 
 // bar colours come through --bar-1..6 rather than named tokens or raw hex so
-// the chart re-points with the palette when this section flips to light -
-// pastels that read on #121212 wash out to nothing on paper.
+// the chart re-points with the palette when this section flips to light - a
+// value that reads on a dark card washes out to nothing on paper. the six are
+// their own pastel hues, not a lightness ramp: red still belongs to the one
+// decisive action and blue is retired as a UI accent, but a chart's series
+// still need to be tellable apart at a glance, which is a data-legibility
+// question separate from the chrome accent rule. the palette is defined once
+// in src/index.css (see the chart-palette note in TOKENS) - the order here is
+// just what maps a skill to a hue, with no ranking implied by which is which.
 const SKILLS = [
   { label: 'Figma', v: 95, c: 'var(--bar-1)' },
   { label: 'AI-assisted building', v: 92, c: 'var(--bar-2)' },
