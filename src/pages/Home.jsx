@@ -3,6 +3,14 @@ import { useState } from 'react';
 export default function Home() {
   const [mode, setMode] = useState('both');
 
+  // deliberately not a .flip section (see SECTION THEME FLIP in index.css).
+  // two reasons: it is the one screen a recruiter sees first and it should
+  // land on-brand dark, and it is the *only* section on this page - the
+  // device is an alternation, and a single fold with nothing under it to
+  // alternate against would just be one unexplained colour change. it also
+  // sits at the middle of the viewport at scroll 0, so it would trip the
+  // trigger on load rather than on a scroll. adding "flip" to the class list
+  // below is all it takes if a second section ever lands on this page.
   return (
     <section className="home-hero" data-mode={mode} onMouseLeave={() => setMode('both')}>
       <div className="home-kicker rv">

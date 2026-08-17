@@ -110,7 +110,7 @@ export default function DeveloperPortalCaseStudy({ onPrev, onNext, idx, total })
             </div>
           ) : null}
         </div>
-        <p className="dv-p dim">the mock layer behind UAT was the riskiest engineering ask in the PRD - and the reason a developer can go from activation email to first successful API call in <b style={{ color: 'var(--signal)' }}>under 30 minutes.</b></p>
+        <p className="dv-p dim">the mock layer behind UAT was the riskiest engineering ask in the PRD - and the reason a developer can go from activation email to first successful API call in <b style={{ color: 'var(--text)' }}>under 30 minutes.</b></p>
       </div>
 
       <div className="inv-section">

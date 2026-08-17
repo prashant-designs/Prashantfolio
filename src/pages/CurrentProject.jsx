@@ -231,7 +231,7 @@ export default function CurrentProject() {
           const k = 1 - dist / R;
           d.c.setAttribute('transform', `translate(0 ${(-16 * k).toFixed(1)})`);
           d.c.setAttribute('r', (1.6 + 2.8 * k).toFixed(2));
-          d.c.style.fill = 'var(--signal)';
+          d.c.style.fill = 'var(--text)';
           d.c.style.opacity = (0.35 + 0.65 * k).toFixed(2);
         } else if (d.c.hasAttribute('transform')) {
           d.c.removeAttribute('transform');
@@ -612,7 +612,7 @@ export default function CurrentProject() {
       </section>
 
       {/* 06 · still building */}
-      <section className="still-sec zone zone-lift-hi zone-warm" data-ch="Still Building">
+      <section className="still-sec zone zone-lift-hi" data-ch="Still Building">
         <div className="wrap" style={{ textAlign: 'center' }}>
           <h2 className="still-t rv">still building<i className="tcur"></i></h2>
           <div className="soon-bar rv d1" style={{ maxWidth: '280px', margin: '22px auto 0' }}><i></i></div>

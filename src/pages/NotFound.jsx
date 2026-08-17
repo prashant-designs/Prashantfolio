@@ -1,6 +1,6 @@
 export default function NotFound() {
   return (
-    <section className="notfound zone zone-sink zone-warm-l">
+    <section className="notfound zone zone-sink">
       <div className="wrap">
         <p className="eyebrow">404 · Lost signal</p>
         <h1 className="nf-title">This page <span>doesn&apos;t exist.</span></h1>

@@ -22,13 +22,16 @@ const MIX = {
 };
 
 
+// bar colours come through --bar-1..6 rather than named tokens or raw hex so
+// the chart re-points with the palette when this section flips to light -
+// pastels that read on #121212 wash out to nothing on paper.
 const SKILLS = [
-  { label: 'Figma', v: 95, c: 'var(--signal)' },
-  { label: 'AI-assisted building', v: 92, c: 'var(--link)' },
-  { label: 'design systems', v: 90, c: 'var(--up)' },
-  { label: 'product & PRDs', v: 86, c: 'var(--rose)' },
-  { label: 'crafting accessories', v: 80, c: '#b48ef0' },
-  { label: '3D & animation', v: 74, c: '#6fd3e8' },
+  { label: 'Figma', v: 95, c: 'var(--bar-1)' },
+  { label: 'AI-assisted building', v: 92, c: 'var(--bar-2)' },
+  { label: 'design systems', v: 90, c: 'var(--bar-3)' },
+  { label: 'product & PRDs', v: 86, c: 'var(--bar-4)' },
+  { label: 'crafting accessories', v: 80, c: 'var(--bar-5)' },
+  { label: '3D & animation', v: 74, c: 'var(--bar-6)' },
 ];
 
 const FACTS = [
@@ -130,7 +133,7 @@ export default function About() {
         </div>
       </section>
 
-      <section className="ab-split zone zone-lift zone-warm" data-ch="The Mix">
+      <section className="ab-split zone zone-lift flip" data-ch="The Mix">
         <div className="wrap">
           <p className="eyebrow rv">- what I&apos;m made of</p>
           <h2 className="ab-h rv d1">Part designer. Part PM.<br /><em>All builder.</em></h2>
@@ -226,7 +229,7 @@ export default function About() {
         </div>
       </section>
 
-      <section className="ab-skills zone zone-lift" data-ch="Skills">
+      <section className="ab-skills zone zone-lift flip" data-ch="Skills">
         <div className="wrap">
           <p className="eyebrow rv">- my skills, honestly</p>
           <h2 className="ab-h rv d1">The chart HR never asks for.</h2>
@@ -259,7 +262,11 @@ export default function About() {
         </div>
       </section>
 
-      <section className="ab-journey zone zone-lift-hi zone-duo" data-ch="My Journey">
+      {/* not flipped, unlike The Mix and Skills above: three light sections on
+          one page turned the device into the page's default rather than an
+          accent, and this one is the closing CTA - it hands off to the dark
+          footer, so it stays on the page's own stock. */}
+      <section className="ab-journey zone zone-lift-hi" data-ch="My Journey">
         <div className="wrap">
           <p className="eyebrow rv">- the long version</p>
           <h2 className="ab-big rv d1">the full story lives<br />in <span>three chapters.</span></h2>

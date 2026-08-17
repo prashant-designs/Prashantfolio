@@ -127,7 +127,7 @@ export default function KnowledgeBaseCaseStudy({ onPrev, onNext, idx, total }) {
             <span>minutes per edit · ₹0 external cost · always current</span>
           </div>
         </div>
-        <p className="dv-p dim">next up: an update flow simpler than design tools - so <b style={{ color: 'var(--signal)' }}>anyone</b> on the product team can ship release notes or feature docs, no dev support, no design-tool skills required.</p>
+        <p className="dv-p dim">next up: an update flow simpler than design tools - so <b style={{ color: 'var(--text)' }}>anyone</b> on the product team can ship release notes or feature docs, no dev support, no design-tool skills required.</p>
       </div>
 
       <div className="inv-section">

@@ -10,6 +10,83 @@ const OtherProject = lazy(() => import('./pages/OtherProject'));
 const MyJourney = lazy(() => import('./pages/MyJourney'));
 const NotFound = lazy(() => import('./pages/NotFound'));
 
+/* the light-flip trigger (see SECTION THEME FLIP in index.css).
+   ONE theme value for the whole page, computed once per scroll frame and
+   written to ONE node - the document element - so every visible pixel reads
+   the same palette at the same instant.
+
+   this replaces two hooks that each answered "is the page light?" on their
+   own. an IntersectionObserver toggled .theme-light onto each .flip section
+   individually, and a second probe toggled .light onto the nav. sections are
+   not viewport-height, so a section that had already flipped and its
+   still-dark neighbour were regularly on screen together: half the viewport
+   paper, half of it ink, with the bar picking a side. the trigger was never
+   the bug - two elements deciding their own colour from their own geometry
+   was. there is nothing left to keep in sync here: .flip is now only a marker
+   saying "this section is a light chapter", the sections paint no background
+   of their own, and the nav inherits from the same class as everything else.
+
+   the test is the old observer's root margin, expressed as a rect read: is
+   any .flip section crossing the middle 20% band of the viewport (-40% top,
+   -40% bottom). so a chapter still turns the page over once it is the
+   dominant thing on screen rather than at its first visible pixel, and turns
+   it back on the way out. .flip-lock is the always-on marker for a page that
+   is light from mount with nothing to alternate against (Other Projects).
+
+   deliberately imperative, like the pinned-scene hooks and useScrollBeat: a
+   class toggle on one node per scroll frame, never React state, so scrolling
+   never re-renders the tree. the read is rAF-throttled, the write is a no-op
+   when the class is already right, and a childList MutationObserver covers
+   the moment a page mounts behind Suspense or a scene changes the DOM without
+   a scroll. */
+const THEME_LIGHT = 'theme-light';
+
+function useGlobalTheme(pageRef, routeKey) {
+  useEffect(() => {
+    const pageEl = pageRef.current;
+    if (!pageEl) return undefined;
+
+    const root = document.documentElement;
+    let raf = null;
+
+    const apply = () => {
+      raf = null;
+      let light = pageEl.querySelector('.flip-lock') !== null;
+      if (!light) {
+        const bandTop = window.innerHeight * 0.4;
+        const bandBottom = window.innerHeight * 0.6;
+        const chapters = pageEl.querySelectorAll('.flip');
+        for (let i = 0; i < chapters.length; i += 1) {
+          const rect = chapters[i].getBoundingClientRect();
+          if (rect.bottom > bandTop && rect.top < bandBottom) {
+            light = true;
+            break;
+          }
+        }
+      }
+      root.classList.toggle(THEME_LIGHT, light);
+    };
+
+    const request = () => {
+      if (raf === null) raf = window.requestAnimationFrame(apply);
+    };
+
+    window.addEventListener('scroll', request, { passive: true });
+    window.addEventListener('resize', request);
+    const mo = new MutationObserver(request);
+    mo.observe(pageEl, { childList: true, subtree: true });
+    apply();
+
+    return () => {
+      window.removeEventListener('scroll', request);
+      window.removeEventListener('resize', request);
+      mo.disconnect();
+      if (raf !== null) window.cancelAnimationFrame(raf);
+      root.classList.remove(THEME_LIGHT);
+    };
+  }, [pageRef, routeKey]);
+}
+
 function AppContent() {
   const location = useLocation();
   const [progress, setProgress] = useState(0);
@@ -17,6 +94,8 @@ function AppContent() {
   const pageRef = useRef(null);
 
   const currentPage = location.pathname.replace('/', '') || 'home';
+
+  useGlobalTheme(pageRef, location.pathname);
 
   useEffect(() => {
     const handleScroll = () => {

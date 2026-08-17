@@ -144,23 +144,23 @@ function TheMultiplier() {
       <svg className="mult-svg" viewBox="0 0 1060 480" aria-hidden="true">
         <path className="thread" data-th style={{ stroke: 'var(--link)' }} d="M150 70  C 330 70,  330 226, 500 232" />
         <path className="thread" data-th style={{ stroke: 'var(--rose)' }} d="M150 155 C 320 155, 330 230, 500 236" />
-        <path className="thread" data-th style={{ stroke: 'var(--signal)' }} d="M150 240 C 320 240, 330 240, 500 240" />
+        <path className="thread" data-th style={{ stroke: 'var(--text)' }} d="M150 240 C 320 240, 330 240, 500 240" />
         <path className="thread" data-th style={{ stroke: 'var(--up)' }} d="M150 325 C 320 325, 330 250, 500 244" />
-        <path className="thread" data-th style={{ stroke: '#B79CFF' }} d="M150 410 C 330 410, 330 254, 500 248" />
+        <path className="thread" data-th style={{ stroke: 'var(--bar-5)' }} d="M150 410 C 330 410, 330 254, 500 248" />
         <text className="in-label" x="140" y="74" textAnchor="end">Design craft</text>
         <text className="in-label" x="140" y="159" textAnchor="end">Design systems</text>
         <text className="in-label" x="140" y="244" textAnchor="end">Customer discovery</text>
         <text className="in-label" x="140" y="329" textAnchor="end">Data & analytics</text>
         <text className="in-label" x="140" y="414" textAnchor="end">AI × frontend</text>
         <g id="multCore" opacity="0">
-          <circle cx="545" cy="240" r="52" fill="rgba(232,73,45,.08)" stroke="var(--signal)" strokeWidth="1.4" />
-          <circle cx="545" cy="240" r="66" fill="none" stroke="rgba(232,73,45,.25)" strokeDasharray="3 7" />
+          <circle cx="545" cy="240" r="52" fill="var(--line)" stroke="var(--text)" strokeWidth="1.4" />
+          <circle cx="545" cy="240" r="66" fill="none" stroke="var(--line2)" strokeDasharray="3 7" />
           <text className="core-t1" x="545" y="236" textAnchor="middle">One PM</text>
           <text className="core-t2" x="545" y="254" textAnchor="middle">END TO END</text>
         </g>
-        <path className="thread" data-out style={{ stroke: 'rgba(92,224,168,.7)' }} d="M612 232 C 740 210, 760 110, 880 96" />
-        <path className="thread" data-out style={{ stroke: 'rgba(92,224,168,.7)' }} d="M612 240 C 760 240, 760 240, 880 240" />
-        <path className="thread" data-out style={{ stroke: 'rgba(92,224,168,.7)' }} d="M612 248 C 740 270, 760 370, 880 384" />
+        <path className="thread" data-out style={{ stroke: 'color-mix(in srgb, var(--up) 70%, transparent)' }} d="M612 232 C 740 210, 760 110, 880 96" />
+        <path className="thread" data-out style={{ stroke: 'color-mix(in srgb, var(--up) 70%, transparent)' }} d="M612 240 C 760 240, 760 240, 880 240" />
+        <path className="thread" data-out style={{ stroke: 'color-mix(in srgb, var(--up) 70%, transparent)' }} d="M612 248 C 740 270, 760 370, 880 384" />
         <g className="out-g" data-og>
           <text className="out-num" x="895" y="88">3×</text>
           <text className="out-label" x="895" y="112">self-service adoption</text>
@@ -380,7 +380,7 @@ export default function MyJourney() {
       </section>
 
       {/* CH1 - THE PIXEL YEARS */}
-      <section id="ch1" className="sec-cushion zone zone-lift zone-warm" data-ch="Ch.1 - The Pixel Years">
+      <section id="ch1" className="sec-cushion zone zone-lift" data-ch="Ch.1 - The Pixel Years">
         <div className="wrap ch-head">
           <p className="ch-num rv"><b>Chapter 01</b> · 2017 - 2022 · Bangalore</p>
           <h2 className="ch-title rv d1">The Pixel <span>Years.</span></h2>
@@ -400,8 +400,12 @@ export default function MyJourney() {
         </div>
       </section>
 
-      {/* CH2 - THE CROSSING */}
-      <section id="ch2" className="sec-cushion zone zone-sink zone-duo" data-ch="Ch.2 - The Crossing">
+      {/* CH2 - THE CROSSING
+          one of this page's two flipped chapters (see SECTION THEME FLIP in
+          index.css). the two pinned, scroll-scrubbed chapters either side of
+          it - Ch.1 and Ch.3 - stay on dark stock: their SVG scenes are drawn
+          by scroll math, same reason About's .orbit loop was left alone. */}
+      <section id="ch2" className="sec-cushion zone zone-sink zone-duo flip" data-ch="Ch.2 - The Crossing">
         <div className="wrap ch-head">
           <p className="ch-num rv"><b>Chapter 02</b> · Nov 2022 - Now · Lightstorm · Promoted 2×</p>
           <h2 className="ch-title rv d1">The <span>Crossing.</span></h2>
@@ -426,8 +430,9 @@ export default function MyJourney() {
         </div>
       </section>
 
-      {/* EPILOGUE */}
-      <section className="epi zone zone-sink zone-warm" id="epi" data-ch="Epilogue">
+      {/* EPILOGUE - the page's second flip: dark prologue, dark Ch.1, light
+          Ch.2, dark Ch.3, light close. */}
+      <section className="epi zone zone-sink flip" id="epi" data-ch="Epilogue">
         <div className="wrap">
           <p className="eyebrow rv">Epilogue · Your move</p>
           <h2 className="rv d1">The next chapter is <span className="hot">unwritten.</span></h2>

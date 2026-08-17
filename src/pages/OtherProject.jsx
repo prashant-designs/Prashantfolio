@@ -45,14 +45,14 @@ function ComingBuilder() {
         ))}
       </span>
       <svg className="op-builder" viewBox="0 0 60 60" aria-hidden="true">
-        <circle cx="30" cy="13" r="7" fill="none" stroke="var(--signal)" strokeWidth="2.4" />
-        <line x1="30" y1="20" x2="30" y2="40" stroke="var(--signal)" strokeWidth="2.4" strokeLinecap="round" />
-        <line x1="30" y1="40" x2="21" y2="56" stroke="var(--signal)" strokeWidth="2.4" strokeLinecap="round" />
-        <line x1="30" y1="40" x2="39" y2="56" stroke="var(--signal)" strokeWidth="2.4" strokeLinecap="round" />
-        <line x1="30" y1="28" x2="17" y2="24" stroke="var(--signal)" strokeWidth="2.4" strokeLinecap="round" />
+        <circle cx="30" cy="13" r="7" fill="none" stroke="var(--mute)" strokeWidth="2.4" />
+        <line x1="30" y1="20" x2="30" y2="40" stroke="var(--mute)" strokeWidth="2.4" strokeLinecap="round" />
+        <line x1="30" y1="40" x2="21" y2="56" stroke="var(--mute)" strokeWidth="2.4" strokeLinecap="round" />
+        <line x1="30" y1="40" x2="39" y2="56" stroke="var(--mute)" strokeWidth="2.4" strokeLinecap="round" />
+        <line x1="30" y1="28" x2="17" y2="24" stroke="var(--mute)" strokeWidth="2.4" strokeLinecap="round" />
         <g>
-          <line x1="30" y1="28" x2="46" y2="16" stroke="var(--signal)" strokeWidth="2.4" strokeLinecap="round" />
-          <rect x="43" y="9" width="14" height="7" rx="2" fill="var(--signal)" transform="rotate(-38 50 12.5)" />
+          <line x1="30" y1="28" x2="46" y2="16" stroke="var(--mute)" strokeWidth="2.4" strokeLinecap="round" />
+          <rect x="43" y="9" width="14" height="7" rx="2" fill="var(--mute)" transform="rotate(-38 50 12.5)" />
           <animateTransform attributeName="transform" type="rotate" values="0 30 28; -30 30 28; 8 30 28; 0 30 28" keyTimes="0; 0.35; 0.6; 1" dur="1.1s" repeatCount="indefinite" />
         </g>
       </svg>
@@ -63,8 +63,14 @@ function ComingBuilder() {
 export default function OtherProject() {
   const typed = useTypewriter(PROJECTS);
 
+  // light stock, permanently: this page is one section tall, so there is
+  // nothing to alternate against and no reason to trigger on scroll. .flip-lock
+  // is the marker useGlobalTheme reads for exactly that case - it holds the
+  // page's one global .theme-light flag on for as long as this page is mounted,
+  // which paints the same paper the flipped chapters get, nav and footer
+  // included. it is a marker only: the section itself declares no theme.
   return (
-    <section className="soon-page zone zone-sink zone-cool">
+    <section className="soon-page zone zone-sink zone-cool flip-lock">
       <div className="wrap">
         <div className="soon-box rv">
           <h2>More projects, <ComingBuilder /></h2>
