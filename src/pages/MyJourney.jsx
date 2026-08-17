@@ -409,7 +409,7 @@ export default function MyJourney() {
         <div className="wrap ch-head">
           <p className="ch-num rv"><b>Chapter 02</b> · Nov 2022 - Now · Lightstorm · Promoted 2×</p>
           <h2 className="ch-title rv d1">The <span>Crossing.</span></h2>
-          <p style={{ color: 'var(--mute)', maxWidth: '58ch', marginTop: '14px' }} className="rv d2">I joined Lightstorm as its first designer. Three promotions later the title says product - but it was always the same question, asked three sizes bigger.</p>
+          <p className="ch-lede rv d2">I joined Lightstorm as its first designer. Three promotions later the title says product - but it was always the same question, asked three sizes bigger.</p>
         </div>
         <div className="wrap">
           <TheCrossing />
@@ -418,10 +418,10 @@ export default function MyJourney() {
 
       {/* CH3 - THE MULTIPLIER */}
       <section id="ch3" className="sec-cushion zone zone-lift-hi zone-cool" data-ch="Ch.3 - The Multiplier">
-        <div className="wrap ch-head" style={{ textAlign: 'center' }}>
-          <p className="ch-num rv" style={{ justifyContent: 'center' }}><b>Chapter 03</b> · Why it matters to an org</p>
+        <div className="wrap ch-head ch-center">
+          <p className="ch-num rv"><b>Chapter 03</b> · Why it matters to an org</p>
           <h2 className="ch-title rv d1">The <span>Multiplier.</span></h2>
-          <p style={{ color: 'var(--mute)', maxWidth: '60ch', margin: '14px auto 0' }} className="rv d2">Five disciplines usually live in five people, five backlogs, five handoffs. Here&apos;s what happened at Lightstorm when they routed through one.</p>
+          <p className="ch-lede rv d2">Five disciplines usually live in five people, five backlogs, five handoffs. Here&apos;s what happened at Lightstorm when they routed through one.</p>
         </div>
         <div className="scene" id="scene-ch3" style={{ height: '300vh' }}>
           <div className="pin">

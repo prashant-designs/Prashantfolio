@@ -52,7 +52,7 @@ export default function KnowledgeBaseCaseStudy({ onPrev, onNext, idx, total }) {
 
       <div className="inv-section">
         <div className="inv-step-tag"><i></i>The problem</div>
-        <h3 className="dv-h" style={{ marginTop: '10px' }}>The cost of a stale wiki</h3>
+        <h3 className="dv-h">The cost of a stale wiki</h3>
         <p className="dv-p">When knowledge depends on other people&apos;s sprints, four things happen - quietly, every month:</p>
         <div className="dv-fails">
           {FAILS.map((f) => (
@@ -67,7 +67,7 @@ export default function KnowledgeBaseCaseStudy({ onPrev, onNext, idx, total }) {
 
       <div className="inv-section">
         <div className="inv-step-tag"><i></i>Architecture first</div>
-        <h3 className="dv-h" style={{ marginTop: '10px' }}>Content strategy & the site map</h3>
+        <h3 className="dv-h">Content strategy & the site map</h3>
         <p className="dv-p">Before a single article: a task-first information architecture. Not &quot;what do we want to say&quot; - <b style={{ color: 'var(--text)' }}>&quot;what does someone need, the moment they need it.&quot;</b> Hover the map:</p>
         <div className="kb-map">
           <div className="kb-root">Polarin KB</div>
@@ -96,9 +96,9 @@ export default function KnowledgeBaseCaseStudy({ onPrev, onNext, idx, total }) {
 
       <div className="inv-section">
         <div className="inv-step-tag"><i></i>How it&apos;s made</div>
-        <h3 className="dv-h" style={{ marginTop: '10px' }}>The AI-enabled build</h3>
+        <h3 className="dv-h">The AI-enabled build</h3>
         <p className="dv-p">The platform is AI-assisted on both sides - how it&apos;s built, and how it&apos;s written:</p>
-        <div className="dv-pipe" style={{ marginTop: '14px' }}>
+        <div className="dv-pipe">
           <span className="dvp"><b>figma designs</b></span><em>→</em>
           <span className="dvp"><b>AI draft · via MCP</b></span><em>→</em>
           <span className="dvp last"><b>frontend screens</b><i>faster · cheaper</i></span>
@@ -114,7 +114,7 @@ export default function KnowledgeBaseCaseStudy({ onPrev, onNext, idx, total }) {
 
       <div className="inv-section">
         <div className="inv-step-tag"><i></i>Where the cost disappears</div>
-        <h3 className="dv-h" style={{ marginTop: '10px' }}>Self-serve updates</h3>
+        <h3 className="dv-h">Self-serve updates</h3>
         <div className="kb-cmp">
           <div className="kbc">
             <b className="bad">before · external wiki</b>
@@ -132,7 +132,7 @@ export default function KnowledgeBaseCaseStudy({ onPrev, onNext, idx, total }) {
 
       <div className="inv-section">
         <div className="inv-step-tag"><i></i>Where it stands</div>
-        <h3 className="dv-h" style={{ marginTop: '10px' }}>Shipped so far</h3>
+        <h3 className="dv-h">Shipped so far</h3>
         <p className="dv-p">Core structure built - article layout, navigation, key articles refreshed - and a responsive test build is live and clickable. Coverage expands article by article.</p>
         <div className="dv-shot" aria-hidden="true">
           <span className="mg-tag">- kb walkthrough - placeholder</span>

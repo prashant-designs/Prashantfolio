@@ -64,7 +64,7 @@ export default function DeveloperPortalCaseStudy({ onPrev, onNext, idx, total })
 
       <div className="inv-section">
         <div className="inv-step-tag"><i></i>What I found</div>
-        <h3 className="dv-h" style={{ marginTop: '10px' }}>Requirement collection</h3>
+        <h3 className="dv-h">Requirement collection</h3>
         <p className="dv-p">I shadowed support tickets, sat with CX, sales and engineering, and anchored everything on the two customers who matter: network-ops teams pulling metrics into Grafana or Datadog, and enterprise IT automating orders and changes. The current state, as a developer experiences it:</p>
         <div className="dv-fails">
           {FAILS.map((f) => (
@@ -79,7 +79,7 @@ export default function DeveloperPortalCaseStudy({ onPrev, onNext, idx, total })
 
       <div className="inv-section">
         <div className="inv-step-tag"><i></i>The calls I made</div>
-        <h3 className="dv-h" style={{ marginTop: '10px' }}>The PRD</h3>
+        <h3 className="dv-h">The PRD</h3>
         <div className="ivx-principles dv4">
           {PRINCIPLES.map((pr) => (
             <div className="ivp" key={pr.t}><b>{pr.t}</b><p>{pr.p}</p></div>
@@ -89,7 +89,7 @@ export default function DeveloperPortalCaseStudy({ onPrev, onNext, idx, total })
 
       <div className="inv-section">
         <div className="inv-step-tag"><i></i>The heart of it</div>
-        <h3 className="dv-h" style={{ marginTop: '10px' }}>Try the two environments</h3>
+        <h3 className="dv-h">Try the two environments</h3>
         <div className="dv-console" data-env={env}>
           <div className="dvc-top">
             <div className="dvc-toggle">
@@ -115,7 +115,7 @@ export default function DeveloperPortalCaseStudy({ onPrev, onNext, idx, total })
 
       <div className="inv-section">
         <div className="inv-step-tag"><i></i>Pricing & volumetrics</div>
-        <h3 className="dv-h" style={{ marginTop: '10px' }}>The framework</h3>
+        <h3 className="dv-h">The framework</h3>
         <p className="dv-p">One principle: <b style={{ color: 'var(--text)' }}>never charge the call that earns us money.</b> Ordering, changes, billing, admin - all free; Lightstorm earns from the services, not the calls. Only monitoring is metered, and only above a daily pool that scales with the customer&apos;s network:</p>
         <div className="dv-vol">
           <div className="dvv-row">
@@ -138,7 +138,7 @@ export default function DeveloperPortalCaseStudy({ onPrev, onNext, idx, total })
 
       <div className="inv-section">
         <div className="inv-step-tag"><i></i>How it got finalised</div>
-        <h3 className="dv-h" style={{ marginTop: '10px' }}>The decision ledger</h3>
+        <h3 className="dv-h">The decision ledger</h3>
         <p className="dv-p">A PRD is a stack of arguments settled one by one. The ones that shaped this portal - hover each for the call and the why:</p>
         <div className="dv-ledger">
           {LEDGER.map((l) => (
@@ -152,7 +152,7 @@ export default function DeveloperPortalCaseStudy({ onPrev, onNext, idx, total })
 
       <div className="inv-section">
         <div className="inv-step-tag"><i></i>Then I built it</div>
-        <h3 className="dv-h" style={{ marginTop: '10px' }}>DX design → frontend → deploy</h3>
+        <h3 className="dv-h">DX design → frontend → deploy</h3>
         <p className="dv-p">Designed the developer experience end to end - a 5-step getting-started, executable Swagger against UAT, one-click Postman, module docs with real use cases - then built the frontend myself and shipped it.</p>
         <div className="dv-shot" aria-hidden="true">
           <span className="mg-tag">- portal walkthrough - placeholder</span>
@@ -166,7 +166,7 @@ export default function DeveloperPortalCaseStudy({ onPrev, onNext, idx, total })
             </div>
           </div>
         </div>
-        <div className="inv-meta" style={{ marginTop: '18px' }}>
+        <div className="inv-meta">
           <div><span>Time to first call</span><b>≤ 30 min</b></div>
           <div><span>Swagger</span><b>runs live against UAT</b></div>
           <div><span>Postman</span><b>one-click collection</b></div>

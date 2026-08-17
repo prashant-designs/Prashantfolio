@@ -383,7 +383,7 @@ export default function CustomerPortalCaseStudy({ onPrev, onNext, idx, total }) 
 
       <div className="inv-section">
         <div className="inv-step-tag"><i></i>Discovery</div>
-        <h3 className="dv-h" style={{ marginTop: '10px' }}>4 months before touching Figma</h3>
+        <h3 className="dv-h">4 months before touching Figma</h3>
         <div className="ivx-principles">
           <div className="ivp"><b>technical immersion</b><p>learned networking from the architects - L1/L2/L3, ports, VRs, VCs - sat in sales calls, walked the manual provisioning workflows</p></div>
           <div className="ivp"><b>12 user interviews</b><p>IT managers, network engineers, enterprise buyers - mapped where every competitor demo broke</p></div>
@@ -394,22 +394,22 @@ export default function CustomerPortalCaseStudy({ onPrev, onNext, idx, total }) 
 
       <div className="inv-section">
         <div className="inv-step-tag"><i></i>Process</div>
-        <h3 className="dv-h" style={{ marginTop: '10px' }}>From research to first pixel</h3>
+        <h3 className="dv-h">From research to first pixel</h3>
         <p className="dv-p">Desk research, primary research, benchmarking, quick prototypes, internal review, feedback, then final designs - seven stages, each shaping the next. Scroll through it:</p>
         <ProcessScene />
       </div>
 
       <div className="inv-section">
         <div className="inv-step-tag"><i></i>The screens</div>
-        <h3 className="dv-h" style={{ marginTop: '10px' }}>Scroll through the product</h3>
+        <h3 className="dv-h">Scroll through the product</h3>
         <ScreensScene />
       </div>
 
       <div className="inv-section">
         <div className="inv-step-tag"><i></i>Why solo scaled</div>
-        <h3 className="dv-h" style={{ marginTop: '10px' }}>The system before the screens</h3>
+        <h3 className="dv-h">The system before the screens</h3>
         <p className="dv-p">With 12 developers and 3 PMs shipping against one designer, consistency wasn&apos;t optional - it was survival. Before a single product screen, I built the design system:</p>
-        <div className="cj-result" style={{ marginTop: '16px' }}>
+        <div className="cj-result">
           <span><b>100+</b> reusable components</span>
           <span><b>20+</b> design tokens</span>
           <span><b>4 yrs</b> of solo delivery, scaled by it</span>
@@ -419,7 +419,7 @@ export default function CustomerPortalCaseStudy({ onPrev, onNext, idx, total }) 
 
       <div className="inv-section">
         <div className="inv-step-tag"><i></i>What moved</div>
-        <h3 className="dv-h" style={{ marginTop: '10px' }}>Impact</h3>
+        <h3 className="dv-h">Impact</h3>
         <div className="ivx-principles dv4">
           <div className="ivp"><b>95% faster</b><p>onboarding & deployment - 5–7 days → 15 minutes</p></div>
           <div className="ivp"><b>3× self-serve</b><p>non-technical users now order & manage independently</p></div>
@@ -430,7 +430,7 @@ export default function CustomerPortalCaseStudy({ onPrev, onNext, idx, total }) 
 
       <div className="inv-section">
         <div className="inv-step-tag"><i></i>Four years</div>
-        <h3 className="dv-h" style={{ marginTop: '10px' }}>Three things I know for sure</h3>
+        <h3 className="dv-h">Three things I know for sure</h3>
         <div className="inv-learn">
           {LEARNED.map((l) => (
             <div className="inv-learn-card" key={l.t}><h4>{l.t}</h4><p>{l.p}</p></div>

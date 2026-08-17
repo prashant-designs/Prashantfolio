@@ -163,7 +163,7 @@ export default function InvoiceCaseStudy({ onPrev, onNext, idx, total }) {
 
       <div className="inv-section">
         <div className="inv-step-tag"><i></i>Step 4 · Designing it</div>
-        <h3 className="ch-title" style={{ fontSize: 'clamp(24px,3.4vw,38px)' }}>Three pages. <span>One job each.</span></h3>
+        <h3 className="ch-title t-lead">Three pages. <span>One job each.</span></h3>
         <p className="body">One page can't answer "what do I owe," "what am I paying for," and "why did it change" at the same time - so it stopped trying to.</p>
         <div className="inv-pages">
           {PAGES.map((p) => (
@@ -179,7 +179,7 @@ export default function InvoiceCaseStudy({ onPrev, onNext, idx, total }) {
 
       <div className="inv-section inv-explore">
         <p className="eyebrow">The new invoice</p>
-        <h3 className="ch-title" style={{ fontSize: 'clamp(22px,3vw,32px)' }}>Explore the <span>three pages.</span></h3>
+        <h3 className="ch-title t-sub">Explore the <span>three pages.</span></h3>
         <div className="inv-tabs inv-tabs-sticky">
           {SECTIONS.map((s) => (
             <button key={s.id} type="button" className={`inv-tab ${activeSection === s.id ? 'on' : ''}`} onClick={() => jumpToSection(s.id)}>

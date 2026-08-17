@@ -270,7 +270,7 @@ export default function About() {
         <div className="wrap">
           <p className="eyebrow rv">- the long version</p>
           <h2 className="ab-big rv d1">the full story lives<br />in <span>three chapters.</span></h2>
-          <p className="ab-lede rv d2" style={{ maxWidth: '56ch' }}>Pixel years - the crossing - the multiplier. How a designer became the product manager of the thing he designed - told as a scroll.</p>
+          <p className="ab-lede rv d2">Pixel years - the crossing - the multiplier. How a designer became the product manager of the thing he designed - told as a scroll.</p>
           <div className="soon-ctas rv d3">
             <a className="btn-big" href="#/journey">Open My Journey →</a>
             <a className="btn-ghost" href="#/current">See what I&apos;m building →</a>

@@ -331,13 +331,7 @@ export default function CurrentProject() {
             <span className="tdots" aria-hidden="true"><i></i><i></i><i></i></span>
           </h2>
           <p className="pol-open-sub rv d2">a four-year build, still going - scroll the arc, in order</p>
-
-          <div className="tl-featured rv d3" role="button" tabIndex={0} onClick={() => openStudy('GenAI Initiative')} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); openStudy('GenAI Initiative'); } }}>
-            <span className="tl-featured-tag">Featured · GenAI initiative</span>
-            <h3>Recommend the route before the customer asks.</h3>
-            <p>Scoped Polarin&apos;s first GenAI initiative - three customer-facing use cases, built with a specialist AI delivery partner. Flagship: a pre-sales recommendation engine trained on historical bookings. My role wasn&apos;t writing the model - it was defining what &quot;working&quot; means for a system that doesn&apos;t give the same answer twice.</p>
-            <span className="tl-featured-link">Deep dive →</span>
-          </div>
+          <button type="button" className="btn-ghost rv d2" onClick={() => goToStop(2)}>see case studies →</button>
         </div>
         <ScrollHint label="scroll the timeline" />
       </section>
@@ -347,7 +341,12 @@ export default function CurrentProject() {
         {/* pinned scene: the rail + detail hold their place while scrolling
             moves the timeline one stop at a time. */}
         <div className="tl-scene" ref={sceneRef} style={{ '--beats': TIMELINE.length }}>
-          <div className="tl-stage">
+          {/* .tl-stage is pinned (sticky) for the whole timeline, so it stays
+              on screen for all 5 steps - flip is unconditional here, so the
+              entire timeline reads as one light chapter (same one-global-flag
+              mechanism as the About/My Journey sections), not five separate
+              flips per step. */}
+          <div className="tl-stage flip">
             <div className="tl-shell">
               <div className="tl-rail" style={{ '--tlp': (step + 0.5) / TIMELINE.length }}>
                 {TIMELINE.map((t, i) => (
@@ -561,7 +560,8 @@ export default function CurrentProject() {
                         <div className="tl-cs-foot"><span className="tl-cs-impact">revenue <small>in testing</small></span><span className="tl-cs-link">Deep dive →</span></div>
                       </article>
 
-                      <article className="tl-cs-card" role="button" tabIndex={0} onClick={() => openStudy('GenAI Initiative')} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); openStudy('GenAI Initiative'); } }}>
+                      <article className="tl-cs-card tl-featured" role="button" tabIndex={0} onClick={() => openStudy('GenAI Initiative')} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); openStudy('GenAI Initiative'); } }}>
+                        <span className="tl-featured-tag">Featured</span>
                         <span className="tl-cs-icon" aria-hidden="true">
                           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round">
                             <path d="M12 3v4M12 17v4M3 12h4M17 12h4" />
@@ -570,7 +570,7 @@ export default function CurrentProject() {
                             </circle>
                           </svg>
                         </span>
-                        <h4>GenAI initiative</h4>
+                        <h4>Recommend the route before the customer asks</h4>
                         <div className="tl-cs-row"><span>about</span><p>a pre-sales recommendation engine, plus two more GenAI use cases on Polarin</p></div>
                         <div className="tl-cs-row"><span>role</span><p>scoped the use cases, wrote the acceptance criteria & test plan for a delivery partner</p></div>
                         <div className="tl-cs-foot"><span className="tl-cs-impact">feasibility <small>verdict, evidence-backed</small></span><span className="tl-cs-link">Deep dive →</span></div>
@@ -602,8 +602,8 @@ export default function CurrentProject() {
       <section className="zone zone-sink zone-cool-r" data-ch="Metrics">
         <div className="wrap metrics-sec">
           <p className="eyebrow rv" style={{ justifyContent: 'center' }}>Four years in</p>
-          <h2 className="ch-title rv d1" style={{ fontSize: 'clamp(28px,4.6vw,54px)' }}>What <span>moved.</span></h2>
-          <div className="cs-stats rv d2" style={{ justifyContent: 'center', marginTop: '34px' }}>
+          <h2 className="ch-title t-section rv d1">What <span>moved.</span></h2>
+          <div className="cs-stats rv d2" style={{ justifyContent: 'center' }}>
             {STATS.map((s) => (
               <CountStat key={s.label} {...s} />
             ))}
@@ -616,7 +616,7 @@ export default function CurrentProject() {
         <div className="wrap" style={{ textAlign: 'center' }}>
           <h2 className="still-t rv">still building<i className="tcur"></i></h2>
           <div className="soon-bar rv d1" style={{ maxWidth: '280px', margin: '22px auto 0' }}><i></i></div>
-          <div className="soon-ctas rv d2" style={{ justifyContent: 'center', marginTop: '34px' }}>
+          <div className="soon-ctas rv d2" style={{ justifyContent: 'center' }}>
             <a className="btn-big" href="#/journey">The whole story - My Journey <span aria-hidden="true">→</span></a>
             <a className="btn-ghost" href="#/">Home</a>
           </div>

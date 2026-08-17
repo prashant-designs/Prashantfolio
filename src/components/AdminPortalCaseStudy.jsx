@@ -91,7 +91,7 @@ export default function AdminPortalCaseStudy({ onPrev, onNext, idx, total }) {
 
       <div className="inv-section">
         <div className="inv-step-tag"><i></i>Built twice</div>
-        <h3 className="ch-title" style={{ fontSize: 'clamp(24px,3.4vw,38px)' }}>Same console. <span>Two hats.</span></h3>
+        <h3 className="ch-title t-lead">Same console. <span>Two hats.</span></h3>
         <div className="adm-duo">
           <div className="adm-duo-card">
             <span className="adm-duo-tag">2023 – 2024 · as designer</span>
