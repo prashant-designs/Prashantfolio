@@ -153,8 +153,8 @@ function TheMultiplier() {
         <text className="in-label" x="140" y="329" textAnchor="end">Data & analytics</text>
         <text className="in-label" x="140" y="414" textAnchor="end">AI × frontend</text>
         <g id="multCore" opacity="0">
-          <circle cx="545" cy="240" r="52" fill="rgba(255,196,107,.08)" stroke="var(--signal)" strokeWidth="1.4" />
-          <circle cx="545" cy="240" r="66" fill="none" stroke="rgba(255,196,107,.25)" strokeDasharray="3 7" />
+          <circle cx="545" cy="240" r="52" fill="rgba(232,73,45,.08)" stroke="var(--signal)" strokeWidth="1.4" />
+          <circle cx="545" cy="240" r="66" fill="none" stroke="rgba(232,73,45,.25)" strokeDasharray="3 7" />
           <text className="core-t1" x="545" y="236" textAnchor="middle">One PM</text>
           <text className="core-t2" x="545" y="254" textAnchor="middle">END TO END</text>
         </g>
@@ -355,7 +355,7 @@ export default function MyJourney() {
   return (
     <main id="top">
       {/* PROLOGUE */}
-      <section className="hero" id="hero" ref={heroRef} data-ch="Prologue">
+      <section className="hero zone zone-sink" id="hero" ref={heroRef} data-ch="Prologue">
         <span className="glyph" data-depth="18" style={{ top: '20%', left: '5%' }}>⚡ portal-prd-v3.md</span>
         <span className="glyph" data-depth="30" style={{ top: '68%', left: '9%' }}>✦ ai --pair</span>
         <span className="glyph" data-depth="24" style={{ top: '28%', right: '6%' }}>▷ vercel --prod</span>
@@ -380,7 +380,7 @@ export default function MyJourney() {
       </section>
 
       {/* CH1 - THE PIXEL YEARS */}
-      <section id="ch1" className="sec-cushion" data-ch="Ch.1 - The Pixel Years">
+      <section id="ch1" className="sec-cushion zone zone-lift zone-warm" data-ch="Ch.1 - The Pixel Years">
         <div className="wrap ch-head">
           <p className="ch-num rv"><b>Chapter 01</b> · 2017 - 2022 · Bangalore</p>
           <h2 className="ch-title rv d1">The Pixel <span>Years.</span></h2>
@@ -401,7 +401,7 @@ export default function MyJourney() {
       </section>
 
       {/* CH2 - THE CROSSING */}
-      <section id="ch2" className="sec-cushion" data-ch="Ch.2 - The Crossing">
+      <section id="ch2" className="sec-cushion zone zone-sink zone-duo" data-ch="Ch.2 - The Crossing">
         <div className="wrap ch-head">
           <p className="ch-num rv"><b>Chapter 02</b> · Nov 2022 - Now · Lightstorm · Promoted 2×</p>
           <h2 className="ch-title rv d1">The <span>Crossing.</span></h2>
@@ -413,7 +413,7 @@ export default function MyJourney() {
       </section>
 
       {/* CH3 - THE MULTIPLIER */}
-      <section id="ch3" className="sec-cushion" data-ch="Ch.3 - The Multiplier">
+      <section id="ch3" className="sec-cushion zone zone-lift-hi zone-cool" data-ch="Ch.3 - The Multiplier">
         <div className="wrap ch-head" style={{ textAlign: 'center' }}>
           <p className="ch-num rv" style={{ justifyContent: 'center' }}><b>Chapter 03</b> · Why it matters to an org</p>
           <h2 className="ch-title rv d1">The <span>Multiplier.</span></h2>
@@ -427,7 +427,7 @@ export default function MyJourney() {
       </section>
 
       {/* EPILOGUE */}
-      <section className="epi" id="epi" data-ch="Epilogue">
+      <section className="epi zone zone-sink zone-warm" id="epi" data-ch="Epilogue">
         <div className="wrap">
           <p className="eyebrow rv">Epilogue · Your move</p>
           <h2 className="rv d1">The next chapter is <span className="hot">unwritten.</span></h2>

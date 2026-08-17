@@ -51,7 +51,7 @@ export default function Home() {
           <div className="face" id="face">
             <div className="layer face-real">
               <img src="/image.png" alt="Prashant Kumar"
-                onError={(e) => { e.target.src = 'data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 400 460%27%3E%3Crect width=%27400%27 height=%27460%27 fill=%27%23141A2B%27/%3E%3Ccircle cx=%27200%27 cy=%27170%27 r=%2768%27 fill=%27none%27 stroke=%27%238FA0FF%27 stroke-width=%272.5%27/%3E%3Cpath d=%27M85 400 C 115 305, 285 305, 315 400%27 fill=%27none%27 stroke=%27%238FA0FF%27 stroke-width=%272.5%27/%3E%3Ctext x=%27200%27 y=%27182%27 font-family=%27monospace%27 font-size=%2732%27 fill=%27%23EAEEF9%27 text-anchor=%27middle%27%3EPK%3C/text%3E%3C/svg%3E' }}
+                onError={(e) => { e.target.src = 'data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 400 460%27%3E%3Crect width=%27400%27 height=%27460%27 fill=%27%23202020%27/%3E%3Ccircle cx=%27200%27 cy=%27170%27 r=%2768%27 fill=%27none%27 stroke=%27%23A6B8FF%27 stroke-width=%272.5%27/%3E%3Cpath d=%27M85 400 C 115 305, 285 305, 315 400%27 fill=%27none%27 stroke=%27%23A6B8FF%27 stroke-width=%272.5%27/%3E%3Ctext x=%27200%27 y=%27182%27 font-family=%27monospace%27 font-size=%2732%27 fill=%27%23F5F4F2%27 text-anchor=%27middle%27%3EPK%3C/text%3E%3C/svg%3E' }}
               />
             </div>
 

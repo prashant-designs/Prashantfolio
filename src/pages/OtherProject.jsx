@@ -64,7 +64,7 @@ export default function OtherProject() {
   const typed = useTypewriter(PROJECTS);
 
   return (
-    <section className="soon-page">
+    <section className="soon-page zone zone-sink zone-cool">
       <div className="wrap">
         <div className="soon-box rv">
           <h2>More projects, <ComingBuilder /></h2>

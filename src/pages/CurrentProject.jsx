@@ -322,7 +322,7 @@ export default function CurrentProject() {
   return (
     <div>
       {/* 01a · full-fold open */}
-      <section className="tl-hero" data-ch="Intro">
+      <section className="tl-hero zone zone-sink" data-ch="Intro">
         <div className="wrap tl-head">
           <p className="pol-kicker rv">Current Project · 2022 - now</p>
           <h2 className="pol-title rv d1">
@@ -343,7 +343,7 @@ export default function CurrentProject() {
       </section>
 
       {/* 01b · the whole arc, as a timeline */}
-      <section className="timeline-sec" data-ch="Timeline">
+      <section className="timeline-sec zone zone-lift" data-ch="Timeline">
         {/* pinned scene: the rail + detail hold their place while scrolling
             moves the timeline one stop at a time. */}
         <div className="tl-scene" ref={sceneRef} style={{ '--beats': TIMELINE.length }}>
@@ -599,7 +599,7 @@ export default function CurrentProject() {
       </section>
 
       {/* 05 · overall metrics */}
-      <section data-ch="Metrics">
+      <section className="zone zone-sink zone-cool-r" data-ch="Metrics">
         <div className="wrap metrics-sec">
           <p className="eyebrow rv" style={{ justifyContent: 'center' }}>Four years in</p>
           <h2 className="ch-title rv d1" style={{ fontSize: 'clamp(28px,4.6vw,54px)' }}>What <span>moved.</span></h2>
@@ -612,7 +612,7 @@ export default function CurrentProject() {
       </section>
 
       {/* 06 · still building */}
-      <section className="still-sec" data-ch="Still Building">
+      <section className="still-sec zone zone-lift-hi zone-warm" data-ch="Still Building">
         <div className="wrap" style={{ textAlign: 'center' }}>
           <h2 className="still-t rv">still building<i className="tcur"></i></h2>
           <div className="soon-bar rv d1" style={{ maxWidth: '280px', margin: '22px auto 0' }}><i></i></div>

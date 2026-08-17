@@ -156,7 +156,7 @@ export default function GenAICaseStudy({ onPrev, onNext, idx, total }) {
                 <b>it hands back the routes worth buying</b>
                 <div className="gac-rec">
                   <span className="gac-rec-tag">illustration</span>
-                  <div className="gac-opt top"><b>best fit</b><em><i style={{ width: '92%' }}></i></em></div>
+                  <div className="gac-opt best"><b>best fit</b><em><i style={{ width: '92%' }}></i></em></div>
                   <div className="gac-opt"><b>cheaper, slower</b><em><i style={{ width: '68%' }}></i></em></div>
                   <div className="gac-opt"><b>backup route</b><em><i style={{ width: '44%' }}></i></em></div>
                 </div>
