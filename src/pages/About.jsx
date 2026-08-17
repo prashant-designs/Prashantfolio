@@ -113,7 +113,6 @@ export default function About() {
     <>
       <section className="ab-hero" data-ch="Intro">
         <div className="wrap">
-          <p className="eyebrow rv">Page 02 · About · Gurugram, IN</p>
           <h1 className="ab-title rv d1">about<span>.</span></h1>
           <div className="ab-intro">
             <img
