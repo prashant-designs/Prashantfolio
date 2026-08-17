@@ -357,7 +357,7 @@ export default function MyJourney() {
       {/* PROLOGUE */}
       <section className="hero" id="hero" ref={heroRef} data-ch="Prologue">
         <span className="glyph" data-depth="18" style={{ top: '20%', left: '5%' }}>⚡ portal-prd-v3.md</span>
-        <span className="glyph" data-depth="30" style={{ top: '68%', left: '9%' }}>✦ claude --pair</span>
+        <span className="glyph" data-depth="30" style={{ top: '68%', left: '9%' }}>✦ ai --pair</span>
         <span className="glyph" data-depth="24" style={{ top: '28%', right: '6%' }}>▷ vercel --prod</span>
         <svg className="hero-map" viewBox="0 0 220 320" aria-hidden="true">
           <path className="hm-path" d="M40 280 C 20 200, 140 220, 120 140 C 100 60, 200 80, 180 30" />

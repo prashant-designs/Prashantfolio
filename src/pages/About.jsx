@@ -17,7 +17,7 @@ const MIX = {
     name: 'builder',
     pct: '25%',
     title: 'Part builder',
-    list: ['AI-native builds - Claude · Cursor', 'frontend that ships to prod', '3D, motion & prototypes', 'hands-on craft - leather & tools'],
+    list: ['AI-native builds - spec to shipped frontend', 'frontend that ships to prod', '3D, motion & prototypes', 'hands-on craft - leather & tools'],
   },
 };
 
@@ -206,19 +206,19 @@ export default function About() {
               <div className="loop-steps">
                 <div className="lstep" data-ls="0"><div className="n">01</div><div>
                   <h3>Discover <span>hours, not weeks</span></h3>
-                  <p>Support data, usage analytics, and customer interviews - synthesized with <b>Claude</b> into friction themes and jobs-to-be-done I can interrogate, rank, and challenge.</p></div></div>
+                  <p>Support data, usage analytics, and customer interviews - synthesized by AI into friction themes and jobs-to-be-done I can interrogate, rank, and challenge.</p></div></div>
                 <div className="lstep" data-ls="1"><div className="n">02</div><div>
                   <h3>Define <span>PRDs that argue back</span></h3>
                   <p><b>PRDs, user stories, and OKRs</b> drafted with AI as a sparring partner - it red-teams assumptions and pressure-tests success metrics before engineering reads a word.</p></div></div>
                 <div className="lstep" data-ls="2"><div className="n">03</div><div>
                   <h3>Prototype <span>high-fidelity, working</span></h3>
-                  <p>Not wireframes - <b>rapid POCs on the Polarin design system</b> with Figma, Figma Make, and Cursor. Design instincts from the pixel years, speed from AI pair-building.</p></div></div>
+                  <p>Not wireframes - <b>rapid POCs on the Polarin design system</b>, built in Figma and AI-paired. Design instincts from the pixel years, speed from the AI loop.</p></div></div>
                 <div className="lstep" data-ls="3"><div className="n">04</div><div>
                   <h3>Validate <span>test the real thing</span></h3>
                   <p>Customers click actual software in week one. Signals sharpen, feedback gets honest, and <b>bad ideas die cheap</b> - before they cost a sprint.</p></div></div>
                 <div className="lstep" data-ls="4"><div className="n">05</div><div>
                   <h3>Deploy <span>evidence, not opinions</span></h3>
-                  <p>Frontend changes shipped <b>directly via Claude + Figma in VS Code, deployed on Vercel</b>. Handoffs become head starts.</p>
+                  <p>Frontend changes ship <b>directly from spec to production - AI-paired build, deployed on Vercel</b>. Handoffs become head starts.</p>
                   <div className="loop-reset"><span className="loop-reset-ic" aria-hidden="true">↻</span> then the loop turns again - back to <b>01 Discover</b></div>
                 </div></div>
               </div>

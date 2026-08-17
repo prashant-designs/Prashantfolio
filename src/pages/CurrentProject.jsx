@@ -4,6 +4,7 @@ import AdminPortalCaseStudy from '../components/AdminPortalCaseStudy';
 import CustomerPortalCaseStudy from '../components/CustomerPortalCaseStudy';
 import DeveloperPortalCaseStudy from '../components/DeveloperPortalCaseStudy';
 import KnowledgeBaseCaseStudy from '../components/KnowledgeBaseCaseStudy';
+import GenAICaseStudy from '../components/GenAICaseStudy';
 import ScrollHint from '../components/ScrollHint';
 
 const STATS = [
@@ -13,7 +14,7 @@ const STATS = [
   { to: 5, prefix: '', suffix: '+', label: 'surfaces · one owner' },
 ];
 
-const SURFACES = ['Customer Portal', 'Admin Portal', 'Invoice Design', 'Developer Portal', 'Knowledge Base'];
+const SURFACES = ['Customer Portal', 'Admin Portal', 'Invoice Design', 'Developer Portal', 'Knowledge Base', 'GenAI Initiative'];
 
 const TIMELINE = [
   { tag: 'context', nav: 'What is Polarin', title: 'What is Polarin' },
@@ -293,7 +294,7 @@ export default function CurrentProject() {
   // (Customer/Admin/Invoice) cycle among themselves, not into the 2 "AI PM"
   // ones (Developer Portal/Knowledge Base), and vice versa.
   const groupStart = (i) => (i < 3 ? 0 : 3);
-  const groupLen = (i) => (i < 3 ? 3 : 2);
+  const groupLen = (i) => (i < 3 ? 3 : 3);
   const prevStudy = () => setStudyIdx((i) => groupStart(i) + ((i - groupStart(i) + groupLen(i) - 1) % groupLen(i)));
   const nextStudy = () => setStudyIdx((i) => groupStart(i) + ((i - groupStart(i) + 1) % groupLen(i)));
 
@@ -330,6 +331,13 @@ export default function CurrentProject() {
             <span className="tdots" aria-hidden="true"><i></i><i></i><i></i></span>
           </h2>
           <p className="pol-open-sub rv d2">a four-year build, still going - scroll the arc, in order</p>
+
+          <div className="tl-featured rv d3" role="button" tabIndex={0} onClick={() => openStudy('GenAI Initiative')} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); openStudy('GenAI Initiative'); } }}>
+            <span className="tl-featured-tag">Featured · GenAI initiative</span>
+            <h3>Recommend the route before the customer asks.</h3>
+            <p>Scoped Polarin&apos;s first GenAI initiative - three customer-facing use cases, built with a specialist AI delivery partner. Flagship: a pre-sales recommendation engine trained on historical bookings. My role wasn&apos;t writing the model - it was defining what &quot;working&quot; means for a system that doesn&apos;t give the same answer twice.</p>
+            <span className="tl-featured-link">Deep dive →</span>
+          </div>
         </div>
         <ScrollHint label="scroll the timeline" />
       </section>
@@ -519,7 +527,7 @@ export default function CurrentProject() {
                       <span className="chip">AI-assisted design</span>
                       <span className="chip">Frontend + deploy</span>
                     </div>
-                    <div className="tl-cs-grid tl-cs-grid-2">
+                    <div className="tl-cs-grid">
                       <article className="tl-cs-card" role="button" tabIndex={0} onClick={() => openStudy('Knowledge Base')} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); openStudy('Knowledge Base'); } }}>
                         <span className="tl-cs-icon" aria-hidden="true">
                           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round">
@@ -552,6 +560,21 @@ export default function CurrentProject() {
                         <div className="tl-cs-row"><span>role</span><p>DX design, docs & frontend · PRD + pricing framework · volumetrics with engineering</p></div>
                         <div className="tl-cs-foot"><span className="tl-cs-impact">revenue <small>in testing</small></span><span className="tl-cs-link">Deep dive →</span></div>
                       </article>
+
+                      <article className="tl-cs-card" role="button" tabIndex={0} onClick={() => openStudy('GenAI Initiative')} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); openStudy('GenAI Initiative'); } }}>
+                        <span className="tl-cs-icon" aria-hidden="true">
+                          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round">
+                            <path d="M12 3v4M12 17v4M3 12h4M17 12h4" />
+                            <circle cx="12" cy="12" r="4.2">
+                              <animate attributeName="opacity" values="1;0.4;1" dur="2.2s" repeatCount="indefinite" />
+                            </circle>
+                          </svg>
+                        </span>
+                        <h4>GenAI initiative</h4>
+                        <div className="tl-cs-row"><span>about</span><p>a pre-sales recommendation engine, plus two more GenAI use cases on Polarin</p></div>
+                        <div className="tl-cs-row"><span>role</span><p>scoped the use cases, wrote the acceptance criteria & test plan for a delivery partner</p></div>
+                        <div className="tl-cs-foot"><span className="tl-cs-impact">feasibility <small>verdict, evidence-backed</small></span><span className="tl-cs-link">Deep dive →</span></div>
+                      </article>
                     </div>
                   </>
                 )}
@@ -563,7 +586,7 @@ export default function CurrentProject() {
                       <span className="dvp"><b>Confluence</b></span><em>→</em>
                       <span className="dvp"><b>Jira</b></span><em>→</em>
                       <span className="dvp"><b>Figma</b></span><em>→</em>
-                      <span className="dvp"><b>VS Code + Claude</b></span><em>→</em>
+                      <span className="dvp"><b>AI-paired build</b></span><em>→</em>
                       <span className="dvp"><b>Git</b></span><em>→</em>
                       <span className="dvp last"><b>Vercel</b><i>live</i></span>
                     </div>
@@ -613,8 +636,10 @@ export default function CurrentProject() {
             <InvoiceCaseStudy onPrev={prevStudy} onNext={nextStudy} idx={studyIdx - groupStart(studyIdx)} total={groupLen(studyIdx)} />
           ) : SURFACES[studyIdx] === 'Developer Portal' ? (
             <DeveloperPortalCaseStudy onPrev={prevStudy} onNext={nextStudy} idx={studyIdx - groupStart(studyIdx)} total={groupLen(studyIdx)} />
-          ) : (
+          ) : SURFACES[studyIdx] === 'Knowledge Base' ? (
             <KnowledgeBaseCaseStudy onPrev={prevStudy} onNext={nextStudy} idx={studyIdx - groupStart(studyIdx)} total={groupLen(studyIdx)} />
+          ) : (
+            <GenAICaseStudy onPrev={prevStudy} onNext={nextStudy} idx={studyIdx - groupStart(studyIdx)} total={groupLen(studyIdx)} />
           )}
         </div>
       </div>

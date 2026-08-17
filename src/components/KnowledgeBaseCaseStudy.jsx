@@ -100,7 +100,7 @@ export default function KnowledgeBaseCaseStudy({ onPrev, onNext, idx, total }) {
         <p className="dv-p">The platform is AI-assisted on both sides - how it&apos;s built, and how it&apos;s written:</p>
         <div className="dv-pipe" style={{ marginTop: '14px' }}>
           <span className="dvp"><b>figma designs</b></span><em>→</em>
-          <span className="dvp"><b>claude · via MCP</b></span><em>→</em>
+          <span className="dvp"><b>AI draft · via MCP</b></span><em>→</em>
           <span className="dvp last"><b>frontend screens</b><i>faster · cheaper</i></span>
         </div>
         <div className="dv-pipe">
