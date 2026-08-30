@@ -335,7 +335,7 @@ export default function CurrentProject() {
             <span className="pw">Polarin</span>
             <span className="tdots" aria-hidden="true"><i></i><i></i><i></i></span>
           </h2>
-          <p className="pol-open-sub rv d2">a four-year build, still going - scroll the arc, in order</p>
+          <p className="pol-open-sub rv d2">A four-year build, still going - scroll the arc, in order.</p>
           <button type="button" className="btn-ghost rv d2" onClick={() => goToStop(2)}>see case studies →</button>
         </div>
         <ScrollHint label="scroll the timeline" />

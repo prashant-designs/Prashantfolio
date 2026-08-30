@@ -322,7 +322,7 @@
                      identical card plus a ring and a tag, not a new shape.
        recessed box  1px --line border, --ink / --ink2 fill, NO shadow, radius
                      --r-sm. the inset panels inside a case study (.dvf,
-                     .gac-cell, .kbc, .dv-console). they read as cut into the
+                     .gac-cell, .kbx-cost, .dv-console). they read as cut into the
                      page rather than sitting on it, and they stay that way on
                      paper, which is why they are not in the raised list.
 
@@ -2120,7 +2120,11 @@ footer .g {
 .pol-title .bt b:hover { color: var(--text); -webkit-text-stroke-color: var(--text); transform: translateY(-4px); }
 .pol-title .pw { display: inline-block; background: linear-gradient(100deg, var(--text) 15%, var(--mute) 42%, var(--text) 88%); background-size: 230% 100%; -webkit-background-clip: text; background-clip: text; color: transparent; animation: gsweep 5.5s ease-in-out infinite; }
 @keyframes gsweep { 0%, 100% { background-position: 0% 0; } 50% { background-position: 100% 0; } }
-.pol-open-sub { font-family: var(--mono); font-size: var(--t-eyebrow); letter-spacing: 0.24em; text-transform: uppercase; color: var(--dim); margin-top: 22px; }
+/* matches .hero-sub (My Journey's equivalent line) - both are the one-line
+   description under a page's big hero headline, and used to be styled as two
+   different things entirely: this one as a small-caps mono caption, that one
+   as a sentence-case body lede. same role, same treatment now. */
+.pol-open-sub { margin-top: 22px; color: var(--mute); max-width: 46ch; font-size: var(--t-body); }
 
 /* the hero's action sits on --sp-fold, the rung the spacing scale defines for
    exactly this - "the gap above the row of actions a full fold closes on". it
@@ -3244,15 +3248,202 @@ body.ovl-lock { overflow: hidden; }
 .kbn { font-family: var(--mono); font-size: var(--t-meta); letter-spacing: 0.1em; text-transform: uppercase; color: var(--mute); background: var(--ink); border: 1px solid var(--line2); border-radius: var(--r-sm); padding: 9px 13px; cursor: pointer; transition: all 0.3s; }
 .kbn:hover, .kbn.on { color: var(--text); border-color: var(--line2); transform: translateY(-3px); }
 .kb-note { margin-top: 18px; font-size: 13.5px; color: var(--mute); min-height: 1.6em; font-style: italic; }
-.kb-cmp { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-top: var(--sp-block); }
-.kbc { border: 1px solid var(--line); border-radius: var(--r-md); background: var(--ink); padding: var(--pad-card); }
-.kbc b { font-family: var(--mono); font-size: 10.5px; letter-spacing: 0.16em; text-transform: uppercase; font-weight: 500; display: block; margin-bottom: 10px; }
-.kbc b.bad { color: var(--rose); }
-.kbc b.good { color: var(--up); }
-.kbc p { font-size: var(--t-body-sm); color: var(--text); margin-bottom: 10px; }
-.kbc span { font-family: var(--mono); font-size: 11px; letter-spacing: 0.04em; color: var(--dim); }
-.kbc.good-card { border-color: rgba(92, 224, 168, 0.3); }
-@media (max-width: 680px) { .kb-cmp { grid-template-columns: 1fr; } }
+/* ============ KNOWLEDGE BASE CASE STUDY (all scoped: kbx-) ============
+   this case study used to be paragraphs, a three-column table (.aud.kb-jobs)
+   and two static columns (.kb-cmp / .kbc) - all three are gone from here, and
+   their rules with them, because each section now carries its idea in a small
+   visual or interactive device instead of in prose. what lives where:
+
+     .kbx-hl      the one emphasised phrase in a block of prose. a class rather
+                  than a bare <b> because two of the components it appears
+                  inside (.ivp, .kbx-cost) already style their own <b> as a
+                  label - b.kbx-hl is two selectors deep and declared after
+                  .ivp b, so it wins where they collide and resets emphasis
+                  back to body weight.
+     .kbx-ic      the chip every glyph on this page sits in. size and radius
+                  come from the two chip tokens (--chip-sm, and .lg at
+                  --chip-lg) - no third size invented - and the fill comes from
+                  the shared chip rule at the bottom of this file, so a chip
+                  here is exactly one step above whatever it sits on and flips
+                  with the page. colour is inherited (currentColor in the svg),
+                  which is why the glyphs need no colour of their own.
+     .kbx-swaps   the shift, as four before → after tiles (was a chip row)
+     .kbx-costs   the four costs, consequence first, cause underneath (was
+                  .dv-fails carrying one long body per row)
+     .kbx-bet     the two options side by side, the rejected one dashed and
+                  dimmed, and hovering either one dims the other
+     .kbx-jobs    the six jobs, as a grid of disclosure buttons: "what it
+                  replaced" is revealed on hover, focus or click, so the eye
+                  lands on what AI does first and the cost is a discovery
+                  rather than a third column to read
+     .kbx-gate    the human-approval strip every job ends at (was a table row)
+     .kbx-gates   the three trust rules - .ivx-principles / .ivp wholesale plus
+                  a chip, not a second card recipe
+     .kbx-pipe    a modifier on the shared .dv-pipe: a glyph in each stop, and
+                  the stops step in one after another when the strip scrolls in
+     .kbx-ind     independence as one matrix with a two-button emphasis toggle,
+                  the toggle being .cs-tabs - the pill-tab pattern already here
+     .kbx-res     the closing result, as three icon rows inside .inv-result
+     .kbx-open    the "no scoreboard here yet" panel, on .gac-open's shape
+
+   which recipe each box is on: recessed (--ink / --ink2, no shadow) for
+   .kbx-swap, .kbx-cost, .kbx-b and .kbx-act; raised for .kbx-job and
+   .kbx-open, both of which are listed with the other raised cards at the
+   bottom of this file rather than painting a fill here.
+
+   colour: every glyph and every interactive state is on the neutral ladder.
+   the only non-neutrals are the two this page already used - --up and --rose,
+   on the then/now labels and the ✕ / ✓ marks, in exactly the role .kbc b.bad
+   and .kbc b.good used them in before. */
+.kbx-rv { opacity: 0; transform: translateY(18px); transition: opacity 0.7s var(--ease), transform 0.8s var(--ease); }
+.kbx-rv.on { opacity: 1; transform: none; }
+b.kbx-hl { display: inline; margin: 0; font-family: var(--body); font-size: inherit; font-weight: 600; letter-spacing: normal; text-transform: none; color: var(--text); }
+.kbx-hint { font-family: var(--mono); font-size: 11px; letter-spacing: 0.16em; text-transform: uppercase; color: var(--dim); margin-top: 14px; text-align: center; }
+
+.kbx-ic { display: grid; place-items: center; width: var(--chip-sm); height: var(--chip-sm); border-radius: var(--r-sm); color: var(--mute); font-style: normal; flex-shrink: 0; transition: color 0.3s, border-color 0.3s; }
+.kbx-ic svg { display: block; width: 18px; height: 18px; }
+.kbx-ic.lg { width: var(--chip-lg); height: var(--chip-lg); border-radius: var(--r-md); }
+.kbx-ic.lg svg { width: 23px; height: 23px; }
+.kbx-swap:hover .kbx-ic, .kbx-cost:hover .kbx-ic, .kbx-job:hover .kbx-ic, .kbx-job:focus-visible .kbx-ic, .kbx-job.on .kbx-ic, .ivp:hover .kbx-ic, .kbx-act:hover .kbx-ic { color: var(--text); }
+
+/* the shift: four tiles, each one dependency traded for another */
+.kbx-swaps { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-top: var(--sp-block); }
+.kbx-swap { border: 1px solid var(--line); border-radius: var(--r-md); background: var(--ink2); padding: var(--pad-card-sm); transition: border-color 0.3s, transform 0.3s var(--ease); }
+.kbx-swap:hover { border-color: var(--line2); transform: translateY(-3px); }
+.kbx-swap s { display: block; margin-top: 13px; font-family: var(--mono); font-size: var(--t-micro); letter-spacing: 0.08em; text-transform: uppercase; color: var(--dim); }
+.kbx-swap b { display: block; margin-top: 7px; font-family: var(--disp); font-size: var(--t-card-sm); font-weight: 700; letter-spacing: -0.01em; line-height: 1.3; color: var(--text); }
+.kbx-swap b::before { content: "→ "; font-family: var(--mono); font-weight: 500; color: var(--up); }
+
+/* the real cost: the consequence in display type, the cause as the small line */
+.kbx-costs { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: var(--sp-block); }
+.kbx-cost { display: grid; grid-template-columns: var(--chip-sm) minmax(0, 1fr); gap: 0 14px; border: 1px solid var(--line); border-radius: var(--r-sm); background: var(--ink2); padding: 14px 16px; transition: border-color 0.3s; }
+.kbx-cost:hover { border-color: color-mix(in srgb, var(--rose) 35%, transparent); }
+.kbx-cost > i { grid-row: 1 / span 3; align-self: start; }
+.kbx-cost-m { display: flex; flex-wrap: wrap; align-items: center; gap: 9px; }
+.kbx-cost code { font-family: var(--mono); font-size: 11.5px; color: var(--mute); }
+.kbx-tag { font-family: var(--mono); font-size: 10px; font-weight: 500; letter-spacing: 0.1em; text-transform: uppercase; color: var(--rose); border: 1px solid color-mix(in srgb, var(--rose) 40%, transparent); border-radius: 6px; padding: 2px 8px; }
+.kbx-cost > b { margin-top: 8px; font-family: var(--disp); font-size: var(--t-card-sm); font-weight: 700; letter-spacing: -0.01em; line-height: 1.35; color: var(--text); }
+.kbx-cost > p { margin-top: 5px; font-size: var(--t-body-xs); line-height: 1.5; color: var(--mute); }
+
+/* the bet: the option that was not taken stays readable, but is dashed, dimmed
+   and marked - so which way the call went is legible before a word is read */
+.kbx-bet { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-top: var(--sp-block); }
+.kbx-b { display: flex; flex-direction: column; border: 1px solid var(--line); border-radius: var(--r-lg); background: var(--ink); padding: var(--pad-card-lg); transition: opacity 0.3s, transform 0.3s var(--ease), border-color 0.3s; }
+.kbx-b.no { border-style: dashed; opacity: 0.72; }
+.kbx-b.yes { border-color: var(--line2); background: linear-gradient(180deg, var(--raise), var(--ink)); }
+.kbx-bet:hover .kbx-b { opacity: 0.4; }
+.kbx-bet .kbx-b:hover { opacity: 1; transform: translateY(-4px); border-color: var(--line2); }
+.kbx-b-h { display: flex; align-items: center; gap: 13px; }
+.kbx-b-n { font-family: var(--mono); font-size: 10.5px; letter-spacing: 0.18em; text-transform: uppercase; color: var(--dim); }
+.kbx-b h4 { margin-top: 15px; font-family: var(--disp); font-size: var(--t-card); font-weight: 700; letter-spacing: -0.01em; color: var(--text); }
+.kbx-b > p { margin-top: 9px; font-size: var(--t-body-sm); line-height: 1.55; color: var(--mute); }
+.kbx-b-v { display: inline-flex; align-items: center; gap: 9px; margin-top: auto; padding-top: 16px; font-family: var(--mono); font-size: 10.5px; letter-spacing: 0.16em; text-transform: uppercase; color: var(--dim); }
+.kbx-b-v em { font-style: normal; font-size: 12px; }
+.kbx-b.no .kbx-b-v em { color: var(--rose); }
+.kbx-b.yes .kbx-b-v { color: var(--mute); }
+.kbx-b.yes .kbx-b-v em { color: var(--up); }
+
+/* the six jobs. each card is a real <button> with aria-expanded rather than a
+   hover-only reveal: pointer, keyboard and touch all get to the replaced line,
+   and on a device with no hover at all it is simply always open. the text is
+   in the DOM in every state (clipped, not display:none), so a screen reader
+   never loses it either. */
+.kbx-jobs { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-top: var(--sp-block); }
+.kbx-job { display: flex; flex-direction: column; align-items: flex-start; width: 100%; border: 1px solid var(--line); border-radius: var(--r-md); padding: var(--pad-card-sm); font-family: var(--body); text-align: left; color: inherit; cursor: pointer; transition: transform 0.3s var(--ease), border-color 0.3s, box-shadow 0.3s; }
+.kbx-job:hover, .kbx-job.on { transform: translateY(-4px); border-color: var(--line2); }
+.kbx-job:focus-visible { transform: translateY(-4px); border-color: var(--text); outline: none; }
+.kbx-job > b { margin-top: 14px; font-family: var(--disp); font-size: var(--t-card-sm); font-weight: 700; letter-spacing: -0.01em; color: var(--text); }
+.kbx-ai { display: block; margin-top: 7px; font-size: var(--t-body-xs); line-height: 1.5; color: var(--mute); }
+.kbx-was { display: block; width: 100%; max-height: 0; opacity: 0; overflow: hidden; transition: max-height 0.35s var(--ease), opacity 0.3s, margin-top 0.35s var(--ease); }
+.kbx-job:hover .kbx-was, .kbx-job:focus-visible .kbx-was, .kbx-job.on .kbx-was { max-height: 140px; opacity: 1; margin-top: 12px; }
+.kbx-was em { display: block; padding-top: 11px; border-top: 1px dashed var(--line); font-style: normal; font-family: var(--mono); font-size: var(--t-micro); letter-spacing: 0.16em; text-transform: uppercase; color: var(--dim); }
+.kbx-was s { display: block; margin-top: 5px; font-size: var(--t-body-xs); line-height: 1.45; color: var(--dim); }
+
+/* the one thing that is true of all six - and the reason none of it is a
+   "replace the humans" story. sits on --raise2 the way .aud-p did. */
+.kbx-gate { display: flex; align-items: center; gap: 15px; margin-top: 12px; border: 1px solid var(--line2); border-radius: var(--r-md); background: var(--raise2); padding: var(--pad-card-sm); }
+.kbx-gate p { font-size: var(--t-body-sm); line-height: 1.5; color: var(--mute); }
+
+/* the three rules, on the existing principle card plus a chip */
+.kbx-gates .ivp { display: flex; flex-direction: column; }
+.kbx-gates .ivp > b { margin-top: 14px; }
+
+/* release notes: the pipeline steps itself once the strip is on screen. the
+   stagger is on opacity alone on purpose - a transform in the keyframes would
+   be held by animation-fill-mode after it finished and quietly cancel .dvp's
+   own 2px hover lift. */
+.kbx-pipe .dvp { gap: 9px; opacity: 0; }
+.kbx-pipe.on .dvp { animation: kbxStep 0.45s var(--ease) both; animation-delay: var(--d, 0ms); }
+.kbx-pipe .dvp svg { width: 14px; height: 14px; }
+.kbx-pipe .dvp b { font-weight: 500; }
+@keyframes kbxStep { from { opacity: 0; } to { opacity: 1; } }
+
+/* independence: one matrix, and a toggle that decides which side is loud. the
+   toggle only shifts emphasis on a wide screen - both columns stay on the page
+   - so nothing here is reachable only by operating it. on a phone, where three
+   columns will not fit, it becomes a real switch between the two. */
+.kbx-ind { margin-top: var(--sp-block); }
+.kbx-tog { margin-top: 0; margin-bottom: 14px; }
+.kbx-acts { display: grid; gap: 10px; }
+.kbx-act { display: grid; grid-template-columns: 0.9fr 1fr 1fr; gap: 10px 16px; align-items: center; border: 1px solid var(--line); border-radius: var(--r-sm); background: var(--ink2); padding: 12px 16px; transition: border-color 0.3s; }
+.kbx-act:hover { border-color: var(--line2); }
+.kbx-act-t { display: flex; align-items: center; gap: 12px; font-family: var(--disp); font-size: var(--t-card-sm); font-weight: 700; letter-spacing: -0.01em; color: var(--text); }
+.kbx-cell { font-size: var(--t-body-sm); line-height: 1.45; transition: opacity 0.3s, color 0.3s; }
+.kbx-cell em { display: block; margin-bottom: 4px; font-style: normal; font-family: var(--mono); font-size: var(--t-micro); letter-spacing: 0.16em; text-transform: uppercase; }
+.kbx-cell.b { color: var(--mute); }
+.kbx-cell.b em { color: var(--rose); }
+.kbx-cell.n { color: var(--text); }
+.kbx-cell.n em { color: var(--up); }
+.kbx-ind-f { display: grid; grid-template-columns: 0.9fr 1fr 1fr; gap: 16px; margin-top: 12px; padding: 0 16px; }
+.kbx-ind-f p { font-family: var(--mono); font-size: 11px; letter-spacing: 0.04em; line-height: 1.5; color: var(--dim); transition: opacity 0.3s; }
+.kbx-ind.s-now .kbx-cell.b, .kbx-ind.s-now .kbx-ind-f p.b { opacity: 0.35; }
+.kbx-ind.s-before .kbx-cell.n, .kbx-ind.s-before .kbx-ind-f p.n { opacity: 0.35; }
+.kbx-ind.s-before .kbx-cell.b { color: var(--text); }
+
+/* the closing result: the same sentence, read as three consequences */
+.kbx-res-l { font-family: var(--disp); font-weight: 700; letter-spacing: -0.01em; }
+.kbx-res-rows { display: grid; gap: 11px; margin-top: 15px; }
+.kbx-res-rows span { display: flex; align-items: center; gap: 13px; font-family: var(--body); font-size: var(--t-body-sm); line-height: 1.45; color: var(--mute); }
+
+/* and the panel that refuses to put a number on any of it */
+.kbx-open { display: flex; align-items: flex-start; gap: 17px; margin-top: var(--sp-block); border: 1px solid var(--line2); border-radius: var(--r-md); background: var(--raise); padding: var(--pad-card); }
+.kbx-open span { display: block; margin-bottom: 9px; font-family: var(--mono); font-size: 10px; letter-spacing: 0.18em; text-transform: uppercase; color: var(--mute); }
+.kbx-open p { font-family: var(--disp); font-size: 15.5px; line-height: 1.5; color: var(--text); }
+
+@media (hover: none) {
+  /* nothing on a touch device is behind a hover: the replaced line is simply
+     open, which makes the affordance line above the grid untrue - so it goes */
+  .kbx-was { max-height: 140px; opacity: 1; margin-top: 12px; }
+  .kbx-hint.tap { display: none; }
+}
+@media (max-width: 900px) {
+  .kbx-swaps { grid-template-columns: 1fr 1fr; }
+  .kbx-jobs { grid-template-columns: 1fr 1fr; }
+}
+@media (max-width: 760px) {
+  .kbx-costs, .kbx-bet { grid-template-columns: 1fr; }
+  .kbx-act { grid-template-columns: 1fr; }
+  .kbx-ind-f { grid-template-columns: 1fr; padding: 0; }
+  .kbx-ind-f > span:empty { display: none; }
+  .kbx-ind.s-now .kbx-cell.b, .kbx-ind.s-now .kbx-ind-f p.b { display: none; }
+  .kbx-ind.s-before .kbx-cell.n, .kbx-ind.s-before .kbx-ind-f p.n { display: none; }
+}
+@media (max-width: 560px) {
+  .kbx-swaps, .kbx-jobs { grid-template-columns: 1fr; }
+}
+@media (prefers-reduced-motion: reduce) {
+  /* the global rule at the bottom of this file kills the animation itself; both
+     of these start from opacity 0, so they need their end state restated or
+     they never appear at all - same as .gac-rv */
+  .kbx-rv { opacity: 1; transform: none; }
+  .kbx-pipe .dvp { opacity: 1; }
+}
+
+/* a display-size pull quote inside a case-study section. .inv-highlight carries
+   the type and the centring already but declares no margin of its own (it was
+   written for a fold that owned its whole section), so this is the one step it
+   needs to sit off the device above it. */
+.kb-pull { margin-top: var(--sp-block); }
 
 @media (max-width: 760px) {
   .ivx-principles, .ivx-principles.dv4 { grid-template-columns: 1fr; }
@@ -3640,8 +3831,9 @@ body.static .scene { height: auto !important; }
    there by design, for every zone.
 
    what is deliberately NOT in this list: the recessed boxes (.dvf, .gac-cell,
-   .gac-trr, .gac-v, .kbc, .cj, .dv-console, .mg, .gac-out, .gac-pane,
-   .gac-rec, .kbn) - they paint --ink / --ink2 and carry no shadow on purpose,
+   .gac-trr, .gac-v, .cj, .dv-console, .mg, .gac-out, .gac-pane,
+   .gac-rec, .kbn, and the knowledge base's .kbx-swap / .kbx-cost / .kbx-b /
+   .kbx-act) - they paint --ink / --ink2 and carry no shadow on purpose,
    so they read as cut into the page rather than sitting on it, in both
    palettes. and the small stat chips (.cj-result span, .bet-swaps span) - a
    drop shadow on an inline chip reads as a mistake.
@@ -3691,6 +3883,8 @@ body.static .scene { height: auto !important; }
 .gac-open,
 .gac-in,
 .kb-map,
+.kbx-job,
+.kbx-open,
 .lstep,
 .soon-term {
   background: var(--card-fill);
@@ -3742,7 +3936,10 @@ body.static .scene { height: auto !important; }
 .ivp:hover,
 .aud-gap:hover,
 .gac-card:hover,
-.adm-mod:hover {
+.adm-mod:hover,
+.kbx-job:hover,
+.kbx-job:focus-visible,
+.kbx-job.on {
   box-shadow: var(--lift-lg);
 }
 
@@ -3756,7 +3953,8 @@ body.static .scene { height: auto !important; }
    with the rest of the ladder). */
 .cj-ico,
 .gac-card > i,
-.adm-mod-ic {
+.adm-mod-ic,
+.kbx-ic {
   background: var(--surface2);
   border: 1px solid var(--line2);
 }
