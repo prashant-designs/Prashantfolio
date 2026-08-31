@@ -2684,12 +2684,17 @@ footer .g {
 .tl-hero { min-height: calc(100vh - var(--nav-h) - 2px); display: flex; align-items: center; position: relative; overflow: hidden; }
 .timeline-sec { padding: var(--sp-sec) 0; }
 
-/* .tl-featured is worn ALONGSIDE .tl-cs-card, not instead of it - same icon,
-   same about/role rows, same footer as its siblings in the row, so it reads
-   as one card family. the only additions are a thin conic-gradient ring
-   (behind a very light border, rather than a static glow) and the tag badge
-   below - the "featured" signal is the ring and the badge, not a different
-   card shape. */
+/* NO CURRENT CONSUMER, this whole block through .tl-featured-tag (and its two
+   @media echoes further down, at .tl-cs-grid .tl-featured). the spotlight
+   step wore this - a thin conic-gradient ring plus a "latest · shipping now"
+   tag - to stand out inside step 04's card row. once it became the step
+   rather than one of three in a row, the ring and the badge were the only
+   things that still made it look different from its five siblings, so it
+   asked to be a plain .tl-cs-card in every way that isn't its width and lost
+   both. kept rather than deleted for the reason .tlx-plain and the globe
+   are: nothing here is committed, and a working animated conic-mask ring is
+   real effort worth being able to put back on some future "featured" card
+   rather than reinvent. */
 @property --tlf-a {
   syntax: '<angle>';
   inherits: false;
@@ -3114,18 +3119,6 @@ footer .g {
 @keyframes tlxPulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.45; } }
 @media (prefers-reduced-motion: reduce) { .tlx-latest-k i { animation: none; } }
 
-/* the spotlight step - the one place the GenAI initiative is featured on
-   this page (see the note in the JSX), and now the last step on the timeline,
-   so .tlx-step:last-child already zeroes its bottom padding for it. it wears
-   .tl-featured for the ring + tag and joins the shared raised-card recipe
-   below for its fill/shadow; what's declared here is only the geometry
-   .tl-cs-card would otherwise supply, since this card is a full step rather
-   than one of three in a row. */
-.tlx-spot { display: block; width: 100%; max-width: 720px; border: 1px solid var(--line); border-radius: var(--r-lg); padding: var(--pad-card-lg); cursor: pointer; transition: transform 0.3s var(--ease), border-color 0.3s; }
-.tlx-spot:hover, .tlx-spot:focus-visible { transform: translateY(-4px); border-color: var(--line2); outline: none; }
-.tlx-spot-head { display: flex; align-items: center; gap: 14px; margin-bottom: 16px; }
-.tlx-spot h4 { font-family: var(--disp); font-weight: 700; font-size: var(--t-sub); letter-spacing: -0.01em; margin: 0 0 10px; }
-.tlx-spot .tl-cs-foot { margin-top: 18px; }
 
 /* the flat index - every case study as one onething-style arrow-link list:
    a numbered badge on the same categorical hue as the card upstream, a
@@ -3269,7 +3262,7 @@ footer .g {
    gone: the fill and the elevation now come from the one raised-card recipe in
    CARD SYSTEM at the bottom of this file, which turns over with the page
    instead of cutting to a flat hex. */
-.tl-cs-grid .tl-featured { flex: 0 0 380px; scroll-snap-align: start; margin-top: 0; }
+.tl-cs-grid .tl-featured { flex: 0 0 380px; scroll-snap-align: start; margin-top: 0; } /* NO CURRENT CONSUMER - see the note by .tl-featured's definition */
 .tl-cs-card:hover, .tl-cs-card:focus-visible { transform: translateY(-4px); border-color: var(--line2); outline: none; }
 /* the badge on a case-study card, and the one chip on the site with its own
    rule rather than the shared chip recipe at the bottom of this file. it has
@@ -4907,8 +4900,7 @@ body.static .scene { height: auto !important; }
 .kbx-job,
 .kbx-open,
 .lstep,
-.soon-term,
-.tlx-spot {
+.soon-term {
   background: var(--card-fill);
   box-shadow: var(--lift);
 }

@@ -318,7 +318,6 @@ export default function CurrentProject() {
             <span className="tdots" aria-hidden="true"><i></i><i></i><i></i></span>
           </h2>
           <p className="pol-open-sub rv d2">Four years on one product, still going - from the first empty screen to the roadmap it runs on today.</p>
-          <button type="button" className="btn-ghost rv d2" onClick={() => scrollTo(indexRef)}>see all six case studies →</button>
 
           {/* the reference's hero "featured · latest" card, deliberately built
               as a POINTER rather than as a card. the GenAI initiative already
@@ -403,10 +402,11 @@ export default function CurrentProject() {
 
             {/* data-cat on each badge is the case study's rung of the
                 categorical --chip-* ramp (see TOKENS / CARD SYSTEM in
-                index.css). the six run 1..6 across ALL THREE grids on this page
-                - the two below and the spotlight card's badge on step 05 - they
-                are one set of six parallel categories that happens to be split
-                over three steps, so the numbering must not restart here. */}
+                index.css). the six run 1..6 across BOTH grids on this page -
+                this one and step 04's three-card row below, which is where the
+                GenAI card (6) now lives - they are one set of six parallel
+                categories that happens to be split over two steps, so the
+                numbering must not restart here. */}
             <Step n="03" when="2022 - 2024" kicker="Building it, zero to one" title="Three products, built from nothing">
               <p>Five surfaces, one designer - a design system first, so screens could ship fast. Self-serve launched in 2023: 90 days of manual provisioning became 10 minutes.</p>
 
@@ -462,7 +462,15 @@ export default function CurrentProject() {
 
             </Step>
 
-            <Step n="04" when="2025 - now" kicker="Moving into product" title="Now: AI product manager">
+            {/* step 05 - the GenAI spotlight - folded back in as this grid's
+                third card. it was promoted out to its own step for a pass, but
+                once it lost the ring/badge that had made it "featured" (see
+                git history), it was just a fourth .tl-cs-card-shaped thing
+                sitting alone in its own step - so it comes back to the row it
+                started in, same as Knowledge Base and Developer sandbox. the
+                hero's "latest" pointer now scrolls to this step rather than a
+                step of its own. */}
+            <Step n="04" when="2025 - now" kicker="Moving into product" title="Now: AI product manager" id="latest" stepRef={spotRef}>
               <p>Same platform, different lens - PRDs, roadmaps, prioritisation, UAT, frontend deployment. AI runs the loop with me: real prototypes, not mockups.</p>
 
               <div className="tl-cs-grid">
@@ -498,28 +506,8 @@ export default function CurrentProject() {
                   <div className="tl-cs-row"><span>role</span><p>DX design, docs & frontend · PRD + pricing framework · volumetrics with engineering</p></div>
                   <div className="tl-cs-foot"><span className="tl-cs-impact">revenue <small>in testing</small></span><span className="tl-cs-link">Deep dive →</span></div>
                 </article>
-              </div>
-            </Step>
 
-            {/* the spotlight. this is the one place the GenAI initiative is
-                featured on this page - it used to be a .tl-featured card inside
-                step 04's card row, and the ring + tag recipe that made it
-                "featured" there is exactly what it wears here, on a card that
-                is now the step rather than one of three in it. so the earlier
-                decision is not undone, it is promoted: same card family, same
-                ring, same badge, same icon rung (6) as its five siblings - just
-                given the step the reference gives it, because it is the most
-                recent work and the page's arc ends on it. the hero's "latest"
-                link scrolls here rather than repeating the card. */}
-            <Step n="05" when="2026" kicker="The AI agent" id="latest" stepRef={spotRef} className="tlx-spot-step">
-              <article
-                className="tlx-spot tl-featured"
-                role="button"
-                tabIndex={0}
-                onClick={() => openStudy('GenAI Initiative')}
-                onKeyDown={cardKeys('GenAI Initiative')}
-              >
-                <div className="tlx-spot-head">
+                <article className="tl-cs-card" role="button" tabIndex={0} onClick={() => openStudy('GenAI Initiative')} onKeyDown={cardKeys('GenAI Initiative')}>
                   <span className="tl-cs-icon" data-cat="6" aria-hidden="true">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round">
                       <path d="M12 3v4M12 17v4M3 12h4M17 12h4" />
@@ -528,13 +516,12 @@ export default function CurrentProject() {
                       </circle>
                     </svg>
                   </span>
-                  <span className="tl-featured-tag">Latest · shipping now</span>
-                </div>
-                <h4>Recommend the route before the customer asks</h4>
-                <div className="tl-cs-row"><span>about</span><p>a pre-sales recommendation engine - hands back the routes worth buying before a person has to work them out</p></div>
-                <div className="tl-cs-row"><span>role</span><p>scoped the three use cases with a specialist AI delivery team · decided what the model had to be right about, not the build itself</p></div>
-                <div className="tl-cs-foot"><span className="tl-cs-impact">feasibility <small>verdict, evidence-backed</small></span><span className="tl-cs-link">Deep dive →</span></div>
-              </article>
+                  <h4>Recommend the route before the customer asks</h4>
+                  <div className="tl-cs-row"><span>about</span><p>a pre-sales recommendation engine - hands back the routes worth buying before a person has to work them out</p></div>
+                  <div className="tl-cs-row"><span>role</span><p>scoped the three use cases with a specialist AI delivery team · decided what the model had to be right about, not the build itself</p></div>
+                  <div className="tl-cs-foot"><span className="tl-cs-impact">feasibility <small>verdict, evidence-backed</small></span><span className="tl-cs-link">Deep dive →</span></div>
+                </article>
+              </div>
             </Step>
 
           </div>
