@@ -90,10 +90,22 @@ function useGlobalTheme(pageRef, routeKey) {
 function AppContent() {
   const location = useLocation();
   const [progress, setProgress] = useState(0);
+  const [hasScroll, setHasScroll] = useState(false);
+  // the [data-ch] section names, in document order, and which one the reader is
+  // currently inside. the tick marks were already built from these sections -
+  // this is the same list, kept in React so the route line can print the
+  // current one as a running head instead of only revealing it on hover.
+  const [chapters, setChapters] = useState([]);
+  const [activeCh, setActiveCh] = useState(0);
   const [menuOpen, setMenuOpen] = useState(false);
   const pageRef = useRef(null);
 
   const currentPage = location.pathname.replace('/', '') || 'home';
+  // clamped rather than trusted: `chapters` and `activeCh` are written by two
+  // different effects, so for one render after a route change the index can
+  // still point past the new page's shorter section list.
+  const chapterIdx = Math.min(activeCh, Math.max(0, chapters.length - 1));
+  const chapterName = chapters[chapterIdx];
 
   useGlobalTheme(pageRef, location.pathname);
 
@@ -110,6 +122,12 @@ function AppContent() {
   useEffect(() => {
     window.scrollTo(0, 0);
     setMenuOpen(false);
+    // the scroll listener below only updates `progress` on a real 'scroll'
+    // event, so without this a page with nothing to scroll would otherwise
+    // keep showing wherever the packet sat on the previous page - a single-
+    // fold page (Other Projects) doesn't fire a scroll event to correct it.
+    setProgress(0);
+    setActiveCh(0);
   }, [location.pathname]);
 
   useEffect(() => {
@@ -135,6 +153,11 @@ function AppContent() {
     const routeLine = document.getElementById('routeLine');
     const observedRv = new Set();
     let createdTicks = [];
+    // document-space tops of the [data-ch] sections, re-measured whenever the
+    // ticks are placed. read by syncActive below, which is the only thing on
+    // this effect's scroll listener.
+    let chTops = [];
+    let activeRaf = null;
 
     const rvObserver = new IntersectionObserver(
       (entries) => {
@@ -157,10 +180,29 @@ function AppContent() {
       });
     };
 
+    // which section the reader is inside: the last one whose top has passed a
+    // line about a third down the viewport, so a section becomes "current" once
+    // it is genuinely the thing being read rather than at its first visible
+    // pixel. writes the class the tall ruler mark reads, and the index the
+    // running head prints - setActiveCh with an unchanged value is a no-op in
+    // React, so this costs nothing on the frames where nothing moved.
+    const syncActive = () => {
+      if (chTops.length === 0) return;
+      const line = window.scrollY + window.innerHeight * 0.34;
+      let idx = 0;
+      for (let i = 0; i < chTops.length; i += 1) {
+        if (chTops[i] <= line) idx = i;
+      }
+      setActiveCh(idx);
+      createdTicks.forEach((tickEl, i) => tickEl.classList.toggle('on', i === idx));
+    };
+
     const placeTicks = () => {
-      const chSections = [...pageEl.querySelectorAll('[data-ch]')];
-      if (!routeLine || chSections.length === 0) return;
       const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+      setHasScroll(docHeight > 4);
+      const chSections = [...pageEl.querySelectorAll('[data-ch]')];
+      chTops = chSections.map((s) => s.getBoundingClientRect().top + window.scrollY);
+      if (!routeLine || chSections.length === 0) return;
       if (docHeight <= 0) return;
       createdTicks.forEach((tickEl, i) => {
         const section = chSections[i];
@@ -168,13 +210,21 @@ function AppContent() {
         const top = section.getBoundingClientRect().top + window.scrollY;
         tickEl.style.left = `${clamp((top / docHeight) * 100, 0, 100)}%`;
       });
+      syncActive();
     };
 
     const rebuildTicks = () => {
       createdTicks.forEach((tickEl) => tickEl.remove());
       createdTicks = [];
+      const sections = [...pageEl.querySelectorAll('[data-ch]')];
+      // same array identity when the names haven't changed, so the MutationObserver
+      // firing on every timeline beat doesn't re-render the header each time.
+      const names = sections.map((s) => s.dataset.ch);
+      setChapters((prev) => (
+        prev.length === names.length && prev.every((n, i) => n === names[i]) ? prev : names
+      ));
       if (!routeLine) return;
-      pageEl.querySelectorAll('[data-ch]').forEach((section) => {
+      sections.forEach((section) => {
         const tickEl = document.createElement('button');
         tickEl.className = 'route-tick';
         tickEl.dataset.ch = section.dataset.ch;
@@ -186,9 +236,18 @@ function AppContent() {
       placeTicks();
     };
 
+    const onScroll = () => {
+      if (activeRaf !== null) return;
+      activeRaf = window.requestAnimationFrame(() => {
+        activeRaf = null;
+        syncActive();
+      });
+    };
+
     scanRv();
     rebuildTicks();
     window.addEventListener('resize', placeTicks);
+    window.addEventListener('scroll', onScroll, { passive: true });
 
     const mo = new MutationObserver(() => {
       scanRv();
@@ -198,6 +257,8 @@ function AppContent() {
 
     return () => {
       window.removeEventListener('resize', placeTicks);
+      window.removeEventListener('scroll', onScroll);
+      if (activeRaf !== null) window.cancelAnimationFrame(activeRaf);
       mo.disconnect();
       rvObserver.disconnect();
       createdTicks.forEach((tickEl) => tickEl.remove());
@@ -257,8 +318,19 @@ function AppContent() {
           </button>
         </div>
         <div className="route-line" id="routeLine">
-          <div className="route-fill" style={{ width: `${progress}%` }}></div>
-          <div className="route-packet" style={{ left: `${progress}%` }}></div>
+          {hasScroll && <div className="route-fill" style={{ width: `${progress}%` }}></div>}
+          {hasScroll && (
+            <div className="route-packet" style={{ left: `${progress}%` }}>
+              {chapterName && (
+                /* translated by its own progress percentage so it never leaves
+                   the viewport: at 0% it hangs off the right of the caret, at
+                   100% off the left, sliding across itself in between. */
+                <span className="route-now" style={{ transform: `translateX(-${progress}%)` }}>
+                  <i>{String(chapterIdx + 1).padStart(2, '0')}</i>{chapterName}
+                </span>
+              )}
+            </div>
+          )}
         </div>
       </header>
 

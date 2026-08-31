@@ -52,9 +52,16 @@ function Ico({ name }) {
   );
 }
 
-/* a chip: icon in a recessed square. one shape, two sizes. */
-function Chip({ name, lg }) {
-  return <i className={lg ? 'kbx-ic lg' : 'kbx-ic'}><Ico name={name} /></i>;
+/* a chip: icon in a recessed square. one shape, two sizes.
+   `cat` is optional and is the chip's rung of the categorical --chip-* ramp
+   (see TOKENS / CARD SYSTEM in index.css). only the six jobs pass it: they are
+   six parallel categories a reader has to tell apart, which is the test that
+   ramp exists for. every other chip on this page is either one of a set that
+   shares a single meaning (the four swaps, the four costs, the four acts) or a
+   lone accent on a plain strip (the human gate, the "no scoreboard" panel), so
+   they stay on the neutral chip recipe on purpose. */
+function Chip({ name, lg, cat }) {
+  return <i className={lg ? 'kbx-ic lg' : 'kbx-ic'} data-cat={cat}><Ico name={name} /></i>;
 }
 
 /* copy written as [before, the load-bearing phrase, after] so the one phrase
@@ -136,6 +143,19 @@ const BET = [
   },
 ];
 
+/* the shape the docs got, as a shallow site map. each node carries the rule
+   that decides what belongs in it - which is the actual artefact, more than
+   the label is. no counts, no coverage claims: this is a description of a
+   structure, not a measurement of one. */
+const NODES = [
+  { t: 'getting started', p: 'the first hour with Polarin, as one path. if a reader needs a decision tree here, the product is the thing to fix, not the page.' },
+  { t: 'guides', p: 'task-shaped, one job per page. the tier AI drafts from a PRD and a human edits down - most of the volume lives here.' },
+  { t: 'api & developer', p: 'generated from the source of truth wherever it can be, hand-written only where it cannot. the parts that generate themselves never go stale.' },
+  { t: 'release notes', p: 'one entry per version, drafted from the "what changes for the customer" field on the ticket that shipped it.' },
+  { t: 'troubleshooting', p: 'symptom first, cause second. the tier the assistant refuses on most often - which is exactly where the next page gets written.' },
+  { t: 'policies & limits', p: 'the answers support gets asked for over and over. dull to write, expensive to leave undocumented.' },
+];
+
 /* the labour, not the feature. every job ends at a human approval. */
 const JOBS = [
   { i: 'migrate', job: 'migration', ai: 'reads the old wiki and rewrites each page into the new structure', was: 'a manual re-type, page by page' },
@@ -215,6 +235,10 @@ export default function KnowledgeBaseCaseStudy({ onPrev, onNext, idx, total }) {
   /* which side of the independence matrix is emphasised. "now" by default, so
      the page never depends on the reader touching it to make its point */
   const [side, setSide] = useState('now');
+  /* which node of the site map is open. null is a real state here - the map
+     reads as a structure before anything is clicked, and the note line under
+     it carries the affordance instead of a separate hint paragraph */
+  const [node, setNode] = useState(null);
 
   return (
     <div className="inv-wrap" ref={wrap}>
@@ -285,6 +309,31 @@ export default function KnowledgeBaseCaseStudy({ onPrev, onNext, idx, total }) {
         <p className="dv-p dim">a chatbot is the part a customer sees. it was never the part that was broken.</p>
       </div>
 
+      {/* ---------- the shape it got, as a shallow site map ---------- */}
+      <div className="inv-section">
+        <div className="inv-step-tag"><i></i>The shape</div>
+        <h3 className="dv-h">A structure someone who isn&apos;t a writer can file into</h3>
+        <p className="dv-p">The wiki&apos;s real failure mode was never a missing page. It was <b className="kbx-hl">a page that existed and nobody could find</b> - so the structure came before the content, and it is deliberately shallow: a small set of places a page can live, each with a rule that answers &quot;does this belong here?&quot; without a meeting.</p>
+        <div className="kb-map kbx-rv" data-rv>
+          <span className="kb-root">polarin docs</span>
+          <div className="kb-tier">
+            {NODES.map((n, i) => (
+              <button
+                type="button"
+                key={n.t}
+                className={node === i ? 'kbn on' : 'kbn'}
+                aria-pressed={node === i}
+                onClick={() => setNode(node === i ? null : i)}
+              >
+                {n.t}
+              </button>
+            ))}
+          </div>
+          <p className="kb-note">{node === null ? 'pick a section to see what belongs in it' : NODES[node].p}</p>
+        </div>
+        <p className="dv-p dim">AI proposes the filing, a human confirms it - and that ordering is why the taxonomy stayed shallow. a suggestion you have to approve is cheap to reject, and a structure nobody had to win an argument over is one that survives contact with a deadline.</p>
+      </div>
+
       {/* ---------- the six jobs, each hiding what it replaced ---------- */}
       <div className="inv-section">
         <div className="inv-step-tag"><i></i>The work AI does</div>
@@ -300,7 +349,7 @@ export default function KnowledgeBaseCaseStudy({ onPrev, onNext, idx, total }) {
               aria-expanded={openJob === i}
               onClick={() => setOpenJob(openJob === i ? null : i)}
             >
-              <Chip name={j.i} lg />
+              <Chip name={j.i} lg cat={i + 1} />
               <b>{j.job}</b>
               {/* a span, not a p: a <button>'s content model is phrasing only */}
               <span className="kbx-ai">{j.ai}</span>

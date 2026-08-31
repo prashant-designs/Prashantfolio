@@ -44,10 +44,15 @@ export default function AdminPortalCaseStudy({ onPrev, onNext, idx, total }) {
       <div className="inv-section">
         <div className="inv-step-tag"><i></i>The console</div>
         <h3 className="plain">Six modules. One login.</h3>
+        {/* six modules is six parallel categories, so each badge takes its own
+            rung of the categorical --chip-* ramp via data-cat - the same
+            treatment Current Project's six case studies and About's six skills
+            get. index-derived rather than written into MODULES because the
+            colour is "which of the six is this", not a property of the module. */}
         <div className="adm-modgrid">
-          {MODULES.map((m) => (
+          {MODULES.map((m, i) => (
             <div className="adm-mod" key={m.title}>
-              <span className="adm-mod-ic">{m.ic}</span>
+              <span className="adm-mod-ic" data-cat={i + 1}>{m.ic}</span>
               <b>{m.title}</b>
               <p>{m.line}</p>
             </div>

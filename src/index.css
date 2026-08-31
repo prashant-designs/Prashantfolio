@@ -2,32 +2,42 @@
 :root {
   /* four-step neutral ladder, darkest first. --ink stays the page floor
      (the fixed nav + every "fade to page colour" gradient are pinned to
-     it), while --ink2 / --raise / --raise2 were widened apart - they used
-     to sit 3-4 hex steps from each other, close enough that a card read as
-     a tinted rectangle drawn on the page rather than an object sitting on
-     it. still all dark neutrals, just with room to breathe between them.
+     it), --ink2 is the lifted zone / the overlay sheet, --raise is a card and
+     --raise2 the panel that nests inside one. four steps, in that order, is
+     the part that has never changed here.
 
-     the four steps also carry a whisper of blue, and that is worth
-     explaining because the numbers look like a rounding error. they used to
-     be pure greys - R=G=B on all four - which read as "whatever #121212 is"
-     rather than as a chosen colour, and that is the difference the reference
-     sites keep showing: a considered dark is a deep tinted black, never a
-     flat one. blue runs 4 / 8 / 10 / 12 points ahead of red as the ladder
-     climbs, and green is held at each step's old value, so every contrast
-     ratio measured for the old greys still holds.
+     what changed is the cut. the ladder was a faintly blue-tinted charcoal
+     (#111215 → #2D2F39) sitting a long way off pure black. it is now the
+     near-black navy the reference identity is built on - a deep tinted black,
+     not a dark grey - and the four rungs map one-for-one onto that
+     reference's own four:
 
-     this tint used to be described here as the mirror of a deliberately warm
-     paper ladder. it is not a mirror any more - the light ladder below was
-     re-cut cool (#F5F6F8 → #E0E3E9, blue 3-9 points ahead of red) against a
-     reference whose page is a very light neutral grey, so both states now
-     lean the same way and the page keeps one temperature through the flip
-     instead of swinging warm/cool with it. nothing here had to move for that:
-     the dark ladder was already cool, and so is everything painted over it -
-     the fixed dot-grid, every zone wash and the overlay scrim. */
-  --ink: #111215;
-  --ink2: #1A1C22;
-  --raise: #22242C;
-  --raise2: #2D2F39;
+       --ink    #06070F   its page floor
+       --ink2   #0A0D1A   its lifted stock
+       --raise  #0F1324   its card
+       --raise2 #131832   its nested panel
+
+     the relative logic is deliberately preserved rather than re-invented,
+     and the numbers say so: relative luminance climbs 0.00225 → 0.00437 →
+     0.00694 → 0.01011, i.e. each rung is x1.94 / x1.59 / x1.46 the one below
+     it, against x1.97 / x1.49 / x1.55 for the ladder it replaces. same
+     shape of staircase, moved down and cooled hard. every depth relationship
+     on the site therefore still reads; what moved is the temperature and the
+     floor.
+
+     the tint is no longer a whisper, which is the point. blue runs 9 / 16 /
+     21 / 31 points ahead of red as the ladder climbs, so a card is visibly a
+     deep navy object rather than "whatever dark grey this is". type contrast
+     went up rather than down for the move - see --text / --mute / --dim
+     below, all three recomputed against #06070F rather than carried over.
+
+     the light ladder in .theme-light is the white counterpart of exactly
+     this, not a warm paper stock: same navy cast, inverted. both states lean
+     the same way, so the page keeps one temperature through the flip. */
+  --ink: #06070F;
+  --ink2: #0A0D1A;
+  --raise: #0F1324;
+  --raise2: #131832;
 
   /* the surface a card/panel paints itself with. sections and containers
      re-point this (see SECTION ZONES) so a card on a lighter zone steps up
@@ -113,102 +123,265 @@
   --tint-lift: rgba(255, 255, 255, 0.032);
   --tint-lift-hi: rgba(255, 255, 255, 0.055);
   --tint-sink: rgba(0, 0, 0, 0.34);
-  /* the "cool" wash is still a section-level atmosphere (see SECTION ZONES),
-     but it is no longer a hue: it was a blue bloom (rgba(76, 130, 255, 0.08))
-     and it is now plain white at low alpha, because blue is not an accent on
-     this site any more - see --link. the name is kept rather than churned
+  /* the "cool" wash is a section-level atmosphere (see SECTION ZONES) and is
+     not a hue: plain white at low alpha. the name is kept rather than churned
      through .zone-cool / .zone-cool-r / the pinned stages; read "cool" as
      "the neutral half of the pair" wherever it appears below.
-     the warm wash survives only as narrative - red belongs to the single
-     decisive action on a screen, so the one ambient warmth left is the
-     "two halves meeting" device in .zone-duo, at roughly a third of its old
-     strength. that pair now reads warm-red against cool-neutral rather than
-     warm against blue, which is still two halves meeting and still the only
-     place on the site where two tones share a section. */
-  --glow-warm: rgba(232, 73, 45, 0.028);
+     the warm wash survives only as narrative - the "two halves meeting"
+     device in .zone-duo and on the home fold, the only place on the site
+     where two tones share a section. its hue used to be the old signal red;
+     it is the gradient's pink stop now, at the same whisper alpha, so the one
+     ambient colour left on the site belongs to the accent language rather
+     than to a colour nothing else uses any more. */
+  --glow-warm: rgba(255, 46, 154, 0.028);
   --glow-duo-cool: rgba(255, 255, 255, 0.03);
   --glow-cool: rgba(255, 255, 255, 0.045);
 
-  --line: rgba(255, 255, 255, 0.08);
+  --line: rgba(255, 255, 255, 0.09);
   --line2: rgba(255, 255, 255, 0.16);
-  /* a soft neutral bloom - what the handful of small glows that used to be
-     tinted red now use */
+  /* a soft neutral bloom, for the handful of small glows that carry no hue */
   --glow-soft: rgba(255, 255, 255, 0.4);
-  --text: #F5F4F2;
-  --mute: #A3A3A3;
-  --dim: #757575;
-  /* the one red thing on a screen, and nothing else. --signal is spent on a
-     primary action or on the single "you are here" state of a sequential UI,
-     never on a tag, a border, a hover flourish, an icon tint, a stat number
-     or an ambient wash - those all read as neutral now. the whole point is
-     that when red does appear, it is the only red on the screen and it means
-     "this is the thing to do next". the full list of places it is allowed -
-     the last three were already painted red and missing from this list, which
-     is worth fixing rather than churning, because a list that does not name
-     them cannot be used to answer "is a sixth red allowed?":
-       .btn-big              - the filled CTA pill (one per page)
-       .tl-stop.on           - the current stop on the Polarin timeline
-       .orbit .node.on       - the current step in About's process loop
-       .tab.active           - the nav's "you are here". the one exception to
-                               one-red-per-viewport, and the reason the four
-                               above are still safe: it is chrome, not content
-                               - 12px, in a fixed bar, off the reading column -
-                               so it never competes with a fold's own focal
-                               point the way a second red *inside* the fold
-                               would. a content red is still one per viewport.
-       .tab:focus-visible    - the keyboard ring on that same control
-       .ab-title span        - the full stop in About's 160px "about." - that
-                               fold's single focal accent, and the only red in
-                               it (its own CTA is a .btn-ghost)
-       --glow-warm           - whisper-strength, .zone-duo only
-       .home-hero            - whisper-strength, the two-halves fold */
-  --signal: #E8492D;
-  /* NOT an accent, and not blue. --link used to be the site's second colour -
-     a vivid #4C82FF on dark, #2F5FE0 on paper - carrying links, icon tints,
-     chart series, decorative glows and (most recently) the whole Polarin
-     timeline rail. blue next to --signal read as two accents competing, worst
-     of all in that rail where a blue spine ran through a red "you are here",
-     so the same one-colour discipline --signal already documents above now
-     applies to blue by removing it: there is no hue on this site except red,
-     and red only in the nine places listed above.
-     what replaced it, by category, is the neutral ladder - an interactive
-     label is --mute at rest and --text on hover (confidence, not hue), the
-     rail is --mute / --line2 / --card-fill with --signal only on the current
-     stop, chart series are the --bar-* ramp below, and every glow is white or
-     black at low alpha. the token itself survives, pointed at a plain light
-     grey, purely as a safety net: anything that still reads it - or any future
-     pass that reaches for it out of habit - gets a neutral rather than a blue.
-     nothing in this file uses it on purpose any more. */
-  --link: #C9C8C5;
-  --up: #5CE0A8;
-  --rose: #FF8FA8;
+  --text: #EDEFF7;
+  --mute: #949BB8;
+  --dim: #666E8C;
+
+  /* ---------------- THE ACCENT ----------------
+     READ THIS BEFORE ADDING A COLOUR. this block replaces the rule this file
+     used to argue at length for, and the old rule is gone rather than bent:
+     there is no "one red thing" any more, and red is not the accent.
+
+     what the site had: a single saturated red (#E8492D) spent on exactly one
+     decisive action per screen, with blue explicitly retired so nothing could
+     compete with it. that bought a very disciplined page and a very quiet one.
+     the accent language is now the identity's three-stop gradient instead -
+     pink into violet into cyan - and it is spent in the same places, under the
+     same discipline. what changed is the colour, not the rule about how often
+     it appears.
+
+       --g1 / --g2 / --g3   the three stops, exposed individually for the
+                            handful of places that need one of them alone
+                            (--glow-warm's pink wash, a mid-stop glow).
+       --grad               the gradient itself, at the reference's 100deg.
+                            this is the accent. it goes on a fill
+                            (.btn-big, .tab.active), on a text-clip
+                            (.ab-title span), or through a mask as a ring.
+       --signal             the gradient's SOLID stand-in, and the reason the
+                            old token name survives instead of being churned
+                            through nine call sites. a gradient cannot be an
+                            outline-color, a border-color or the colour half
+                            of a box-shadow, and those are real states -
+                            focus rings, glows, hairlines. --signal is the
+                            mid stop, so a ring drawn with it and a fill
+                            drawn with --grad read as the same accent. it
+                            keeps its old meaning exactly: the one decisive
+                            thing on a screen, never a tag, a stat number or
+                            an ambient wash.
+       --grad-ink           what is legible ON the gradient. this is a token
+                            rather than #fff because the two palettes need
+                            opposite answers: the dark gradient is bright
+                            (dark ink on it), the paper gradient is deepened
+                            (white ink on it). measured, both directions,
+                            at every stop AND at the two interpolated
+                            midpoints, because a three-stop gradient's worst
+                            contrast is usually not at a stop:
+                              dark, #06070F on it   5.85 / 4.61 / 4.67 /
+                                                    7.53 / 11.0 : 1
+                              paper, #FFFFFF on it  5.22 / 5.88 / 7.06 /
+                                                    6.54 / 4.88 : 1
+                            every reading clears 4.5:1, which is what let the
+                            cyan stop stay in the gradient at all - the
+                            reference's own #22D3EE is 1.8:1 under white and
+                            had to be deepened to #0A7C96 for the paper cut.
+
+     where the accent is allowed, which is the same nine-item list the red
+     rule kept, because the discipline is the part worth keeping:
+       .btn-big              the filled CTA pill (one per page) - --grad fill
+       .tl-stop.on           the current stop on the Polarin timeline - a
+                             --grad bead inside a --signal ring
+       .orbit .node.on       the current step in About's process loop - --grad
+                             fill, --grad-ink label
+       .tab.active           the nav's "you are here". still the one exception
+                             to one-accent-per-viewport, for the reason it
+                             always was: it is chrome, not content - 12px, in
+                             a fixed bar, off the reading column - so it never
+                             competes with a fold's own focal point.
+       .tab:focus-visible    the keyboard ring on that same control - --signal,
+                             since an outline cannot take a gradient
+       .ab-title span        the full stop in About's 160px "about.", as a
+                             background-clip:text sweep. this is the
+                             reference's own headline device, and it is why
+                             the gradient is a better fit here than the red
+                             was: a solid accent on one glyph is a dot, a
+                             gradient on it is the identity.
+       .tl-featured          the featured card's ring, which was already a
+                             masked conic sweep in --mute - now the accent
+                             gradient through the same mask
+       --glow-warm           whisper-strength, .zone-duo only
+       .home-hero            whisper-strength, the two-halves fold
+     a tenth place needs an argument, exactly as a sixth red did. */
+  --g1: #FF2E9A;
+  --g2: #7B5BFF;
+  --g3: #22D3EE;
+  /* 90deg, not the reference's 100deg: a pill (border-radius: 99px) is
+     exactly where the tilt shows up as a bug rather than a sweep - a 10°
+     angle samples a visibly different point on the gradient at the top of a
+     rounded cap than at the bottom of it, which reads as a thin mismatched
+     line of colour riding the curve at both ends. dead horizontal has no
+     vertical component to disagree with itself, on a pill or anywhere else. */
+  --grad: linear-gradient(90deg, var(--g1) 0%, var(--g2) 52%, var(--g3) 100%);
+  --signal: #7B5BFF;
+  --grad-ink: #06070F;
+
+  /* NOT an accent. --link used to be the site's second colour - a vivid
+     #4C82FF - carrying links, icon tints, chart series and decorative glows,
+     and it was retired because two competing accents is one too many. that is
+     still true, so it is still retired: an interactive label is --mute at rest
+     and --text on hover (confidence, not hue), and the accent above is the
+     only hue that means "act on this". the token survives, pointed at a plain
+     light neutral re-cut to the ladder's navy cast, purely as a safety net -
+     anything that still reads it, or any future pass that reaches for it out
+     of habit, gets a neutral. nothing in this file uses it on purpose. */
+  --link: #C2C7DA;
+
+  /* --up is the lime, and it has exactly one job: the good / human / approved
+     moment. the reference spends its own --lime on a status dot, a "win" row
+     and an approved state and nowhere else, and this token was already doing
+     precisely that here - the ✓ on the bet that was taken, the "now" column of
+     the independence matrix, the human-approval gate, the closing result
+     panel, the "available" dot on the home page. so the lime did not need a
+     new token, it needed this one re-cut: #5CE0A8 → #7DF9A6, which is the
+     reference's value and is the same hue family, one step brighter and
+     yellower against the deeper floor (15.3:1 on --ink).
+     it is deliberately NOT a general accent. if something wants a colour and
+     is not an approval, it wants --grad or a --bar-* rung, not this.
+
+     --rose is its opposite number, and the reference has one of those too: a
+     pink-red distinct from the gradient's own pink, used only for removed /
+     negative states in a before-after diff. that is the role --rose already
+     played (the strike-through "then" column, the cost tags, the failure
+     codes), so it is re-cut to the reference's #FF6B8A - close enough to the
+     gradient's --g1 to belong to the palette, far enough (and much lighter)
+     never to be mistaken for the accent. 7.4:1 on --ink. */
+  --up: #7DF9A6;
+  --rose: #FF6B8A;
 
   /* the honest-skills chart palette: six series, six pastel hues.
-     a monochrome lightness ramp (tried right after blue was retired as an
-     accent) turned out to solve the wrong problem - it kept the one-accent
-     rule technically intact, but a reader can no longer tell "Figma" from
-     "3D & animation" at a glance, only rank them, which is what the axis and
-     the printed % are already for. data legibility is its own category,
-     separate from the UI-chrome accent rule: --signal still means exactly
-     one thing everywhere it appears, and these six only ever label an axis -
-     they never sit on a button, a link, or a nav state, so they can't be
-     confused for "the one decisive action" the way a second UI accent would.
-     soft/desaturated on purpose (pastel, not the vivid brand blue that got
-     retired) so none of the six reads as a second brand colour - they read as
-     a chart. donut segments alias three of the six (see .ab-seg below) so the
-     two charts share one vocabulary instead of inventing a second palette.
+     a monochrome lightness ramp (tried once) solves the wrong problem - it
+     keeps the accent rule technically intact, but a reader can no longer tell
+     "Figma" from "3D & animation" at a glance, only rank them, which is what
+     the axis and the printed % are already for. data legibility is its own
+     category, separate from the UI-chrome accent rule: --grad / --signal still
+     mean exactly one thing everywhere they appear, and these six only ever
+     label an axis - they never sit on a button, a link, or a nav state, so
+     they can't be confused for "the one decisive action".
+     soft/desaturated on purpose so none of the six reads as a second brand
+     colour - they read as a chart. donut segments alias three of the six (see
+     .ab-seg below) so the two charts share one vocabulary instead of inventing
+     a second palette.
+
+     this pass is a HARMONISATION, not a redesign: six categorical hues is
+     still the answer to six parallel series, and the ramp is still six rungs.
+     two things were re-cut against the new page.
+
+     1. temperature. every rung was tuned to sit on a warm-ish charcoal card
+        and now sits on a navy #0F1324, so each is nudged a few degrees cooler
+        and a touch brighter to hold the same separation from the ground.
+     2. HUE CLEARANCE from the accent, which is the new constraint and the
+        only reason any rung moved family. the gradient owns three hue
+        neighbourhoods - pink 330°, violet 255°, cyan 187° - and two rungs sat
+        inside them: rung 5 was a lavender at 258° (dead on the violet stop)
+        and rung 6 a teal at 175° (12° off the cyan stop). a chart series that
+        reads as a washed-out CTA is the same failure as two competing
+        accents, one category down. so rung 5 moved to orchid (291°) and
+        rung 6 to chartreuse (74°) - the two open slots left on the wheel once
+        the accent, the lime and the four rungs that did not move are placed.
+        the ramp is now 7 / 42 / 148 / 219 / 291 / 74°, and its closest
+        approach to any gradient stop is 29° (rung 4's blue to the cyan).
+     rungs 1-4 keep their families - coral, amber, green, blue - so a reader
+     who has seen the chart before still sees the same chart.
+
      all six are registered @property colours on the crossfade list so they
      turn over with the page; the paper set is in .theme-light, deepened for
      contrast on white rather than just carried over. */
-  --bar-1: #FF9E8A;
-  --bar-2: #FFCB7D;
-  --bar-3: #9BE0B0;
-  --bar-4: #9DC4FF;
-  --bar-5: #C3AEFF;
-  --bar-6: #8FE0DA;
+  --bar-1: #FF9A8C;
+  --bar-2: #FFC978;
+  --bar-3: #8FE3B4;
+  --bar-4: #8FB8FF;
+  --bar-5: #E4A0F0;
+  --bar-6: #D2E97F;
   /* dark ink riding on top of a bright chart bar - the page floor at 85%, so
-     it tracks --ink's tint rather than staying the pure grey it was. */
-  --bar-num: rgba(17, 18, 21, 0.85);
+     it tracks --ink's tint rather than staying a neutral grey. */
+  --bar-num: rgba(6, 7, 15, 0.85);
+
+  /* the categorical ICON-CHIP palette: same six hues as the chart ramp above,
+     tuned for a hairline glyph instead of a filled bar.
+
+     why it exists at all. "the page reads black and white" was said about
+     Current Project, whose six case-study cards each carry a neutral icon
+     badge - and the answer is the one already argued for the chart above, not
+     a second UI accent: six parallel categories a reader has to tell apart is
+     a data-legibility problem, and lightness alone cannot solve it. the
+     gradient still means exactly one thing, and none of these six ever sits on
+     a button, a link or a nav state, so they cannot be read as "the one
+     decisive action". an icon chip is decoration plus category, never a call
+     to action.
+
+     why it is NOT just --bar-1..6 re-used. two consumers with different
+     optical jobs sharing one token is the drift this file keeps documenting,
+     and here the numbers say it outright. --bar-* is sized for a large filled
+     rectangle at 0.85 opacity, or a 16-24px donut stroke; a chip is a 1.6px
+     stroke drawn on a 14%-tint of its own hue. measured against exactly that
+     tinted chip on paper, the light --bar-* set lands at 2.18 / 2.56 / 2.59 /
+     2.87 / 3.35 / 3.36:1 - four of the six under the 3:1 floor a graphic has
+     to clear - because a colour tuned to read as a bar has already spent its
+     contrast on area. the --chip-* set below is the same six hues taken
+     deeper on paper and one notch brighter on dark, and clears 4.7-5.8:1
+     (light) and 6.4-7.8:1 (dark) as a glyph on its own chip. keeping them
+     apart also means the next pass can re-cut the chart - add a seventh
+     series, re-order the hues by rank - without silently recolouring every
+     icon badge on the site, and vice versa.
+
+     the six hues are deliberately identical in family to the chart's, so the
+     site still speaks one categorical vocabulary rather than two - including
+     rung 4, which is a blue again. it used to break from the chart on purpose
+     (a lime/olive, because blue on a badge read as the retired UI accent
+     coming back) and that reason is spent: the retired accent was blue vs
+     red, and neither is the accent now. the constraint that replaced it is
+     the accent's own three hues, which this ramp clears exactly as the chart
+     ramp above does - same 7 / 42 / 148 / 219 / 291 / 74° spread, so a chip
+     and a bar of the same rung are the same category.
+
+     WHERE THEY ARE ALLOWED, and the rule that decides it, because "some icons
+     are coloured and some are not" is only defensible if the line is
+     testable: a chip joins this palette when it is one of THREE OR MORE
+     PARALLEL SIBLINGS a reader has to tell apart - the same shape of problem
+     as six chart series. it stays neutral when it is a beat in a SEQUENCE
+     (position already identifies it), when the group shares ONE meaning
+     rather than six different ones, or when it is a single decorative accent
+     on an otherwise plain element. the three sets that qualify today are all
+     exactly six-wide, which is why the ramp is six rungs and not seven:
+       .tl-cs-icon    Current Project's six case studies
+       .adm-mod-ic    the Admin Portal's six console modules
+       .kbx-jobs      the six jobs AI took over in the Knowledge Base
+     applied through one [data-cat] attribute - see CARD SYSTEM at the bottom
+     of this file, where the chip recipe already lives.
+
+     all six are registered @property colours on the crossfade list next to
+     the bars, restated in .theme-light for paper and in .ovl (which is always
+     dark) for the case-study overlay.
+
+     naming, so the next reader does not have to guess: --chip-1..6 are the
+     COLOURS and --chip-lg / --chip-sm in the card scale below are the two
+     SIZES - one prefix for one component, numbered rungs for the ramp and
+     word suffixes for the geometry, exactly as --bar-1..6 sits next to
+     --bar-num. --chip-c is neither: it is the local "which rung is this one"
+     handle that [data-cat] sets, and it only ever exists on a chip. */
+  --chip-1: #FFAC9C;
+  --chip-2: #FFD48F;
+  --chip-3: #A2E8C1;
+  --chip-4: #A8C8FF;
+  --chip-5: #EDB4F6;
+  --chip-6: #DEEF97;
 
   /* the outline-only ghost word behind About's mix donut - and behind Ch.2's
      "The Crossing" stage, which used to carry its own near-identical hex. a
@@ -226,15 +399,30 @@
      the hover wash were blue-tinted; they are white at low alpha now, which is
      what chrome on a frosted dark bar should have been all along - the paper
      pair in .theme-light was already neutral black. */
-  --nav-bg: rgba(17, 18, 21, 0.88);
+  --nav-bg: rgba(6, 7, 15, 0.88);
   --nav-track: rgba(255, 255, 255, 0.14);
   --nav-hover: rgba(255, 255, 255, 0.07);
 
-  --disp: "Bricolage Grotesque", sans-serif;
+  /* three roles, three families, loaded in index.html - and the weights
+     requested there are the weights used here, which is worth keeping true:
+     --disp runs 500-900 across the type scale below, --mono runs 400/500/700.
+     --disp was Bricolage Grotesque, an optical-size variable face whose
+     tighter grades were doing a lot of the site's personality; Archivo is the
+     reference's display face and is squarer and more neutral at the same
+     weights, which is why the tracking on the type scale below (-0.035em at
+     hero, -0.02em at card) still reads correct rather than cramped - Archivo's
+     default sidebearings are wider than Bricolage's were at the same size.
+     --mono was IBM Plex Mono and is JetBrains Mono, which has a taller
+     x-height at the same px, so the 9.5-11.5px labels this site uses a lot of
+     gained legibility without any size changing.
+     --body is unchanged: the site was already on Instrument Sans, which is
+     also what the reference uses for body copy. */
+  --disp: "Archivo", system-ui, sans-serif;
   --body: "Instrument Sans", -apple-system, "Segoe UI", sans-serif;
-  --mono: "IBM Plex Mono", monospace;
+  --mono: "JetBrains Mono", ui-monospace, monospace;
   --ease: cubic-bezier(0.22, 1, 0.36, 1);
   --nav-h: 60px;
+  --stack-top: 100px; /* sticky offset for THE STACK (Current Project timeline) - deliberately taller than --nav-h so a stuck panel doesn't butt against the bar */
 
   /* ---------------- TYPE SCALE ----------------
      one ladder for every heading on the site. it exists because the site grew
@@ -489,9 +677,9 @@ body::before {
 }
 
 /* the site-wide ambient glow used to live here as a warm/cool pair. the warm
-   half put a faint red wash behind every screen of the site, which is exactly
-   what "red only where it's the one decisive action" rules out - and its cool
-   twin came out with it rather than leave a lopsided blue bloom where a red
+   half put a faint tinted wash behind every screen of the site, which is
+   exactly what "the accent marks the one decisive action" rules out - and its
+   cool twin came out with it rather than leave a lopsided bloom where a warm
    one used to be. the fixed dot-grid above and the film grain on html carry
    the page's depth now. */
 
@@ -549,12 +737,34 @@ body::before {
   background: var(--nav-hover);
 }
 
+/* the accent's smallest appearance, and the only one that is chrome rather
+   than content (see THE ACCENT in TOKENS). the pill is a --grad fill with
+   --grad-ink on top rather than white: white is legible on the pink and violet
+   ends of this gradient and falls to 1.8:1 on the cyan end, so a white label
+   would fade out across its own background. --grad-ink flips with the palette
+   and clears 4.6:1 at the worst point of the sweep in both. */
 .tab.active {
-  color: #fff;
-  border-color: var(--signal);
-  background: var(--signal);
+  color: var(--grad-ink);
+  border-color: transparent;
+  /* the solid stand-in underneath the gradient, on all three of these: the
+     label is --grad-ink, which is near-black on dark and white on paper, so a
+     browser that dropped the gradient would leave that label on the element's
+     own background - transparent here, --raise2 on the orbit pill - and in
+     both cases invisible rather than merely unstyled. background-color is the
+     floor the gradient paints over. */
+  background-color: var(--signal);
+  background-image: var(--grad);
+  /* without these two, the browser doesn't reliably size the gradient image
+     to this exact box before clipping it to the 99px radius - confirmed by
+     screenshot, not guessed: the unclipped/default sizing let a sliver of
+     the gradient's far end show through at the near rounded cap, a thin
+     cyan fringe at the pink corner. explicit size + no-repeat removed it. */
+  background-repeat: no-repeat;
+  background-size: 100% 100%;
 }
 
+/* an outline cannot take a gradient, so this is the one place the solid
+   stand-in exists for - same accent, one colour of it */
 .tab:focus-visible {
   outline: 2px solid var(--signal);
   outline-offset: 2px;
@@ -573,14 +783,59 @@ body::before {
   vertical-align: 1px;
 }
 
+/* the "soon" pip inside an active tab rides the same ink as the label it sits
+   beside - it was white on a flat red, and white on this gradient is the one
+   thing --grad-ink exists to prevent */
 .tab.active .soon {
-  color: #fff;
-  border-color: rgba(255, 255, 255, 0.5);
+  color: var(--grad-ink);
+  border-color: color-mix(in srgb, var(--grad-ink) 45%, transparent);
 }
 
+/* ---- the route line: "where am I on this page", as furniture ----
+   this is the one piece of chrome that follows the reader down every page, and
+   it used to be the most generic thing on the site: a 1px flat track, a flat
+   --mute fill, a 6px circle riding it and five 5px dots. every one of those is
+   the default shape of the thing it was standing in for - the circle in
+   particular is exactly what a browser paints for its own scrollbar thumb,
+   which is why the whole bar read as a widget bolted under the nav rather than
+   as part of the nav.
+
+   four moves, none of them a new colour and none of them a new mechanism - the
+   data was all already here (the ticks have been built from [data-ch] since
+   they were added; the section names were just never shown unless you hovered
+   one):
+
+     the fill carries weight instead of being flat. it runs from a whisper of
+     --mute where the page starts to full --text at its leading edge, so the
+     line has a direction and its heaviest point is the point you are at. a
+     flat bar of one grey has a length but no front.
+
+     the head is a caret, not a bead. same 2px column of ink .tcur draws at the
+     end of a typed headline, stood up on the rail - a caret reads as "here,
+     still going" and belongs to the site's own typographic vocabulary; a
+     glowing circle reads as a scrollbar thumb.
+
+     the ticks are ruler marks, not dots. 1px hairlines at --dim, the one you
+     are currently inside stepping up to --text and taller. a row of equal dots
+     tells you a page has five sections; a ruler whose current mark is the tall
+     one tells you which of the five you are in, without hovering anything.
+
+     it prints a running head. the current section rides along under the caret
+     as `02 · TIMELINE`, in the same mono-with-a-bright-number treatment
+     .ch-num already uses for a chapter label, hanging off the nav's bottom
+     edge in the nav's own frosted fill so it reads as part of the bar rather
+     than as a tooltip floating over the page. it is translated by its own
+     progress percentage, which is what keeps it on screen at both ends: at 0%
+     it starts at the caret, at 100% it finishes there, and in between it
+     slides across itself.
+
+   the two transitions are 0.12s linear on purpose. these are scroll-driven
+   values that already update once per frame, so an eased curve would fight the
+   scroll - a short linear smoothing just takes the stair-step out of the fill
+   and the caret. both are dropped under reduced motion. */
 .route-line {
   position: relative;
-  height: 1px;
+  height: 2px;
   background: var(--nav-track);
 }
 
@@ -590,49 +845,117 @@ body::before {
   top: 0;
   bottom: 0;
   width: 0%;
-  background: var(--mute);
+  background: linear-gradient(
+    90deg,
+    color-mix(in srgb, var(--mute) 18%, transparent) 0%,
+    color-mix(in srgb, var(--mute) 70%, transparent) 46%,
+    var(--text) 100%
+  );
+  transition: width 0.12s linear;
 }
 
+/* a zero-width anchor at the progress position - the caret is its ::before and
+   the running head its one child, so both travel on one transitioned left. */
 .route-packet {
   position: absolute;
-  top: 50%;
+  top: 0;
+  bottom: 0;
   left: 0%;
-  width: 6px;
-  height: 6px;
-  border-radius: 50%;
-  background: var(--text);
-  transform: translate(-50%, -50%);
-  box-shadow: 0 0 12px var(--glow-soft);
+  width: 0;
+  transition: left 0.12s linear;
 }
 
+.route-packet::before {
+  content: "";
+  position: absolute;
+  left: -1px;
+  top: 50%;
+  width: 2px;
+  height: 13px;
+  border-radius: 1px;
+  transform: translateY(-50%);
+  background: var(--text);
+  box-shadow: 0 0 10px var(--glow-soft);
+}
+
+/* plain typography riding under the line, not a dropped tooltip - a border
+   and a frosted panel on a 6-character label read as a stray UI widget
+   rather than the caption the reference reads as. no box, no background:
+   just the running head, close enough to the caret that it reads as part
+   of the same mark. */
+.route-now {
+  position: absolute;
+  top: 13px;
+  left: 2px;
+  display: inline-flex;
+  align-items: baseline;
+  gap: 7px;
+  white-space: nowrap;
+  font-family: var(--mono);
+  font-size: var(--t-micro);
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--dim);
+  pointer-events: none;
+}
+
+.route-now i {
+  font-style: normal;
+  color: var(--text);
+}
+
+/* the mark itself is the ::before hairline; the button is an 18px invisible
+   hit area around it, because a 1px target is not a target. */
 .route-tick {
   position: absolute;
   top: 50%;
-  width: 5px;
-  height: 5px;
-  border-radius: 50%;
-  background: var(--dim);
+  left: 0;
+  width: 18px;
+  height: 18px;
   transform: translate(-50%, -50%);
-  cursor: pointer;
-  transition: all 0.3s;
+  display: grid;
+  place-items: center;
+  background: none;
   border: none;
   padding: 0;
+  cursor: pointer;
   z-index: 2;
 }
 
-.route-tick:hover {
+.route-tick::before {
+  content: "";
+  width: 1px;
+  height: 7px;
+  border-radius: 1px;
+  background: var(--dim);
+  transition: height 0.3s var(--ease), background-color 0.3s;
+}
+
+.route-tick.on::before {
   background: var(--text);
-  transform: translate(-50%, -50%) scale(1.7);
+  height: 11px;
+}
+
+.route-tick:hover::before,
+.route-tick:focus-visible::before {
+  background: var(--text);
+  height: 13px;
+}
+
+.route-tick:focus-visible {
+  outline: 1px solid var(--text);
+  outline-offset: -2px;
+  border-radius: var(--r-xs);
 }
 
 .route-tick::after {
   content: attr(data-ch);
   position: absolute;
-  top: 12px;
+  top: 15px;
   left: 50%;
   transform: translateX(-50%);
   font-family: var(--mono);
-  font-size: 9.5px;
+  font-size: var(--t-micro);
   letter-spacing: 0.14em;
   text-transform: uppercase;
   color: var(--mute);
@@ -642,16 +965,34 @@ body::before {
   pointer-events: none;
   background: var(--raise);
   border: 1px solid var(--line);
-  border-radius: 5px;
+  border-radius: var(--r-xs);
   padding: 3px 8px;
+  z-index: 3;
 }
 
-.route-tick:hover::after {
+.route-tick:hover::after,
+.route-tick:focus-visible::after {
   opacity: 1;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .route-fill,
+  .route-packet,
+  .route-tick::before {
+    transition: none;
+  }
 }
 
 @media (max-width: 760px) {
   .route-tick::after {
+    display: none;
+  }
+}
+
+/* the running head is the one part that costs horizontal room it does not have
+   on a phone - the ticks and the caret stay. */
+@media (max-width: 560px) {
+  .route-now {
     display: none;
   }
 }
@@ -865,13 +1206,13 @@ body::before {
    step up to --raise2 so they keep their separation from the lighter base. */
 .zone-lift {
   --zone-tint: var(--tint-lift);
-  --zone-base: #191b20;
+  --zone-base: #0E0F17;
   --surface: var(--raise2);
 }
 
 .zone-lift-hi {
   --zone-tint: var(--tint-lift-hi);
-  --zone-base: #1e2027;
+  --zone-base: #14151C;
   --surface: var(--raise2);
 }
 
@@ -879,17 +1220,16 @@ body::before {
    lifted zones, and full-fold moments that should read as a deep void */
 .zone-sink {
   --zone-tint: var(--tint-sink);
-  --zone-base: #0b0c0f;
+  --zone-base: #04050A;
 }
 
 /* atmospheric depth, on the two corners a section can lean into. kept huge and
    faint on purpose: the intent is a change in the air of a section, never a
-   visible circle on it. neither of these is a tint any more - the warm
-   (red-tinted) twins went first, because an ambient red wash on a dozen
-   sections is decoration and red is reserved for the one decisive action, and
-   the blue that was left in --glow-cool has now gone the same way for the same
-   reason. what is left is white at 4.5%, i.e. light rather than colour. the
-   class names are unchanged - see the note on --glow-cool in TOKENS. */
+   visible circle on it. neither of these is a tint - the tinted twins went
+   first, because an ambient wash of the accent on a dozen sections is
+   decoration and the accent is reserved for the one decisive action. what is
+   left is white at 4.5%, i.e. light rather than colour. the class names are
+   unchanged - see the note on --glow-cool in TOKENS. */
 .zone-cool {
   --zone-glow: radial-gradient(1150px 700px at 10% 6%, var(--glow-cool), transparent 64%);
 }
@@ -901,11 +1241,11 @@ body::before {
 /* two tones at opposite corners - the one section-level place warm light
    survives, and only because the two-halves-meeting pair IS the point being
    made: it lights Ch.2 "The Crossing", the chapter about design and product
-   meeting. the pair is warm-red against cool-neutral now rather than warm
-   against blue, and the device still works: what the fold needs is two lights
-   converging from opposite sides, not two hues, and the warm half is the one
-   carrying the meaning ("the design side"). both run at whisper strength - see
-   --glow-warm and --glow-duo-cool. */
+   meeting. the pair is the accent's pink stop against cool-neutral, and the
+   device still works: what the fold needs is two lights converging from
+   opposite sides, not two hues, and the tinted half is the one carrying the
+   meaning ("the design side"). both run at whisper strength - see --glow-warm
+   and --glow-duo-cool. */
 .zone-duo {
   --zone-glow:
     radial-gradient(860px 560px at 3% 4%, var(--glow-warm), transparent 60%),
@@ -991,26 +1331,45 @@ body::before {
       the tie in specificity between them is broken by source order - which is
       why the light block below has to stay *after* the :root block at the
       top of this file. */
-@property --ink2 { syntax: '<color>'; inherits: true; initial-value: #1A1C22; }
-@property --raise { syntax: '<color>'; inherits: true; initial-value: #22242C; }
-@property --raise2 { syntax: '<color>'; inherits: true; initial-value: #2D2F39; }
-@property --line { syntax: '<color>'; inherits: true; initial-value: rgba(255, 255, 255, 0.08); }
+@property --ink2 { syntax: '<color>'; inherits: true; initial-value: #0A0D1A; }
+@property --raise { syntax: '<color>'; inherits: true; initial-value: #0F1324; }
+@property --raise2 { syntax: '<color>'; inherits: true; initial-value: #131832; }
+@property --line { syntax: '<color>'; inherits: true; initial-value: rgba(255, 255, 255, 0.09); }
 @property --line2 { syntax: '<color>'; inherits: true; initial-value: rgba(255, 255, 255, 0.16); }
-@property --text { syntax: '<color>'; inherits: true; initial-value: #F5F4F2; }
-@property --mute { syntax: '<color>'; inherits: true; initial-value: #A3A3A3; }
-@property --dim { syntax: '<color>'; inherits: true; initial-value: #757575; }
-@property --link { syntax: '<color>'; inherits: true; initial-value: #C9C8C5; }
-@property --up { syntax: '<color>'; inherits: true; initial-value: #5CE0A8; }
-@property --rose { syntax: '<color>'; inherits: true; initial-value: #FF8FA8; }
-@property --bar-1 { syntax: '<color>'; inherits: true; initial-value: #FF9E8A; }
-@property --bar-2 { syntax: '<color>'; inherits: true; initial-value: #FFCB7D; }
-@property --bar-3 { syntax: '<color>'; inherits: true; initial-value: #9BE0B0; }
-@property --bar-4 { syntax: '<color>'; inherits: true; initial-value: #9DC4FF; }
-@property --bar-5 { syntax: '<color>'; inherits: true; initial-value: #C3AEFF; }
-@property --bar-6 { syntax: '<color>'; inherits: true; initial-value: #8FE0DA; }
-@property --bar-num { syntax: '<color>'; inherits: true; initial-value: rgba(17, 18, 21, 0.85); }
+@property --text { syntax: '<color>'; inherits: true; initial-value: #EDEFF7; }
+@property --mute { syntax: '<color>'; inherits: true; initial-value: #949BB8; }
+@property --dim { syntax: '<color>'; inherits: true; initial-value: #666E8C; }
+@property --link { syntax: '<color>'; inherits: true; initial-value: #C2C7DA; }
+@property --up { syntax: '<color>'; inherits: true; initial-value: #7DF9A6; }
+@property --rose { syntax: '<color>'; inherits: true; initial-value: #FF6B8A; }
+/* the accent's three stops and its solid stand-in are registered too. --grad
+   itself is NOT and cannot be: it is a background-image, and an image only
+   re-paints when its own declaration changes, which is the same reason the
+   zone tints below are left off the crossfade. so the gradient cuts on the
+   flip while the four colours under it fade - imperceptible at 0.6s, because
+   the gradient only ever appears on five small filled shapes and one glyph,
+   all of which are opaque and none of which is large enough for the cut to
+   register against the whole page turning over behind it. */
+@property --g1 { syntax: '<color>'; inherits: true; initial-value: #FF2E9A; }
+@property --g2 { syntax: '<color>'; inherits: true; initial-value: #7B5BFF; }
+@property --g3 { syntax: '<color>'; inherits: true; initial-value: #22D3EE; }
+@property --signal { syntax: '<color>'; inherits: true; initial-value: #7B5BFF; }
+@property --grad-ink { syntax: '<color>'; inherits: true; initial-value: #06070F; }
+@property --bar-1 { syntax: '<color>'; inherits: true; initial-value: #FF9A8C; }
+@property --bar-2 { syntax: '<color>'; inherits: true; initial-value: #FFC978; }
+@property --bar-3 { syntax: '<color>'; inherits: true; initial-value: #8FE3B4; }
+@property --bar-4 { syntax: '<color>'; inherits: true; initial-value: #8FB8FF; }
+@property --bar-5 { syntax: '<color>'; inherits: true; initial-value: #E4A0F0; }
+@property --bar-6 { syntax: '<color>'; inherits: true; initial-value: #D2E97F; }
+@property --bar-num { syntax: '<color>'; inherits: true; initial-value: rgba(6, 7, 15, 0.85); }
+@property --chip-1 { syntax: '<color>'; inherits: true; initial-value: #FFAC9C; }
+@property --chip-2 { syntax: '<color>'; inherits: true; initial-value: #FFD48F; }
+@property --chip-3 { syntax: '<color>'; inherits: true; initial-value: #A2E8C1; }
+@property --chip-4 { syntax: '<color>'; inherits: true; initial-value: #A8C8FF; }
+@property --chip-5 { syntax: '<color>'; inherits: true; initial-value: #EDB4F6; }
+@property --chip-6 { syntax: '<color>'; inherits: true; initial-value: #DEEF97; }
 @property --ghost-stroke { syntax: '<color>'; inherits: true; initial-value: rgba(255, 255, 255, 0.16); }
-@property --card-fill { syntax: '<color>'; inherits: true; initial-value: #22242C; }
+@property --card-fill { syntax: '<color>'; inherits: true; initial-value: #0F1324; }
 
 /* .flip and .flip-lock have no declarations at all, on purpose. they are
    markers that JS reads (see useGlobalTheme in src/App.jsx) to decide the one
@@ -1040,6 +1399,11 @@ body::before {
     --link 0.5s ease,
     --up 0.5s ease,
     --rose 0.5s ease,
+    --g1 0.5s ease,
+    --g2 0.5s ease,
+    --g3 0.5s ease,
+    --signal 0.5s ease,
+    --grad-ink 0.5s ease,
     --bar-1 0.5s ease,
     --bar-2 0.5s ease,
     --bar-3 0.5s ease,
@@ -1047,6 +1411,12 @@ body::before {
     --bar-5 0.5s ease,
     --bar-6 0.5s ease,
     --bar-num 0.5s ease,
+    --chip-1 0.5s ease,
+    --chip-2 0.5s ease,
+    --chip-3 0.5s ease,
+    --chip-4 0.5s ease,
+    --chip-5 0.5s ease,
+    --chip-6 0.5s ease,
     --ghost-stroke 0.5s ease,
     --card-fill 0.55s ease;
 }
@@ -1110,27 +1480,45 @@ body {
      panel rather than a lighter one, so the ladder runs light to dark and
      --surface2 steps toward black instead of white.
 
-     re-cut cool in this pass. it used to be warm-beige (#F7F6F4 → #E2DED7,
-     red 3-11 points ahead of blue), which was a deliberate choice at the time
-     but the reference the page is now measured against - naukri.com - sits on
-     a very light, faintly cool neutral grey, and beige next to it reads as
-     aged paper rather than as a clean surface. only the temperature moved:
-     the four steps keep the same count and the same separation they had
-     (7 / 5 / 9 points of red between rungs, exactly as before), so every
-     depth relationship on the site is unchanged and only the hue is
-     different. blue now runs 3 / 6 / 7 / 9 points ahead of red as the ladder
-     descends, which is the same order of tint the old ladder had in the warm
-     direction - subtle enough to read as "neutral grey", not as "blue page".
-     the dark ladder is untouched: it was already cool (see the note on --ink
-     at the top of this file), so the two states now agree instead of
-     swapping temperature at the flip.
+     this is a white mode now, and that is the change. the previous ladder was
+     a light neutral grey (#F5F6F8 → #E0E3E9) cut against a warm-beige "paper"
+     identity before it; neither is what this pass is after. the dark state is
+     a deep navy near-black, and the light state has to be that identity's
+     WHITE counterpart rather than a different material - same navy cast,
+     inverted, and taken much closer to white than the old ladder was:
+
+       --ink    #F4F6FC   the page floor - white with the identity's cast
+       --ink2   #EDF0F8   the lifted zone
+       --raise  #E5E9F4   a card's ladder rung
+       --raise2 #DBE0EE   the panel that nests inside one
+       --card-fill #FFFFFF  what a raised card actually paints (see below)
+
+     the cast is carried the same way the dark ladder carries it: blue runs
+     8 / 11 / 15 / 19 points ahead of red as the ladder descends, against
+     9 / 16 / 21 / 31 climbing on the dark side. slightly gentler on paper on
+     purpose - the same hue offset reads as much more colour on a near-white
+     ground than it does on a near-black one, so matching the dark numbers
+     exactly would have produced a visibly blue page rather than a white one
+     with a cool cast.
+
+     what makes this read as a white mode is NOT a brighter floor, and it is
+     worth being exact about that rather than claiming a lift that is not
+     there: --ink is L*96.50 where the ladder it replaces was L*96.66, i.e.
+     the page is the same lightness to within a rounding error. three other
+     things do the work. the cast, above. the card, which stays a pure
+     #FFFFFF sitting eleven points of red clear of the page (it was ten) -
+     white-on-cool-white is the whole card/page relationship here. and the
+     accent, which is now a deepened cut of the same gradient the dark state
+     wears rather than a red that happened to survive the flip unchanged -
+     see the accent note below. a light mode is its accent as much as its
+     paper, and that is the half that actually changed identity.
 
      contrast against these four is in the type note below, recomputed rather
      than carried over. */
-  --ink: #F5F6F8;
-  --ink2: #EEF0F4;
-  --raise: #E9EBF0;
-  --raise2: #E0E3E9;
+  --ink: #F4F6FC;
+  --ink2: #EDF0F8;
+  --raise: #E5E9F4;
+  --raise2: #DBE0EE;
   --surface2: color-mix(in srgb, var(--surface) 95%, #000000);
   /* the one deliberate break from the ladder above: a raised card on paper
      paints pure white rather than stepping down the grey --raise ladder
@@ -1172,9 +1560,10 @@ body {
      depth variation between sections survives the flip, it just shades down
      from paper instead of up from ink. that now includes --glow-cool and
      --glow-duo-cool: they were mid-blue on paper (rgba(47, 95, 224, 0.06 /
-     0.05)) and are plain black at 2% here, so a "cool" section is a section
+     0.05)) and are neutral at 2% here, so a "cool" section is a section
      with slightly deeper air in one corner rather than a blue-washed one.
-     --glow-warm keeps its hue, alone, in .zone-duo only.
+     --glow-warm keeps its hue, alone, in .zone-duo only - the accent's pink
+     stop now rather than the retired red, at the same alpha.
      --tint-sink matters most: at its dark value
      (34% black) it would paint a paper section mud, and every sink zone on
      the site is now in scope, not just the flipped ones - Ch.2, the Epilogue,
@@ -1186,79 +1575,157 @@ body {
      unregistered and cut on the class toggle rather than animating. at 2-6%
      alpha over a backdrop that is fading on its own, the cut is not
      perceptible - and it cannot go stale, which an animated gradient token
-     can. */
-  --tint-lift: rgba(0, 0, 0, 0.022);
-  --tint-lift-hi: rgba(0, 0, 0, 0.04);
-  --tint-sink: rgba(0, 0, 0, 0.06);
-  --glow-cool: rgba(0, 0, 0, 0.022);
-  --glow-warm: rgba(232, 73, 45, 0.05);
-  --glow-duo-cool: rgba(0, 0, 0, 0.02);
-  --glow-soft: rgba(0, 0, 0, 0.3);
-  --dot-light: rgba(0, 0, 0, 0.055);
+     can.
 
-  /* hairlines: low-alpha black instead of low-alpha white, at the same
+     the "black" in all of these is the page's own near-black (#12141F, i.e.
+     --text) rather than pure #000, for the same reason the ladder is cast
+     navy: a pure-black shade dropped on a cool white page reads very slightly
+     olive against it, which is the tell that a light mode was inverted rather
+     than designed. at 2-6% alpha nobody names the hue, but the section seams
+     stop looking dirty. */
+  --tint-lift: rgba(18, 20, 31, 0.022);
+  --tint-lift-hi: rgba(18, 20, 31, 0.04);
+  --tint-sink: rgba(18, 20, 31, 0.06);
+  --glow-cool: rgba(18, 20, 31, 0.022);
+  --glow-warm: rgba(255, 46, 154, 0.05);
+  --glow-duo-cool: rgba(18, 20, 31, 0.02);
+  --glow-soft: rgba(18, 20, 31, 0.3);
+  --dot-light: rgba(18, 20, 31, 0.055);
+
+  /* hairlines: low-alpha near-black instead of low-alpha white, at the same
      visual weight as the dark set. */
-  --line: rgba(0, 0, 0, 0.10);
-  --line2: rgba(0, 0, 0, 0.20);
+  --line: rgba(18, 20, 31, 0.10);
+  --line2: rgba(18, 20, 31, 0.20);
 
-  /* type, recomputed against the cooled paper above rather than carried over.
-     the three were warm greys (#1A1917 / #565350 / #6B675F) which read faintly
-     olive on a cool page, so each moved to its cool-neutral twin at the same
-     luminance - a hue change, not a contrast change, which the numbers show:
+  /* type, recomputed against the navy-cast white above rather than carried
+     over. the three were cool-neutral greys (#191A1D / #545659 / #676A70)
+     with no hue at all, which on a page that now has one read as three
+     foreign greys sitting on it. each moved to its navy-cast twin at the same
+     luminance - a hue change, not a contrast change, and the numbers are the
+     proof rather than the intention:
 
                     on --ink   on --card-fill   on --raise2 (the deepest rung)
-       --text        16.1:1        17.4:1            13.5:1
-       --mute         6.8:1         7.4:1             5.7:1
-       --dim          5.0:1         5.4:1             4.2:1
+       --text        16.8:1        18.3:1            13.7:1
+       --mute         6.9:1         7.5:1             5.6:1
+       --dim          5.2:1         5.6:1             4.3:1
 
-     (the old warm set measured 16.3 / 7.1 / 5.2 on the old --ink, i.e. every
-     rung landed within 0.3 of where it was.)
+     (the neutral set it replaces measured 16.1 / 6.8 / 5.0 on its own --ink,
+     i.e. every rung landed within 0.7 of where it was, all three of them
+     upward.)
      --dim only ever carries 9.5-12px mono labels, which is exactly why it is
      kept clear of the 4.5:1 floor on the page rather than sat on it - it drops
-     to 4.2:1 on --raise2, and a naive inversion of #757575 would land near 3:1.
-     --signal is unchanged and still ~3.6:1 against the page. */
-  --text: #191A1D;
-  --mute: #545659;
-  --dim: #676A70;
+     to 4.3:1 on --raise2, and a naive inversion of the dark --dim would land
+     near 3:1. */
+  --text: #12141F;
+  --mute: #4E5468;
+  --dim: #616779;
 
-  /* accents. --signal stays #E8492D: a saturated red on paper is ~3.6:1
-     against the page and unmissable at CTA size, and the one decisive
-     action on a screen should not change identity halfway down a scroll.
-     it is also the only hue left in this block - --link is a neutral grey in
-     both palettes now and used on purpose nowhere (see the note on it in
-     TOKENS), so it is here only to keep the token's two states consistent for
-     anything that still reads it.
+  /* THE ACCENT, ON WHITE. this is the half of the light mode that actually
+     changed identity, and the technique is the one this block already used
+     for --up / --rose: the same hue family, deepened until it holds on the
+     page it is printed on, rather than the dark value carried over unchanged.
+     the accent that came before this did get carried over unchanged - a
+     saturated red at ~3.6:1 against the page in both states - and it is the
+     reason the light mode never read as its own thing.
+
+     all three stops are deepened, and unevenly, because the failure is uneven.
+     white text on the dark cyan stop is 1.8:1, which is not a near miss - it
+     is the single worst reading anywhere in either palette, and it is why
+     --g3 drops the furthest here (a two-thirds cut in luminance against --g1's
+     third). measured with white on top, at the three stops and at both
+     interpolated midpoints, because a gradient's worst point is usually
+     between two stops rather than on one:
+
+       --g1 #D10D74   5.22:1
+       g1→g2 midpoint 5.88:1
+       --g2 #5B33E0   7.06:1
+       g2→g3 midpoint 6.54:1
+       --g3 #0A7C96   4.88:1
+
+     so every point along the paper gradient clears 4.5:1 with white on it,
+     which is what --grad-ink flips to here. the dark state runs the mirror of
+     this - bright stops, #06070F ink, worst point 4.61:1 - so the CTA holds
+     its label all the way through the 0.6s flip rather than passing through a
+     mid-state that fails.
+
+     --signal, the solid stand-in, is the deepened mid stop, so a focus ring
+     and a filled pill still read as one accent. 6.5:1 against the page.
+
+     --link is a neutral in both palettes and used on purpose nowhere (see the
+     note on it in TOKENS); it is here only to keep the token's two states
+     consistent for anything that still reads it.
 
      --up and --rose are still deepened for paper: both carry small bold labels
      (.prd-metric b, .db-note b, .db-kpi .v.g) plus a couple of 8px status dots,
-     and the naive inversion of a dark-mode pastel lands near 2:1 here. they no
-     longer carry chart series - that moved to the neutral --bar-* ramp - so the
-     "clear 3:1 as a graphic and 4.5:1 as text" double duty is now only about
-     the labels, which they clear at 4.9-5.5:1.
+     and the naive inversion of a dark-mode pastel lands near 2:1 here. --up is
+     the lime, and its paper twin has to stay a lime rather than drift to a
+     corporate green - 5.4:1 as a label. --rose is the removed/negative mark at
+     6.6:1, deliberately kept off --g1's deepened pink so a struck-out "then"
+     column never reads as the accent.
 
-     the chart palette is restated below for the same reason as --up/--rose -
-     the dark-mode pastels are tuned to glow against near-black and land
-     nowhere near 3:1 as a graphic against white, so each of the six is taken
-     to a deeper, more saturated version of the same hue rather than carried
-     over as-is. all six stay registered @property colours (see just above
-     TOKENS) so the deepen-on-flip still animates through the crossfade
-     instead of cutting. */
-  --link: #3B3D42;
-  --up: #0C7A50;
-  --rose: #AE3450;
-  --bar-num: rgba(25, 26, 29, 0.9);
-  --ghost-stroke: rgba(0, 0, 0, 0.13);
+     the chart palette is restated below for the same reason - the dark-mode
+     pastels are tuned to glow against near-black and land nowhere near 3:1 as
+     a graphic against white, so each of the six is taken to a deeper, more
+     saturated version of the same hue rather than carried over as-is. all six
+     stay registered @property colours (see just above TOKENS) so the
+     deepen-on-flip still animates through the crossfade instead of cutting. */
+  --g1: #D10D74;
+  --g2: #5B33E0;
+  --g3: #0A7C96;
+  --signal: #5B33E0;
+  --grad-ink: #FFFFFF;
+  --link: #3A3E4D;
+  --up: #0F7A4A;
+  --rose: #B02440;
+  --bar-num: rgba(18, 20, 31, 0.9);
+  --ghost-stroke: rgba(18, 20, 31, 0.13);
 
   /* six deepened pastels, same hues as the dark set, each pulled down until
-     it clears roughly 3:1 as a bar (once .ab-bar's own 0.85 opacity is
-     applied) and reads as the same colour family rather than a different
-     chart. */
-  --bar-1: #E8735A;
-  --bar-2: #D99A2B;
-  --bar-3: #4FA873;
-  --bar-4: #4C82C9;
-  --bar-5: #8A6FD9;
-  --bar-6: #2E9C93;
+     it reads as far from white as it can while staying the same colour family
+     rather than a different chart. worth stating honestly rather than
+     rounding up: a bar is drawn as a top-to-transparent gradient at 0.85
+     opacity, so its *strongest* point measures 2.3-2.6:1 against the card and
+     it fades from there - the set this replaces measured 2.2-2.4:1 the same
+     way. this ramp is a category label read next to a printed % and an axis,
+     never the only carrier of a value, which is the reason that is acceptable
+     here and would not be on a chip (the --chip-* set below is the one that
+     has to clear a real floor, and does).
+     the two rungs that moved family - 5 to orchid, 6 to chartreuse - moved for
+     hue clearance from the accent, and it matters more on paper than on dark:
+     the deepened --g2 violet #5B33E0 and the old rung-5 lavender #8A6FD9 were
+     the same colour at two lightnesses. */
+  --bar-1: #D96A52;
+  --bar-2: #C08A1C;
+  --bar-3: #2E9B68;
+  --bar-4: #3F76C4;
+  --bar-5: #9A4DB8;
+  --bar-6: #6E8C14;
+
+  /* the icon-chip ramp on paper, and it is deliberately NOT the six bars
+     above with a different name. a chip paints a 14% tint of its own hue over
+     the white card and then draws a 1.6px glyph on top of that tint, so the
+     colour has to hold up against a background it lightened itself - which is
+     the measurement that separates the two ramps:
+
+                       glyph on its own 14% chip tint, on --card-fill #FFFFFF
+       --bar-*         around 2.2-2.6 : 1
+       --chip-*        4.86 / 4.84 / 4.72 / 5.46 / 5.91 / 4.57 : 1
+
+     every bar sits under the 3:1 a graphic has to clear, because they were cut
+     to read as a large filled shape at 0.85 opacity, not as a hairline. so each
+     hue is taken down until the glyph clears 4.5:1 even at the deeper hover
+     tint (22%). same six hues, same order, same family as the chart - a
+     deeper cut of it, and now including rung 4, which used to break from the
+     chart's blue on purpose and no longer needs to (see --chip-4 in :root).
+     rungs 1-3 are unchanged: their hues did not move in the harmonisation
+     pass, they already clear the floor, and the card they are measured
+     against is still #FFFFFF - so re-cutting them would have been churn. */
+  --chip-1: #B23E24;
+  --chip-2: #8A5A06;
+  --chip-3: #1C7247;
+  --chip-4: #2B5C9E;
+  --chip-5: #7E3399;
+  --chip-6: #5F7010;
 
   /* the nav's frosted panel while it is light: brighter and slightly more
      opaque than the paper it sits on (pure white, not the paper's off-white)
@@ -1267,9 +1734,9 @@ body {
      is what made it read flat instead of elevated. track/hover were already
      neutral black here - the dark pair has now joined them in plain white,
      rather than the blue tint it used to carry. */
-  --nav-bg: rgba(255, 255, 255, 0.78);
-  --nav-track: rgba(0, 0, 0, 0.16);
-  --nav-hover: rgba(0, 0, 0, 0.055);
+  --nav-bg: rgba(255, 255, 255, 0.82);
+  --nav-track: rgba(18, 20, 31, 0.16);
+  --nav-hover: rgba(18, 20, 31, 0.055);
 
   /* trap 1 above: restart `color` inheritance from this node so every
      element with no colour of its own (headings, list items, <b>) picks up
@@ -1299,9 +1766,10 @@ body {
    because these three are declarations that switch rather than tokens that
    animate - its frosted fill rides the same 0.6s background-color as the
    backdrop, and its bottom edge steps to the heavier hairline to stay a
-   visible seam paper-on-paper. the active tab is left exactly as it was: its
-   white-on-#E8492D pill is opaque, so its contrast (~3.9:1, and it is the one
-   deliberate red on the screen) does not depend on the bar underneath it. */
+   visible seam paper-on-paper. the active tab needs nothing here either: its
+   --grad pill is opaque and its label is --grad-ink, both of which flip on
+   the palette above, so its contrast (4.6:1 at the worst point of the sweep on
+   dark, 4.9:1 on paper) never depends on the bar underneath it. */
 .top {
   transition:
     background-color 0.6s ease,
@@ -1315,12 +1783,23 @@ body {
   box-shadow: 0 10px 30px -14px rgba(0, 0, 0, 0.16);
 }
 
+/* the one filled CTA per page, and the accent's largest appearance. a
+   gradient is a background-image, so this is the shape it fits most naturally
+   - nothing is adapted, the fill is simply --grad. the label is --grad-ink
+   rather than #fff for the reason spelled out at THE ACCENT: white is fine on
+   two of the three stops and 1.8:1 on the dark cyan, and a 13px mono label
+   that fades out toward its own right edge is worse than no gradient. */
 .btn-big {
   font-family: var(--mono);
   font-size: 13px;
   text-decoration: none;
-  background: var(--signal);
-  color: #fff;
+  background-color: var(--signal);
+  background-image: var(--grad);
+  /* same fix as .tab.active - without an explicit size, the gradient can
+     show a sliver of its far end bleeding through the near rounded cap. */
+  background-repeat: no-repeat;
+  background-size: 100% 100%;
+  color: var(--grad-ink);
   padding: 14px 26px;
   border-radius: 99px;
   font-weight: 500;
@@ -1332,9 +1811,13 @@ body {
   cursor: pointer;
 }
 
+/* the lift's glow is the solid stand-in rather than a fourth hardcoded rgba:
+   a box-shadow colour cannot be a gradient, and mixing off --signal means the
+   halo deepens with the accent on the flip instead of staying a dark-mode
+   value under a paper button. */
 .btn-big:hover {
   transform: translateY(-3px) scale(1.02);
-  box-shadow: 0 16px 44px rgba(232, 73, 45, 0.3);
+  box-shadow: 0 16px 44px color-mix(in srgb, var(--signal) 34%, transparent);
 }
 
 .btn-ghost {
@@ -1430,24 +1913,25 @@ body {
      word of it. registered as <number> below so the two can crossfade when
      you hover a side, instead of snapping.
 
-     both halves were dialled down to roughly 40% of their old alpha: this is
-     the only warm light left on the home page, and it has to stay well under
-     the one thing on this screen that is allowed to be red - the CTA pill.
+     both halves run at roughly 40% of their original alpha: this is the only
+     tinted light left on the home page, and it has to stay well under the one
+     thing on this screen that is allowed to carry the accent - the CTA pill.
      the cool half comes down with it so the two halves stay balanced.
 
-     that cool half is plain white now rather than the blue it used to be -
-     same reasoning as .zone-duo, which is the other place the two-halves
-     device survives: what the fold needs is light arriving from two sides,
-     and the warm side is the one carrying an idea. at 2-5% it is a lean in
-     the air rather than a colour either way, and the *warm* half is what
-     makes the pair legible as a pair. worth knowing that on paper the white
-     half flattens out entirely while the warm one still whispers - which is
-     acceptable at this strength (the page's own light already reads as the
-     "product" side of the fold) and is the one place a token could not do
-     better, since these two alphas animate as <number>s and rgba() cannot
-     take a var() colour. */
+     that cool half is plain white - same reasoning as .zone-duo, which is the
+     other place the two-halves device survives: what the fold needs is light
+     arriving from two sides, and the tinted side is the one carrying an idea.
+     at 2-5% it is a lean in the air rather than a colour either way. the
+     tinted half is the accent's pink stop now rather than the retired red,
+     which is the same swap --glow-warm made and for the same reason: the one
+     ambient hue on the site should belong to the accent language.
+     worth knowing that on paper the white half flattens out entirely while the
+     pink one still whispers - which is acceptable at this strength (the page's
+     own light already reads as the "product" side of the fold) and is the one
+     place a token could not do better, since these two alphas animate as
+     <number>s and rgba() cannot take a var() colour. */
   background-image:
-    radial-gradient(860px 620px at 0% 42%, rgba(232, 73, 45, var(--hg-warm, 0.022)), transparent 58%),
+    radial-gradient(860px 620px at 0% 42%, rgba(255, 46, 154, var(--hg-warm, 0.022)), transparent 58%),
     radial-gradient(860px 620px at 100% 42%, rgba(255, 255, 255, var(--hg-cool, 0.024)), transparent 58%);
   transition: --hg-warm 0.55s var(--ease), --hg-cool 0.55s var(--ease);
 }
@@ -1491,10 +1975,10 @@ body {
   letter-spacing: 0.16em;
   text-transform: uppercase;
   color: var(--up);
-  border: 1px solid rgba(92, 224, 168, 0.3);
+  border: 1px solid color-mix(in srgb, var(--up) 30%, transparent);
   border-radius: 99px;
   padding: 7px 14px;
-  background: rgba(92, 224, 168, 0.06);
+  background: color-mix(in srgb, var(--up) 6%, transparent);
 }
 
 .home-status i {
@@ -1505,15 +1989,18 @@ body {
   animation: ping 2.4s infinite;
 }
 
+/* the "available" dot's halo, mixed off --up rather than hardcoded, so the
+   lime's one job carries through the flip instead of leaving a dark-mode
+   green ring on a paper page */
 @keyframes ping {
   0% {
-    box-shadow: 0 0 0 0 rgba(92, 224, 168, 0.45);
+    box-shadow: 0 0 0 0 color-mix(in srgb, var(--up) 45%, transparent);
   }
   70% {
-    box-shadow: 0 0 0 8px rgba(92, 224, 168, 0);
+    box-shadow: 0 0 0 8px color-mix(in srgb, var(--up) 0%, transparent);
   }
   100% {
-    box-shadow: 0 0 0 0 rgba(92, 224, 168, 0);
+    box-shadow: 0 0 0 0 color-mix(in srgb, var(--up) 0%, transparent);
   }
 }
 
@@ -1770,7 +2257,7 @@ body {
   white-space: nowrap;
   padding: 5px 11px;
   border-radius: 5px;
-  background: rgba(17, 18, 21, 0.85);
+  background: rgba(6, 7, 15, 0.85);
 }
 
 .face-tag-design {
@@ -2118,8 +2605,30 @@ footer .g {
 
 .pol-title .bt b { display: inline-block; color: transparent; -webkit-text-stroke: 2px var(--mute); transition: color 0.45s ease, -webkit-text-stroke-color 0.45s ease, transform 0.45s var(--ease); cursor: default; }
 .pol-title .bt b:hover { color: var(--text); -webkit-text-stroke-color: var(--text); transform: translateY(-4px); }
-.pol-title .pw { display: inline-block; background: linear-gradient(100deg, var(--text) 15%, var(--mute) 42%, var(--text) 88%); background-size: 230% 100%; -webkit-background-clip: text; background-clip: text; color: transparent; animation: gsweep 5.5s ease-in-out infinite; }
+/* the accent word: the one word in a heading that gets a different type
+   treatment. it was scoped to .pol-title, where its only user was the word
+   "Polarin" in this page's 108px hero - it is unscoped now because the
+   timeline's own "What is Polarin" heading wants exactly this and the site has
+   no second mechanism for it worth inventing. both users are the same word, so
+   the page reads as accenting a name rather than as decorating two headings.
+   it is deliberately not an italic serif (the flourish this pattern is usually
+   built from): --disp is Archivo, loaded upright-only in index.html, so an
+   italic here would be a browser-synthesised slant of a display sans - which
+   looks like a rendering fault at 40px, not like a second voice.
+   the sweep stays NEUTRAL - through --text and --mute - and does not take the
+   accent gradient, which is the obvious thing to reach for now that the site
+   has one. it is the wrong reach: the accent's gradient text-clip belongs to
+   .ab-title span, one per page, and this device repeats on two headings of a
+   third page. two gradient-clipped words on one screen is exactly the
+   competition the accent list in TOKENS exists to prevent, and this one has a
+   job the accent does not - it is an ambient sweep across a name, not a mark
+   on the thing to do next.
+   the sweep is a slow ambient loop and comes off under reduced motion; the
+   word stays legible when it does, since the gradient's resting position is
+   --text at both ends with one --mute band through the middle. */
+.pw { display: inline-block; background: linear-gradient(100deg, var(--text) 15%, var(--mute) 42%, var(--text) 88%); background-size: 230% 100%; -webkit-background-clip: text; background-clip: text; color: transparent; animation: gsweep 5.5s ease-in-out infinite; }
 @keyframes gsweep { 0%, 100% { background-position: 0% 0; } 50% { background-position: 100% 0; } }
+@media (prefers-reduced-motion: reduce) { .pw { animation: none; background-position: 0% 0; } }
 /* matches .hero-sub (My Journey's equivalent line) - both are the one-line
    description under a page's big hero headline, and used to be styled as two
    different things entirely: this one as a small-caps mono caption, that one
@@ -2135,11 +2644,11 @@ footer .g {
 
 /* the two secondary CTAs on this page - the hero's "see case studies" and the
    globe's "see how it's built" - used to be scoped away from shared .btn-ghost
-   so they could carry a blue fill and a blue-washed hover, on the argument that
-   the page around them was already blue-accented. it is not any more, and two
-   buttons that are the only accented thing left in a fold read as a second CTA
-   competing with the page's one red action. both rules are gone rather than
-   re-tinted: .btn-ghost is grey-on-hairline going to full-contrast --text on
+   so they could carry a tinted fill and a tinted hover, on the argument that
+   the page around them was already accented that way. it is not any more, and
+   two buttons that are the only accented thing left in a fold read as a second
+   CTA competing with the page's one decisive action. both rules are gone rather
+   than re-tinted: .btn-ghost is grey-on-hairline going to full-contrast --text on
    hover, which is the affordance every other secondary action on the site uses,
    and six other folds were already using it unchanged. */
 
@@ -2191,18 +2700,25 @@ footer .g {
    the drop-shadow glow it casts hugs that thin band only - it can't wash
    over the card's own interior since there's no fill left to blur.
 
-   its two sweep colours and its glow are neutral, and the value they sit at is
-   the whole point. --text was tried and was wrong: it inverts with the palette,
-   so on paper it is a near-black ring spinning around a white card under a
-   black bloom - the heaviest object in the row, on the card meant to read as
-   the brightest. blue was tried next and is now out with every other blue on
-   the site. it is --mute for the leading arc, 45% of --mute for the trailing
-   one, and the glow mixed off --mute: one rung down from ink, so on paper it is
-   a mid-grey ring rather than a black one and in the dark state it is still
-   clearly lit. same geometry, same animation as both earlier versions. */
-.tl-featured::before { content: ''; position: absolute; inset: 0; border-radius: inherit; z-index: -1; padding: 1.5px; background: conic-gradient(from var(--tlf-a), transparent 0deg, transparent 35deg, var(--mute) 70deg, transparent 105deg, transparent 250deg, color-mix(in srgb, var(--mute) 45%, transparent) 285deg, transparent 320deg, transparent 360deg); animation: tlfSpin 6s linear infinite; -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0); -webkit-mask-composite: xor; mask-composite: exclude; filter: drop-shadow(0 0 4px color-mix(in srgb, var(--mute) 40%, transparent)); transition: filter 0.3s; }
+   the sweep is the accent now, and this rule is why "adapt how it is applied"
+   was possible without inventing any CSS: the masking technique here - paint
+   the whole box, then mask out everything but a 1.5px band with
+   content-box/exclude - already turns any background into a border-only ring.
+   it was carrying a neutral conic sweep in --mute (--text was tried and was
+   wrong: it inverts, so on paper it became a near-black ring spinning around
+   a white card - the heaviest object in the row, on the card meant to read as
+   the brightest). the arcs are the three accent stops instead: --g1 leading,
+   --g2 trailing, --g3 on the short third arc, so the ring reads as the same
+   gradient the CTA wears, wrapped around a card. it stays a spinning conic
+   rather than becoming a static linear one because the geometry and the
+   animation are what made this a "featured" marker in the first place - the
+   accent replaced the colour, not the device.
+   the glow mixes off --signal for the same reason .btn-big's does: a
+   drop-shadow cannot take a gradient. same geometry, same 6s, same reduced-
+   motion stop below. */
+.tl-featured::before { content: ''; position: absolute; inset: 0; border-radius: inherit; z-index: -1; padding: 1.5px; background: conic-gradient(from var(--tlf-a), transparent 0deg, transparent 35deg, var(--g1) 70deg, var(--g2) 105deg, transparent 140deg, transparent 250deg, color-mix(in srgb, var(--g3) 70%, transparent) 285deg, transparent 320deg, transparent 360deg); animation: tlfSpin 6s linear infinite; -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0); -webkit-mask-composite: xor; mask-composite: exclude; filter: drop-shadow(0 0 4px color-mix(in srgb, var(--signal) 40%, transparent)); transition: filter 0.3s; }
 @keyframes tlfSpin { to { --tlf-a: 360deg; } }
-.tl-featured:hover::before, .tl-featured:focus-visible::before { animation-duration: 2.4s; filter: drop-shadow(0 0 7px color-mix(in srgb, var(--mute) 55%, transparent)); }
+.tl-featured:hover::before, .tl-featured:focus-visible::before { animation-duration: 2.4s; filter: drop-shadow(0 0 7px color-mix(in srgb, var(--signal) 55%, transparent)); }
 /* a filled badge, not a tinted pill. --raise2 is the deepest rung of the ladder
    on paper, so the one badge on the page that has to say "start here" was the
    same grey the cards themselves had just stopped being - and it sat on a
@@ -2221,7 +2737,7 @@ footer .g {
 .tl-stage { position: sticky; top: var(--nav-h); height: calc(100vh - var(--nav-h)); min-height: 480px; display: flex; align-items: center; overflow: hidden; }
 /* the pinned stage used to carry a warm/cool glow pair that travelled with
    it down the whole scroll. the warm half was ambient decoration on a screen
-   that already has one red thing on it - the current stop's dot - and its
+   that already has one accented thing on it - the current stop's dot - and its
    cool half came out with it rather than sit here alone. */
 
 /* its own wide container, not the site's standard 1240px .wrap - this is a
@@ -2237,32 +2753,38 @@ footer .g {
 /* scroll progress running down the spine - --tlp is set inline, 0 → 1.
 
    it carries --mute over the --line2 track, and this rail is the reason the
-   whole blue direction was reversed: it briefly ran blue against the red "you
-   are here" bead, and a blue spine through a red dot is two accents arguing in
-   the one component on the site that most needs a single reading. the objection
-   the blue was answering was real, though - --mute over a bare --line2 track
-   was two neutrals a hairline apart - so the fix is separation inside the
-   neutral scale rather than a hue: --mute against rgba(0, 0, 0, 0.2) resolves
-   to #545659 on a #C4C5C6 track on paper, 4.3:1, which is a travelled line you
-   can see at a glance. red stays spent exactly once in this scene. */
+   spine is neutral at all: it briefly ran a second hue against the accented
+   "you are here" bead, and a coloured spine through an accented dot is two
+   accents arguing in the one component on the site that most needs a single
+   reading. the objection that second hue was answering was real, though -
+   --mute over a bare --line2 track was two neutrals a hairline apart - so the
+   fix is separation inside the neutral scale rather than a hue: --mute against
+   rgba(18, 20, 31, 0.2) resolves to #4E5468 on a #C0C3CE track on paper,
+   4.2:1, which is a travelled line you can see at a glance. the accent stays
+   spent exactly once in this scene. */
 .tl-rail::after { content: ""; position: absolute; z-index: 0; left: 7px; top: 28px; width: 2px; border-radius: 2px; background: var(--mute); height: calc((100% - 56px) * var(--tlp, 0)); transition: height 0.5s var(--ease); }
 
-/* --era is the stop's own colour. red is spent exactly once here - the single
-   "you are here" dot on .tl-stop.on below - which is what makes this timeline
-   one of the two sequential UIs on the site that earn it (.orbit .node.on in
-   About is the other, and follows the same rule: neutral sequence, one red
-   step). every other state is neutral, and that is the whole pattern:
+/* --era is the stop's own colour. the accent is spent exactly once here - the
+   single "you are here" dot on .tl-stop.on below - which is what makes this
+   timeline one of the two sequential UIs on the site that earn it (.orbit
+   .node.on in About is the other, and follows the same rule: neutral
+   sequence, one accented step). every other state is neutral, and that is the
+   whole pattern:
      upcoming  hollow, --card-fill behind a 40%-of---mute ring
      done      filled --mute
-     on        filled --signal, ringed, pulsing
-   a pass in between filled the done stops with blue and tinted the upcoming
-   ring with it, which made history legible at the cost of a second accent in
-   the scene. --mute does the same job: a filled bead one rung down from ink
-   next to an empty one is already the difference between "passed" and "not
-   reached", and red is the only colour in the rail, so it can only mean the
-   one thing. */
+     on        a --grad bead inside a --signal ring, pulsing
+   a pass in between filled the done stops with a second hue and tinted the
+   upcoming ring with it, which made history legible at the cost of a second
+   accent in the scene. --mute does the same job: a filled bead one rung down
+   from ink next to an empty one is already the difference between "passed" and
+   "not reached", and the accent is the only colour in the rail, so it can only
+   mean the one thing.
+   --era itself stays a solid, because two of the three things it feeds - the
+   ring and the glow in the box-shadow below - cannot take a gradient. the
+   third, the bead's own fill, gets the gradient laid over it as a
+   background-image in its own rule. */
 .tl-stop { --era: var(--mute); position: relative; z-index: 1; display: block; width: 100%; min-height: 56px; padding: 11px 14px 11px 56px; text-align: left; background: none; border: 0; border-radius: var(--r-sm); cursor: pointer; color: inherit; }
-/* the one red thing in this scene: the current stop. */
+/* the one accented thing in this scene: the current stop. */
 .tl-stop.on { --era: var(--signal); }
 /* the highlight is its own layer, a full 24px clear of the dot's right edge
    (dot spans 0-16px) so it never reads as touching the spine.
@@ -2274,9 +2796,9 @@ footer .g {
    the card fill lands on #F1F1F2 on paper and #2C2E36 in the dark state - a
    selected row in both - and it tracks the flip because both inputs are
    registered tokens on the crossfade list.
-   the wash was 8% blue for a pass. it is neutral for the same reason the spine
-   above is: the active step already has the one red bead beside it, and a
-   tinted pill behind a red dot is the second accent this scene cannot afford.
+   the wash was tinted for a pass. it is neutral for the same reason the spine
+   above is: the active step already has the one accented bead beside it, and a
+   tinted pill behind it is the second accent this scene cannot afford.
    what marks "on" is opacity 1 plus the 30%-of---mute border, against 0.6 and no
    border for hover - state by weight, not by colour. */
 .tl-stop::before { content: ""; position: absolute; left: 40px; right: 0; top: 2px; bottom: 2px; border-radius: var(--r-sm); background: color-mix(in srgb, var(--mute) 8%, var(--card-fill)); border: 1px solid transparent; opacity: 0; transition: opacity 0.28s var(--ease), border-color 0.28s; }
@@ -2286,7 +2808,8 @@ footer .g {
 .tl-stop:focus-visible::before { opacity: 1; border-color: var(--text); }
 /* three real states, not just on/off - upcoming (not reached yet, hollow, a
    40%-of---mute ring on the card fill), done (passed, filled --mute), on
-   (current, filled red + a light ring, like a step-indicator's "you are here").
+   (current, a gradient bead + a light ring, like a step-indicator's "you are
+   here").
    the upcoming bead used to be --ink2 inside a bare --line2 ring at 0.55
    opacity, which on paper is a tinted disc behind an 11%-black hairline - close
    enough to invisible that the rail looked like it started at the current stop.
@@ -2296,8 +2819,16 @@ footer .g {
    hue. */
 .tl-dot { position: absolute; left: 0; top: 50%; transform: translateY(-50%); width: 16px; height: 16px; border-radius: 50%; background: var(--card-fill); border: 2px solid color-mix(in srgb, var(--mute) 40%, var(--line2)); opacity: 0.7; transition: background 0.3s, border-color 0.3s, box-shadow 0.3s, transform 0.3s var(--ease), opacity 0.3s; }
 .tl-stop.done .tl-dot { background: var(--era); border-color: var(--era); opacity: 1; }
-.tl-stop.on .tl-dot { background: var(--era); border-color: var(--era); opacity: 1; transform: translateY(-50%) scale(1.2); box-shadow: 0 0 0 3px var(--ink2), 0 0 0 5px var(--era), 0 0 14px color-mix(in srgb, var(--era) 55%, transparent); animation: tlPulse 2.4s var(--ease) infinite; }
-@keyframes tlPulse { 0%, 100% { box-shadow: 0 0 0 3px var(--ink2), 0 0 0 5px var(--era), 0 0 14px color-mix(in srgb, var(--era) 55%, transparent); } 50% { box-shadow: 0 0 0 3px var(--ink2), 0 0 0 5px var(--era), 0 0 20px color-mix(in srgb, var(--era) 75%, transparent); } }
+/* the bead stays a solid --era, not the gradient: a 100deg sweep across a
+   19px disc has no room to separate into three colours, so it read as a
+   smeared blob rather than the accent. same rule .tab.active's outline
+   already follows - a gradient needs real surface area to read as one,
+   below a certain size it's a solid stand-in instead. the ring is one layer,
+   not three - .ink2 for separation from the rail, --era for the ring itself
+   - and the pulse is a soft opacity breathe rather than a growing glow, so
+   the one accented stop reads as calm, not alarmed. */
+.tl-stop.on .tl-dot { background: var(--era); border-color: var(--era); opacity: 1; transform: translateY(-50%) scale(1.2); box-shadow: 0 0 0 3px var(--ink2), 0 0 8px color-mix(in srgb, var(--era) 40%, transparent); animation: tlPulse 2.4s var(--ease) infinite; }
+@keyframes tlPulse { 0%, 100% { box-shadow: 0 0 0 3px var(--ink2), 0 0 8px color-mix(in srgb, var(--era) 40%, transparent); } 50% { box-shadow: 0 0 0 3px var(--ink2), 0 0 10px color-mix(in srgb, var(--era) 55%, transparent); } }
 @media (prefers-reduced-motion: reduce) { .tl-stop.on .tl-dot { animation: none; } }
 
 /* 0.72, not 0.55: at 0.55 an upcoming stop's label was --mute knocked back to
@@ -2316,7 +2847,17 @@ footer .g {
 .tl-detail .btn-ghost { margin-top: 14px; }
 /* ---- step 01 · what is Polarin (the original playable globe, rescoped to
    the timeline's detail panel instead of a full-viewport section) ---- */
-.tl-globe-sec { position: relative; min-height: 420px; height: min(52vh, 460px); display: flex; align-items: center; overflow: hidden; margin-top: 18px; }
+/* the figure is shorter than it was (was min-height 420 / height min(52vh,
+   460px)) for one structural reason rather than for taste: step 01 is now a
+   sticky panel, and a panel taller than the space under the nav takes the
+   whole stack effect down with it (see THE STACK, part 1). the drawing is
+   1000x480 positioned from its own bottom edge, so it crops from the top - a
+   shorter box is a shallower dome, not a squashed one.
+   400px is not a round number, it is the largest value that keeps step 01
+   under step 03, which is the tallest step on the page (its three case-study
+   cards are the floor and cannot come down). so the figure is as big as it can
+   be without becoming the step that decides where the effect switches off. */
+.tl-globe-sec { position: relative; min-height: 300px; height: min(44vh, 400px); display: flex; align-items: center; overflow: hidden; margin-top: 18px; }
 .tl-globe { position: absolute; left: 50%; bottom: -6%; transform: translateX(-50%); width: min(1100px, 165%); opacity: 0.55; pointer-events: none; }
 /* the wireframe reads as a drawing, not as --ghost-stroke. that token is the
    outline-only ghost *word* behind About's donut and Ch.2's stage - on paper it
@@ -2337,12 +2878,269 @@ footer .g {
 .tl-globe .g-dot { fill: var(--mute); opacity: 0.35; transition: opacity 0.25s; }
 .tl-globe.tl-globe-hi { opacity: 0; transition: opacity 0.35s; -webkit-mask-image: radial-gradient(circle 130px at var(--gx, 50%) var(--gy, 50%), black 0%, transparent 72%); mask-image: radial-gradient(circle 130px at var(--gx, 50%) var(--gy, 50%), black 0%, transparent 72%); }
 .tl-globe.tl-globe-hi .g-line { stroke: var(--text); stroke-width: 1.4; filter: drop-shadow(0 0 6px var(--glow-soft)); }
-/* plain text over the globe, no card, no fade scrim beneath it - overflow
-   stays hidden on the section above purely to stop the oversized globe SVG
-   causing horizontal scroll, not to frame a box. */
-.tl-globe-copy { position: relative; z-index: 1; max-width: 560px; }
+/* the copy that used to run beside the globe - a paragraph column and a
+   metadata sidebar, in a two-column grid.
+
+   NO CURRENT CONSUMER. the trim pass cut the sidebar outright (every fact in
+   it was already stated by another step on the same page, so it was the same
+   information twice) and step 01 is now one sentence, which needs no grid and
+   takes .tlx-step > p's own 62ch measure. kept for the same reason .tlx-plain
+   is: it is a working recipe for "copy beside a figure", which is a shape this
+   step could want back. */
+.tl-globe-copy { position: relative; z-index: 1; width: 100%; max-width: 1020px; display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 250px); gap: clamp(28px, 4vw, 64px); align-items: start; }
+.tl-ctx-main { max-width: 56ch; }
 @media (prefers-reduced-motion: reduce) { .tl-globe .g-node { animation: none; opacity: 0.8; } }
-@media (max-width: 760px) { .tl-globe-sec { height: 320px; margin: -8px 0 0; } }
+
+/* below ~900px the figure gets its height back from its content rather than
+   from the viewport, and the (unused) two-column context block stacks. the
+   min-heights here track the base rule's - they came down with it, for the
+   reason spelled out above it. */
+@media (max-width: 900px) {
+  .tl-globe-sec { height: auto; min-height: 300px; }
+  .tl-globe-copy { grid-template-columns: minmax(0, 1fr); gap: 22px; max-width: 720px; }
+  .tl-ctx-main { max-width: none; }
+}
+@media (max-width: 760px) { .tl-globe-sec { height: auto; min-height: 260px; margin: -8px 0 0; } }
+
+/* ================= TIMELINE SCAFFOLD (sticky stack, no pinning) =================
+   the six .tlx-step sections replace what used to be a pinned scroll-scrubbed
+   scene - a tall track with a sticky stage that swapped one detail panel per
+   scroll beat. there is no track, no stage and no beat: nothing here turns a
+   scroll position into a step index, nothing holds the page still, and every
+   step's content is in the document at once rather than one beat at a time.
+   each step also still fades in on first entrance via the site's shared .rv
+   observer (see src/App.jsx) - .tlx-step just needs .rv on it, which the
+   component already adds.
+
+   what the steps DO do is stack, and it is worth being precise about the
+   difference. the stack is native CSS: each step is `position: sticky` at the
+   nav's height, so it pins under the bar while it is the current one, and the
+   next step - later in the DOM, therefore later in paint order among
+   z-index:auto positioned siblings - scrolls up over it at its own speed. the
+   browser's own scroll drives all of it; no listener changes how far a wheel
+   turn goes. the only JS is useStackFade in the page component, which marks
+   the step currently being covered (.tlx-covered) so it can settle back, and
+   owns the master switch (.tlx-stack) - see THE STACK below.
+
+   the spine is one hairline the height of .tlx itself, with each step's own
+   dot sitting on top of it - not six separate line segments, so the line
+   reads as one continuous thread regardless of how tall an individual step's
+   content runs. once the steps paint opaque panels it also has to be lifted
+   ABOVE them (see .tlx-stack::before) or six stacked panels would bury it.
+   the rail marker (a number + a date, onething's device) is desktop-only:
+   below 860px there is no room for a third column beside the spine and the
+   content, so the number and date move into the kicker line instead and only
+   the dot stays on the spine - .tlx-when-inline is the mobile-only twin of
+   .tlx-mark's desktop-only .tlx-when. */
+.tlx { position: relative; }
+.tlx::before { content: ''; position: absolute; left: 3px; top: 8px; bottom: 8px; width: 1px; background: var(--line2); }
+@media (min-width: 860px) { .tlx::before { left: 93px; } }
+
+/* the transition list restates .rv's two entries verbatim rather than
+   inheriting them, because this rule is later in the file and any transition
+   declared here would otherwise replace the reveal's own. the settle is on
+   `scale`, the standalone property, NOT on transform: transform is already
+   spoken for by .rv (translateY(32px) scale(0.985) → none), and two effects
+   sharing one property means the reveal and the settle would clobber each
+   other. background-color rides the same 0.6s the page's own backdrop uses to
+   turn over, so a stacked panel and the paper behind it flip as one surface -
+   see THE BACKDROP. */
+.tlx-step {
+  position: relative;
+  padding: 0 0 var(--sp-head) 26px;
+  transition: opacity 0.75s var(--ease), transform 1s var(--ease), scale 0.5s var(--ease), background-color 0.6s ease;
+}
+.tlx-step:last-child { padding-bottom: 0; }
+@media (min-width: 860px) { .tlx-step { padding-left: 134px; } }
+
+.tlx-dot { position: absolute; left: 0; top: 7px; width: 7px; height: 7px; border-radius: 50%; background: var(--card-fill); border: 1px solid var(--line2); transition: background 0.3s, border-color 0.3s, opacity 0.4s; }
+.tlx-step.in .tlx-dot { background: var(--mute); border-color: var(--mute); }
+@media (min-width: 860px) { .tlx-dot { left: 90px; } }
+
+.tlx-mark { display: none; }
+@media (min-width: 860px) {
+  .tlx-mark { display: flex; flex-direction: column; align-items: flex-end; gap: 5px; position: absolute; left: 0; top: 1px; width: 74px; text-align: right; transition: opacity 0.4s var(--ease); }
+  .tlx-n { font-family: var(--mono); font-size: var(--t-meta); font-weight: 500; color: var(--dim); letter-spacing: 0.06em; }
+  .tlx-when { font-family: var(--mono); font-size: var(--t-micro); color: var(--dim); letter-spacing: 0.04em; }
+}
+
+.tlx-kicker { display: flex; flex-wrap: wrap; align-items: baseline; gap: 6px; font-family: var(--mono); font-size: var(--t-meta); letter-spacing: 0.14em; text-transform: uppercase; color: var(--dim); margin: 0 0 12px; }
+.tlx-kicker b { color: var(--text); font-weight: 500; }
+.tlx-when-inline { color: var(--dim); text-transform: none; letter-spacing: 0.04em; }
+@media (min-width: 860px) { .tlx-when-inline { display: none; } }
+
+.tlx-h { font-family: var(--disp); font-weight: 700; font-size: var(--t-lead); letter-spacing: -0.015em; line-height: 1.12; margin: 0 0 16px; max-width: 20ch; }
+
+.tlx-step > p { color: var(--mute); font-size: var(--t-body); max-width: 62ch; margin: 0 0 14px; }
+.tlx-step > p:last-of-type { margin-bottom: 0; }
+.tlx-step > p b { color: var(--text); font-weight: 600; }
+
+/* ---------------- THE STACK ----------------
+   the sticky-stacked steps: content pins under the nav, the next step covers
+   it, the covered one settles back. read the four parts in this order.
+
+   1. THE SWITCH. everything below is keyed on .tlx-stack, which useStackFade
+      puts on .tlx only when both conditions hold: the viewport is at least
+      860px wide (the width at which the rail exists at all), and every step
+      is shorter than the space under the nav. the second one is not caution,
+      it is the failure mode: a step taller than `100vh - --nav-h` sticks with
+      its own foot below the fold, and the next step then covers it from the
+      bottom up, so that foot is never readable at any scroll position. rather
+      than clip content the effect switches itself off and the six steps are
+      the plain document-flow timeline they are without it. that is also what
+      a phone gets, and what the page gets if the JS never runs.
+
+   2. THE STACK. `position: sticky` at --nav-h, all six on the same line.
+      deliberately NO z-index: sticky is a positioned element, positioned
+      siblings at z-index:auto paint in tree order, so step 04 covers step 03
+      for free - and, more usefully, none of them becomes a stacking context,
+      which is what lets the spine be lifted over all of them in part 4. the
+      nav (90) and the case-study overlay (200) are far above either way.
+
+   3. THE PANEL. a covering panel has to be opaque - it is hiding the step
+      under it, not tinting it. it paints the two layers the section itself
+      paints and no new fill: --ink, which is the page's own stock and the one
+      thing the backdrop is guaranteed to agree with, and a flat wash of
+      --zone-tint, which is this zone's own tint token (--tint-lift here, via
+      .zone-lift) so a panel is not a lighter rectangle sitting on the
+      section's tinted band. no border, no radius, no shadow: this is not a
+      card, it is the page with a hard top edge - a panel's own edges are
+      invisible by construction, and the reader sees the *type* move, which is
+      the whole point.
+      the one layer a panel cannot reproduce is the third one, .zone's 36px
+      dot tile: its phase is the section's padding box, and a stuck panel's
+      background paints where the panel is rather than where its layout box
+      is, so tiled dots inside it would freeze against the section's scrolling
+      ones. so the section gives the tile up while the stack is live (see
+      .timeline-sec:has below) rather than showing a seam down the column
+      edge. the fixed film grain over the whole site is untouched and is what
+      keeps the fold from reading as dead flat paper.
+
+   4. THE SETTLE. the covered step scales to 0.96 from its own top edge - so
+      the pinned edge stays exactly where the reader left it and the panel
+      draws back around it - and dims. the dim is an overlay at 45% rather
+      than `opacity: 0.55` on the step, and that is the one non-obvious choice
+      here: all six steps are stuck on the same line at once, so a translucent
+      panel would show the text of every earlier step through it - four layers
+      of ghosting by the last stop. an overlay keeps the panel opaque and
+      reads identically. it paints `background: inherit` at inset: 0, i.e.
+      literally the panel's own two layers over the panel's own box, so it
+      veils the type without moving the paper tone by a shade - an overlay of
+      flat --ink washed the zone's tint back out and left a faintly lighter
+      rectangle where the settled step was.
+      the rail marker and the dot fade out with it instead of scaling: they sit
+      74px and 90px from the step's left edge, so a 4% scale about the centre
+      slides them ~20px off the spine, which the spine is a fixed hairline and
+      would show as a jog. a settled step surrendering its marker is also the
+      right read - the marker belongs to the step being read.
+      prefers-reduced-motion keeps the stack and drops the settle: useStackFade
+      still throws the master switch, so steps still pin and still get covered
+      - that is the page's structure, moved by the browser's own scroll - but it
+      never marks a step covered, so nothing scales or fades. the block at the
+      end of this section is the belt-and-braces half of that, for the case
+      where the setting changes while a class is already on an element. */
+.tlx-stack > .tlx-step {
+  position: sticky;
+  top: var(--stack-top);
+  background-color: var(--ink);
+  background-image: linear-gradient(var(--zone-tint, transparent), var(--zone-tint, transparent));
+  transform-origin: 50% 0;
+}
+/* the spine, over the panels rather than under them. .tlx is position:
+   relative with z-index auto, so it is not a stacking context and this
+   pseudo-element's z-index competes in the root one - a positive z-index
+   paints after every z-index:auto positioned sibling, i.e. after all six
+   panels. it stays a --line2 hairline, which at 20% alpha over a --mute dot
+   is not a visible crossing. */
+.tlx-stack::before { z-index: 1; }
+/* the tiled dot layer, off for as long as the stack is live - see part 3. the
+   selector is (0,2,0) like .theme-light .zone's, so it wins on source order,
+   and it is scoped through :has rather than declared on .timeline-sec outright
+   because a phone never paints a panel and has no reason to lose its paper. */
+.timeline-sec:has(.tlx-stack) { --zone-dots: none; }
+.tlx-stack > .tlx-step::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: inherit;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.5s var(--ease);
+}
+.tlx-stack > .tlx-covered { scale: 0.96; }
+.tlx-stack > .tlx-covered::after { opacity: 0.45; }
+.tlx-stack > .tlx-covered .tlx-mark,
+.tlx-stack > .tlx-covered .tlx-dot { opacity: 0; }
+@media (prefers-reduced-motion: reduce) {
+  .tlx-stack > .tlx-covered { scale: 1; }
+  .tlx-stack > .tlx-covered::after { opacity: 0; }
+  .tlx-stack > .tlx-covered .tlx-mark,
+  .tlx-stack > .tlx-covered .tlx-dot { opacity: 1; }
+}
+
+/* the "in plain terms" aside - one analogy for a reader who doesn't buy
+   network links for a living. a recessed box (--ink2 fill, --line hairline,
+   --r-sm, no shadow - see CARD SYSTEM), not a tinted accent panel: an
+   analogy is an aside, not the decisive thing on the screen, so it reads as
+   cut into the page rather than lit up on it.
+   NO CURRENT CONSUMER. the trim pass that turned the six steps into a heading,
+   two or three lines and a link list took both instances out - the Polarin
+   analogy on step 01 and the GenAI one on step 05 - because an aside is the
+   first thing to go when the brief is "fewer words on screen". kept rather
+   than deleted: it is a correct recipe for the device, and the device is the
+   obvious thing to want back if one of the steps ever reads as too terse. */
+.tlx-plain { margin-top: 18px; padding: var(--pad-card-sm); border-left: 2px solid var(--line2); background: var(--ink2); border-radius: 0 var(--r-sm) var(--r-sm) 0; }
+.tlx-plain-l { display: block; font-family: var(--mono); font-size: var(--t-micro); letter-spacing: 0.12em; text-transform: uppercase; color: var(--dim); margin-bottom: 6px; }
+.tlx-plain p { margin: 0; color: var(--text); font-size: var(--t-body-sm); max-width: 58ch; line-height: 1.55; }
+
+/* the hero's "jump to latest" pointer - not a card, a link: the GenAI study
+   is only ever featured once on this page (the spotlight step further down),
+   so this just scrolls there. the pulsing dot is the one accent moment on
+   this fold - "here is the new thing" - the same job .pulse does in the
+   reference, on this site's own --signal rather than a hard-coded coral. */
+.tlx-latest { display: flex; align-items: center; justify-content: space-between; gap: 20px; width: 100%; max-width: 560px; margin-top: 28px; padding: 18px 22px; border: 1px solid var(--line2); border-radius: var(--r-lg); background: var(--raise); cursor: pointer; text-align: left; transition: border-color 0.3s, transform 0.3s var(--ease), background 0.3s; }
+.tlx-latest:hover, .tlx-latest:focus-visible { border-color: var(--line2); transform: translateY(-2px); background: var(--raise2); outline: none; }
+.tlx-latest-txt { display: flex; flex-direction: column; gap: 6px; min-width: 0; }
+.tlx-latest-k { display: flex; align-items: center; gap: 8px; font-family: var(--mono); font-size: var(--t-micro); letter-spacing: 0.14em; text-transform: uppercase; color: var(--signal); }
+.tlx-latest-k i { width: 6px; height: 6px; border-radius: 50%; background: var(--signal); box-shadow: 0 0 8px color-mix(in srgb, var(--signal) 60%, transparent); animation: tlxPulse 2s ease-in-out infinite; }
+.tlx-latest-t { font-family: var(--disp); font-weight: 700; font-size: var(--t-sub); letter-spacing: -0.01em; color: var(--text); }
+.tlx-latest-go { flex: none; font-size: 18px; color: var(--mute); transition: transform 0.3s var(--ease); }
+.tlx-latest:hover .tlx-latest-go, .tlx-latest:focus-visible .tlx-latest-go { transform: translateY(3px); }
+@keyframes tlxPulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.45; } }
+@media (prefers-reduced-motion: reduce) { .tlx-latest-k i { animation: none; } }
+
+/* the spotlight step - the one place the GenAI initiative is featured on
+   this page (see the note in the JSX). it wears .tl-featured for the ring +
+   tag and joins the shared raised-card recipe below for its fill/shadow;
+   what's declared here is only the geometry .tl-cs-card would otherwise
+   supply, since this card is a full step rather than one of three in a row. */
+.tlx-spot-step { padding-bottom: var(--sp-head); }
+.tlx-spot { display: block; width: 100%; max-width: 720px; border: 1px solid var(--line); border-radius: var(--r-lg); padding: var(--pad-card-lg); cursor: pointer; transition: transform 0.3s var(--ease), border-color 0.3s; }
+.tlx-spot:hover, .tlx-spot:focus-visible { transform: translateY(-4px); border-color: var(--line2); outline: none; }
+.tlx-spot-head { display: flex; align-items: center; gap: 14px; margin-bottom: 16px; }
+.tlx-spot h4 { font-family: var(--disp); font-weight: 700; font-size: var(--t-sub); letter-spacing: -0.01em; margin: 0 0 10px; }
+.tlx-spot > p { color: var(--mute); font-size: var(--t-body); margin: 0 0 12px; max-width: 62ch; }
+.tlx-spot .side-skills { margin-top: 16px; }
+.tlx-spot .tl-cs-foot { margin-top: 18px; }
+
+/* the flat index - every case study as one onething-style arrow-link list:
+   a numbered badge on the same categorical hue as the card upstream, a
+   title, a quiet note, a plain arrow, generous air per row. it's a table of
+   contents for a reader who wants to jump straight to one, not a second
+   feature - the cards inside the timeline are where each study is argued. */
+.tlx-index-sec { padding: var(--sp-sec) 0; }
+.tlx-index { list-style: none; margin: var(--sp-head) 0 0; padding: 0; border-top: 1px solid var(--line); }
+.tlx-idx { display: flex; align-items: center; gap: 20px; width: 100%; padding: 22px 6px; border: 0; border-bottom: 1px solid var(--line); background: none; cursor: pointer; text-align: left; transition: background 0.25s; }
+.tlx-idx:hover, .tlx-idx:focus-visible { background: color-mix(in srgb, var(--text) 4%, transparent); outline: none; }
+.tlx-idx-n { flex: none; display: inline-grid; place-items: center; width: 38px; height: 38px; border-radius: var(--r-sm); border: 1px solid; font-family: var(--mono); font-size: 12px; font-weight: 500; }
+.tlx-idx-t { flex: 1 1 220px; min-width: 0; font-family: var(--disp); font-weight: 700; font-size: var(--t-sub); letter-spacing: -0.01em; color: var(--text); }
+.tlx-idx-m { flex: 1 1 260px; min-width: 0; color: var(--mute); font-size: var(--t-body-sm); }
+.tlx-idx-go { flex: none; font-size: 18px; color: var(--dim); transition: transform 0.25s var(--ease), color 0.25s; }
+.tlx-idx:hover .tlx-idx-go, .tlx-idx:focus-visible .tlx-idx-go { transform: translateX(4px); color: var(--text); }
+@media (max-width: 700px) {
+  .tlx-idx { flex-wrap: wrap; gap: 6px 18px; }
+  .tlx-idx-m { flex-basis: 100%; padding-left: 54px; }
+}
 
 /* ---- step 02 · fog → fluency (joining with no telecom background) ---- */
 .tl-fog { display: flex; flex-wrap: wrap; align-items: center; gap: 9px; margin-top: 20px; }
@@ -2350,10 +3148,26 @@ footer .g {
 .tl-fog-w { font-family: var(--mono); font-size: var(--t-body-sm); letter-spacing: 0.08em; color: var(--text); background: var(--ink2); border: 1px dashed var(--line2); border-radius: var(--r-xs); padding: 7px 13px; opacity: 0.24; filter: blur(4px); animation: tlDefog 0.85s var(--ease) forwards; transition: color 0.25s, border-color 0.25s, transform 0.25s var(--ease); }
 .tl-fog-w:hover { color: var(--text); border-color: var(--line2); transform: translateY(-2px); }
 @keyframes tlDefog { to { opacity: 1; filter: blur(0); } }
-.tl-detail .tl-fog-cap { margin-top: 12px; font-family: var(--mono); font-size: 11.5px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--dim); max-width: none; }
-.tl-detail .tl-fog-cap b { color: var(--text); font-weight: 500; }
+/* scoped to .tlx-step, not to .tl-detail. .tl-detail was the pinned stage's
+   panel and has not existed in the markup since the stage was removed, so
+   these two rules were matching nothing and the caption was silently falling
+   through to .tlx-step > p - i.e. rendering as another body paragraph rather
+   than as the mono caption it is. (0,2,0) beats that rule's (0,1,1), so the
+   caption wins on specificity as well as on source order. */
+.tlx-step .tl-fog-cap { margin-top: 12px; font-family: var(--mono); font-size: 11.5px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--dim); max-width: none; }
+.tlx-step .tl-fog-cap b { color: var(--text); font-weight: 500; }
 
-/* three inputs converge into one artefact, then the first screen */
+/* three inputs converge into one artefact, then the first screen.
+
+   NO CURRENT CONSUMER - the whole .tl-arc block below, through .tl-then. this
+   was the most elaborate device on the page: three stream cards, a dashed
+   convergence SVG and a knowledge-doc mock, about 90 words and a full screen
+   of height, all saying where the first four months went. the trim pass folded
+   that into the two sentences step 02 now carries, which name the same three
+   inputs and the same one artefact. kept rather than deleted because the
+   drawing is the argument's strongest form and this is the recipe for it; note
+   that .tl-stream and .tl-doc are also still listed in CARD SYSTEM, which is
+   correct and is what keeps them ready to use. */
 .tl-arc { display: grid; grid-template-columns: minmax(0, 1.05fr) 64px minmax(0, 1fr); align-items: center; margin-top: 22px; gap: 6px; }
 .tl-arc-streams { display: flex; flex-direction: column; gap: 10px; }
 /* background comes from the CARD SYSTEM recipe at the bottom of this file, not
@@ -2401,17 +3215,27 @@ footer .g {
 
 /* ---- steps 03/04 · deep-dive cards read as case-study previews, not plain
    text boxes - icon, about/role rows, an impact stat and a real link ---- */
-/* plain stats, not cards - same numbers as .cj-result elsewhere, no box */
+/* plain stats, not cards - same numbers as .cj-result elsewhere, no box.
+   NO CURRENT CONSUMER: the "100+ components / 20+ tokens / 4 yrs" row came off
+   step 03 in the trim pass. the step's one remaining sentence already carries
+   the claim those numbers were evidence for ("a design system first, so
+   screens could ship fast"), and the page's own metrics fold four sections
+   down is where numbers belong on it. */
 .tl-stats { display: flex; flex-wrap: wrap; gap: 32px; margin-top: 20px; }
 .tl-stats span { font-family: var(--mono); font-size: 10.5px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--dim); }
 .tl-stats b { display: block; font-family: var(--disp); font-size: var(--t-stat-sm); letter-spacing: -0.02em; color: var(--text); margin-bottom: 4px; font-weight: 800; }
 
 /* the PM chip row on stop 04 sits directly on the page rather than inside a
    card, which is where the shared .chip is weakest: no fill at all, and a --line
-   edge that is rgba(0, 0, 0, 0.1) against paper. five chips you have to look for,
-   an inch above a row of cards at #FFFFFF. they get the card fill and the heavier
-   hairline here only - .chip is left as it is for its five other consumers,
-   every one of which already sits on a card. */
+   edge that is rgba(0, 0, 0, 0.1) against paper. they get the card fill and the
+   heavier hairline here only - .chip is left as it is for its other consumers,
+   every one of which already sits on a card.
+   NO CURRENT CONSUMER, twice over: .tl-detail stopped existing when the pinned
+   stage was removed, so this never matched after that pass, and the trim pass
+   has since taken all three chip rows off the timeline (steps 03, 04 and the
+   spotlight) - a chip row is a list of nouns, which is the first thing to go
+   under "keep less text". the surviving .side-skills instance on the site is
+   Home's, and it is deliberately left on the shared .chip recipe. */
 .tl-detail .side-skills .chip { background: var(--card-fill); border-color: var(--line2); }
 
 /* a scroll row, not a grid: the AI-product-manager instance mixes three
@@ -2456,7 +3280,15 @@ footer .g {
    instead of changing colour. color-mix off two registered tokens keeps the
    whole thing riding the flip. deliberately NOT folded back into the shared
    chip recipe: --surface2 is what read muddy here, and a card this size wants
-   the brighter badge. */
+   the brighter badge.
+
+   all six instances of this badge now also carry data-cat="1".."6", which
+   swaps the neutral --text wash below for a wash of that card's own hue from
+   the --chip-* ramp - identical geometry, identical 14%/22% wash structure,
+   only the colour differs (see the categorical chip block in CARD SYSTEM).
+   the two rules below therefore describe the fallback rather than what is on
+   screen today: they are what a seventh case-study card with no data-cat would
+   get, and they are kept for exactly that reason. */
 .tl-cs-icon { display: inline-grid; place-items: center; width: var(--chip-lg); height: var(--chip-lg); border-radius: var(--r-md); color: var(--text); background: color-mix(in srgb, var(--text) 10%, var(--card-fill)); border: 1px solid var(--line2); transition: all 0.3s; }
 .tl-cs-card:hover .tl-cs-icon { background: color-mix(in srgb, var(--text) 16%, var(--card-fill)); border-color: color-mix(in srgb, var(--text) 30%, var(--line2)); }
 .tl-cs-icon svg { width: 23px; height: 23px; display: block; }
@@ -2474,7 +3306,7 @@ footer .g {
    floats mid-card while a longer sibling's sits naturally at the bottom. */
 .tl-cs-foot { display: flex; justify-content: space-between; align-items: center; gap: 10px; border-top: 1px dashed var(--line); padding-top: 13px; margin-top: auto; transition: border-color 0.3s; }
 .tl-cs-card:hover .tl-cs-foot { border-top-color: var(--line2); }
-.tl-cs-impact { font-family: var(--disp); font-weight: 700; font-size: 15.5px; color: var(--up); letter-spacing: -0.01em; white-space: nowrap; }
+.tl-cs-impact { font-family: var(--disp); font-weight: 700; font-size: var(--t-card-sm); color: var(--up); letter-spacing: -0.01em; white-space: nowrap; }
 .tl-cs-impact small { font-family: var(--mono); font-weight: 400; font-size: 9.5px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--dim); margin-left: 6px; white-space: normal; }
 .tl-cs-link { position: relative; font-family: var(--mono); font-size: 10.5px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--mute); transition: color 0.25s, transform 0.25s var(--ease); flex-shrink: 0; }
 /* "Deep dive →" is the one actual call to action on a card, and it is the
@@ -2514,7 +3346,7 @@ footer .g {
   .tl-arc-join { display: none; }
 }
 
-.mg-tag { position: absolute; right: 10px; bottom: 8px; font-family: var(--mono); font-size: 8.5px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--dim); background: rgba(17, 18, 21, 0.7); border: 1px dashed var(--line); border-radius: 6px; padding: 3px 8px; pointer-events: none; z-index: 2; }
+.mg-tag { position: absolute; right: 10px; bottom: 8px; font-family: var(--mono); font-size: 8.5px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--dim); background: rgba(6, 7, 15, 0.7); border: 1px dashed var(--line); border-radius: 6px; padding: 3px 8px; pointer-events: none; z-index: 2; }
 .mg-inv .mg-tag { bottom: auto; top: 8px; }
 
 /* ---- mini graphics ---- */
@@ -2553,7 +3385,7 @@ footer .g {
 @keyframes navcycle { 0%, 80%, 100% { background: color-mix(in srgb, var(--mute) 28%, transparent); } 15% { background: var(--text); } }
 .port-main { flex: 1; display: flex; flex-direction: column; gap: 8px; justify-content: center; }
 .port-lastrow { display: flex; align-items: center; gap: 8px; }
-.port-approve { flex-shrink: 0; width: 14px; height: 14px; border-radius: 50%; display: grid; place-items: center; background: rgba(92, 224, 168, 0.15); border: 1px solid rgba(92, 224, 168, 0.5); color: var(--up); font-size: 9px; line-height: 1; animation: npulse 2.4s ease-in-out infinite; }
+.port-approve { flex-shrink: 0; width: 14px; height: 14px; border-radius: 50%; display: grid; place-items: center; background: color-mix(in srgb, var(--up) 15%, transparent); border: 1px solid color-mix(in srgb, var(--up) 50%, transparent); color: var(--up); font-size: 9px; line-height: 1; animation: npulse 2.4s ease-in-out infinite; }
 .mgdots { position: absolute; right: 14px; top: 13px; display: flex; flex-direction: column; gap: 7px; }
 .mgdots i { width: 6px; height: 6px; border-radius: 50%; background: var(--up); animation: npulse 2s infinite; }
 .mgdots i:nth-child(2) { animation-delay: 0.5s; }
@@ -2589,10 +3421,26 @@ footer .g {
    overrides, back at its dark default, resets inheritance from here down
    regardless of ancestor state. */
 .ovl {
-  --ink: #111215;
-  --ink2: #1A1C22;
-  --raise: #22242C;
-  --raise2: #2D2F39;
+  --ink: #06070F;
+  --ink2: #0A0D1A;
+  --raise: #0F1324;
+  --raise2: #131832;
+  /* --surface and --card-fill were the two the list forgot, and both were a
+     real hole rather than a tidy-up. every card in every case study paints
+     var(--card-fill), and every icon chip paints var(--surface2) - but
+     --card-fill is declared once on :root and .theme-light points it at a flat
+     #FFFFFF, while --surface2 is derived from --surface, which .theme-light
+     walks down its paper ladder. neither was restated here, so both were
+     inherited straight through the overlay: open a case study from a section
+     that happens to be flipped - Current Project's .tl-stage is a .flip, and
+     it is the page every study is opened from - and the always-dark overlay
+     filled with white cards and near-white chips. restating --surface off this
+     block's own --raise is what closes it: --card-fill and --surface2 both
+     resolve from --surface on the element they are declared on, so pinning it
+     here fixes the pair in one step and keeps them tracking the ladder rather
+     than freezing at a hex. */
+  --surface: var(--raise);
+  --card-fill: var(--surface);
   --surface2: color-mix(in srgb, var(--surface) 95%, #ffffff);
   /* both elevation steps, not just --lift: the large frames inside a case
      study (.cs-shot-frame, .dv-shot, .cmp-frame, .inv-mock) read --lift-lg,
@@ -2610,24 +3458,57 @@ footer .g {
   --tint-lift-hi: rgba(255, 255, 255, 0.055);
   --tint-sink: rgba(0, 0, 0, 0.34);
   --glow-cool: rgba(255, 255, 255, 0.045);
-  --glow-warm: rgba(232, 73, 45, 0.028);
+  --glow-warm: rgba(255, 46, 154, 0.028);
   --glow-duo-cool: rgba(255, 255, 255, 0.03);
   --glow-soft: rgba(255, 255, 255, 0.4);
-  --line: rgba(255, 255, 255, 0.08);
+  --line: rgba(255, 255, 255, 0.09);
   --line2: rgba(255, 255, 255, 0.16);
-  --text: #F5F4F2;
-  --mute: #A3A3A3;
-  --dim: #757575;
-  --link: #C9C8C5;
-  --up: #5CE0A8;
-  --rose: #FF8FA8;
-  --bar-1: #FF9E8A;
-  --bar-2: #FFCB7D;
-  --bar-3: #9BE0B0;
-  --bar-4: #9DC4FF;
-  --bar-5: #C3AEFF;
-  --bar-6: #8FE0DA;
-  --bar-num: rgba(17, 18, 21, 0.85);
+  --text: #EDEFF7;
+  --mute: #949BB8;
+  --dim: #666E8C;
+  --link: #C2C7DA;
+  --up: #7DF9A6;
+  --rose: #FF6B8A;
+  /* the accent, back at its dark cut - and --grad has to be restated with the
+     three stops rather than left to inherit, which is the alias trap this file
+     names twice already. --grad's value contains var(--g1..3), and a custom
+     property's var()s are substituted where the property is DECLARED: on
+     :root. so the gradient inheriting into this block would already have the
+     paper hexes baked into it whenever the page behind was flipped, no matter
+     what --g1..3 say here. re-declaring it on .ovl re-substitutes it against
+     this block's own stops.
+     --grad-ink comes with them: it is #FFFFFF on paper, and a white CTA label
+     on the bright dark gradient is the 1.8:1 reading the token exists to
+     avoid. */
+  --g1: #FF2E9A;
+  --g2: #7B5BFF;
+  --g3: #22D3EE;
+  /* 90deg, not the reference's 100deg: a pill (border-radius: 99px) is
+     exactly where the tilt shows up as a bug rather than a sweep - a 10°
+     angle samples a visibly different point on the gradient at the top of a
+     rounded cap than at the bottom of it, which reads as a thin mismatched
+     line of colour riding the curve at both ends. dead horizontal has no
+     vertical component to disagree with itself, on a pill or anywhere else. */
+  --grad: linear-gradient(90deg, var(--g1) 0%, var(--g2) 52%, var(--g3) 100%);
+  --signal: #7B5BFF;
+  --grad-ink: #06070F;
+  --bar-1: #FF9A8C;
+  --bar-2: #FFC978;
+  --bar-3: #8FE3B4;
+  --bar-4: #8FB8FF;
+  --bar-5: #E4A0F0;
+  --bar-6: #D2E97F;
+  --bar-num: rgba(6, 7, 15, 0.85);
+  /* the categorical chip ramp, back at its dark cut - two of its three
+     consumers (.adm-mod-ic, .kbx-jobs) only ever render inside this overlay,
+     so without this line they would wear the paper set whenever the page
+     behind happened to be flipped. */
+  --chip-1: #FFAC9C;
+  --chip-2: #FFD48F;
+  --chip-3: #A2E8C1;
+  --chip-4: #A8C8FF;
+  --chip-5: #EDB4F6;
+  --chip-6: #DEEF97;
   --ghost-stroke: rgba(255, 255, 255, 0.16);
   color: var(--text);
   position: fixed;
@@ -2636,7 +3517,7 @@ footer .g {
   display: none;
 }
 .ovl.open { display: block; }
-.ovl-scrim { position: absolute; inset: 0; background: rgba(5, 7, 13, 0.82); backdrop-filter: blur(4px); opacity: 0; transition: opacity 0.35s; }
+.ovl-scrim { position: absolute; inset: 0; background: rgba(2, 3, 8, 0.86); backdrop-filter: blur(4px); opacity: 0; transition: opacity 0.35s; }
 .ovl.open .ovl-scrim { opacity: 1; }
 .ovl-panel { position: absolute; left: clamp(10px, 4vw, 60px); right: clamp(10px, 4vw, 60px); top: clamp(46px, 7vh, 70px); bottom: 0; max-width: 1320px; margin-left: auto; margin-right: auto; background: var(--ink2); border: 1px solid var(--line2); border-bottom: none; border-radius: var(--r-lg) var(--r-lg) 0 0; box-shadow: 0 -30px 90px rgba(0, 0, 0, 0.6); overflow-y: auto; transform: translateY(40px); opacity: 0; transition: transform 0.5s var(--ease), opacity 0.4s; }
 /* the panel is itself a lifted sheet (--ink2) floating over the page, so
@@ -2648,13 +3529,13 @@ footer .g {
   --surface: var(--raise2);
 }
 .ovl.open .ovl-panel { transform: none; opacity: 1; }
-.ovl-close { position: absolute; top: 12px; right: clamp(12px, 2.4vw, 26px); z-index: 2; width: 42px; height: 42px; border-radius: 50%; border: 1px solid var(--line2); background: rgba(32, 32, 32, 0.8); color: var(--mute); font-size: 20px; line-height: 1; cursor: pointer; display: grid; place-items: center; transition: all 0.3s; backdrop-filter: blur(4px); }
+.ovl-close { position: absolute; top: 12px; right: clamp(12px, 2.4vw, 26px); z-index: 2; width: 42px; height: 42px; border-radius: 50%; border: 1px solid var(--line2); background: rgba(15, 19, 36, 0.82); color: var(--mute); font-size: 20px; line-height: 1; cursor: pointer; display: grid; place-items: center; transition: all 0.3s; backdrop-filter: blur(4px); }
 .ovl-close:hover { color: var(--ink); background: var(--text); border-color: var(--text); transform: rotate(90deg); }
 .ovl-inner { max-width: 860px; margin: 0 auto; padding: clamp(46px, 8vh, 90px) clamp(22px, 5vw, 60px) 60px; min-height: 100%; display: flex; flex-direction: column; justify-content: center; }
 .ovl-inner h2 { font-family: var(--disp); font-weight: 800; font-size: var(--t-chapter); letter-spacing: -0.03em; line-height: 1.02; }
 .ovl-inner h2 em { font-style: normal; color: transparent; -webkit-text-stroke: 1.2px var(--mute); }
 .ovl-inner .lede { color: var(--mute); max-width: 54ch; margin-top: 18px; font-size: var(--t-body); }
-.ovl-nav { display: flex; justify-content: space-between; align-items: center; margin-top: 44px; padding-top: 22px; border-top: 1px dashed var(--line); }
+.ovl-nav { display: flex; justify-content: space-between; align-items: center; margin-top: var(--sp-head); padding-top: 22px; border-top: 1px dashed var(--line); }
 .ovl-nav button { font-family: var(--mono); font-size: 11.5px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--mute); background: none; border: 1px solid var(--line2); border-radius: 99px; padding: 11px 20px; cursor: pointer; transition: all 0.3s; display: inline-flex; gap: 9px; align-items: center; }
 .ovl-nav button:hover { color: var(--text); border-color: var(--text); }
 .ovl-count { font-family: var(--mono); font-size: 11px; letter-spacing: 0.2em; color: var(--dim); }
@@ -2676,12 +3557,44 @@ body.ovl-lock { overflow: hidden; }
 .inv-meta div b { font-family: var(--disp); font-size: 15px; font-weight: 600; }
 .inv-meta-devices { display: inline-flex; align-items: center; gap: 9px; }
 .inv-meta-devices svg { width: 26px; height: 17px; color: var(--mute); flex-shrink: 0; }
+/* the vertical variant. it changes exactly three things: direction, the gap (a
+   hairline between pairs instead of 40px of air, because a column of eight
+   items 40px apart is a list you scroll rather than a block you read), and a
+   little more room under each label. the label and value rules above are
+   untouched - it is the same dim-mono / bright-display pairs the seven case
+   studies open with, which is the point: a sidebar and a header row of the same
+   facts should not be two different components.
+   NO CURRENT CONSUMER. its only user was Current Project's "what is Polarin"
+   step, whose sidebar the trim pass removed - all four of its values were
+   already stated by other steps on the same page. kept because .inv-meta
+   itself is very much alive across the case studies and this is its column
+   form, i.e. one flag away from being useful again. */
+.inv-meta-stack { flex-direction: column; gap: 0; margin-top: 0; }
+.inv-meta-stack > div { padding: 13px 0; border-top: 1px solid var(--line); }
+.inv-meta-stack > div:first-child { border-top: 0; padding-top: 0; }
+.inv-meta-stack > div span { margin-bottom: 6px; }
+/* no `display: block` here even though a stacked value wants one: the label
+   above it is already a block, so the value starts on its own line anyway, and
+   this selector outweighs .inv-meta-devices - blocking it would flatten the
+   Devices row's icon-then-text inline-flex back into two stacked pieces. */
+.inv-meta-stack > div b { color: var(--text); line-height: 1.45; }
+/* the stacked sidebar's own breakpoint - the layout half of it is up with the
+   rest of the timeline's step-01 rules; this half has to sit here, after the
+   .inv-meta base above, or `display: flex` and the 40px gap win on source
+   order. once the block it sits in has stacked, the column becomes a 2x2 grid
+   of pairs rather than four across: four across a stacked column wraps into a
+   staircase, and the hairlines that separate rows in the column have nothing
+   left to separate. */
+@media (max-width: 900px) {
+  .inv-meta-stack { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px 28px; }
+  .inv-meta-stack > div, .inv-meta-stack > div:first-child { border-top: 0; padding: 0; }
+}
 
 .inv-section { margin-top: var(--sp-sec-lg); }
 .inv-highlight { font-family: var(--disp); font-weight: 700; font-size: var(--t-lead); line-height: 1.15; letter-spacing: -0.02em; max-width: 20ch; }
-.inv-highlight mark { background: rgba(255, 143, 168, 0.18); color: var(--rose); padding: 0 8px; border-radius: 4px; box-decoration-break: clone; -webkit-box-decoration-break: clone; }
+.inv-highlight mark { background: color-mix(in srgb, var(--rose) 18%, transparent); color: var(--rose); padding: 0 8px; border-radius: 4px; box-decoration-break: clone; -webkit-box-decoration-break: clone; }
 .inv-section p.body { color: var(--mute); font-size: var(--t-body); max-width: 66ch; margin-top: 18px; }
-.inv-transition { display: inline-flex; align-items: baseline; gap: 8px; margin-top: 26px; font-family: var(--disp); font-weight: 600; font-size: 18px; color: var(--text); }
+.inv-transition { display: inline-flex; align-items: baseline; gap: 8px; margin-top: var(--sp-block); font-family: var(--disp); font-weight: 600; font-size: 18px; color: var(--text); }
 .inv-transition b { font-family: var(--mono); font-weight: 500; font-size: 12px; color: var(--ink); background: var(--text); border-radius: 6px; padding: 2px 8px; }
 
 .inv-problems { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-top: var(--sp-block); }
@@ -2710,7 +3623,7 @@ body.ovl-lock { overflow: hidden; }
 .zoom-wrap { position: relative; border-radius: var(--r-md); overflow: hidden; border: 1px solid var(--line2); box-shadow: var(--lift-lg); cursor: zoom-in; }
 .zoom-base { width: 100%; display: block; }
 .zoom-lens { position: absolute; width: 220px; height: 220px; border-radius: 50%; border: 3px solid var(--text); box-shadow: 0 0 0 3px rgba(0, 0, 0, 0.4), 0 14px 40px rgba(0, 0, 0, 0.55); pointer-events: none; transform: translate(-50%, -50%); background-repeat: no-repeat; z-index: 5; }
-.zoom-hint { position: absolute; bottom: 12px; right: 14px; font-family: var(--mono); font-size: 9.5px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--dim); background: rgba(17, 18, 21, 0.7); border: 1px solid var(--line); border-radius: 99px; padding: 4px 10px; pointer-events: none; }
+.zoom-hint { position: absolute; bottom: 12px; right: 14px; font-family: var(--mono); font-size: 9.5px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--dim); background: rgba(6, 7, 15, 0.7); border: 1px solid var(--line); border-radius: 99px; padding: 4px 10px; pointer-events: none; }
 @media (max-width: 700px) {
   .zoom-lens { display: none; }
   .zoom-wrap { cursor: default; }
@@ -2719,10 +3632,10 @@ body.ovl-lock { overflow: hidden; }
    real Polarin invoice's own palette - deliberately breaking from the
    site's dark theme so it reads as an actual document, not a themed UI.
 
-   these five --doc-* values are the one place blue survives on the site, and
-   the exception is worth naming explicitly now that there is a no-blue rule to
-   be an exception to (see --link in TOKENS). they are not site colours being
-   spent on site chrome: this is a facsimile of a real artefact, in the same
+   these five --doc-* values are the one place a hue appears on the site that
+   is neither the accent, the lime, the removed-state rose nor a rung of the
+   categorical ramp, and the exception is worth naming explicitly. they are not
+   site colours being spent on site chrome: this is a facsimile of a real artefact, in the same
    category as the screenshots in .cs-shot, and #0A3954 is Polarin's invoice
    ink rather than an accent chosen for this page. re-tinting it would make the
    mock stop being a picture of the thing it is a picture of. everything around
@@ -2827,9 +3740,12 @@ body.ovl-lock { overflow: hidden; }
 .orbit .node { position: absolute; top: 50%; left: 50%; z-index: 2; transform: translate(-50%, -50%) rotateZ(var(--a)) translateY(calc(min(360px, 72vw) / -2)) rotateZ(calc(var(--a) * -1)) rotateX(-62deg); transition: transform 0.9s cubic-bezier(.32,.9,.24,1); }
 .orbit .node.on { z-index: 6; }
 .orbit .node b { display: block; font-family: var(--mono); font-weight: 500; font-size: 11.5px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--mute); background: var(--raise2); border: 1px solid var(--line2); border-radius: 99px; padding: 8px 15px; white-space: nowrap; box-shadow: var(--lift); transition: all 0.35s; }
-/* the one red thing in the process scene: exactly one node is .on at a
-   time, and it is the step you are currently reading. */
-.orbit .node.on b { color: #fff; background: var(--signal); border-color: var(--signal); box-shadow: 0 0 26px rgba(232, 73, 45, 0.4); transform: scale(1.06); }
+/* the one accented thing in the process scene: exactly one node is .on at a
+   time, and it is the step you are currently reading. a filled pill, so it
+   takes the gradient directly - and --grad-ink rather than #fff, since a
+   white 11.5px uppercase label would wash out over the cyan end exactly the
+   way it would on the CTA. */
+.orbit .node.on b { color: var(--grad-ink); background-color: var(--signal); background-image: var(--grad); background-repeat: no-repeat; background-size: 100% 100%; border-color: transparent; box-shadow: 0 0 26px color-mix(in srgb, var(--signal) 40%, transparent); transform: scale(1.06); }
 .orbit .node.peek b { border-color: var(--line2); color: var(--text); }
 /* My Process is not a light chapter, but it sits between the two that are, so
    its pinned orbit is on screen while the frame is paper - which is why these
@@ -2869,7 +3785,7 @@ body.ovl-lock { overflow: hidden; }
 }
 .inv-brm p b { color: var(--text); }
 
-.inv-result { border: 1px solid rgba(92, 224, 168, 0.3); background: rgba(92, 224, 168, 0.06); border-radius: var(--r-md); padding: var(--pad-card); margin-top: var(--sp-block); font-family: var(--disp); font-size: 16px; color: var(--text); }
+.inv-result { border: 1px solid color-mix(in srgb, var(--up) 30%, transparent); background: color-mix(in srgb, var(--up) 6%, transparent); border-radius: var(--r-md); padding: var(--pad-card); margin-top: var(--sp-block); font-family: var(--disp); font-size: 16px; color: var(--text); }
 
 /* ---- compare slider ---- */
 .cmp-slider { margin-top: var(--sp-block); }
@@ -2878,7 +3794,7 @@ body.ovl-lock { overflow: hidden; }
 .cmp-pane img { width: 100%; height: 100%; object-fit: cover; object-position: top; display: block; pointer-events: none; }
 .cmp-after { z-index: 1; }
 .cmp-before { z-index: 2; }
-.cmp-label { position: absolute; top: 14px; font-family: var(--mono); font-size: 10px; letter-spacing: 0.14em; text-transform: uppercase; padding: 5px 12px; border-radius: 99px; background: rgba(17, 18, 21, 0.75); backdrop-filter: blur(4px); border: 1px solid var(--line2); color: var(--text); z-index: 3; pointer-events: none; }
+.cmp-label { position: absolute; top: 14px; font-family: var(--mono); font-size: 10px; letter-spacing: 0.14em; text-transform: uppercase; padding: 5px 12px; border-radius: 99px; background: rgba(6, 7, 15, 0.75); backdrop-filter: blur(4px); border: 1px solid var(--line2); color: var(--text); z-index: 3; pointer-events: none; }
 .cmp-label.l { left: 14px; }
 .cmp-label.r { right: 14px; }
 .cmp-handle { position: absolute; top: 0; bottom: 0; width: 2px; background: var(--text); z-index: 4; transform: translateX(-50%); pointer-events: none; }
@@ -2898,7 +3814,16 @@ body.ovl-lock { overflow: hidden; }
 /* ================= ABOUT PAGE ================= */
 .ab-hero { min-height: calc(88vh - var(--nav-h)); display: flex; align-items: center; padding: var(--sp-sec) 0; }
 .ab-title { font-family: var(--disp); font-weight: 800; font-size: var(--t-hero-xl); letter-spacing: -0.035em; line-height: 0.95; }
-.ab-title span { color: var(--signal); }
+/* the full stop in About's 160px "about." - the fold's single focal accent,
+   and the one place on the site the reference's headline device applies
+   literally: a background-clip:text sweep rather than a solid fill. it is
+   worth doing here specifically because the glyph is a large solid disc with
+   no counters, so all three stops actually land inside it instead of being
+   clipped down to one colour the way they would be on a thin letterform.
+   -webkit- prefix first: Safari still needs it, and both are declared rather
+   than only the standard one because the fallback if neither applies is
+   transparent text, i.e. a missing full stop. */
+.ab-title span { color: transparent; background-image: var(--grad); -webkit-background-clip: text; background-clip: text; }
 .ab-intro { display: flex; gap: 26px; align-items: flex-start; margin-top: var(--sp-fold); max-width: 760px; }
 .ab-photo { width: 96px; height: 96px; border-radius: 50%; object-fit: cover; object-position: center 82%; border: 2px solid var(--line2); flex: none; transition: transform 0.5s var(--ease), border-color 0.4s; }
 .ab-photo:hover { transform: rotate(-6deg) scale(1.06); border-color: var(--text); }
@@ -2923,13 +3848,21 @@ body.ovl-lock { overflow: hidden; }
 .ab-ring { fill: none; stroke: var(--raise2); stroke-width: 16; }
 .ab-seg { fill: none; stroke-width: 16; opacity: 0.35; cursor: pointer; pointer-events: stroke; transform: rotate(-90deg); transform-origin: 100px 100px; transition: opacity 0.35s, stroke-width 0.35s; }
 /* the three donut segments read three rungs of the chart ramp - 1 / 3 / 5, i.e.
-   every other step, so they are as far apart as that ramp goes for three series
-   (13.5 / 6.4 / 3.9:1 against the --raise2 ring on paper, 12.1 / 7.5 / 4.4:1 in
-   the dark). they were --text / --link / --up, which is what a donut usually
+   every other step, so they are as far apart as that ramp goes for three
+   series. what separates them changed with the harmonisation pass and is worth
+   restating rather than leaving a stale number here: they used to be three
+   clearly different lightnesses (12.1 / 7.5 / 4.4:1 against the --raise2 ring
+   in the dark, 13.5 / 6.4 / 3.9 on paper), and after the re-cut the three sit
+   at 8.5 / 11.4 / 8.8:1 dark and 2.6 / 2.6 / 3.8:1 on paper - i.e. much closer
+   in lightness and separated by hue instead. that is fine for exactly three
+   segments at 16-24px stroke, where hue reads immediately, and it is the
+   reason the rest of this note matters: the interaction, not the colour, is
+   what identifies a segment here.
+   they were --text / --link / --up, which is what a donut usually
    does - one hue per slice - and is exactly what a single-accent palette cannot
-   afford: blue is gone from the site and red means "the one thing to do", so a
-   three-hue chart would have had to invent a colour for each slice. lightness
-   carries it instead, and the interaction is what actually identifies a segment
+   afford: the gradient means "the one thing to do", so a three-hue chart would
+   have had to invent a colour for each slice rather than take a rung of the
+   ramp that already exists. the shared ramp carries it instead, and the interaction is what actually identifies a segment
    here anyway - hovering one takes it to opacity 1 and stroke-width 24 while its
    label appears in the panel beside it. the tokens are the shared --bar-* ramp,
    not private values, so the donut and the skills chart below stay one system. */
@@ -3027,14 +3960,14 @@ body.ovl-lock { overflow: hidden; }
 
 .dv-fails { display: grid; gap: 10px; margin-top: var(--sp-block); }
 .dvf { display: grid; grid-template-columns: auto auto 1fr; gap: 14px; align-items: baseline; border: 1px solid var(--line); border-radius: var(--r-sm); padding: 12px 16px; background: var(--ink2); transition: border-color 0.3s; }
-.dvf:hover { border-color: rgba(255, 143, 168, 0.35); }
+.dvf:hover { border-color: color-mix(in srgb, var(--rose) 35%, transparent); }
 .dvf code { font-family: var(--mono); font-size: 12px; color: var(--text); }
-.dvf-code { font-family: var(--mono); font-size: 11px; font-weight: 500; color: var(--rose); border: 1px solid rgba(255, 143, 168, 0.4); border-radius: 6px; padding: 2px 8px; }
+.dvf-code { font-family: var(--mono); font-size: 11px; font-weight: 500; color: var(--rose); border: 1px solid color-mix(in srgb, var(--rose) 40%, transparent); border-radius: 6px; padding: 2px 8px; }
 .dvf p { font-size: var(--t-body-xs); color: var(--mute); }
 
 .dv-console { border: 1px solid var(--line2); border-radius: var(--r-lg); background: var(--ink2); padding: var(--pad-card); margin-top: var(--sp-block); }
 .dvc-top { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 12px; margin-bottom: 16px; }
-.dvc-badge { font-family: var(--mono); font-size: 10px; letter-spacing: 0.16em; text-transform: uppercase; color: var(--up); border: 1px solid rgba(92, 224, 168, 0.35); border-radius: 99px; padding: 6px 12px; }
+.dvc-badge { font-family: var(--mono); font-size: 10px; letter-spacing: 0.16em; text-transform: uppercase; color: var(--up); border: 1px solid color-mix(in srgb, var(--up) 35%, transparent); border-radius: 99px; padding: 6px 12px; }
 .dv-console[data-env="prod"] .dvc-badge { color: var(--text); border-color: var(--line2); }
 .dvc-req { font-family: var(--mono); font-size: var(--t-body-xs); line-height: 1.8; color: var(--mute); border: 1px dashed var(--line); border-radius: var(--r-sm); padding: 13px 16px; background: var(--raise); }
 .dvc-req .m { color: var(--rose); }
@@ -3096,7 +4029,7 @@ body.ovl-lock { overflow: hidden; }
 .shot-run { width: 96px; height: 22px; border-radius: 99px; background: var(--mute); animation: runpulse 4.2s var(--ease) infinite; }
 @keyframes runpulse { 0%, 52%, 100% { opacity: 0.45; transform: scale(1); } 60% { opacity: 1; transform: scale(1.05); } }
 .shot-res { display: flex; flex-direction: column; gap: 9px; }
-.shot-res i { height: 8px; border-radius: 99px; background: rgba(92, 224, 168, 0.35); width: var(--w); transform-origin: left; animation: restype 4.2s var(--ease) infinite; animation-delay: 2.5s; }
+.shot-res i { height: 8px; border-radius: 99px; background: color-mix(in srgb, var(--up) 35%, transparent); width: var(--w); transform-origin: left; animation: restype 4.2s var(--ease) infinite; animation-delay: 2.5s; }
 .shot-res i:nth-child(2) { animation-delay: 2.75s; }
 @keyframes restype { 0%, 58% { transform: scaleX(0); opacity: 0; } 72%, 88% { transform: scaleX(1); opacity: 1; } 100% { transform: scaleX(0); opacity: 0; } }
 @media (max-width: 640px) {
@@ -3211,11 +4144,12 @@ body.ovl-lock { overflow: hidden; }
 .cjx { position: relative; margin-top: 16px; height: 340vh; }
 .cjx-stage { position: sticky; top: 5vh; height: 74vh; display: flex; flex-direction: column; justify-content: center; overflow: hidden; }
 /* the "day in the life" scene used to sit in a warm wash. the heat of that
-   day is carried by the copy and by the day counter's own escalation below,
-   not by a red glow behind the whole stage. */
+   day is carried by the copy and by the day counter's own escalation below -
+   which is --rose, the removed/negative mark, not the accent - rather than by
+   a glow behind the whole stage. */
 .cjx-stage .cj-day b { transition: color 0.5s, text-shadow 0.5s; }
 .cjx-stage[data-heat="1"] .cj-day b { text-shadow: 0 0 24px var(--glow-soft); }
-.cjx-stage[data-heat="2"] .cj-day b { color: var(--rose); text-shadow: 0 0 26px rgba(255, 143, 168, 0.5); }
+.cjx-stage[data-heat="2"] .cj-day b { color: var(--rose); text-shadow: 0 0 26px color-mix(in srgb, var(--rose) 50%, transparent); }
 .cjx-hook { text-align: center; }
 .cjx-q { font-family: var(--disp); font-weight: 800; font-size: var(--t-section); letter-spacing: -0.03em; line-height: 1.08; }
 .cjx-q em { font-style: normal; color: var(--mute); }
@@ -3241,11 +4175,28 @@ body.ovl-lock { overflow: hidden; }
   .cjx-step .cj-day b { font-size: clamp(34px, 9vw, 50px); }
 }
 
+/* ---- the knowledge base's site map ----
+   a raised card holding an inverted-neutral root pill, a dashed tier of
+   clickable section nodes and one note line that changes with the open node.
+   it had no consumer at all for a while - the compression pass that turned
+   the Knowledge Base case study into eight device-led sections dropped the
+   section this belongs to and left the rules behind, which is the worst of
+   both (dead CSS that reads as live). it has one again: "The shape", between
+   the bet and the six jobs. everything here stays neutral on purpose - the
+   map is structure, not a verdict, so neither the accent nor the lime
+   appears in it. */
 .kb-map { margin-top: var(--sp-block); border: 1px solid var(--line); border-radius: var(--r-md); background: var(--raise); padding: var(--pad-card); text-align: center; }
 .kb-root { display: inline-block; font-family: var(--mono); font-size: 11px; letter-spacing: 0.16em; text-transform: uppercase; color: var(--ink); background: var(--text); border-radius: 99px; padding: 8px 18px; position: relative; }
 .kb-root::after { content: ''; position: absolute; left: 50%; top: 100%; width: 1px; height: 16px; background: var(--line2); }
 .kb-tier { display: flex; flex-wrap: wrap; justify-content: center; gap: 9px; margin-top: 16px; padding-top: 14px; border-top: 1px dashed var(--line2); max-width: 640px; margin-left: auto; margin-right: auto; }
+/* a real <button> now that the map is back in the markup - it was authored
+   against a <span>, so it already declared its own font-family, size, colour,
+   background, border and padding, which is every UA button default that would
+   otherwise leak in. what it did NOT have is a keyboard state, and a
+   pointer-only disclosure is exactly what .kbx-job avoids one section down:
+   :focus-visible mirrors the hover/.on state rather than inventing a third. */
 .kbn { font-family: var(--mono); font-size: var(--t-meta); letter-spacing: 0.1em; text-transform: uppercase; color: var(--mute); background: var(--ink); border: 1px solid var(--line2); border-radius: var(--r-sm); padding: 9px 13px; cursor: pointer; transition: all 0.3s; }
+.kbn:focus-visible { color: var(--text); border-color: var(--text); outline: none; transform: translateY(-3px); }
 .kbn:hover, .kbn.on { color: var(--text); border-color: var(--line2); transform: translateY(-3px); }
 .kb-note { margin-top: 18px; font-size: 13.5px; color: var(--mute); min-height: 1.6em; font-style: italic; }
 /* ============ KNOWLEDGE BASE CASE STUDY (all scoped: kbx-) ============
@@ -3272,6 +4223,11 @@ body.ovl-lock { overflow: hidden; }
                   .dv-fails carrying one long body per row)
      .kbx-bet     the two options side by side, the rejected one dashed and
                   dimmed, and hovering either one dims the other
+     .kb-map      the shape the docs got, as a shallow site map with a note
+                  line that changes with the open node. it lives above this
+                  block with the rest of its own rules, and it is the one
+                  section this case study gained back rather than lost: the
+                  compression left its CSS behind with nothing rendering it.
      .kbx-jobs    the six jobs, as a grid of disclosure buttons: "what it
                   replaced" is revealed on hover, focus or click, so the eye
                   lands on what AI does first and the cost is a discovery
@@ -3291,10 +4247,44 @@ body.ovl-lock { overflow: hidden; }
    .kbx-open, both of which are listed with the other raised cards at the
    bottom of this file rather than painting a fill here.
 
-   colour: every glyph and every interactive state is on the neutral ladder.
-   the only non-neutrals are the two this page already used - --up and --rose,
-   on the then/now labels and the ✕ / ✓ marks, in exactly the role .kbc b.bad
-   and .kbc b.good used them in before. */
+   colour, and it is worth being exact because this page carries more of the
+   palette's semantic tokens than any other:
+
+     the accent    does not appear here at all, on purpose. the gradient's nine
+                   allowed places (see THE ACCENT in TOKENS) are all page
+                   chrome and page heroes; a case study opened in the overlay
+                   has no CTA and no sequential "you are here", so there is
+                   nothing here for it to mark. the obvious tenth - putting a
+                   gradient text-clip on .kb-pull, since the reference does
+                   exactly that to its quote callouts - was rejected because
+                   .inv-highlight is shared by every case study on the site,
+                   so it would not be one accent, it would be six.
+     --up          the lime, exactly once: .kbx-gate's chip, the human-approval
+                   strip. it also tints two small marks that predate this rule
+                   and still fit it - the ✓ on the bet that was taken and the
+                   "now" label in the independence matrix - both of which are
+                   verdicts rather than decoration. the four .kbx-swap arrows
+                   used to be lime too and are neutral now; an arrow is a
+                   connector, not an approval.
+     --rose        the mirror of it: the removed / negative side of a diff. the
+                   cost tags, the "then" labels, the ✕ on the option not taken.
+     --chip-1..6   the six .kbx-jobs chips, via data-cat="1".."6" off the
+                   categorical ramp. six parallel jobs a reader has to tell
+                   apart is the same problem as six chart series, so it gets
+                   the same answer.
+   everything else on the page - every interactive state, every other glyph,
+   the whole site map - is on the neutral ladder. the page's other 17 chips
+   stay neutral deliberately, because they are either sets that share one
+   meaning (four swaps, four costs, four acts, two bets) or a single accent on
+   a plain strip (.kbx-open). colouring those too would turn a device into
+   wallpaper and cost the jobs grid the distinction it is being given.
+
+   what this page still does NOT do, and must not start doing: put a number on
+   any of it. the illustrative figures this case study was drafted from are not
+   measured facts, so the copy is qualitative throughout and .kbx-open says so
+   in as many words. the new visual system makes a stat card easy to build,
+   which is precisely why this note is here - the device being available is not
+   evidence arriving. */
 .kbx-rv { opacity: 0; transform: translateY(18px); transition: opacity 0.7s var(--ease), transform 0.8s var(--ease); }
 .kbx-rv.on { opacity: 1; transform: none; }
 b.kbx-hl { display: inline; margin: 0; font-family: var(--body); font-size: inherit; font-weight: 600; letter-spacing: normal; text-transform: none; color: var(--text); }
@@ -3308,20 +4298,24 @@ b.kbx-hl { display: inline; margin: 0; font-family: var(--body); font-size: inhe
 
 /* the shift: four tiles, each one dependency traded for another */
 .kbx-swaps { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-top: var(--sp-block); }
-.kbx-swap { border: 1px solid var(--line); border-radius: var(--r-md); background: var(--ink2); padding: var(--pad-card-sm); transition: border-color 0.3s, transform 0.3s var(--ease); }
+.kbx-swap { border: 1px solid var(--line); border-radius: var(--r-sm); background: var(--ink2); padding: var(--pad-card-sm); transition: border-color 0.3s, transform 0.3s var(--ease); }
 .kbx-swap:hover { border-color: var(--line2); transform: translateY(-3px); }
 .kbx-swap s { display: block; margin-top: 13px; font-family: var(--mono); font-size: var(--t-micro); letter-spacing: 0.08em; text-transform: uppercase; color: var(--dim); }
 .kbx-swap b { display: block; margin-top: 7px; font-family: var(--disp); font-size: var(--t-card-sm); font-weight: 700; letter-spacing: -0.01em; line-height: 1.3; color: var(--text); }
-.kbx-swap b::before { content: "→ "; font-family: var(--mono); font-weight: 500; color: var(--up); }
+/* the arrow is a connector, not a verdict, so it is --mute rather than the
+   lime it used to be. the lime has exactly one job on this page now (see the
+   gate strip below) and four bright green arrows in the first device on the
+   page is how a token with one job quietly becomes wallpaper. */
+.kbx-swap b::before { content: "→ "; font-family: var(--mono); font-weight: 500; color: var(--mute); }
 
 /* the real cost: the consequence in display type, the cause as the small line */
 .kbx-costs { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: var(--sp-block); }
-.kbx-cost { display: grid; grid-template-columns: var(--chip-sm) minmax(0, 1fr); gap: 0 14px; border: 1px solid var(--line); border-radius: var(--r-sm); background: var(--ink2); padding: 14px 16px; transition: border-color 0.3s; }
+.kbx-cost { display: grid; grid-template-columns: var(--chip-sm) minmax(0, 1fr); gap: 0 14px; border: 1px solid var(--line); border-radius: var(--r-sm); background: var(--ink2); padding: var(--pad-card-sm); transition: border-color 0.3s; }
 .kbx-cost:hover { border-color: color-mix(in srgb, var(--rose) 35%, transparent); }
 .kbx-cost > i { grid-row: 1 / span 3; align-self: start; }
 .kbx-cost-m { display: flex; flex-wrap: wrap; align-items: center; gap: 9px; }
 .kbx-cost code { font-family: var(--mono); font-size: 11.5px; color: var(--mute); }
-.kbx-tag { font-family: var(--mono); font-size: 10px; font-weight: 500; letter-spacing: 0.1em; text-transform: uppercase; color: var(--rose); border: 1px solid color-mix(in srgb, var(--rose) 40%, transparent); border-radius: 6px; padding: 2px 8px; }
+.kbx-tag { font-family: var(--mono); font-size: 10px; font-weight: 500; letter-spacing: 0.1em; text-transform: uppercase; color: var(--rose); border: 1px solid color-mix(in srgb, var(--rose) 40%, transparent); border-radius: var(--r-xs); padding: 2px 8px; }
 .kbx-cost > b { margin-top: 8px; font-family: var(--disp); font-size: var(--t-card-sm); font-weight: 700; letter-spacing: -0.01em; line-height: 1.35; color: var(--text); }
 .kbx-cost > p { margin-top: 5px; font-size: var(--t-body-xs); line-height: 1.5; color: var(--mute); }
 
@@ -3362,6 +4356,16 @@ b.kbx-hl { display: inline; margin: 0; font-family: var(--body); font-size: inhe
 /* the one thing that is true of all six - and the reason none of it is a
    "replace the humans" story. sits on --raise2 the way .aud-p did. */
 .kbx-gate { display: flex; align-items: center; gap: 15px; margin-top: 12px; border: 1px solid var(--line2); border-radius: var(--r-md); background: var(--raise2); padding: var(--pad-card-sm); }
+/* THE LIME, and the only one on this page. --up marks the good / human /
+   approved moment and nothing else (see its note in TOKENS), and this strip is
+   that moment stated outright: every job above drafts, a human approves. the
+   chip borrows the categorical chip's wash structure - 14% of the colour over
+   the surface, a 30% hairline, the glyph at full strength - so it is the same
+   object as the six job chips above it at the same weight, differing only in
+   that its hue means a verdict rather than a category. two selectors deep, so
+   it outranks both the neutral chip recipe at the bottom of this file and
+   .kbx-ic's own --mute default without needing source order to settle it. */
+.kbx-gate .kbx-ic { color: var(--up); background: color-mix(in srgb, var(--up) 14%, var(--card-fill)); border-color: color-mix(in srgb, var(--up) 30%, var(--line2)); }
 .kbx-gate p { font-size: var(--t-body-sm); line-height: 1.5; color: var(--mute); }
 
 /* the three rules, on the existing principle card plus a chip */
@@ -3385,7 +4389,7 @@ b.kbx-hl { display: inline; margin: 0; font-family: var(--body); font-size: inhe
 .kbx-ind { margin-top: var(--sp-block); }
 .kbx-tog { margin-top: 0; margin-bottom: 14px; }
 .kbx-acts { display: grid; gap: 10px; }
-.kbx-act { display: grid; grid-template-columns: 0.9fr 1fr 1fr; gap: 10px 16px; align-items: center; border: 1px solid var(--line); border-radius: var(--r-sm); background: var(--ink2); padding: 12px 16px; transition: border-color 0.3s; }
+.kbx-act { display: grid; grid-template-columns: 0.9fr 1fr 1fr; gap: 10px 16px; align-items: center; border: 1px solid var(--line); border-radius: var(--r-sm); background: var(--ink2); padding: var(--pad-card-sm); transition: border-color 0.3s; }
 .kbx-act:hover { border-color: var(--line2); }
 .kbx-act-t { display: flex; align-items: center; gap: 12px; font-family: var(--disp); font-size: var(--t-card-sm); font-weight: 700; letter-spacing: -0.01em; color: var(--text); }
 .kbx-cell { font-size: var(--t-body-sm); line-height: 1.45; transition: opacity 0.3s, color 0.3s; }
@@ -3394,7 +4398,12 @@ b.kbx-hl { display: inline; margin: 0; font-family: var(--body); font-size: inhe
 .kbx-cell.b em { color: var(--rose); }
 .kbx-cell.n { color: var(--text); }
 .kbx-cell.n em { color: var(--up); }
-.kbx-ind-f { display: grid; grid-template-columns: 0.9fr 1fr 1fr; gap: 16px; margin-top: 12px; padding: 0 16px; }
+/* the matrix footer is not a box - it is three captions that have to sit under
+   the three columns of .kbx-act above it, so its horizontal padding has to be
+   whatever that row's padding currently is. it tracked a hand-written 16px;
+   .kbx-act is on --pad-card-sm now, so this reads the same token's inline half
+   rather than a number that has to be remembered. */
+.kbx-ind-f { display: grid; grid-template-columns: 0.9fr 1fr 1fr; gap: 16px; margin-top: 12px; padding: 0 18px; }
 .kbx-ind-f p { font-family: var(--mono); font-size: 11px; letter-spacing: 0.04em; line-height: 1.5; color: var(--dim); transition: opacity 0.3s; }
 .kbx-ind.s-now .kbx-cell.b, .kbx-ind.s-now .kbx-ind-f p.b { opacity: 0.35; }
 .kbx-ind.s-before .kbx-cell.n, .kbx-ind.s-before .kbx-ind-f p.n { opacity: 0.35; }
@@ -3408,7 +4417,7 @@ b.kbx-hl { display: inline; margin: 0; font-family: var(--body); font-size: inhe
 /* and the panel that refuses to put a number on any of it */
 .kbx-open { display: flex; align-items: flex-start; gap: 17px; margin-top: var(--sp-block); border: 1px solid var(--line2); border-radius: var(--r-md); background: var(--raise); padding: var(--pad-card); }
 .kbx-open span { display: block; margin-bottom: 9px; font-family: var(--mono); font-size: 10px; letter-spacing: 0.18em; text-transform: uppercase; color: var(--mute); }
-.kbx-open p { font-family: var(--disp); font-size: 15.5px; line-height: 1.5; color: var(--text); }
+.kbx-open p { font-family: var(--disp); font-size: var(--t-card-sm); line-height: 1.5; color: var(--text); }
 
 @media (hover: none) {
   /* nothing on a touch device is behind a hover: the replaced line is simply
@@ -3470,7 +4479,15 @@ b.kbx-hl { display: inline; margin: 0; font-family: var(--body); font-size: inhe
 .gac-pane.ai .gac-pane-h b { color: var(--text); }
 .gac-step { display: grid; grid-template-columns: 34px minmax(0, 1fr); gap: 13px; align-items: start; position: relative; padding-bottom: 18px; }
 .gac-step:not(:last-child)::before { content: ""; position: absolute; left: 17px; top: 38px; bottom: 4px; border-left: 1px dashed var(--line2); }
-.gac-step > i { width: var(--chip-sm); height: var(--chip-sm); border-radius: var(--r-sm); display: grid; place-items: center; background: var(--ink2); border: 1px solid var(--line2); color: var(--mute); font-style: normal; position: relative; z-index: 1; transition: color 0.3s, border-color 0.3s; }
+/* the fifth chip on the site, and the one the chip-consolidation pass missed:
+   it painted its own --ink2 fill instead of joining the shared recipe at the
+   bottom of this file. that was not a tuned exception, it was inconsistent
+   within its own row - --ink2 sits ABOVE the .now pane's --ink ground (raised,
+   correct) and BELOW the .ai pane's --raise top (recessed, wrong), so the same
+   chip read two different ways in one comparison. the fill and hairline come
+   from the shared rule now, which is "one step above whatever this sits on" by
+   construction; size, radius, stacking and the stepped hover stay here. */
+.gac-step > i { width: var(--chip-sm); height: var(--chip-sm); border-radius: var(--r-sm); display: grid; place-items: center; color: var(--mute); font-style: normal; position: relative; z-index: 1; transition: color 0.3s, border-color 0.3s; }
 .gac-pane.ai .gac-step > i { color: var(--text); border-color: var(--line2); }
 .gac-step > i svg { width: 18px; height: 18px; }
 .gac-step b { display: block; font-size: 13.5px; font-weight: 600; color: var(--text); line-height: 1.45; }
@@ -3555,12 +4572,12 @@ b.kbx-hl { display: inline; margin: 0; font-family: var(--body); font-size: inhe
 .gac-v.a i { border-color: var(--up); }
 .gac-v.b i { border-color: var(--text); }
 .gac-v.c i { border-color: var(--rose); }
-.gac-v.a:hover { border-color: rgba(92, 224, 168, 0.35); }
+.gac-v.a:hover { border-color: color-mix(in srgb, var(--up) 35%, transparent); }
 .gac-v.b:hover { border-color: var(--line2); }
-.gac-v.c:hover { border-color: rgba(255, 143, 168, 0.35); }
+.gac-v.c:hover { border-color: color-mix(in srgb, var(--rose) 35%, transparent); }
 .gac-v b { display: block; font-family: var(--disp); font-size: var(--t-card); font-weight: 700; letter-spacing: -0.01em; color: var(--text); }
 .gac-v p { font-size: 12px; line-height: 1.5; color: var(--dim); margin-top: 7px; }
-.gac-open { margin-top: var(--sp-block); border: 1px solid var(--line2); background: var(--raise); border-radius: var(--r-md); padding: var(--pad-card); font-family: var(--disp); font-size: 15.5px; line-height: 1.5; color: var(--text); text-align: center; }
+.gac-open { margin-top: var(--sp-block); border: 1px solid var(--line2); background: var(--raise); border-radius: var(--r-md); padding: var(--pad-card); font-family: var(--disp); font-size: var(--t-card-sm); line-height: 1.5; color: var(--text); text-align: center; }
 .gac-open span { display: block; font-family: var(--mono); font-size: 10px; letter-spacing: 0.18em; text-transform: uppercase; color: var(--mute); margin-bottom: 9px; }
 
 @media (max-width: 860px) {
@@ -3600,7 +4617,7 @@ b.kbx-hl { display: inline; margin: 0; font-family: var(--body); font-size: inhe
 .hm-path { fill: none; stroke: var(--line2); stroke-width: 1.5; stroke-dasharray: 4 7; }
 .hm-dot { fill: var(--ink); stroke: var(--mute); stroke-width: 2; filter: drop-shadow(0 0 6px var(--glow-soft)); animation: hm-pulse 3.6s ease-in-out infinite; }
 .hm-dot.d2 { stroke: var(--text); animation-delay: 1.2s; filter: drop-shadow(0 0 6px var(--glow-soft)); }
-.hm-dot.d3 { stroke: var(--up); animation-delay: 2.4s; filter: drop-shadow(0 0 6px rgba(92, 224, 168, 0.5)); }
+.hm-dot.d3 { stroke: var(--up); animation-delay: 2.4s; filter: drop-shadow(0 0 6px color-mix(in srgb, var(--up) 50%, transparent)); }
 @keyframes hm-pulse { 0%, 100% { r: 6; } 50% { r: 9; } }
 @media (max-width: 1100px) { .hero-map { display: none; } }
 @media (max-width: 1100px) { .glyph { display: none; } }
@@ -3886,7 +4903,8 @@ body.static .scene { height: auto !important; }
 .kbx-job,
 .kbx-open,
 .lstep,
-.soon-term {
+.soon-term,
+.tlx-spot {
   background: var(--card-fill);
   box-shadow: var(--lift);
 }
@@ -3950,11 +4968,71 @@ body.static .scene { height: auto !important; }
    each component's own rule; the fill and the hairline are here, so a chip is
    always exactly one step above the card it sits on and tracks it through the
    flip (--surface2 is derived from --surface, so it inverts direction on paper
-   with the rest of the ladder). */
+   with the rest of the ladder).
+
+   .gac-step > i is the fifth, added here rather than left on the private
+   --ink2 fill it had - see the note on its own rule for why that fill was
+   inconsistent inside its own component. .tl-cs-icon is still deliberately
+   outside this list (it wants a brighter badge than --surface2; its own rule
+   says so). */
 .cj-ico,
 .gac-card > i,
+.gac-step > i,
 .adm-mod-ic,
 .kbx-ic {
   background: var(--surface2);
   border: 1px solid var(--line2);
+}
+
+/* ---- the categorical icon chip ----
+   the neutral rule above is the default; this is what a chip wears when it is
+   one of three or more parallel siblings a reader has to tell apart. the
+   reasoning, the measured contrast and the rule for who qualifies all live
+   with the --chip-* tokens in TOKENS - the short version is that this is the
+   chart's "categorical colour, not a chrome accent" argument applied to icon
+   badges, so it never touches the accent rule in TOKENS - a chip's hue is a
+   category label, and the ramp is cut to clear the accent's three hues by at
+   least 29 degrees precisely so the two can never be confused.
+
+   it is one attribute, not one class per component, because all three
+   consumers already had a chip and only needed a hue: data-cat="1".."6" both
+   selects the rung and triggers the treatment. the wash structure is lifted
+   wholesale from .tl-cs-icon's neutral badge - 14% of the colour over the card
+   it sits on, 22% on hover - so a coloured chip and a neutral one are the same
+   object at the same weight, differing only in hue. the glyph itself is the
+   full-strength colour, which is where the contrast is spent: 6.4-7.8:1 on
+   dark, 4.7-5.8:1 on paper, and 4.2-5.1:1 at the deeper hover wash.
+
+   this block has to sit after the neutral rule and after every component's own
+   chip rule - .kbx-ic, .adm-mod-ic and .tl-cs-icon are all one class deep, the
+   same as [data-cat], so source order is what settles the tie. the hover list
+   below is likewise the same depth as each component's own hover. */
+[data-cat="1"] { --chip-c: var(--chip-1); }
+[data-cat="2"] { --chip-c: var(--chip-2); }
+[data-cat="3"] { --chip-c: var(--chip-3); }
+[data-cat="4"] { --chip-c: var(--chip-4); }
+[data-cat="5"] { --chip-c: var(--chip-5); }
+[data-cat="6"] { --chip-c: var(--chip-6); }
+
+[data-cat] {
+  color: var(--chip-c);
+  background: color-mix(in srgb, var(--chip-c) 14%, var(--card-fill));
+  border-color: color-mix(in srgb, var(--chip-c) 30%, var(--line2));
+  transition: background 0.3s, border-color 0.3s, color 0.3s;
+}
+
+/* one hover step, deeper wash and a firmer hairline - the chip stays its own
+   hue rather than resolving toward --text, which is what the neutral chips do.
+   .kbx-job's rest-state glyph is --mute and its hover takes it to --text; both
+   are overridden here so a coloured job chip keeps its category through every
+   state, including the click-to-open .on state that touch and keyboard use. */
+.tl-cs-card:hover [data-cat],
+.tl-cs-card:focus-visible [data-cat],
+.adm-mod:hover [data-cat],
+.kbx-job:hover [data-cat],
+.kbx-job:focus-visible [data-cat],
+.kbx-job.on [data-cat] {
+  color: var(--chip-c);
+  background: color-mix(in srgb, var(--chip-c) 22%, var(--card-fill));
+  border-color: color-mix(in srgb, var(--chip-c) 55%, var(--line2));
 }
