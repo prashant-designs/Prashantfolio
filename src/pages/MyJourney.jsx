@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import ScrollHint from '../components/ScrollHint';
+import useHeroPointer from '../useHeroPointer';
 
 const CROSSING = [
   {
@@ -185,9 +186,32 @@ function TheMultiplier() {
   );
 }
 
+// the hero's one in-page jump. same shape as Current Project's `scrollTo`, and
+// the same reason it is not an href: the site is on hash routing, so `#ch1`
+// would be read as a route rather than as a fragment.
+function scrollToChapterOne() {
+  document.getElementById('ch1')?.scrollIntoView({
+    behavior: window.matchMedia('(prefers-reduced-motion:reduce)').matches ? 'auto' : 'smooth',
+    block: 'start',
+  });
+}
+
 export default function MyJourney() {
   const heroRef = useRef(null);
-  const heroCardRef = useRef(null);
+
+  /* the fold's shared cursor interaction - same hook, same numbers, on all four
+     inner pages (src/useHeroPointer.js). this page is where it started, and it
+     was the one fold whose tilt card was the reading column itself rather than
+     the motif: #heroCard's three copy planes were cut for exactly this lean
+     (see THE DEPTH RULES in index.css) and the three ambient chips are its
+     data-depth drifters. all four folds tilt their copy now - see WHAT LEANS in
+     THE POINTER LAYER - so this arrangement is the shared one rather than this
+     page's own, and #heroCard needs no ref for it: the hook writes the lean onto
+     the fold as --hero-tilt-x/y and .hero-tilt spends it in CSS. what the move
+     to the hook changed here is one real gap - the effect used to check
+     (pointer:fine) but not prefers-reduced-motion, so a reader who had asked for
+     less motion got the tilt anyway. */
+  useHeroPointer(heroRef);
 
   useEffect(() => {
     const clamp = (v, a, b) => Math.min(b, Math.max(a, v));
@@ -206,35 +230,9 @@ export default function MyJourney() {
     );
     document.querySelectorAll('.rv').forEach((el) => rvObs.observe(el));
 
-    // subtle hero tilt + floating-glyph parallax on mouse move (desktop only)
-    const hero = heroRef.current;
-    const heroCard = heroCardRef.current;
-    const glyphEls = hero ? [...hero.querySelectorAll('.glyph')] : [];
-    let onHeroMove;
-    let onHeroLeave;
-    if (window.matchMedia('(pointer:fine)').matches && hero && heroCard) {
-      let frame = null;
-      onHeroMove = (event) => {
-        if (frame) return;
-        frame = window.requestAnimationFrame(() => {
-          const rect = hero.getBoundingClientRect();
-          const x = (event.clientX - rect.left) / rect.width - 0.5;
-          const y = (event.clientY - rect.top) / rect.height - 0.5;
-          heroCard.style.transform = `rotateY(${x * 5}deg) rotateX(${y * -4}deg)`;
-          glyphEls.forEach((g) => {
-            const depth = Number(g.dataset.depth || 20);
-            g.style.transform = `translate(${x * depth}px, ${y * depth}px)`;
-          });
-          frame = null;
-        });
-      };
-      onHeroLeave = () => {
-        heroCard.style.transform = '';
-        glyphEls.forEach((g) => { g.style.transform = ''; });
-      };
-      hero.addEventListener('mousemove', onHeroMove);
-      hero.addEventListener('mouseleave', onHeroLeave);
-    }
+    // the hero tilt + floating-chip parallax that used to be inlined here is
+    // now useHeroPointer above - four folds needed the same one, so it is
+    // declared once in src/useHeroPointer.js.
 
     // --- scroll-scrubbed pinned scenes: Ch1 (Pixel Years) + Ch3 (The Multiplier) ---
     const wrapWords = (el) => {
@@ -346,34 +344,68 @@ export default function MyJourney() {
 
     return () => {
       rvObs.disconnect();
-      if (hero && onHeroMove) hero.removeEventListener('mousemove', onHeroMove);
-      if (hero && onHeroLeave) hero.removeEventListener('mouseleave', onHeroLeave);
       if (raf) window.cancelAnimationFrame(raf);
     };
   }, []);
 
   return (
     <main id="top">
-      {/* PROLOGUE */}
-      <section className="hero zone zone-sink" id="hero" ref={heroRef} data-ch="Prologue">
-        <span className="glyph" data-depth="18" style={{ top: '20%', left: '5%' }}>⚡ portal-prd-v3.md</span>
-        <span className="glyph" data-depth="30" style={{ top: '68%', left: '9%' }}>✦ ai --pair</span>
-        <span className="glyph" data-depth="24" style={{ top: '28%', right: '6%' }}>▷ vercel --prod</span>
+      {/* PROLOGUE - the opening fold, on the shared PAGE HERO RECIPE in
+          src/index.css: same six slots, same order, same weight as the other
+          three inner pages. this page's own content inside them: the three-line
+          statement, the perspective tilt, and the ambient motif zone below. */}
+      <section className="hero-fold zone zone-sink" id="hero" ref={heroRef} data-ch="Prologue">
+        {/* the recipe's motif slot, ambient: the right margin, outside the
+            reading column, hairline weight, pointer-events none, gone under
+            1100px. the three chips used to be scattered at left: 5% / left: 9%,
+            i.e. on top of the headline's own left edge - they belong in the same
+            zone as the path they annotate. `data-depth` is the shared drift
+            amount useHeroPointer reads (src/useHeroPointer.js); the coordinates
+            are inline because the hook writes `transform` on these elements and
+            a base transform there would be overwritten.
+            they go in as --hero-amb-top / --hero-amb-right rather than as top /
+            right: the same percentages, rounded to the nearest line of the
+            site's drawn grid by the CSS before they are spent, so a chip's
+            corner lands on an intersection instead of near one. see THE AMBIENT
+            SNAP in index.css. */}
+        <span className="glyph" data-depth="18" style={{ '--hero-amb-top': '17%', '--hero-amb-right': '7%' }}>⚡ portal-prd-v3.md</span>
+        <span className="glyph" data-depth="30" style={{ '--hero-amb-top': '25%', '--hero-amb-right': '24%' }}>✦ ai --pair</span>
+        <span className="glyph" data-depth="24" style={{ '--hero-amb-top': '76%', '--hero-amb-right': '11%' }}>▷ vercel --prod</span>
         <svg className="hero-map" viewBox="0 0 220 320" aria-hidden="true">
           <path className="hm-path" d="M40 280 C 20 200, 140 220, 120 140 C 100 60, 200 80, 180 30" />
           <circle className="hm-dot" cx="40" cy="280" r="6" />
           <circle className="hm-dot d2" cx="120" cy="140" r="6" />
           <circle className="hm-dot d3" cx="180" cy="30" r="6" />
         </svg>
-        <div className="wrap hero-inner">
-          <div id="heroCard" ref={heroCardRef}>
-            <p className="hero-kicker">My Journey · <b>three chapters</b></p>
-            <h1>
-              <span className="l1">Every product</span><br />
-              <span className="l2">is a story.</span><br />
-              <span className="l3">I ship the plot.</span><span className="car" aria-hidden="true"></span>
+        {/* the tilt scene and the tilt card are the shared pair from
+            THE POINTER LAYER in index.css; the three copy planes inside the card
+            are still this page's own (THE DEPTH RULES).
+            the slots carry the same reveal stagger as the other three heroes -
+            eyebrow, headline (d1), lede (d2), action row (d3). they could not
+            before: the depth planes are ID-scoped, so they beat .rv's own
+            transform outright and the entrance simply never moved. the planes
+            compose translateY(var(--rv-y)) now, so the numbers are .rv's. */}
+        <div className="wrap hero-inner hero-tilt-scene">
+          <div id="heroCard" className="hero-tilt">
+            <p className="hero-eyebrow rv">My Journey · <b>three chapters</b></p>
+            {/* the recipe's headline: solid lines, ONE hollow line, and the
+                accent on the terminal full stop. the middle line used to be a
+                third treatment - mid-grey --mute - which made this the only
+                headline on the site arguing three levels of emphasis at once. */}
+            <h1 className="hero-title rv d1">
+              Every product<br />
+              is a story.<br />
+              <span className="hero-hollow">I ship the plot</span><span className="hero-dot">.</span>
             </h1>
-            <p className="hero-sub">First designer at <b>Lightstorm</b>. Now I ship the whole loop myself.</p>
+            <p className="hero-lede rv d2">First designer at <b>Lightstorm</b>. Now I ship the whole loop myself.</p>
+            {/* plain scrollIntoView rather than an href anchor, for the reason
+                Current Project's hero jump gives: the site is on hash routing
+                (#/journey), so a `#ch1` href would be read as a route. */}
+            <div className="soon-ctas rv d3">
+              <button type="button" className="btn-ghost" onClick={() => scrollToChapterOne()}>
+                Start at Chapter 01 <span aria-hidden="true">↓</span>
+              </button>
+            </div>
           </div>
         </div>
         <ScrollHint label="Scroll to begin" />

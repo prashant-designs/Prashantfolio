@@ -1,4 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
+import ScrollHint from '../components/ScrollHint';
+import useHeroPointer from '../useHeroPointer';
 
 const MIX = {
   design: {
@@ -40,6 +42,20 @@ const SKILLS = [
   { label: '3D & animation', v: 74, c: 'var(--bar-6)' },
 ];
 
+/* the opening fold's three ambient chips - see THE AMBIENT CHIP in
+   PAGE HERO RECIPE (src/index.css). `key` points at MIX above rather than
+   carrying its own copy of the words, so the chips say exactly what the mix ring
+   says. `depth` is the drift amount useHeroPointer reads
+   (src/useHeroPointer.js): three different values inside the 3-30 range the four
+   folds share, so the three chips separate from each other under the cursor
+   instead of moving as one plane. top/right park them in the fold's ambient
+   zone - the right margin, clear of the reading column. */
+const HERO_CHIPS = [
+  { key: 'design', depth: 16, top: '21%', right: '8%' },
+  { key: 'product', depth: 28, top: '31%', right: '23%' },
+  { key: 'build', depth: 22, top: '73%', right: '12%' },
+];
+
 const FACTS = [
   { ic: '🎬', t: 'free time = films - the longer, the better' },
   { ic: '🚗', t: 'love to drive · playlists are non-negotiable' },
@@ -55,6 +71,13 @@ export default function About() {
   const [chartIn, setChartIn] = useState(false);
   const [vals, setVals] = useState(SKILLS.map(() => 0));
   const loopSceneRef = useRef(null);
+  const heroRef = useRef(null);
+
+  // the fold's shared cursor interaction - same hook, same numbers, on all four
+  // inner pages (src/useHeroPointer.js). the hook only needs the fold now: it
+  // writes the lean onto it as --hero-tilt-x/y and every .hero-tilt inside
+  // spends them, so what leans here is decided in the markup below.
+  useHeroPointer(heroRef);
 
   useEffect(() => {
     const scene = loopSceneRef.current;
@@ -120,23 +143,85 @@ export default function About() {
 
   return (
     <>
-      <section className="ab-hero zone zone-sink" data-ch="Intro">
-        <div className="wrap">
-          <h1 className="ab-title rv d1">about<span>.</span></h1>
-          <div className="ab-intro">
-            <img
-              className="ab-photo rv d2"
-              src="/image.png"
-              alt="Prashant Kumar"
-              onError={(e) => { e.target.style.display = 'none'; }}
-            />
-            <div>
-              <p className="ab-lede rv d2">I&apos;m Prashant - product manager at Lightstorm, building <b>Polarin</b>, India&apos;s first self-serve NaaS platform. Designer by training, builder by habit: I ship the things I spec.</p>
-              <p className="ab-lede2 rv d3">Four years ago I was the first designer on a whiteboard idea. Now I run its roadmap - and still push its frontend to production myself.</p>
-              <a className="btn-ghost ab-resume rv d3" href="/Prashant_Resume.pdf" target="_blank" rel="noopener noreferrer">Download résumé <span aria-hidden="true">↓</span></a>
+      {/* the opening fold, on the shared PAGE HERO RECIPE in src/index.css -
+          same six slots, same order, same weight as the other three inner
+          pages. this page's own content inside them: the portrait (the recipe's
+          motif slot, taken inline beside the lede) and the résumé link. */}
+      <section className="hero-fold zone zone-sink" ref={heroRef} data-ch="Intro">
+        {/* THE AMBIENT CHIP slot from the shared PAGE HERO RECIPE (see
+            index.css) - three of them, in the fold's right margin, outside the
+            reading column. they are here for the interaction rather than for
+            the decoration: the drift half of useHeroPointer moves every
+            [data-depth] element in the fold by its own amount, and until now
+            this fold had exactly one moving plane (the portrait's tilt), which
+            is why the same hook read as a quieter interaction here than on My
+            Journey. three chips at three depths is three more planes.
+            the text is not invented for the slot - it is the same three-way
+            split the mix ring further down this page prints, read straight out
+            of MIX so the two can never disagree. coordinates and depths are
+            inline for the reason the recipe gives: the hook writes the whole
+            `transform` on these elements, so a base transform in CSS would be
+            overwritten.
+            the coordinates go in as --hero-amb-top / --hero-amb-right rather
+            than as top / right: the values are the same percentages they always
+            were, but the CSS rounds each of them to the nearest line of the
+            site's drawn grid before spending it, so a chip's corner lands on an
+            intersection. see THE AMBIENT SNAP in index.css. */}
+        {HERO_CHIPS.map((c) => (
+          <span
+            key={c.key}
+            className="glyph"
+            data-depth={c.depth}
+            style={{ '--hero-amb-top': c.top, '--hero-amb-right': c.right }}
+          >
+            {MIX[c.key].name} · {MIX[c.key].pct}
+          </span>
+        ))}
+        {/* the tilt scene and the tilt card are the shared pair from
+            THE POINTER LAYER in index.css, and the card is this fold's TEXT -
+            eyebrow, headline, and the intro row holding the lede and the action.
+            it used to be the portrait instead, i.e. the one thing on the fold
+            that answered the cursor was a 96px photograph in the corner while
+            every word sat still. My Journey had it right from the start (its
+            #heroCard is exactly this block) and this is the same arrangement.
+            the portrait rides inside the card rather than leaning on its own:
+            it sits in the reading column, so it is inside the text block by
+            position, and a .hero-tilt nested in a .hero-tilt would rotate
+            twice. */}
+        <div className="wrap hero-tilt-scene">
+          <div className="hero-tilt">
+            <p className="hero-eyebrow rv">About · <b>Prashant Kumar</b></p>
+            <h1 className="hero-title rv d1">about<span className="hero-dot">.</span></h1>
+            <div className="ab-intro">
+              {/* two things still want to transform the portrait - the shared
+                  reveal and its own hover lift - and one element can only carry
+                  one, so each keeps its own box: the span reveals, the
+                  photograph lifts on hover. (a third box used to sit between
+                  them for the pointer tilt; the tilt is on the text card above
+                  now.) the split is also what keeps the reveal on the SHARED
+                  timing: .ab-photo's own transition list is later in index.css
+                  than .rv's, so with the reveal on the <img> it silently ran the
+                  portrait in at 0.5s with no opacity fade at all while the other
+                  five slots ran at .rv's 0.75s/1s. */}
+              <span className="ab-photo-w rv d2">
+                <img
+                  className="ab-photo"
+                  src="/image.png"
+                  alt="Prashant Kumar"
+                  onError={(e) => { e.target.style.display = 'none'; }}
+                />
+              </span>
+              <div>
+                <p className="hero-lede rv d2">I&apos;m Prashant - product manager at Lightstorm, building <b>Polarin</b>, India&apos;s first self-serve NaaS platform. Designer by training, builder by habit: I ship the things I spec.</p>
+                <p className="hero-lede rv d3">Four years ago I was the first designer on a whiteboard idea. Now I run its roadmap - and still push its frontend to production myself.</p>
+                <div className="soon-ctas rv d3">
+                  <a className="btn-ghost" href="/Prashant_Resume.pdf" target="_blank" rel="noopener noreferrer">Download résumé <span aria-hidden="true">↓</span></a>
+                </div>
+              </div>
             </div>
           </div>
         </div>
+        <ScrollHint label="scroll to the mix" />
       </section>
 
       <section className="ab-split zone zone-lift flip" data-ch="The Mix">

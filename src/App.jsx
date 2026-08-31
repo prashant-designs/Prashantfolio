@@ -31,7 +31,11 @@ const NotFound = lazy(() => import('./pages/NotFound'));
    -40% bottom). so a chapter still turns the page over once it is the
    dominant thing on screen rather than at its first visible pixel, and turns
    it back on the way out. .flip-lock is the always-on marker for a page that
-   is light from mount with nothing to alternate against (Other Projects).
+   is light from mount with nothing to alternate against; no page declares it
+   today - Other Projects was the one that did, and it dropped the marker when
+   the four inner pages moved onto one hero template that opens dark on all four
+   (see PAGE HERO RECIPE in src/index.css). the branch below is kept: a one-fold
+   light page is a real case and it is two lines.
 
    deliberately imperative, like the pinned-scene hooks and useScrollBeat: a
    class toggle on one node per scroll frame, never React state, so scrolling

@@ -6,6 +6,7 @@ import DeveloperPortalCaseStudy from '../components/DeveloperPortalCaseStudy';
 import KnowledgeBaseCaseStudy from '../components/KnowledgeBaseCaseStudy';
 import GenAICaseStudy from '../components/GenAICaseStudy';
 import ScrollHint from '../components/ScrollHint';
+import useHeroPointer from '../useHeroPointer';
 
 const STATS = [
   { to: 3, prefix: '', suffix: '×', label: 'self-serve adoption' },
@@ -177,20 +178,27 @@ function useStackFade(rootRef) {
       //
       // --cover (on step i) drives the settle - scale, dim, marker fade - and
       // is suppressed under reduced motion, same as before.
-      // --covering (on step i+1) is the same raw number but NEVER
-      // suppressed: it is how opaque step i+1's own backing fill needs to be
-      // to actually hide step i, which still has to happen with the settle's
-      // animation turned off, or step i+1 would be a transparent pane with
-      // step i's text bleeding through it. step 0 never receives one, so it
-      // has no backing fill at all and reads as the page, not a panel - it is
-      // never covering anything behind it, because there is nothing there.
+      // --covering (on step i+1) is NOT the same raw number any more: it is
+      // raw run through a x4 curtain curve, because "how much of step i has
+      // step i+1 geometrically overlapped" and "how opaque does step i+1's
+      // backing fill need to be so step i's text stops being readable" are
+      // different questions with different answers. at raw's own pace, the
+      // fill was still ~30-50% see-through while step i+1's own (always
+      // full-contrast) text was already drawing over step i's - two legible
+      // texts overlapping mid-scroll, which is the actual complaint a linear
+      // fill produced. the curtain reaches fully opaque by raw=0.25 and holds
+      // there, so step i is genuinely hidden well before step i+1's text
+      // reaches it, while still opening from 0 at raw=0 - step 0 still gets
+      // no backing fill and still reads as the page, not a panel, because
+      // Math.min(1, 0 * 4) is still 0. never suppressed under reduced
+      // motion, for the reason below - hiding text is not an animation.
       steps.forEach((s, i) => {
         const last = i === steps.length - 1;
         const left = last ? Infinity : base + tops[i + 1] - stackTop;
         const raw = on ? Math.min(1, Math.max(0, 1 - left / heights[i])) : 0;
         s.style.setProperty('--cover', noMotion ? 0 : raw);
         const next = steps[i + 1];
-        if (next) next.style.setProperty('--covering', raw);
+        if (next) next.style.setProperty('--covering', Math.min(1, raw * 4));
       });
     };
 
@@ -259,8 +267,15 @@ export default function CurrentProject() {
   const spotRef = useRef(null);
   const indexRef = useRef(null);
   const tlxRef = useRef(null);
+  const heroRef = useRef(null);
 
   useStackFade(tlxRef);
+  // the fold's shared cursor interaction - same hook, same numbers, on all four
+  // inner pages (src/useHeroPointer.js). the hook only needs the fold now: it
+  // writes the lean onto it as --hero-tilt-x/y and every .hero-tilt inside
+  // spends them, so what leans here is decided in the markup below - and this is
+  // the one fold with two of them (the copy, and the motif in the margin).
+  useHeroPointer(heroRef);
 
   // the two in-page jumps the hero offers. plain scrollIntoView rather than an
   // href anchor: the site is on hash routing (#/current), so a `#latest` href
@@ -318,37 +333,86 @@ export default function CurrentProject() {
 
   return (
     <div>
-      {/* 01 · full-fold open. zone-cool, like the closing metrics fold's
-          zone-cool-r: zone-sink alone resolves to a near-flat #0b0c0f over the
-          whole fold, and this is the one page whose opening type is already
-          carrying the accent (the outlined "Building", the gradient in
-          "Polarin"). the wash is whisper strength - a change in the air of the
-          fold, not a visible circle on it. */}
-      <section className="tl-hero zone zone-sink zone-cool" data-ch="Intro">
-        <div className="wrap tl-head">
-          <p className="pol-kicker rv">Current Project · 2022 - now</p>
-          <h2 className="pol-title rv d1">
-            <span className="bt">{'Building'.split('').map((ch, i) => <b key={i}>{ch}</b>)}</span><br />
-            <span className="pw">Polarin</span>
-            <span className="tdots" aria-hidden="true"><i></i><i></i><i></i></span>
-          </h2>
-          <p className="pol-open-sub rv d2">Four years on one product, still going - from the first empty screen to the roadmap it runs on today.</p>
+      {/* 01 · full-fold open, on the shared PAGE HERO RECIPE in src/index.css -
+          same six slots, same order, same weight as the other three inner
+          pages. this page's own content inside them: the hollow "Building" with
+          its per-letter hover, the unfinished-sentence ellipsis, the jump into
+          the timeline, and - new, and the last of the six slots this fold was
+          still leaving empty - the stacked-panes motif in the right margin.
+          zone-cool, like the closing metrics fold's zone-cool-r: zone-sink
+          alone resolves to a near-flat #0b0c0f over the whole fold, and this is
+          the page whose opening type carries the most of it (the outlined
+          "Building" at 108px). the wash is whisper strength - a change in the
+          air of the fold, not a visible circle on it. */}
+      <section className="hero-fold zone zone-sink zone-cool" ref={heroRef} data-ch="Intro">
+        {/* the recipe's motif slot, ambient: the fold's right margin, outside
+            the reading column, hairline weight, pointer-events none, gone under
+            1100px - and the smallest of the four drawings, because this is the
+            sparsest of the four folds. one product drawn three times: today's
+            screen in front, the step before it behind, and the first empty one
+            dashed at the back. .cp-motif holds the placement and .cp-stack the
+            tilt, so the wrapper's translateY(-50%) and the drawing's rotation
+            are not fighting for one `transform` - see THE POINTER LAYER in
+            index.css. data-depth is what separates the three panes under the
+            cursor.
+            this is the one fold of the four with TWO tilt cards, and it is
+            allowed one because the motif sits in the margin: it is a sibling of
+            the copy's card below, not a descendant, so the two lean side by side
+            off the same --hero-tilt-x/y instead of compounding. About's and
+            Other Projects' motifs are inside their reading column, which is why
+            theirs simply ride along inside the text card. */}
+        <div className="cp-motif hero-tilt-scene" aria-hidden="true">
+          <svg className="cp-stack hero-tilt" viewBox="0 0 122 100">
+            <g className="cs-first" data-depth="3">
+              <rect x="6" y="44" width="88" height="44" rx="7" />
+            </g>
+            <g data-depth="6">
+              <rect x="17" y="28" width="88" height="44" rx="7" />
+            </g>
+            <g className="cs-now" data-depth="9">
+              <rect x="28" y="12" width="88" height="44" rx="7" />
+              <path className="cs-bar" d="M38 24h30" />
+            </g>
+          </svg>
+        </div>
+        {/* the tilt scene and the tilt card are the shared pair from
+            THE POINTER LAYER in index.css, and the card is this fold's TEXT -
+            eyebrow, headline, lede and action row. before this the fold's only
+            tilt card was the motif above, i.e. the cursor moved a 120px drawing
+            in the margin and left every word of the copy still; the motif keeps
+            its own lean and the words have one now too. */}
+        <div className="wrap hero-tilt-scene">
+          <div className="hero-tilt">
+            <p className="hero-eyebrow rv">Current Project · <b>2022 - now</b></p>
+            {/* the recipe's headline: one hollow line, the rest solid, and the
+                accent on the terminal glyph. this page's sentence is the one that
+                is deliberately unfinished, so its terminal glyph is the animated
+                ellipsis rather than a full stop - .tdots carries --signal, the
+                gradient's solid stand-in, for the same reason .hero-dot carries
+                --grad on the other three. the per-letter <b>s inside .bt are this
+                page's own hover lift; the stroke they draw is inherited from
+                .hero-hollow, not restated. */}
+            <h2 className="hero-title rv d1">
+              <span className="hero-hollow bt">{'Building'.split('').map((ch, i) => <b key={i}>{ch}</b>)}</span><br />
+              Polarin
+              <span className="tdots" aria-hidden="true"><i></i><i></i><i></i></span>
+            </h2>
+            <p className="hero-lede rv d2">Four years on one product, still going - from the first empty screen to the roadmap it runs on today.</p>
 
-          {/* the reference's hero "featured · latest" card, deliberately built
-              as a POINTER rather than as a card. the GenAI initiative already
-              gets the featured treatment once on this page - the ringed
-              spotlight step further down - and the brief is explicit that it
-              must not end up featured in two places. so this is the
-              onething-style arrow link instead: a label, a line and an arrow
-              that scrolls to the one place the study is actually argued. it is
-              a shortcut into the page, not a second entry point. */}
-          <button type="button" className="tlx-latest rv d3" onClick={() => scrollTo(spotRef)}>
-            <span className="tlx-latest-txt">
-              <span className="tlx-latest-k"><i aria-hidden="true"></i>Latest · shipping now</span>
-              <span className="tlx-latest-t">Polarin&apos;s first GenAI initiative</span>
-            </span>
-            <span className="tlx-latest-go" aria-hidden="true">↓</span>
-          </button>
+            {/* the same in-page jump the hero has always offered - the GenAI
+                initiative is only ever featured once on this page (the spotlight
+                step further down), so this scrolls there rather than opening a
+                second entry point. what changed is only the control: it was a
+                bespoke 560px "pointer card" with a pulsing kicker, i.e. a fourth
+                kind of widget in the slot the other three pages fill with a ghost
+                button. the label carries the same two pieces of information the
+                card's two lines did. */}
+            <div className="soon-ctas rv d3">
+              <button type="button" className="btn-ghost" onClick={() => scrollTo(spotRef)}>
+                Latest · Polarin&apos;s first GenAI initiative <span aria-hidden="true">↓</span>
+              </button>
+            </div>
+          </div>
         </div>
         <ScrollHint label="scroll the timeline" />
       </section>
