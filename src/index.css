@@ -4921,6 +4921,260 @@ body.ovl-lock { overflow: hidden; }
   .inv-quotes { grid-template-columns: 1fr; }
 }
 
+/* ================= THE INVOICE STORY PASS =================
+   every rule in this block is scoped to `.ivs`, a marker class carried by the
+   Invoice case study's wrapper and nothing else. that is not decoration - the
+   whole .inv-* namespace is SHARED: .inv-wrap, .inv-hero, .inv-meta,
+   .inv-section, .inv-step-tag, .inv-result, .inv-brm and .inv-learn are read by
+   all six case studies, so an unscoped change here is a change to six pages. the
+   Invoice-only classes (.inv-problems, .inv-pages, .inv-quotes, .inv-explore,
+   .inv-tab*, .inv-page-*, .inv-mock*, .inv-tier) are scoped anyway, so the whole
+   pass reads as one block that can be lifted to the other five later or dropped
+   whole, rather than as edits smeared through the shared rules above.
+
+   ---------------- 1. WHAT WAS ACTUALLY OFF-CENTRE ----------------
+   the page did not need `text-align: center` on a wrapper. it already HAD
+   centring - .inv-step-tag has been auto-margined for ages and the shared rule
+   further down this file centres .inv-hero and `h3.plain`. what it did not have
+   was centring on the things BETWEEN those, so every section read as a centred
+   label and a centred headline sitting on top of a column that hugged the left
+   edge. measured at 1512px, inside the 920px reading column:
+
+     p.body (7 of them)   text-align: start, 66ch, no auto margin
+                          -> 0px of air on the left, 151px on the right
+     h3.ch-title (2)      Step 4's "Three pages. One job each." and Explore's
+                          "Explore the three pages." - the only two headings on
+                          the page NOT on `h3.plain`, so the only two the shared
+                          centring rule never reached. fully left-aligned next to
+                          five centred siblings.
+     .eyebrow in .inv-explore   left, while the identical eyebrow in .inv-hero is
+                          centred (it inherits from .inv-hero, which is in the
+                          shared rule; this one has no such parent)
+     .inv-tabs            flex with no justify-content -> pills packed left under
+                          a heading that was also left, in a section whose
+                          neighbours were centred
+     .inv-problems        SEVEN cards in a two-column grid. this is the one that
+                          is not a text-align problem at all: 7 into 2 leaves
+                          card 07 alone in the left column with a card-sized hole
+                          to its right. centring the text inside it would have
+                          kept the hole and centred it, which is exactly the
+                          failure this note exists to record.
+     .inv-brm             a flex row of a 22px emoji and a 45-word paragraph -
+                          two items of wildly unequal weight on one axis, so the
+                          block leans left no matter what its text does.
+
+   the fixes below therefore split three ways: centre the copy that was never
+   centred, re-lay the two containers whose GEOMETRY was lopsided (.inv-problems
+   from a 2-track grid to a centred wrap, .inv-brm from a row to a column), and
+   explicitly UN-centre the one thing that must stay left - .inv-mock, which is a
+   facsimile of a real invoice, not page copy. a document with centred field
+   labels stops being a picture of the document.
+
+   ---------------- 2. SPACING ----------------
+   section-to-section was already right and stays right: .inv-section is on
+   --sp-sec-lg (110px), which is what SPACING documents for "the gap between two
+   sections of a case study" and what the Admin and Developer Portals read too.
+   there was exactly ONE section not on it - .inv-explore overrode it to
+   --sp-block (26px), so "The new invoice" jammed under the last page card while
+   every other seam had 110px. that override is reverted here, which is +84px at
+   the single place the page looked most crowded.
+   the rest of the cramping was INSIDE the sections, where the rhythm was 4 / 10 /
+   18 / 22px - four numbers invented per component, none of them on the ladder,
+   under 110px seams. those move onto the rungs SPACING already defines:
+     lede under a heading       18px  -> --sp-block (26px)
+     the block a lede introduces  26px -> --sp-head  (44px), which is literally
+                                  "the gap between a section heading and its body
+                                  content"
+     the tab bar under its heading 4px -> --sp-block
+     a page shot under the bar   18/22px -> --sp-block
+     .ovl-nav after the last grid  --sp-head -> --sp-sec, because that seam is
+                                  the end of the document, not a gap inside a
+                                  section
+   no new number is introduced anywhere in this block, and no rung is composed
+   with another - the ask was "more padding", and the honest answer to it was
+   that four gaps were below the scale and one seam was 84px short, not that the
+   scale itself was wrong.
+
+   ---------------- 3. COLOUR ----------------
+   four marks on the whole page, and the arc they make is the point: the defect,
+   the decision, the verdict.
+
+     .ivs-was       --rose, ONCE. "two completely different questions at once" -
+                    the last clause of the problem statement and the thing the
+                    whole redesign undid. --rose is the removed / negative side
+                    of a diff everywhere else on this site (.dvf-code, the "then"
+                    labels, the ✕ on the option not taken), and a named defect is
+                    that, so this spends no new meaning.
+     h3.ch-title.t-lead span   the ACCENT, --grad on a text-clip, ONCE. "One job
+                    each." this is a tenth entry on the list in THE ACCENT and it
+                    is argued rather than assumed. the objection is already on
+                    record: the Knowledge Base pass considered putting the
+                    gradient on .inv-highlight and rejected it because that class
+                    is shared by six case studies, "so it would not be one
+                    accent, it would be six". this selector is not that - .ivs
+                    scopes it to the Invoice study, .t-lead narrows it to the one
+                    h3 on the page at that tier, so it is one phrase on one page.
+                    it earns the accent on the same grounds .hero-dot does: it is
+                    the sentence the document exists to deliver, it is display
+                    type at --t-lead so all three stops land inside the letters
+                    rather than resolving to one colour, and it is the only
+                    accent in its viewport. Explore's "three pages." span is
+                    deliberately NOT included - it is the same words at a smaller
+                    tier doing a navigational job, and a second gradient would
+                    make the first one a style.
+     .ivs-verdict   --up, ONCE, and inside .inv-result - the box that is already
+                    bordered and washed in --up. the lime is the site's verdict
+                    token; "finance trusts and customers understand" is the
+                    verdict. it adds a use of the token in the place the token
+                    already lives rather than a hue in a new place.
+     .ivs-em        NOT a colour: --text at 600 on "every scenario Polarin
+                    actually sells". listed here so the count is honest - it is
+                    brightness, the same device .inv-brm p b already uses, and it
+                    is what the fourth-most-important phrase gets precisely so
+                    the three above stay countable.
+   nothing else on this page gains a hue. the --chip-* ramp was considered for
+   the three page cards and dropped: the ramp is for icon badges standing in for
+   three or more parallel categories a reader must tell apart, and Page 1/2/3 are
+   already told apart by being numbered 1, 2 and 3.
+
+   ---------------- 4. THE REVEALS ----------------
+   the JS half, the two hooks and why neither pins anything, is documented at the
+   top of src/components/InvoiceCaseStudy.jsx. what lives here:
+     .ivs-rv        the block entrance. .rv's own numbers, restated rather than
+                    reused, because .rv is driven by App.jsx's page-level
+                    observer and this one is driven by the panel-rooted observer
+                    in the component - two triggers on one class would race.
+                    --d delays an element behind its siblings.
+     .ivs-stagger   the same entrance, applied to a container's CHILDREN instead
+                    of the container, so a grid of cards arrives one card at a
+                    time. --sd is the per-child offset and --d (inherited from
+                    the container) is the base, exactly as .kbx-pipe .dvp reads
+                    var(--d). the container itself does NOT also carry .ivs-rv -
+                    fading a parent and its children on two clocks reads as a
+                    lag, not a stagger.
+     .ivs-words .w  the word. dim, 2px blurred and 4px low at rest; full at .lit.
+                    inline-block because translateY needs a block box, and the
+                    whitespace between words is left as plain text nodes so the
+                    paragraph still breaks lines normally.
+   REDUCED MOTION is handled in two places on purpose. the hook simply never
+   splits the words, so a reader with the preference set gets the original single
+   text node - there are no .w spans to be caught mid-transition. the media query
+   at the end of this block is for the other direction: the preference being
+   turned on after a split has already happened, which would otherwise leave the
+   unlit tail of a sentence stuck at 0.16 opacity forever, since the global
+   `transition-duration: 0.01ms` reset makes it instant but not visible. */
+.ivs { text-align: center; }
+/* the facsimile stays left-aligned - see note 1 above. two classes deep, so it
+   outweighs the wrapper without needing !important. */
+.ivs .inv-mock { text-align: left; }
+
+/* the two KICKERS, and .eyebrow is the subtlest of the alignment bugs because
+   text-align cannot reach it at all: .eyebrow is `display: flex`, so what
+   centres its contents is justify-content, and it had none. measured at 1512px
+   inside the 920px column, the eyebrow in .inv-explore is a stretched 920px row
+   whose content therefore packs hard left at x=296 - while the identical eyebrow
+   in .inv-hero shrinks to its content and lands centred. the same markup reading
+   two different ways in one document is precisely the "looked imbalanced"
+   complaint, and it is the kind of thing text-align on a wrapper cannot fix.
+   the ::after is the other half, and it applies to BOTH kickers whatever their
+   width: each draws a hairline on its LEFT only via ::before, which is right for
+   a left-aligned label and is a visible lean the moment the label is centred -
+   the rule pulls the optical centre off the geometric one by half its own width.
+   .inv-step-tag was already centred (width: fit-content plus auto margins) and
+   had the same one-sided lean; its mirror comes from a second <i> in the Invoice
+   markup rather than from a pseudo-element here, because .inv-step-tag is shared
+   by all six case studies and its hairline is a real element, not a ::before.
+   the justify-content on it below is therefore a no-op against fit-content and
+   is here for the same reason the rule above it is: so the two kickers state the
+   same intention rather than relying on two different mechanisms. */
+.ivs .eyebrow { justify-content: center; }
+.ivs .eyebrow::after { content: ""; width: 28px; height: 1px; background: var(--line2); }
+.ivs .inv-step-tag { justify-content: center; }
+
+/* the copy that was never centred */
+.ivs .inv-section p.body { text-align: center; margin-left: auto; margin-right: auto; margin-top: var(--sp-block); }
+.ivs .inv-section h3.ch-title { text-align: center; margin-left: auto; margin-right: auto; max-width: 24ch; }
+.ivs .inv-result { text-align: center; max-width: 66ch; margin-left: auto; margin-right: auto; margin-top: var(--sp-head); }
+.ivs .inv-tabs { justify-content: center; }
+
+/* the two containers whose geometry was lopsided.
+   .inv-problems: a centred wrap rather than a 2-track grid, so the 7th card
+   sits in the middle of its own row instead of in the left half of an empty
+   one. the basis is a third of the row less the two gaps, i.e. the same three
+   columns a grid would give - it is only the LAST row that behaves differently,
+   which is the whole point. */
+.ivs .inv-problems { display: flex; flex-wrap: wrap; justify-content: center; gap: 16px; margin-top: var(--sp-head); }
+.ivs .inv-problem { flex: 0 1 calc((100% - 32px) / 3); }
+/* .inv-brm: a centred column. the emoji goes above the paragraph rather than
+   beside it, because a 22px glyph and 45 words cannot balance on one axis. */
+.ivs .inv-brm { flex-direction: column; align-items: center; gap: 12px; margin-top: var(--sp-head); }
+.ivs .inv-brm p { max-width: 62ch; margin-left: auto; margin-right: auto; }
+
+/* card interiors, now that the sections around them are symmetric. the measures
+   are capped where a centred paragraph would otherwise run the full 920px:
+   centred text needs a measure more than left-aligned text does, since both of
+   its edges are ragged. */
+.ivs .inv-quotes, .ivs .inv-pages, .ivs .inv-learn { margin-top: var(--sp-head); }
+.ivs .inv-page-card p { max-width: 68ch; margin-left: auto; margin-right: auto; }
+
+/* the seam that was 84px short, and the internal gaps that were below the scale */
+.ivs.inv-wrap .inv-explore { margin-top: var(--sp-sec-lg); }
+.ivs .inv-tabs-sticky { margin-top: var(--sp-block); }
+.ivs .inv-page-shot, .ivs .inv-page-shot:first-of-type { margin-top: var(--sp-block); }
+.ivs .ovl-nav { margin-top: var(--sp-sec); }
+
+/* ---- colour: four marks, see note 3 ---- */
+.ivs .inv-section h3.ch-title.t-lead span {
+  color: transparent;
+  background-image: var(--grad);
+  -webkit-background-clip: text;
+  background-clip: text;
+}
+.ivs .ivs-was { color: var(--rose); }
+.ivs .ivs-verdict { color: var(--up); }
+.ivs b.ivs-em { font-weight: 600; color: var(--text); }
+
+/* ---- the reveals, see note 4 ---- */
+.ivs-rv {
+  opacity: 0;
+  transform: translateY(18px);
+  transition: opacity 0.7s var(--ease) var(--d, 0ms), transform 0.8s var(--ease) var(--d, 0ms);
+}
+.ivs-rv.on { opacity: 1; transform: none; }
+
+.ivs-stagger > * {
+  opacity: 0;
+  transform: translateY(16px);
+  transition:
+    opacity 0.6s var(--ease) calc(var(--d, 0ms) + var(--sd, 0ms)),
+    transform 0.7s var(--ease) calc(var(--d, 0ms) + var(--sd, 0ms));
+}
+.ivs-stagger.on > * { opacity: 1; transform: none; }
+
+.ivs-words .w {
+  display: inline-block;
+  opacity: 0.16;
+  filter: blur(2px);
+  transform: translateY(4px);
+  transition: opacity 0.45s var(--ease), filter 0.45s var(--ease), transform 0.45s var(--ease);
+}
+.ivs-words .w.lit { opacity: 1; filter: none; transform: none; }
+
+@media (max-width: 900px) {
+  .ivs .inv-problem { flex-basis: calc((100% - 16px) / 2); }
+}
+@media (max-width: 640px) {
+  /* one card per row, so the wrap has no last-row orphan to centre and the
+     three shared grids collapse the way the rule at 760px already collapses
+     them - restated at this width because the flex basis above replaced the
+     grid that rule was written against. */
+  .ivs .inv-problem { flex-basis: 100%; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .ivs-rv, .ivs-stagger > * { opacity: 1; transform: none; }
+  .ivs-words .w { opacity: 1; filter: none; transform: none; }
+}
+
 /* ================= ABOUT PAGE =================
    the opening fold is the shared PAGE HERO RECIPE and almost nothing else now.
    what left this block: .ab-hero's own 88vh fold (the other three opened on a
@@ -5340,7 +5594,11 @@ body.ovl-lock { overflow: hidden; }
    both (dead CSS that reads as live). it has one again: "The shape", between
    the bet and the six jobs. everything here stays neutral on purpose - the
    map is structure, not a verdict, so neither the accent nor the lime
-   appears in it. */
+   appears in it.
+   NO CURRENT CONSUMER, again: the rewrite to the real source material (see the
+   note at the head of the kbx- block below) has no site-map section. left in
+   place with the rest of that rewrite's orphans rather than deleted piecemeal
+   - the list of what is now unrendered is kept in one place, below. */
 .kb-map { margin-top: var(--sp-block); border: 1px solid var(--line); border-radius: var(--r-md); background: var(--raise); padding: var(--pad-card); text-align: center; }
 .kb-root { display: inline-block; font-family: var(--mono); font-size: 11px; letter-spacing: 0.16em; text-transform: uppercase; color: var(--ink); background: var(--text); border-radius: 99px; padding: 8px 18px; position: relative; }
 .kb-root::after { content: ''; position: absolute; left: 50%; top: 100%; width: 1px; height: 16px; background: var(--line2); }
@@ -5356,6 +5614,37 @@ body.ovl-lock { overflow: hidden; }
 .kbn:hover, .kbn.on { color: var(--text); border-color: var(--line2); transform: translateY(-3px); }
 .kb-note { margin-top: 18px; font-size: 13.5px; color: var(--mute); min-height: 1.6em; font-style: italic; }
 /* ============ KNOWLEDGE BASE CASE STUDY (all scoped: kbx-) ============
+   READ THIS FIRST. the case study this block was written for is gone: it has
+   been rewritten against the owner's real project write-up (an internal KB
+   portal built on Strapi, plus a proposed Jira → validation → AI → approval →
+   Strapi pipeline) and deliberately told with far fewer devices. a second pass
+   then cut it again, to the four beats the owner named - the problem, my
+   approach, how much we solved, what's next - on the rule that each beat has to
+   be readable in under five seconds without reading a sentence. so the page is
+   headings and devices now, with prose only where a device cannot carry it.
+   what still renders: .kbx-rv, .kbx-hl, .kbx-hint, .kbx-ic, .kbx-pipe (twice -
+   today's flow and the proposed one), .kbx-gates (incl. .ivp.ok), .kbx-open,
+   and the two devices that pass added: .kbx-pain and .kbx-ba.
+   what has NO CONSUMER any more, all of it below: .kbx-swaps / .kbx-swap,
+   .kbx-costs / .kbx-cost / .kbx-cost-m / .kbx-tag, .kbx-bet / .kbx-b*,
+   .kbx-jobs / .kbx-job / .kbx-ai / .kbx-was, .kbx-ind / .kbx-tog / .kbx-acts /
+   .kbx-act / .kbx-cell / .kbx-ind-f, .kbx-gate, .kbx-res / .kbx-res-l /
+   .kbx-res-rows, plus .kb-map and its nodes above and the
+   .kbx-hint.tap and .kbx-was branches in the media queries at the end. the last
+   three joined the list in the second pass: the closing "why it matters"
+   section went (the owner named four beats, and that was a fifth), and its
+   honesty line moved onto .kbx-open under the phase-1 pipe, which is where
+   "how much we solved" is actually answered. .kbx-gate's single job - the lime
+   human-approval moment - moved onto .kbx-gates .ivp.ok, so the lime still
+   appears exactly once and on the same idea. they
+   are named here rather than removed in the same pass as the rewrite, so the
+   deletion is one reviewable change of its own rather than a rewrite that also
+   quietly rips out 80 lines of CSS. nothing here is referenced by another case
+   study - the CARD SYSTEM and [data-cat] lists at the bottom of this file are
+   where .kbx-job / .kbx-jobs also appear, and those entries go with them.
+   the rest of the description below is the previous version's, kept for
+   whoever does that deletion:
+
    this case study used to be paragraphs, a three-column table (.aud.kb-jobs)
    and two static columns (.kb-cmp / .kbc) - all three are gone from here, and
    their rules with them, because each section now carries its idea in a small
@@ -5390,7 +5679,25 @@ body.ovl-lock { overflow: hidden; }
                   rather than a third column to read
      .kbx-gate    the human-approval strip every job ends at (was a table row)
      .kbx-gates   the three trust rules - .ivx-principles / .ivp wholesale plus
-                  a chip, not a second card recipe
+                  a chip, not a second card recipe. the second pass emptied the
+                  cards' <p> down to a 4-6 word qualifier each, so the grid
+                  reads as a spec sheet rather than three short essays, and
+                  .ivp.ok marks the one that carries the lime.
+     .kbx-pain    the WikiJS problem, as four fragments on the shared .chip pill
+                  inside .adm-chiprow - the same pair AdminPortalCaseStudy uses.
+                  it replaced three .ivp cards each carrying a 3-line paragraph;
+                  the only rule here is the top margin, because a chip row that
+                  needs its own recipe was never a chip row.
+     .kbx-ba      the one concrete moment: a real Jira description and the
+                  sentence a customer should read instead. it is .gac-swap's
+                  convention - a mono label column, the "to" line in --text -
+                  ported into this namespace rather than borrowed across it,
+                  with .gac-rec's dashed recessed frame around it because the
+                  content is a quoted artefact, not a claim of my own. the
+                  site's other before/after moments are number-to-number
+                  (.bet-90's "90 days → 10 minutes", .kbx-swap's tiles); this
+                  one is text-to-text, which is exactly the case .gac-swap's
+                  two-line shape was written for.
      .kbx-pipe    a modifier on the shared .dv-pipe: a glyph in each stop, and
                   the stops step in one after another when the strip scrolls in
      .kbx-ind     independence as one matrix with a two-button emphasis toggle,
@@ -5415,8 +5722,15 @@ body.ovl-lock { overflow: hidden; }
                    exactly that to its quote callouts - was rejected because
                    .inv-highlight is shared by every case study on the site,
                    so it would not be one accent, it would be six.
-     --up          the lime, exactly once: .kbx-gate's chip, the human-approval
-                   strip. it also tints two small marks that predate this rule
+     --up          the lime, exactly once: the chip on .kbx-gates .ivp.ok, the
+                   "human approval, always" rule. (it was .kbx-gate's chip, the
+                   human-approval strip, until that strip's sentence became one
+                   of the three rule chips - same idea, same single use, one
+                   fewer device.) note what did NOT get it: .kbx-ba's "customer
+                   reads" label, where .gac-swap's precedent would have put it.
+                   a better sentence is not an approval, and a second lime is
+                   how a token with one job becomes wallpaper.
+                   it also tints two small marks that predate this rule
                    and still fit it - the ✓ on the bet that was taken and the
                    "now" label in the independence matrix - both of which are
                    verdicts rather than decoration. the four .kbx-swap arrows
@@ -5527,6 +5841,25 @@ b.kbx-hl { display: inline; margin: 0; font-family: var(--body); font-size: inhe
 /* the three rules, on the existing principle card plus a chip */
 .kbx-gates .ivp { display: flex; flex-direction: column; }
 .kbx-gates .ivp > b { margin-top: 14px; }
+/* THE LIME, and the only one on this page - see --up in the note above. same
+   wash recipe .kbx-gate's chip used (14% of the colour over the surface, a 30%
+   hairline, the glyph at full strength), on the rule that inherited its job.
+   three selectors deep, so it outranks both the neutral chip recipe at the
+   bottom of this file and .kbx-ic's own --mute default. */
+.kbx-gates .ivp.ok .kbx-ic { color: var(--up); background: color-mix(in srgb, var(--up) 14%, var(--card-fill)); border-color: color-mix(in srgb, var(--up) 30%, var(--line2)); }
+
+/* the problem, as four fragments. .adm-chiprow + .chip carry all of it; the
+   only thing missing there is the gap to the heading, which .adm-chiprow sets
+   to 16px because it sits inside a card. here it sits under an h3. */
+.kbx-pain { margin-top: var(--sp-block); justify-content: center; }
+
+/* the jira description and the sentence a customer reads. .gac-swap's from/to
+   shape, in this namespace, inside .gac-rec's dashed recessed frame. */
+.kbx-ba { display: grid; gap: 10px; margin-top: var(--sp-block); border: 1px dashed var(--line2); border-radius: var(--r-md); background: var(--ink2); padding: var(--pad-card-sm); text-align: left; }
+.kbx-ba p { display: grid; grid-template-columns: 104px minmax(0, 1fr); gap: 14px; align-items: baseline; font-size: var(--t-body-sm); line-height: 1.5; color: var(--mute); }
+.kbx-ba p > span { font-family: var(--mono); font-size: 9.5px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--dim); }
+.kbx-ba p.to { font-family: var(--disp); font-weight: 600; letter-spacing: -0.01em; color: var(--text); }
+.kbx-ba p.to > span { font-family: var(--mono); font-weight: 400; letter-spacing: 0.14em; color: var(--mute); }
 
 /* release notes: the pipeline steps itself once the strip is on screen. the
    stagger is on opacity alone on purpose - a transform in the keyframes would
@@ -5595,6 +5928,9 @@ b.kbx-hl { display: inline; margin: 0; font-family: var(--body); font-size: inhe
 }
 @media (max-width: 560px) {
   .kbx-swaps, .kbx-jobs { grid-template-columns: 1fr; }
+  /* a 104px label column plus a sentence does not fit a phone, so the label
+     stacks over its line - the from/to reading order is unchanged */
+  .kbx-ba p { grid-template-columns: 1fr; gap: 5px; }
 }
 @media (prefers-reduced-motion: reduce) {
   /* the global rule at the bottom of this file kills the animation itself; both
@@ -6078,7 +6414,7 @@ body.static .scene { height: auto !important; }
    what is deliberately NOT in this list: the recessed boxes (.dvf, .gac-cell,
    .gac-trr, .gac-v, .cj, .dv-console, .mg, .gac-out, .gac-pane,
    .gac-rec, .kbn, and the knowledge base's .kbx-swap / .kbx-cost / .kbx-b /
-   .kbx-act) - they paint --ink / --ink2 and carry no shadow on purpose,
+   .kbx-act / .kbx-ba) - they paint --ink / --ink2 and carry no shadow on purpose,
    so they read as cut into the page rather than sitting on it, in both
    palettes. and the small stat chips (.cj-result span, .bet-swaps span) - a
    drop shadow on an inline chip reads as a mistake.

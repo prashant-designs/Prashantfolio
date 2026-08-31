@@ -29,7 +29,7 @@ const INDEX = [
   { cat: 1, name: 'Customer Portal', label: 'Customer Portal', note: 'the self-serve front door' },
   { cat: 2, name: 'Admin Portal', label: 'Admin Portal', note: 'the internal ops console' },
   { cat: 3, name: 'Invoice Design', label: 'Invoice Design', note: 'transparency for high-ticket billing' },
-  { cat: 4, name: 'Knowledge Base', label: 'Knowledge Base', note: 'answers before tickets' },
+  { cat: 4, name: 'Knowledge Base', label: 'Knowledge Base', note: 'documentation out of the engineering queue' },
   { cat: 5, name: 'Developer Portal', label: 'Developer Sandbox', note: 'a live API test environment' },
   { cat: 6, name: 'GenAI Initiative', label: 'GenAI Initiative', note: 'the pre-sales recommendation engine' },
 ];
@@ -565,9 +565,9 @@ export default function CurrentProject() {
                     </svg>
                   </span>
                   <h4>Knowledge Base</h4>
-                  <div className="tl-cs-row"><span>about</span><p>answers before tickets - self-help designed into the product</p></div>
-                  <div className="tl-cs-row"><span>role</span><p>content architecture, design & frontend - findable, skimmable, honest</p></div>
-                  <div className="tl-cs-foot"><span className="tl-cs-impact">deflect <small>fewer tickets</small></span><span className="tl-cs-link">Deep dive →</span></div>
+                  <div className="tl-cs-row"><span>about</span><p>an in-house docs portal on Strapi - content owners publish it, not engineers</p></div>
+                  <div className="tl-cs-row"><span>role</span><p>designed it in Figma, built it with Claude Code · now designing the Jira → AI → approval pipeline</p></div>
+                  <div className="tl-cs-foot"><span className="tl-cs-impact">phase 1 <small>live · automation next</small></span><span className="tl-cs-link">Deep dive →</span></div>
                 </article>
 
                 <article className="tl-cs-card" role="button" tabIndex={0} onClick={() => openStudy('Developer Portal')} onKeyDown={cardKeys('Developer Portal')}>
