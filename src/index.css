@@ -5992,6 +5992,8 @@ body.static .scene { height: auto !important; }
   .orbit-stage { order: -1; }
   .loop-scene { height: auto !important; }
   .loop-scene .pin { position: static; height: auto; overflow: visible; padding: 40px 0; }
+  .mix-scene { height: auto !important; }
+  .mix-scene .pin { position: static; height: auto; overflow: visible; padding: 40px 0; }
 }
 @media (max-width: 640px) {
   .cross-q p { display: none; }

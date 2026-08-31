@@ -65,8 +65,44 @@ const FACTS = [
   { ic: '⚡', t: 'prototype → product - if I can spec it, I can ship it' },
 ];
 
+const MIX_ORDER = ['design', 'product', 'build'];
+
 export default function About() {
   const [mix, setMix] = useState('design');
+  const mixSceneRef = useRef(null);
+  // a hover-only ring means a reader who never stops to hover only ever sees
+  // "design" - two of the three slices are invisible to anyone who just
+  // scrolls past. this pins the fold and ties `mix` to scroll position
+  // instead, the same mechanism the "My Process" orbit further down this
+  // page already uses (see the loopSceneRef effect below) - a .scene of
+  // explicit height with a `.pin` child, `rect.top` against the scene's own
+  // scrollable overshoot giving a 0..1 progress, floored into a slice index.
+  // scrolling through the fold is what shows all three now; hovering still
+  // works too (it just gets overwritten by the next scroll tick, same as
+  // hovering a step in the orbit while it is mid-scroll would be).
+  useEffect(() => {
+    const scene = mixSceneRef.current;
+    if (!scene) return undefined;
+    const clamp = (v, a, b) => Math.min(b, Math.max(a, v));
+    let raf = null;
+    const update = () => {
+      const rect = scene.getBoundingClientRect();
+      const total = scene.offsetHeight - window.innerHeight;
+      const progress = total > 0 ? clamp(-rect.top / total, 0, 1) : 0;
+      const active = clamp(Math.floor(progress * (MIX_ORDER.length + 0.01)), 0, MIX_ORDER.length - 1);
+      setMix(MIX_ORDER[active]);
+    };
+    const onScroll = () => {
+      if (raf) return;
+      raf = window.requestAnimationFrame(() => { raf = null; update(); });
+    };
+    window.addEventListener('scroll', onScroll, { passive: true });
+    update();
+    return () => {
+      window.removeEventListener('scroll', onScroll);
+      if (raf) window.cancelAnimationFrame(raf);
+    };
+  }, []);
   const chartRef = useRef(null);
   const [chartIn, setChartIn] = useState(false);
   const [vals, setVals] = useState(SKILLS.map(() => 0));
@@ -228,49 +264,60 @@ export default function About() {
         <div className="wrap">
           <p className="eyebrow rv">- what I&apos;m made of</p>
           <h2 className="ab-h rv d1">Part designer. Part PM.<br /><em>All builder.</em></h2>
-          <div className="ab-mix rv d2">
-            <div className="ab-mix-word" aria-hidden="true"><span>{d.name}</span></div>
-            <svg className="ab-donut" viewBox="0 0 200 200" aria-hidden="true">
-              <circle className="ab-ring" cx="100" cy="100" r="70" />
-              <circle
-                className={`ab-seg ${mix === 'design' ? 'on' : ''}`}
-                data-mix="design"
-                onMouseEnter={() => setMix('design')}
-                onClick={() => setMix('design')}
-                cx="100" cy="100" r="70"
-                pathLength="100"
-                strokeDasharray="37 63"
-                strokeDashoffset="0"
-              />
-              <circle
-                className={`ab-seg ${mix === 'product' ? 'on' : ''}`}
-                data-mix="product"
-                onMouseEnter={() => setMix('product')}
-                onClick={() => setMix('product')}
-                cx="100" cy="100" r="70"
-                pathLength="100"
-                strokeDasharray="32 68"
-                strokeDashoffset="-39"
-              />
-              <circle
-                className={`ab-seg ${mix === 'build' ? 'on' : ''}`}
-                data-mix="build"
-                onMouseEnter={() => setMix('build')}
-                onClick={() => setMix('build')}
-                cx="100" cy="100" r="70"
-                pathLength="100"
-                strokeDasharray="22 78"
-                strokeDashoffset="-73"
-              />
-              <text className="ab-donut-t" x="100" y="97" textAnchor="middle">{d.name}</text>
-              <text className="ab-donut-p" x="100" y="117" textAnchor="middle">{d.pct}</text>
-            </svg>
-            <div className="ab-mix-panel">
-              <b>{d.title}</b>
-              <ul>
-                {d.list.map((x) => <li key={x}>{x}</li>)}
-              </ul>
-              <p className="ab-mix-hint">hover the ring →</p>
+        </div>
+        {/* pinned, the same mechanism as the "My Process" orbit below: a .scene
+            of explicit height holds .pin in place while its own scroll
+            distance runs, so the fold is held on screen for exactly as long
+            as it takes to pass all three slices - see the mixSceneRef effect
+            above for why. no .rv here, for the same reason .lstep has none:
+            what's pinned doesn't need a first-scroll reveal, it needs to
+            already be the thing on screen the moment the reader arrives. */}
+        <div className="scene mix-scene" ref={mixSceneRef} style={{ height: '210vh' }}>
+          <div className="pin">
+            <div className="wrap ab-mix">
+              <div className="ab-mix-word" aria-hidden="true"><span>{d.name}</span></div>
+              <svg className="ab-donut" viewBox="0 0 200 200" aria-hidden="true">
+                <circle className="ab-ring" cx="100" cy="100" r="70" />
+                <circle
+                  className={`ab-seg ${mix === 'design' ? 'on' : ''}`}
+                  data-mix="design"
+                  onMouseEnter={() => setMix('design')}
+                  onClick={() => setMix('design')}
+                  cx="100" cy="100" r="70"
+                  pathLength="100"
+                  strokeDasharray="37 63"
+                  strokeDashoffset="0"
+                />
+                <circle
+                  className={`ab-seg ${mix === 'product' ? 'on' : ''}`}
+                  data-mix="product"
+                  onMouseEnter={() => setMix('product')}
+                  onClick={() => setMix('product')}
+                  cx="100" cy="100" r="70"
+                  pathLength="100"
+                  strokeDasharray="32 68"
+                  strokeDashoffset="-39"
+                />
+                <circle
+                  className={`ab-seg ${mix === 'build' ? 'on' : ''}`}
+                  data-mix="build"
+                  onMouseEnter={() => setMix('build')}
+                  onClick={() => setMix('build')}
+                  cx="100" cy="100" r="70"
+                  pathLength="100"
+                  strokeDasharray="22 78"
+                  strokeDashoffset="-73"
+                />
+                <text className="ab-donut-t" x="100" y="97" textAnchor="middle">{d.name}</text>
+                <text className="ab-donut-p" x="100" y="117" textAnchor="middle">{d.pct}</text>
+              </svg>
+              <div className="ab-mix-panel">
+                <b>{d.title}</b>
+                <ul>
+                  {d.list.map((x) => <li key={x}>{x}</li>)}
+                </ul>
+                <p className="ab-mix-hint">scroll to see all three - or hover to jump →</p>
+              </div>
             </div>
           </div>
         </div>
