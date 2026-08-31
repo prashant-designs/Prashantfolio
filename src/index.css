@@ -2853,23 +2853,20 @@ footer .g {
    whole stack effect down with it (see THE STACK, part 1). the drawing is
    1000x480 positioned from its own bottom edge, so it crops from the top - a
    shorter box is a shallower dome, not a squashed one.
-   400px is not a round number, it is the largest value that keeps step 01
-   under step 03, which is the tallest step on the page (its three case-study
-   cards are the floor and cannot come down). so the figure is as big as it can
-   be without becoming the step that decides where the effect switches off. */
+
+   NO CURRENT CONSUMER, all of it through .tl-ctx-main below. step 01 asked
+   for the globe gone outright - it was the tallest thing in the step by a
+   wide margin, which is what set --stack-top's room check for every step on
+   the page (400px was already tuned down from 460px once, to keep step 01
+   under step 03's card grid; removing the figure removes that ceiling
+   entirely rather than tuning it again). the interactive cursor-follow
+   effect that lit it up (playable via mousemove, auto-roaming otherwise) went
+   with it in CurrentProject.jsx - it was real work, kept here as a recipe
+   rather than deleted twice, for the same reason .tlx-plain is: nothing in
+   this file is committed, and a wireframe globe with a working hover glow is
+   worth being able to restore rather than rebuild from scratch. */
 .tl-globe-sec { position: relative; min-height: 300px; height: min(44vh, 400px); display: flex; align-items: center; overflow: hidden; margin-top: 18px; }
 .tl-globe { position: absolute; left: 50%; bottom: -6%; transform: translateX(-50%); width: min(1100px, 165%); opacity: 0.55; pointer-events: none; }
-/* the wireframe reads as a drawing, not as --ghost-stroke. that token is the
-   outline-only ghost *word* behind About's donut and Ch.2's stage - on paper it
-   is rgba(0,0,0,0.13), and multiplied by the .tl-globe group's own 0.55 opacity
-   the globe's lines landed at about 7% black: gone, against a page that is now
-   genuinely white. 45% of --mute through the same 0.55 gives ~0.25 in both
-   palettes, which is line art you can actually see.
-   the whole globe was blue for a pass - lines, nodes and roaming dots. it is
-   three rungs of the neutral scale now: --mute at 45% for the wire, --text for
-   the three pulsing nodes (the only thing in the drawing that should draw the
-   eye) and --mute at 0.35 for the dots that travel between them. a wireframe
-   globe is line art, and line art does not need a hue to read as drawn. */
 .tl-globe .g-line { stroke: color-mix(in srgb, var(--mute) 45%, transparent); stroke-width: 1; fill: none; }
 .tl-globe .g-node { fill: var(--text); animation: tlNodePulse 2.6s ease-in-out infinite; }
 .tl-globe .g-node.n2 { animation-delay: 0.8s; }
@@ -2878,23 +2875,9 @@ footer .g {
 .tl-globe .g-dot { fill: var(--mute); opacity: 0.35; transition: opacity 0.25s; }
 .tl-globe.tl-globe-hi { opacity: 0; transition: opacity 0.35s; -webkit-mask-image: radial-gradient(circle 130px at var(--gx, 50%) var(--gy, 50%), black 0%, transparent 72%); mask-image: radial-gradient(circle 130px at var(--gx, 50%) var(--gy, 50%), black 0%, transparent 72%); }
 .tl-globe.tl-globe-hi .g-line { stroke: var(--text); stroke-width: 1.4; filter: drop-shadow(0 0 6px var(--glow-soft)); }
-/* the copy that used to run beside the globe - a paragraph column and a
-   metadata sidebar, in a two-column grid.
-
-   NO CURRENT CONSUMER. the trim pass cut the sidebar outright (every fact in
-   it was already stated by another step on the same page, so it was the same
-   information twice) and step 01 is now one sentence, which needs no grid and
-   takes .tlx-step > p's own 62ch measure. kept for the same reason .tlx-plain
-   is: it is a working recipe for "copy beside a figure", which is a shape this
-   step could want back. */
 .tl-globe-copy { position: relative; z-index: 1; width: 100%; max-width: 1020px; display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 250px); gap: clamp(28px, 4vw, 64px); align-items: start; }
 .tl-ctx-main { max-width: 56ch; }
 @media (prefers-reduced-motion: reduce) { .tl-globe .g-node { animation: none; opacity: 0.8; } }
-
-/* below ~900px the figure gets its height back from its content rather than
-   from the viewport, and the (unused) two-column context block stacks. the
-   min-heights here track the base rule's - they came down with it, for the
-   reason spelled out above it. */
 @media (max-width: 900px) {
   .tl-globe-sec { height: auto; min-height: 300px; }
   .tl-globe-copy { grid-template-columns: minmax(0, 1fr); gap: 22px; max-width: 720px; }
@@ -2918,9 +2901,9 @@ footer .g {
    next step - later in the DOM, therefore later in paint order among
    z-index:auto positioned siblings - scrolls up over it at its own speed. the
    browser's own scroll drives all of it; no listener changes how far a wheel
-   turn goes. the only JS is useStackFade in the page component, which marks
-   the step currently being covered (.tlx-covered) so it can settle back, and
-   owns the master switch (.tlx-stack) - see THE STACK below.
+   turn goes. the only JS is useStackFade in the page component, which writes
+   how covered a step currently is (--cover, continuous) so it can settle
+   back, and owns the master switch (.tlx-stack) - see THE STACK below.
 
    the spine is one hairline the height of .tlx itself, with each step's own
    dot sitting on top of it - not six separate line segments, so the line
@@ -2944,22 +2927,36 @@ footer .g {
    sharing one property means the reveal and the settle would clobber each
    other. background-color rides the same 0.6s the page's own backdrop uses to
    turn over, so a stacked panel and the paper behind it flip as one surface -
-   see THE BACKDROP. */
+   see THE BACKDROP.
+   the top padding matters once a step is stacked: a covering panel starts
+   painting over the one beneath it the instant its OWN top edge passes that
+   step's bottom, so with no top padding the first thing to appear at that
+   seam is the incoming step's kicker line, landing directly on whatever the
+   covered step's text happens to be at that exact point - no cushion, reads
+   as a collision. the padding is what is actually being covered first. */
 .tlx-step {
   position: relative;
-  padding: 0 0 var(--sp-head) 26px;
-  transition: opacity 0.75s var(--ease), transform 1s var(--ease), scale 0.5s var(--ease), background-color 0.6s ease;
+  padding: var(--sp-fold) 0 calc(var(--sp-head) + 30px) 26px;
+  transition: opacity 0.75s var(--ease), transform 1s var(--ease), background-color 0.6s ease;
 }
+.tlx-step:first-child { padding-top: 0; }
 .tlx-step:last-child { padding-bottom: 0; }
 @media (min-width: 860px) { .tlx-step { padding-left: 134px; } }
 
-.tlx-dot { position: absolute; left: 0; top: 7px; width: 7px; height: 7px; border-radius: 50%; background: var(--card-fill); border: 1px solid var(--line2); transition: background 0.3s, border-color 0.3s, opacity 0.4s; }
+/* top is measured from .tlx-step's padding edge, which padding-top does not
+   move - so once a step carries top padding (all but the first, see above)
+   the dot and rail mark need that same offset added back in, or they stay
+   pinned near the box's outer edge while the kicker they mark drifts down
+   34px below them. */
+.tlx-dot { position: absolute; left: 0; top: calc(var(--sp-fold) + 7px); width: 7px; height: 7px; border-radius: 50%; background: var(--card-fill); border: 1px solid var(--line2); transition: background 0.3s, border-color 0.3s, opacity 0.4s; }
+.tlx-step:first-child .tlx-dot { top: 7px; }
 .tlx-step.in .tlx-dot { background: var(--mute); border-color: var(--mute); }
 @media (min-width: 860px) { .tlx-dot { left: 90px; } }
 
 .tlx-mark { display: none; }
 @media (min-width: 860px) {
-  .tlx-mark { display: flex; flex-direction: column; align-items: flex-end; gap: 5px; position: absolute; left: 0; top: 1px; width: 74px; text-align: right; transition: opacity 0.4s var(--ease); }
+  .tlx-mark { display: flex; flex-direction: column; align-items: flex-end; gap: 5px; position: absolute; left: 0; top: calc(var(--sp-fold) + 1px); width: 74px; text-align: right; transition: opacity 0.4s var(--ease); }
+  .tlx-step:first-child .tlx-mark { top: 1px; }
   .tlx-n { font-family: var(--mono); font-size: var(--t-meta); font-weight: 500; color: var(--dim); letter-spacing: 0.06em; }
   .tlx-when { font-family: var(--mono); font-size: var(--t-micro); color: var(--dim); letter-spacing: 0.04em; }
 }
@@ -3016,18 +3013,27 @@ footer .g {
       edge. the fixed film grain over the whole site is untouched and is what
       keeps the fold from reading as dead flat paper.
 
-   4. THE SETTLE. the covered step scales to 0.96 from its own top edge - so
-      the pinned edge stays exactly where the reader left it and the panel
-      draws back around it - and dims. the dim is an overlay at 45% rather
-      than `opacity: 0.55` on the step, and that is the one non-obvious choice
-      here: all six steps are stuck on the same line at once, so a translucent
-      panel would show the text of every earlier step through it - four layers
-      of ghosting by the last stop. an overlay keeps the panel opaque and
-      reads identically. it paints `background: inherit` at inset: 0, i.e.
-      literally the panel's own two layers over the panel's own box, so it
-      veils the type without moving the paper tone by a shade - an overlay of
-      flat --ink washed the zone's tint back out and left a faintly lighter
-      rectangle where the settled step was.
+   4. THE SETTLE. the covered step scales down to 0.96 from its own top edge -
+      so the pinned edge stays exactly where the reader left it and the panel
+      draws back around it - and dims, both driven off --cover, the continuous
+      0..1 fraction useStackFade writes inline (see the JSX comment on
+      useStackFade for why it is continuous rather than a threshold class: the
+      short version is that a threshold let the next panel paint directly over
+      this one's full-contrast text for the first stretch of overlap with no
+      cushion at all, which is what read as cluttered). neither property
+      carries a transition here on purpose - --cover already tracks the scroll
+      position every frame, so transitioning it would only add lag chasing a
+      moving target.
+      the dim is an overlay at up to 45% rather than `opacity` on the step
+      itself, and that is the one non-obvious choice here: all six steps are
+      stuck on the same line at once, so a translucent panel would show the
+      text of every earlier step through it - four layers of ghosting by the
+      last stop. an overlay keeps the panel opaque and reads identically. it
+      paints `background: inherit` at inset: 0, i.e. literally the panel's own
+      two layers over the panel's own box, so it veils the type without moving
+      the paper tone by a shade - an overlay of flat --ink washed the zone's
+      tint back out and left a faintly lighter rectangle where the settled
+      step was.
       the rail marker and the dot fade out with it instead of scaling: they sit
       74px and 90px from the step's left edge, so a 4% scale about the centre
       slides them ~20px off the spine, which the spine is a fixed hairline and
@@ -3035,16 +3041,18 @@ footer .g {
       right read - the marker belongs to the step being read.
       prefers-reduced-motion keeps the stack and drops the settle: useStackFade
       still throws the master switch, so steps still pin and still get covered
-      - that is the page's structure, moved by the browser's own scroll - but it
-      never marks a step covered, so nothing scales or fades. the block at the
-      end of this section is the belt-and-braces half of that, for the case
-      where the setting changes while a class is already on an element. */
+      - that is the page's structure, moved by the browser's own scroll - but
+      --cover is always written as 0, so nothing scales or fades. the block at
+      the end of this section is the belt-and-braces half of that, for the
+      case where the setting changes while --cover is already above 0. */
 .tlx-stack > .tlx-step {
   position: sticky;
   top: var(--stack-top);
   background-color: var(--ink);
   background-image: linear-gradient(var(--zone-tint, transparent), var(--zone-tint, transparent));
   transform-origin: 50% 0;
+  --cover: 0;
+  scale: calc(1 - 0.04 * var(--cover));
 }
 /* the spine, over the panels rather than under them. .tlx is position:
    relative with z-index auto, so it is not a stacking context and this
@@ -3063,19 +3071,16 @@ footer .g {
   position: absolute;
   inset: 0;
   background: inherit;
-  opacity: 0;
+  opacity: calc(0.45 * var(--cover));
   pointer-events: none;
-  transition: opacity 0.5s var(--ease);
 }
-.tlx-stack > .tlx-covered { scale: 0.96; }
-.tlx-stack > .tlx-covered::after { opacity: 0.45; }
-.tlx-stack > .tlx-covered .tlx-mark,
-.tlx-stack > .tlx-covered .tlx-dot { opacity: 0; }
+.tlx-stack > .tlx-step .tlx-mark,
+.tlx-stack > .tlx-step .tlx-dot { opacity: calc(1 - var(--cover)); }
 @media (prefers-reduced-motion: reduce) {
-  .tlx-stack > .tlx-covered { scale: 1; }
-  .tlx-stack > .tlx-covered::after { opacity: 0; }
-  .tlx-stack > .tlx-covered .tlx-mark,
-  .tlx-stack > .tlx-covered .tlx-dot { opacity: 1; }
+  .tlx-stack > .tlx-step { scale: 1; }
+  .tlx-stack > .tlx-step::after { opacity: 0; }
+  .tlx-stack > .tlx-step .tlx-mark,
+  .tlx-stack > .tlx-step .tlx-dot { opacity: 1; }
 }
 
 /* the "in plain terms" aside - one analogy for a reader who doesn't buy
@@ -3110,17 +3115,16 @@ footer .g {
 @media (prefers-reduced-motion: reduce) { .tlx-latest-k i { animation: none; } }
 
 /* the spotlight step - the one place the GenAI initiative is featured on
-   this page (see the note in the JSX). it wears .tl-featured for the ring +
-   tag and joins the shared raised-card recipe below for its fill/shadow;
-   what's declared here is only the geometry .tl-cs-card would otherwise
-   supply, since this card is a full step rather than one of three in a row. */
-.tlx-spot-step { padding-bottom: var(--sp-head); }
+   this page (see the note in the JSX), and now the last step on the timeline,
+   so .tlx-step:last-child already zeroes its bottom padding for it. it wears
+   .tl-featured for the ring + tag and joins the shared raised-card recipe
+   below for its fill/shadow; what's declared here is only the geometry
+   .tl-cs-card would otherwise supply, since this card is a full step rather
+   than one of three in a row. */
 .tlx-spot { display: block; width: 100%; max-width: 720px; border: 1px solid var(--line); border-radius: var(--r-lg); padding: var(--pad-card-lg); cursor: pointer; transition: transform 0.3s var(--ease), border-color 0.3s; }
 .tlx-spot:hover, .tlx-spot:focus-visible { transform: translateY(-4px); border-color: var(--line2); outline: none; }
 .tlx-spot-head { display: flex; align-items: center; gap: 14px; margin-bottom: 16px; }
 .tlx-spot h4 { font-family: var(--disp); font-weight: 700; font-size: var(--t-sub); letter-spacing: -0.01em; margin: 0 0 10px; }
-.tlx-spot > p { color: var(--mute); font-size: var(--t-body); margin: 0 0 12px; max-width: 62ch; }
-.tlx-spot .side-skills { margin-top: 16px; }
 .tlx-spot .tl-cs-foot { margin-top: 18px; }
 
 /* the flat index - every case study as one onething-style arrow-link list:

@@ -100,9 +100,13 @@ function Step({ n, when, kicker, title, id, stepRef, className = '', children })
  *                                foot below the fold and never be readable, so
  *                                the whole effect turns itself off instead of
  *                                hiding content. re-tested on resize.
- *   .tlx-covered (on a step)     the settle: the step is stuck at the top and
- *                                the next one has taken more than a third of
- *                                it, so it scales down a touch and dims.
+ *   --cover (on a step, inline)  the settle: a continuous 0..1 read of how
+ *                                much of this step the next one has actually
+ *                                painted over, not a threshold flipped at some
+ *                                fixed fraction - so the scale-down and dim
+ *                                the CSS drives off it starts at the same
+ *                                instant the first pixel of overlap does,
+ *                                rather than snapping in partway through.
  *
  * The read is the geometry the effect actually depends on and nothing else:
  * an IntersectionObserver cannot answer this one, because being covered is
@@ -110,8 +114,10 @@ function Step({ n, when, kicker, title, id, stepRef, className = '', children })
  * ratio with the viewport the entire time the next step is sliding over it.
  * So this follows the other convention in this codebase for scroll-linked
  * effects (useGlobalTheme in src/App.jsx): one rAF-throttled measure per
- * scroll frame, an imperative class toggle, never React state, so scrolling
- * never re-renders the tree.
+ * scroll frame, an imperative style write, never React state, so scrolling
+ * never re-renders the tree. --cover is written directly rather than
+ * transitioned in CSS, because it already tracks the scroll position 1:1 -
+ * a transition chasing a value that moves every frame would only add lag.
  *
  * Positions come from `offsetTop` rather than getBoundingClientRect on the
  * steps themselves, since a covered step is scaled and its client rect is not
@@ -121,7 +127,7 @@ function Step({ n, when, kicker, title, id, stepRef, className = '', children })
  * prefers-reduced-motion keeps the stack and drops the settle: the master
  * switch still goes on, so a step still pins and still gets covered - that is
  * the page's structure, and it is the browser's own scroll doing it - but
- * .tlx-covered is never applied, so nothing scales or fades. (the matching
+ * --cover is always written as 0, so nothing scales or fades. (the matching
  * guard in the CSS covers the case where the setting changes while a class is
  * already on the element.)
  */
@@ -140,7 +146,7 @@ function useStackFade(rootRef) {
 
     const clear = () => {
       root.classList.remove('tlx-stack');
-      steps.forEach((s) => s.classList.remove('tlx-covered'));
+      steps.forEach((s) => s.style.removeProperty('--cover'));
     };
 
     // every read happens before every write, on purpose: a classList write
@@ -155,12 +161,21 @@ function useStackFade(rootRef) {
       const on = mq.matches && heights.every((h) => h <= room);
 
       root.classList.toggle('tlx-stack', on);
-      // `left` is how much of step i is still uncovered, in px: the next
-      // step's layout top in viewport space, minus the line both stick to.
+      // --cover is a continuous 0..1 read of how much of step i the next step
+      // has actually painted over, not a threshold flipped at some fixed
+      // fraction: `left` is the px gap still open between the sticky line and
+      // the next step's natural top, so (heights[i]-left)/heights[i] is the
+      // real overlap fraction at this exact scroll position. a threshold
+      // (the previous version fired at 65%) meant the first 65% of covering
+      // painted step i+1 directly over step i's full-contrast text with no
+      // cushion at all, then snapped to scaled+dimmed - that abrupt seam is
+      // what read as cluttered. tracking the true fraction means the settle
+      // starts at the same instant the first pixel of overlap does.
       steps.forEach((s, i) => {
         const last = i === steps.length - 1;
         const left = last ? Infinity : base + tops[i + 1] - stackTop;
-        s.classList.toggle('tlx-covered', on && !noMotion && left < heights[i] * 0.65);
+        const cover = on && !noMotion ? Math.min(1, Math.max(0, 1 - left / heights[i])) : 0;
+        s.style.setProperty('--cover', cover);
       });
     };
 
@@ -226,9 +241,6 @@ export default function CurrentProject() {
   const [studyOpen, setStudyOpen] = useState(false);
   const [studyIdx, setStudyIdx] = useState(0);
   const ovlPanelRef = useRef(null);
-  const globeSecRef = useRef(null);
-  const baseGlobeRef = useRef(null);
-  const hiGlobeRef = useRef(null);
   const spotRef = useRef(null);
   const indexRef = useRef(null);
   const tlxRef = useRef(null);
@@ -244,112 +256,6 @@ export default function CurrentProject() {
       block: 'start',
     });
   };
-
-  // playable globe (timeline step 01): a highlight that auto-roams the globe,
-  // and follows the cursor on hover. it never needed the pinned stage - a
-  // cursor-follow effect works the same in normal document flow - so the only
-  // thing that changed with the pinning is that the globe's DOM is now mounted
-  // for the life of the page instead of only while step 0 was the current
-  // beat. that is why this runs once on mount rather than on every step change.
-  useEffect(() => {
-    const noMotion = window.matchMedia('(prefers-reduced-motion:reduce)').matches;
-    const finePointer = window.matchMedia('(pointer:fine)').matches;
-    if (noMotion) return undefined;
-    const gsec = globeSecRef.current;
-    const base = baseGlobeRef.current;
-    const hi = hiGlobeRef.current;
-    if (!gsec || !base || !hi) return undefined;
-
-    const NS = 'http://www.w3.org/2000/svg';
-    const dots = [];
-    let hovering = false;
-    let raf = null;
-
-    base.querySelectorAll('.g-line').forEach((ln) => {
-      let length = 0;
-      try {
-        length = ln.getTotalLength();
-      } catch {
-        return;
-      }
-      if (!length) return;
-      for (let d = 23; d < length; d += 46) {
-        const p = ln.getPointAtLength(d);
-        if (p.y < -10 || p.y > 478) continue;
-        const c = document.createElementNS(NS, 'circle');
-        c.setAttribute('cx', p.x);
-        c.setAttribute('cy', p.y);
-        c.setAttribute('r', '1.6');
-        c.setAttribute('class', 'g-dot');
-        base.appendChild(c);
-        dots.push({ c, x: p.x, y: p.y });
-      }
-    });
-
-    // px/py: on-screen pixel position (for the --gx/--gy mask centre). mx/my: matching position in the 1000x480 viewBox (for dot distance).
-    const applyGlow = (px, py, mx, my) => {
-      hi.style.setProperty('--gx', `${px}px`);
-      hi.style.setProperty('--gy', `${py}px`);
-      hi.style.opacity = 1;
-      const R = 130;
-      dots.forEach((d) => {
-        const dist = Math.hypot(d.x - mx, d.y - my);
-        if (dist < R) {
-          const k = 1 - dist / R;
-          d.c.setAttribute('transform', `translate(0 ${(-16 * k).toFixed(1)})`);
-          d.c.setAttribute('r', (1.6 + 2.8 * k).toFixed(2));
-          d.c.style.fill = 'var(--text)';
-          d.c.style.opacity = (0.35 + 0.65 * k).toFixed(2);
-        } else if (d.c.hasAttribute('transform')) {
-          d.c.removeAttribute('transform');
-          d.c.setAttribute('r', '1.6');
-          d.c.style.fill = '';
-          d.c.style.opacity = '';
-        }
-      });
-    };
-
-    const startTime = performance.now();
-    const tick = (now) => {
-      raf = window.requestAnimationFrame(tick);
-      if (hovering) return;
-      const t = now - startTime;
-      const mx = 500 + 300 * Math.sin(t * 0.00025);
-      const my = 300 + 90 * Math.sin(t * 0.00037 + 1.3);
-      const r = base.getBoundingClientRect();
-      applyGlow((mx / 1000) * r.width, (my / 480) * r.height, mx, my);
-    };
-    raf = window.requestAnimationFrame(tick);
-
-    let moveRaf = null;
-    const onMove = (e) => {
-      hovering = true;
-      if (moveRaf) return;
-      moveRaf = window.requestAnimationFrame(() => {
-        moveRaf = null;
-        const r = base.getBoundingClientRect();
-        const px = e.clientX - r.left;
-        const py = e.clientY - r.top;
-        applyGlow(px, py, px * (1000 / r.width), py * (480 / r.height));
-      });
-    };
-
-    const onLeave = () => {
-      hovering = false;
-    };
-
-    if (finePointer) {
-      gsec.addEventListener('mousemove', onMove);
-      gsec.addEventListener('mouseleave', onLeave);
-    }
-    return () => {
-      window.cancelAnimationFrame(raf);
-      if (moveRaf) window.cancelAnimationFrame(moveRaf);
-      gsec.removeEventListener('mousemove', onMove);
-      gsec.removeEventListener('mouseleave', onLeave);
-      dots.forEach((d) => d.c.remove());
-    };
-  }, []);
 
   const openStudy = (name) => {
     const idx = SURFACES.indexOf(name);
@@ -458,51 +364,18 @@ export default function CurrentProject() {
           <div className="tlx" ref={tlxRef}>
 
             <Step n="01" when="2022" kicker="The starting point" title={<>What is <span className="pw">Polarin</span></>}>
-              {/* one sentence and the globe. the metadata sidebar that used to
-                  sit beside this copy, and the "in plain terms" analogy under
-                  it, are both gone on purpose - every value in that sidebar was
-                  a claim this page already makes somewhere else (first designer
+              {/* one sentence, no figure. the metadata sidebar that used to sit
+                  beside this copy, and the "in plain terms" analogy under it,
+                  are both gone on purpose - every value in that sidebar was a
+                  claim this page already makes somewhere else (first designer
                   → step 02, AI product manager → step 04, live since 2023 →
                   step 03, still building → the closing fold), so cutting it
-                  costs the page no information and buys it a quiet opening. */}
+                  costs the page no information and buys it a quiet opening.
+                  the globe that used to sit under this paragraph is gone too -
+                  it was the tallest thing in the step by a wide margin, which
+                  is what set the ceiling on --stack-top's room check for every
+                  other step on the page. */}
               <p>Lightstorm&apos;s Network-as-a-Service platform - private, low-latency links between data centers, clouds and SaaS apps, provisioned in minutes through an API instead of a paperwork trail.</p>
-
-              {/* the interactive globe, kept: it is the one drawing on the page
-                  that says "a network, everywhere" without a caption, and it
-                  never depended on the pinning. it is a pure figure now - the
-                  copy that used to sit over it is the step's own copy above -
-                  which is the layout it always wanted at this width. */}
-              <div className="tl-globe-sec" ref={globeSecRef}>
-                <svg className="tl-globe" ref={baseGlobeRef} viewBox="0 0 1000 480" aria-hidden="true">
-                  <defs>
-                    <clipPath id="tlDome"><rect x="0" y="0" width="1000" height="478" /></clipPath>
-                  </defs>
-                  <g clipPath="url(#tlDome)">
-                    <circle className="g-line" cx="500" cy="480" r="400" />
-                    <ellipse className="g-line" cx="500" cy="480" rx="280" ry="400" />
-                    <ellipse className="g-line" cx="500" cy="480" rx="150" ry="400" />
-                    <ellipse className="g-line" cx="500" cy="480" rx="40" ry="400" />
-                    <path className="g-line" d="M132 420 Q 500 300 868 420" />
-                    <path className="g-line" d="M196 300 Q 500 196 804 300" />
-                    <path className="g-line" d="M300 190 Q 500 116 700 190" />
-                    <circle className="g-node" cx="240" cy="400" r="4" /><circle className="g-node n2" cx="700" cy="330" r="4" />
-                    <circle className="g-node n3" cx="330" cy="250" r="4" /><circle className="g-node" cx="810" cy="380" r="4" />
-                    <circle className="g-node n2" cx="180" cy="440" r="4" /><circle className="g-node n3" cx="620" cy="200" r="4" />
-                    <circle className="g-node" cx="870" cy="420" r="4" />
-                  </g>
-                </svg>
-                <svg className="tl-globe tl-globe-hi" ref={hiGlobeRef} viewBox="0 0 1000 480" aria-hidden="true">
-                  <g clipPath="url(#tlDome)">
-                    <circle className="g-line" cx="500" cy="480" r="400" />
-                    <ellipse className="g-line" cx="500" cy="480" rx="280" ry="400" />
-                    <ellipse className="g-line" cx="500" cy="480" rx="150" ry="400" />
-                    <ellipse className="g-line" cx="500" cy="480" rx="40" ry="400" />
-                    <path className="g-line" d="M132 420 Q 500 300 868 420" />
-                    <path className="g-line" d="M196 300 Q 500 196 804 300" />
-                    <path className="g-line" d="M300 190 Q 500 116 700 190" />
-                  </g>
-                </svg>
-              </div>
             </Step>
 
             {/* "learning the domain" - the vocabulary as noise on day one,
@@ -658,29 +531,10 @@ export default function CurrentProject() {
                   <span className="tl-featured-tag">Latest · shipping now</span>
                 </div>
                 <h4>Recommend the route before the customer asks</h4>
-                <p>In 2026 I scoped Polarin&apos;s first GenAI initiative - three customer-facing use cases, built with a specialist AI delivery team.</p>
-                <p>The flagship is a pre-sales recommendation engine: the platform already holds what was booked before and the real commercial history behind it, so it can hand back the routes worth buying instead of waiting on a person to work them out.</p>
+                <div className="tl-cs-row"><span>about</span><p>a pre-sales recommendation engine - hands back the routes worth buying before a person has to work them out</p></div>
+                <div className="tl-cs-row"><span>role</span><p>scoped the three use cases with a specialist AI delivery team · decided what the model had to be right about, not the build itself</p></div>
                 <div className="tl-cs-foot"><span className="tl-cs-impact">feasibility <small>verdict, evidence-backed</small></span><span className="tl-cs-link">Deep dive →</span></div>
               </article>
-            </Step>
-
-            {/* not a case study and not a date on the arc - the present tense.
-                it closes the timeline rather than sitting inside step 04, and
-                rather than being dropped, since it is the only place on the page
-                that says how the job actually runs week to week. the toolchain
-                strip stays and the paragraph around it is down to one sentence:
-                the strip already names Confluence, Jira, Figma, Git and Vercel,
-                so the prose naming them again was the same list twice. */}
-            <Step n="06" when="every day" kicker="How it runs now" title="What most days look like">
-              <p>An annual roadmap sets the direction; every two weeks a sprint gets scoped against it in Jira, and frontend changes ship straight to production whenever new logic needs to go out.</p>
-              <div className="dv-pipe">
-                <span className="dvp"><b>Confluence</b></span><em>→</em>
-                <span className="dvp"><b>Jira</b></span><em>→</em>
-                <span className="dvp"><b>Figma</b></span><em>→</em>
-                <span className="dvp"><b>AI-paired build</b></span><em>→</em>
-                <span className="dvp"><b>Git</b></span><em>→</em>
-                <span className="dvp last"><b>Vercel</b><i>live</i></span>
-              </div>
             </Step>
 
           </div>
@@ -695,7 +549,7 @@ export default function CurrentProject() {
       <section className="zone zone-sink zone-cool-r" data-ch="Case Studies" ref={indexRef}>
         <div className="wrap tlx-index-sec">
           <p className="eyebrow rv">Every case study</p>
-          <h2 className="ch-title t-section rv d1">All six, <span>in one list.</span></h2>
+          <h2 className="ch-title t-section rv d1">All six <span>case studies.</span></h2>
           <ul className="tlx-index rv d2">
             {INDEX.map((c) => (
               <li key={c.name}>
