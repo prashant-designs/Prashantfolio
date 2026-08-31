@@ -146,7 +146,10 @@ function useStackFade(rootRef) {
 
     const clear = () => {
       root.classList.remove('tlx-stack');
-      steps.forEach((s) => s.style.removeProperty('--cover'));
+      steps.forEach((s) => {
+        s.style.removeProperty('--cover');
+        s.style.removeProperty('--covering');
+      });
     };
 
     // every read happens before every write, on purpose: a classList write
@@ -161,21 +164,33 @@ function useStackFade(rootRef) {
       const on = mq.matches && heights.every((h) => h <= room);
 
       root.classList.toggle('tlx-stack', on);
-      // --cover is a continuous 0..1 read of how much of step i the next step
-      // has actually painted over, not a threshold flipped at some fixed
-      // fraction: `left` is the px gap still open between the sticky line and
-      // the next step's natural top, so (heights[i]-left)/heights[i] is the
-      // real overlap fraction at this exact scroll position. a threshold
-      // (the previous version fired at 65%) meant the first 65% of covering
-      // painted step i+1 directly over step i's full-contrast text with no
-      // cushion at all, then snapped to scaled+dimmed - that abrupt seam is
-      // what read as cluttered. tracking the true fraction means the settle
-      // starts at the same instant the first pixel of overlap does.
+      // raw is the real overlap fraction regardless of reduced-motion - `left`
+      // is the px gap still open between the sticky line and the next step's
+      // natural top, so (heights[i]-left)/heights[i] is how much of step i the
+      // next step has actually painted over at this exact scroll position. a
+      // threshold (an earlier version fired at a fixed 65%) meant the first
+      // 65% of covering painted step i+1 directly over step i's full-contrast
+      // text with no cushion at all, then snapped to scaled+dimmed - that
+      // abrupt seam is what read as cluttered. tracking the true fraction
+      // means the settle starts at the same instant the first pixel of
+      // overlap does.
+      //
+      // --cover (on step i) drives the settle - scale, dim, marker fade - and
+      // is suppressed under reduced motion, same as before.
+      // --covering (on step i+1) is the same raw number but NEVER
+      // suppressed: it is how opaque step i+1's own backing fill needs to be
+      // to actually hide step i, which still has to happen with the settle's
+      // animation turned off, or step i+1 would be a transparent pane with
+      // step i's text bleeding through it. step 0 never receives one, so it
+      // has no backing fill at all and reads as the page, not a panel - it is
+      // never covering anything behind it, because there is nothing there.
       steps.forEach((s, i) => {
         const last = i === steps.length - 1;
         const left = last ? Infinity : base + tops[i + 1] - stackTop;
-        const cover = on && !noMotion ? Math.min(1, Math.max(0, 1 - left / heights[i])) : 0;
-        s.style.setProperty('--cover', cover);
+        const raw = on ? Math.min(1, Math.max(0, 1 - left / heights[i])) : 0;
+        s.style.setProperty('--cover', noMotion ? 0 : raw);
+        const next = steps[i + 1];
+        if (next) next.style.setProperty('--covering', raw);
       });
     };
 

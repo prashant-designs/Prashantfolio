@@ -2942,7 +2942,7 @@ footer .g {
 .tlx-step {
   position: relative;
   padding: var(--sp-fold) 0 calc(var(--sp-head) + 30px) 26px;
-  transition: opacity 0.75s var(--ease), transform 1s var(--ease), background-color 0.6s ease;
+  transition: opacity 0.75s var(--ease), transform 1s var(--ease);
 }
 .tlx-step:first-child { padding-top: 0; }
 .tlx-step:last-child { padding-bottom: 0; }
@@ -2999,24 +2999,38 @@ footer .g {
       which is what lets the spine be lifted over all of them in part 4. the
       nav (90) and the case-study overlay (200) are far above either way.
 
-   3. THE PANEL. a covering panel has to be opaque - it is hiding the step
-      under it, not tinting it. it paints the two layers the section itself
-      paints and no new fill: --ink, which is the page's own stock and the one
-      thing the backdrop is guaranteed to agree with, and a flat wash of
-      --zone-tint, which is this zone's own tint token (--tint-lift here, via
-      .zone-lift) so a panel is not a lighter rectangle sitting on the
-      section's tinted band. no border, no radius, no shadow: this is not a
-      card, it is the page with a hard top edge - a panel's own edges are
-      invisible by construction, and the reader sees the *type* move, which is
-      the whole point.
-      the one layer a panel cannot reproduce is the third one, .zone's 36px
-      dot tile: its phase is the section's padding box, and a stuck panel's
-      background paints where the panel is rather than where its layout box
-      is, so tiled dots inside it would freeze against the section's scrolling
-      ones. so the section gives the tile up while the stack is live (see
-      .timeline-sec:has below) rather than showing a seam down the column
-      edge. the fixed film grain over the whole site is untouched and is what
-      keeps the fold from reading as dead flat paper.
+   3. THE PANEL. a covering panel has to be opaque while it is covering
+      something - it is hiding the step under it, not tinting it - but it has
+      no business being opaque before that, with nothing behind it to hide.
+      an earlier version painted every step opaque unconditionally, all the
+      time, which is what made step 01 (nothing ever sits behind it) look
+      like a flat grey card sitting on the page rather than the page itself -
+      a visible frame where there should be none. the fill now lives on its
+      own ::before pseudo (see below for why it is a separate layer rather
+      than .tlx-step's own background) whose opacity is --covering, the same
+      raw overlap fraction --cover reads on the step being covered, written
+      one step ahead by useStackFade: step i+1's --covering is step i's
+      coverage of it. at opacity 1 the pseudo is the panel's two real layers -
+      --ink, the page's own stock and the one thing the backdrop is
+      guaranteed to agree with, and a flat wash of --zone-tint, this zone's
+      own tint token (--tint-lift here, via .zone-lift) so a panel is not a
+      lighter rectangle sitting on the section's tinted band. step 0 is never
+      written to (there is nothing before it to cover), so its pseudo stays
+      at opacity 0 for its entire time on screen and it simply reads as the
+      page. no border, no radius, no shadow either way: this is not a card,
+      it is the page with a hard top edge once it has one - a panel's own
+      edges are invisible by construction, and the reader sees the *type*
+      move, which is the whole point.
+      the one layer a panel cannot reproduce once it is opaque is the third
+      one, .zone's 36px dot tile: its phase is the section's padding box, and
+      a stuck panel's background paints where the panel is rather than where
+      its layout box is, so tiled dots inside it would freeze against the
+      section's scrolling ones. so the section gives the tile up for as long
+      as the stack is live (see .timeline-sec:has below), covering step or
+      not, rather than showing a seam down the column edge on whichever steps
+      currently happen to be opaque. the fixed film grain over the whole site
+      is untouched and is what keeps the fold from reading as dead flat
+      paper.
 
    4. THE SETTLE. the covered step scales down to 0.96 from its own top edge -
       so the pinned edge stays exactly where the reader left it and the panel
@@ -3030,15 +3044,18 @@ footer .g {
       position every frame, so transitioning it would only add lag chasing a
       moving target.
       the dim is an overlay at up to 45% rather than `opacity` on the step
-      itself, and that is the one non-obvious choice here: all six steps are
+      itself, and that is the one non-obvious choice here: all four steps are
       stuck on the same line at once, so a translucent panel would show the
-      text of every earlier step through it - four layers of ghosting by the
+      text of every earlier step through it - three layers of ghosting by the
       last stop. an overlay keeps the panel opaque and reads identically. it
-      paints `background: inherit` at inset: 0, i.e. literally the panel's own
-      two layers over the panel's own box, so it veils the type without moving
-      the paper tone by a shade - an overlay of flat --ink washed the zone's
-      tint back out and left a faintly lighter rectangle where the settled
-      step was.
+      restates the panel's own two layers literally (rather than `background:
+      inherit`, which is what it used before the panel's own fill became
+      conditional on --covering - inheriting now would tie the dim overlay's
+      strength to an unrelated number, how opaque *this* step happens to be
+      for the step behind *it*) at inset: 0, so it veils the type without
+      moving the paper tone by a shade - an overlay of flat --ink washed the
+      zone's tint back out and left a faintly lighter rectangle where the
+      settled step was.
       the rail marker and the dot fade out with it instead of scaling: they sit
       74px and 90px from the step's left edge, so a 4% scale about the centre
       slides them ~20px off the spine, which the spine is a fixed hairline and
@@ -3053,18 +3070,41 @@ footer .g {
 .tlx-stack > .tlx-step {
   position: sticky;
   top: var(--stack-top);
-  background-color: var(--ink);
-  background-image: linear-gradient(var(--zone-tint, transparent), var(--zone-tint, transparent));
   transform-origin: 50% 0;
   --cover: 0;
   scale: calc(1 - 0.04 * var(--cover));
 }
+/* the backing fill, split out to its own pseudo rather than living on
+   .tlx-step's own background, because the fill actually carries two
+   unrelated things that cannot share one transition. the ink colour needs
+   to crossfade over 0.6s when the theme flips (see THE BACKDROP) - a
+   discrete, occasional event that WANTS to be animated. the opacity needs to
+   track --covering exactly, every scroll frame, with no easing at all, for
+   the same reason --cover's own scale/dim carry none: a transition chasing a
+   value that moves every frame only adds lag. one property can't have a
+   transition for one caller and none for the other, so the ink colour lives
+   on background-color/-image (transitioned) and the coverage lives on
+   opacity (not), on two different declarations instead of one. z-index: -1
+   keeps it behind the step's own text without making .tlx-step a stacking
+   context - it is a declaration on the PSEUDO, and .tlx-step itself is still
+   z-index: auto, which is what part 2 depends on. */
+.tlx-stack > .tlx-step::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background-color: var(--ink);
+  background-image: linear-gradient(var(--zone-tint, transparent), var(--zone-tint, transparent));
+  opacity: var(--covering, 0);
+  pointer-events: none;
+  transition: background-color 0.6s ease;
+}
 /* the spine, over the panels rather than under them. .tlx is position:
    relative with z-index auto, so it is not a stacking context and this
    pseudo-element's z-index competes in the root one - a positive z-index
-   paints after every z-index:auto positioned sibling, i.e. after all six
-   panels. it stays a --line2 hairline, which at 20% alpha over a --mute dot
-   is not a visible crossing. */
+   paints after every z-index:auto positioned sibling, i.e. after every
+   panel that is currently opaque. it stays a --line2 hairline, which at 20%
+   alpha over a --mute dot is not a visible crossing. */
 .tlx-stack::before { z-index: 1; }
 /* the tiled dot layer, off for as long as the stack is live - see part 3. the
    selector is (0,2,0) like .theme-light .zone's, so it wins on source order,
@@ -3075,7 +3115,8 @@ footer .g {
   content: '';
   position: absolute;
   inset: 0;
-  background: inherit;
+  background-color: var(--ink);
+  background-image: linear-gradient(var(--zone-tint, transparent), var(--zone-tint, transparent));
   opacity: calc(0.45 * var(--cover));
   pointer-events: none;
 }
