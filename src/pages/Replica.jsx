@@ -16,7 +16,7 @@ export default function Replica() {
         sandbox="allow-scripts allow-same-origin allow-forms"
       />
       <noscript style={{color: '#A3A3A3', padding: 12}}>
-        This page requires JavaScript - open the replica directly: <a href="/replica.html">/replica.html</a>
+        This page requires JavaScript - open the replica directly: <a className="inline-link" href="/replica.html">/replica.html</a>
       </noscript>
     </div>
   );

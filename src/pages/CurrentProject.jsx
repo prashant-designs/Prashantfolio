@@ -453,7 +453,7 @@ export default function CurrentProject() {
                   it was the tallest thing in the step by a wide margin, which
                   is what set the ceiling on --stack-top's room check for every
                   other step on the page. */}
-              <p>Lightstorm&apos;s Network-as-a-Service platform - private, low-latency links between data centers, clouds and SaaS apps, provisioned in minutes through an API instead of a paperwork trail.</p>
+              <p><a className="inline-link" href="https://www.lightstorm.net/" target="_blank" rel="noopener noreferrer">Lightstorm</a>&apos;s Network-as-a-Service platform - private, low-latency links between data centers, clouds and SaaS apps, provisioned in minutes through an API instead of a paperwork trail.</p>
             </Step>
 
             {/* "learning the domain" - the vocabulary as noise on day one,

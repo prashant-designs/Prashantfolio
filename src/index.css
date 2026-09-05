@@ -252,16 +252,24 @@
   --signal: #7B5BFF;
   --grad-ink: #06070F;
 
-  /* NOT an accent. --link used to be the site's second colour - a vivid
-     #4C82FF - carrying links, icon tints, chart series and decorative glows,
-     and it was retired because two competing accents is one too many. that is
-     still true, so it is still retired: an interactive label is --mute at rest
-     and --text on hover (confidence, not hue), and the accent above is the
-     only hue that means "act on this". the token survives, pointed at a plain
-     light neutral re-cut to the ladder's navy cast, purely as a safety net -
-     anything that still reads it, or any future pass that reaches for it out
-     of habit, gets a neutral. nothing in this file uses it on purpose. */
-  --link: #C2C7DA;
+  /* reinstated, on purpose, after a direct request to bring blue back for text
+     links site-wide - the retirement note below is kept rather than deleted
+     because the reasoning in it ("two competing accents is one too many") is
+     still correct about the thing it was correct about: the gradient is still
+     the only hue that means "act on this" as a UI chip, chart series or glow.
+     a text link is a different claim - "this word is a door out of the page",
+     which almost every reader's whole browsing life has taught them means
+     blue - so it is allowed to carry the one colour the rest of the site
+     doesn't spend, the same original vivid #4C82FF this token wore before it
+     was pulled. underline is reserved for hover/focus rather than sitting
+     under the word at rest, so the affordance is colour first, motion second,
+     matching how .inline-link is the only consumer of this token in the file.
+
+     the retired history, for the record: --link used to carry icon tints,
+     chart series and decorative glows too, not just links - THAT wider job is
+     still retired. this token's job today is exactly one thing: a plain
+     inline link inside running prose. */
+  --link: #4C82FF;
 
   /* --up is the lime, and it has exactly one job: the good / human / approved
      moment. the reference spends its own --lime on a status dot, a "win" row
@@ -2112,7 +2120,11 @@ body {
   --g3: #0A7C96;
   --signal: #5B33E0;
   --grad-ink: #FFFFFF;
-  --link: #3A3E4D;
+  /* deepened from the dark #4C82FF the same way g1/g2/g3 are just above -
+     a vivid sky blue glows on near-black and loses too much contrast on
+     paper, so light mode gets a deeper, more saturated blue in the same
+     family rather than the dark value carried over as-is. */
+  --link: #1D5FDB;
   --up: #0F7A4A;
   --rose: #B02440;
   --bar-num: rgba(18, 20, 31, 0.9);
@@ -4028,6 +4040,15 @@ footer .g {
 .tlx-step > p:last-of-type { margin-bottom: 0; }
 .tlx-step > p b { color: var(--text); font-weight: 600; }
 
+/* a plain external link inside running prose - not a button, not a chip, just
+   a word that happens to be a door out of the page. --link (see TOKENS for
+   why this token is back after being retired) carries the colour at rest;
+   the underline is withheld until hover/focus rather than sitting under the
+   word all the time, so the page reads as prose first and the interactive
+   affordance arrives as a second signal on demand, not two signals at once. */
+.inline-link { color: var(--link); text-decoration: none; text-underline-offset: 3px; transition: color 0.2s; }
+.inline-link:hover, .inline-link:focus-visible { text-decoration: underline; }
+
 /* ---------------- THE STACK ----------------
    the sticky-stacked steps: content pins under the nav, the next step covers
    it, the covered one settles back. read the four parts in this order.
@@ -4576,7 +4597,7 @@ footer .g {
   --text: #EDEFF7;
   --mute: #949BB8;
   --dim: #666E8C;
-  --link: #C2C7DA;
+  --link: #4C82FF;
   --up: #7DF9A6;
   --rose: #FF6B8A;
   /* the accent, back at its dark cut - and --grad has to be restated with the
