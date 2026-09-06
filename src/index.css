@@ -6069,10 +6069,20 @@ b.adm-was { font-family: var(--body); font-weight: 600; color: var(--rose); }
    viewport opt-outs. hidden under 1400px - past that width .ovl-panel's own
    margin (it caps at max-width: 1320px) shrinks below what a legible column
    of labels plus a comfortable gap from the case study's own copy needs. */
-.cp-index { position: fixed; z-index: 3; display: flex; flex-direction: column; gap: 2px; text-align: right; }
-.cp-index button { font-family: var(--mono); font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--dim); background: none; border: none; border-right: 2px solid transparent; padding: 5px 12px 5px 0; cursor: pointer; transition: color 0.25s, border-color 0.25s; }
+/* left-aligned labels, so every row's text starts at the same x regardless
+   of word length ("Ananya" vs "Discovery") - text-align: right (the
+   original) instead right-aligned each button's own box, which is stretched
+   to the widest label's width by the column flex default, so shorter words
+   drifted rightward relative to longer ones. the active indicator moves
+   from border-right to border-left with it - a bar on the trailing edge of
+   right-aligned text and a bar on the trailing edge of left-aligned text are
+   the same idea, just mirrored; leaving it on the right here would strand it
+   far from short labels' text. position (top/right, written inline from JS)
+   is untouched - this is purely how the column reads internally. */
+.cp-index { position: fixed; z-index: 3; display: flex; flex-direction: column; gap: 2px; text-align: left; }
+.cp-index button { font-family: var(--mono); font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--dim); background: none; border: none; border-left: 2px solid transparent; padding: 5px 0 5px 12px; cursor: pointer; transition: color 0.25s, border-color 0.25s; }
 .cp-index button:hover { color: var(--mute); }
-.cp-index button.on { color: var(--text); border-right-color: var(--mute); }
+.cp-index button.on { color: var(--text); border-left-color: var(--mute); }
 @media (max-width: 1400px) { .cp-index { display: none; } }
 @media (prefers-reduced-motion: reduce) { .cp-index button { transition: none; } }
 
