@@ -386,13 +386,30 @@
      as six chart series. it stays neutral when it is a beat in a SEQUENCE
      (position already identifies it), when the group shares ONE meaning
      rather than six different ones, or when it is a single decorative accent
-     on an otherwise plain element. the three sets that qualify today are all
-     exactly six-wide, which is why the ramp is six rungs and not seven:
-       .tl-cs-icon    Current Project's six case studies
-       .adm-mod-ic    the Admin Portal's six console modules
-       .kbx-jobs      the six jobs AI took over in the Knowledge Base
+     on an otherwise plain element. the two sets that carry it today:
+       .tl-cs-icon    Current Project's six case-study badges   rungs 1-6
+       .tlx-idx-n     the same six as the numbered index below  rungs 1-6
+     - i.e. one six-wide set of parallel siblings, wearing its rung twice on
+     one page so a card and its index row are recognisably the same study.
      applied through one [data-cat] attribute - see CARD SYSTEM at the bottom
-     of this file, where the chip recipe already lives.
+     of this file, where the chip recipe already lives. (.kbx-jobs was listed
+     here for a while; the Knowledge Base pass that densified that section
+     dropped its `cat` and the note on its own component says why, so the
+     attribute is not on any element in that study.)
+
+     there was a third, and losing it is the reason to state plainly that a SET
+     SHORTER THAN THE RAMP IS FINE, a set longer than it is not, and a set that
+     does not fit takes its own palette rather than bending this one.
+     .adm-mod-ic was the Admin Portal's three capability-group chips on rungs
+     1-3, and the three groups existed partly because that page's content is
+     nine capabilities and nine chips would have meant three invented rungs
+     here. that page now colours all nine, per item, off a NINE-rung ramp of
+     its own - --adm-1..9, declared at THE NINE HUES in the Admin Portal block,
+     scoped to that one component, built by this ramp's own method and reading
+     as the same vocabulary. so this ramp is unchanged and did not have to be:
+     six rungs is a CEILING the rule keeps honest, not a quota a consumer has
+     to fill, and the ramp stays six rather than growing a seventh the next
+     time a set does not fit. a local set is what a set of nine gets.
 
      all six are registered @property colours on the crossfade list next to
      the bars, restated in .theme-light for paper and in .ovl (which is always
@@ -4034,7 +4051,25 @@ footer .g {
 .tlx-when-inline { color: var(--dim); text-transform: none; letter-spacing: 0.04em; }
 @media (min-width: 860px) { .tlx-when-inline { display: none; } }
 
-.tlx-h { font-family: var(--disp); font-weight: 700; font-size: var(--t-lead); letter-spacing: -0.015em; line-height: 1.12; margin: 0 0 16px; max-width: 20ch; }
+/* the measure is 27ch, not the 20ch this rule carried for the same reason
+   every other display rule here carries one - a step title should read as a
+   short phrase, not a line that runs the full width of the step. 20ch was
+   simply the wrong number for the column: .tlx-step is 1080px less its 134px
+   rail gutter = 946px of text width at 1512px, while 20ch at --t-lead's 40px
+   is 476px, so the cap and not the column was deciding every break. two of
+   the four real titles paid for that. "Joined as its first designer"
+   measures 480px and lost by four, "Three products, built from nothing"
+   measures 622px, and both fell to two balanced lines whose widest line is
+   236px and 317px - 25% and 33% of the column, sitting above the step's own
+   paragraph (62ch) which runs wider than the heading did. 27ch is 643px: it
+   clears the longest of the four with ~20px to spare and is still only 68%
+   of the column, so the cap keeps its editorial job and stops inventing
+   breaks nothing asked for. the ratio is what matters, not the pixels - ch
+   and the text both scale with --t-lead's clamp, so the fit holds all the
+   way down. "Now: AI product manager" (468px) and "What is Polarin" (274px)
+   were single lines before and are untouched: widening a max-width cannot
+   introduce a break. */
+.tlx-h { font-family: var(--disp); font-weight: 700; font-size: var(--t-lead); letter-spacing: -0.015em; line-height: 1.12; margin: 0 0 16px; max-width: 27ch; }
 
 .tlx-step > p { color: var(--mute); font-size: var(--t-body); max-width: 62ch; margin: 0 0 14px; }
 .tlx-step > p:last-of-type { margin-bottom: 0; }
@@ -4630,10 +4665,17 @@ footer .g {
   --bar-5: #E4A0F0;
   --bar-6: #D2E97F;
   --bar-num: rgba(6, 7, 15, 0.85);
-  /* the categorical chip ramp, back at its dark cut - two of its three
-     consumers (.adm-mod-ic, .kbx-jobs) only ever render inside this overlay,
-     so without this line they would wear the paper set whenever the page
-     behind happened to be flipped. */
+  /* the categorical chip ramp, back at its dark cut. this line used to be
+     load-bearing: two of the ramp's consumers rendered only inside this
+     overlay (the Admin Portal's group chips and the Knowledge Base's job
+     chips) and would have worn the paper set whenever the page behind happened
+     to be flipped. neither exists now - the KB pass dropped its `cat` and the
+     Admin Portal runs on its own --adm-1..9 (see THE NINE HUES, which needs no
+     dark restatement because it has no light cut to be restated from) - so
+     both of today's consumers live out on the page. it stays because the ramp
+     is a site-wide token and the next chip inside a case study should not have
+     to rediscover this, which is the same reason --bar-* above it is restated
+     here with no chart in the overlay at all. */
   --chip-1: #FFAC9C;
   --chip-2: #FFD48F;
   --chip-3: #A2E8C1;
@@ -4676,7 +4718,7 @@ body.ovl-lock { overflow: hidden; }
 /* ================= INVOICE CASE STUDY ================= */
 .inv-wrap { max-width: 1080px; margin: 0 auto; padding: clamp(46px, 8vh, 90px) clamp(22px, 5.5vw, 80px) 70px; }
 /* fills the first fold of the overlay on its own, so the next section (Meet
-   Alex) only appears once the person actually scrolls, not by accident. */
+   Ananya) only appears once the person actually scrolls, not by accident. */
 .inv-hero { min-height: calc(100vh - 200px); display: flex; flex-direction: column; justify-content: center; }
 /* the opening fold used to carry a warm/cool glow pair. ambient red on the
    first screen of every case study is decoration, so it went - and its cool
@@ -4815,7 +4857,28 @@ body.ovl-lock { overflow: hidden; }
 
 .inv-step-tag { display: flex; width: fit-content; margin-left: auto; margin-right: auto; align-items: center; gap: 8px; font-family: var(--mono); font-size: 10.5px; letter-spacing: 0.18em; text-transform: uppercase; color: var(--mute); }
 .inv-step-tag i { width: 20px; height: 1px; background: var(--line2); display: inline-block; }
-.inv-section h3.plain { font-family: var(--disp); font-weight: 700; font-size: var(--t-sub); letter-spacing: -0.02em; margin-top: 10px; max-width: 22ch; }
+/* 34ch, not 22ch, and the base rule rather than a scoped override because no
+   consumer was relying on the narrower cap. h3.plain is the shared subsection
+   heading for all six case studies and it is auto-margined centre (see the
+   centring rule near .dv-h), so a cap that is too tight does not produce a
+   rag - it splits the phrase into two half-empty centred lines. 22ch at
+   --t-sub's 32px is 419px inside the overlay's 920px reading column, and six
+   real headings measured just past it: "Built out of what we already had"
+   456px, "Talking to the people who read it" 463px, "Collect. Analyse. Flow.
+   Test. Deploy." 522px, "Two different jobs, running side by side" 563px,
+   "Turning conversations into requirements" 590px, "WikiJS, and one team who
+   could operate it" 613px. every one of those is a single line the column had
+   room for twice over, broken into two lines of 232-327px - 25-36% of the
+   column, and only 55-78% of the cap itself, so the break was not even buying
+   a filled measure. 34ch is 647px: it clears the longest by 34px and is 70%
+   of the column, so the heading still reads narrower than the section it
+   heads. the twelve headings that already fit (from "Phase 1, live" at 182px
+   to "Make Jira the source of truth" at 410px) cannot change - a wider
+   max-width never introduces a break - and the one heading that genuinely
+   does not fit, GenAI's "What does "working" mean, when it never answers the
+   same way twice?" at 1041px, is wider than the column itself and still
+   wraps, now onto two lines instead of three. */
+.inv-section h3.plain { font-family: var(--disp); font-weight: 700; font-size: var(--t-sub); letter-spacing: -0.02em; margin-top: 10px; max-width: 34ch; }
 .inv-section h3.plain span { color: var(--mute); }
 
 .inv-quotes { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-top: var(--sp-block); }
@@ -4827,25 +4890,313 @@ body.ovl-lock { overflow: hidden; }
 .inv-brm .icon { font-size: 22px; flex-shrink: 0; }
 .inv-brm p { color: var(--mute); font-size: 14px; }
 
-/* ================= ADMIN PORTAL CASE STUDY ================= */
-.adm-modgrid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; margin-top: var(--sp-block); }
-.adm-mod { border: 1px solid var(--line); border-radius: var(--r-md); background: var(--raise); padding: var(--pad-card-sm); transition: border-color 0.3s, transform 0.3s var(--ease), box-shadow 0.3s; }
-.adm-mod:hover { border-color: var(--line2); transform: translateY(-3px); }
-.adm-mod-ic { display: grid; place-items: center; width: var(--chip-sm); height: var(--chip-sm); border-radius: var(--r-sm); color: var(--text); font-family: var(--mono); font-size: var(--t-card-sm); }
-.adm-mod b { display: block; font-family: var(--disp); font-weight: 600; font-size: var(--t-card-sm); margin-top: 12px; }
-.adm-mod p { color: var(--mute); font-size: var(--t-body-xs); margin-top: 6px; }
+/* ================= ADMIN PORTAL CASE STUDY =================
+   six sections on borrowed devices and three private ones. what the page is
+   built out of, in order, so the next reader can see how little of it is new:
 
-.adm-trio { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; margin-top: var(--sp-block); }
-.adm-trio-card { text-align: center; border: 1px solid var(--line); border-radius: var(--r-md); background: var(--raise); padding: var(--pad-card); }
-.adm-trio-n { font-family: var(--mono); font-size: 10px; letter-spacing: 0.2em; color: var(--dim); }
-.adm-trio-card b { display: block; font-family: var(--disp); font-weight: 700; font-size: var(--t-card); letter-spacing: -0.01em; margin-top: 8px; color: var(--text); }
-.adm-trio-card p { color: var(--mute); font-size: var(--t-body-xs); margin-top: 4px; }
+     .inv-hero / .inv-meta       the shared opening fold. the designer → PM arc
+                                 lives in one .inv-meta cell now rather than in
+                                 its own two-card section - it is true, it is
+                                 already argued on About and on Current
+                                 Project's timeline, and a case study does not
+                                 need a whole beat to re-argue it.
+     .adm-chiprow + .chip        twice. the challenge as six disconnected
+                                 fragments (.adm-scatter centres it, the way
+                                 .kbx-pain centres the same device), and the
+                                 three concerns under each team below.
+     .adm-rail / .adm-stop       the operational journey - the path an ORDER
+                                 takes, on this page's own coloured rail. see
+                                 THE RAIL below for what it is built out of and
+                                 what it replaced (the shared .dv-pipe strip,
+                                 which four other pages still use).
+     .adm-capgrid / .adm-cap     the nine capabilities, nine cards, one hue
+                                 each, three jobs as a mono tag. see THE NINE
+                                 HUES below.
+     .adm-duo / .adm-duo-card    the two teams who log in. this grid used to
+                                 carry the designer/PM pair, which is why it is
+                                 a two-track grid already.
+     .inv-brm                    why there are no screens on this page.
+     .ivx-principles.dv4 / .ivp  what changed, four-up, no icons.
+     .inv-result                 the closing sentence, as every other study.
 
-.adm-teams { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; margin-top: var(--sp-block); }
-.adm-team { border: 1px solid var(--line); border-radius: var(--r-md); background: var(--raise); padding: var(--pad-card-sm); }
-.adm-team b { font-family: var(--mono); font-size: 13px; color: var(--text); letter-spacing: 0.04em; }
-.adm-team span { display: block; font-size: 11px; color: var(--dim); margin-top: 4px; }
-.adm-team p { color: var(--mute); font-size: var(--t-body-xs); margin-top: 10px; }
+   what went with earlier passes, because nothing else on the site used them:
+   .adm-trio (the three "never lets slip" cards), .adm-teams (the four-team
+   grid - the brief this page is now built from names two teams, so the
+   four-track grid had nothing to hold), and the whole .adm-loop family (the
+   Collect → Analyse → Flow → Test → Deploy card strip, which described how I
+   iterate on the product rather than what happens to an order, and read as a
+   second flow competing with the journey above). .adm-modgrid / .adm-mod /
+   .adm-mod-ic / .adm-caps (the three grouped capability cards) and .adm-pipe
+   (the modifier on the shared .dv-pipe) went with this pass - see THE NINE
+   HUES and THE RAIL. all of them are also off the raised-card list in CARD
+   SYSTEM.
+
+   COLOUR. the accent does not appear (see THE ACCENT in TOKENS - a case study
+   in the overlay has no CTA for it):
+     --adm-1..9    this page's own nine-rung categorical ramp, on the nine
+                   capability cards and on the six journey stops. declared and
+                   argued at THE NINE HUES immediately below, because it is the
+                   one decision on the page that needs a page of reasoning.
+     --rose        once. "asking around" in the challenge paragraph, on
+                   b.adm-was. rose is the removed / negative side of a diff
+                   everywhere on this site (.ivs-was, .dvf-code, the "then"
+                   labels), and the named defect the portal undid is that.
+     --up          once, and inside .inv-result, which is already bordered and
+                   washed in --up: "delivering and supporting customers", the
+                   sentence the page exists to deliver. same placement
+                   .ivs-verdict argued for on the Invoice study.
+   the six challenge chips are the one set here that stays neutral, and the
+   reason is the shared rule's own: they share ONE meaning rather than six
+   different ones, so colouring them would say something untrue.
+
+   NO NUMBERS. the impact section is four qualitative statements and stays
+   that way: nothing on this page was measured, and this file's own note on the
+   Knowledge Base block already says what happens when a stat card is easy to
+   build - the device being available is not evidence arriving. */
+.adm-scatter { justify-content: center; margin-top: var(--sp-block); }
+
+/* ---------------- THE NINE HUES ----------------
+   --adm-1..9: a nine-rung categorical ramp that belongs to this component and
+   to nothing else on the site.
+
+   WHY IT EXISTS RATHER THAN REUSING --chip-*. the shared categorical ramp in
+   TOKENS is six rungs and says in its own words why: its consumers are
+   parallel-six sets (Current Project's six case studies, the Knowledge Base's
+   six jobs), and six is a CEILING kept honest by an eligibility rule, not a
+   quota. this page has nine capabilities. stretching --chip-* to nine would
+   need three invented rungs in a ramp three other pages read, and colouring
+   six of the nine while the rest fall back to neutral would leave "why did
+   that one get a colour" unanswerable - the exact failure that rule prevents.
+   so the shared ramp does not move, and this page builds its own instead. it
+   is a LOCAL DEVICE on purpose: it is declared on the two containers that use
+   it and on nothing higher, it is never referenced outside this block, and
+   nothing outside this component can pick it up. re-cutting --chip-* cannot
+   touch these nine, and re-cutting these nine cannot touch a badge on any
+   other page.
+
+   HOW THE NINE WERE BUILT - the same construction the chart ramp and the chip
+   ramp use (one lightness band, one chroma policy, hues spread on the wheel),
+   stated as a recipe because nine values invite drift:
+     1. fixed lightness. every rung is cut at OKLCH L=0.82, so no rung reads
+        heavier or fainter than its neighbour. that is the middle of the
+        existing --chip-* set's own band (its six sit at L=0.82-0.92, tuned
+        one at a time); nine rungs cannot afford to be tuned one at a time, so
+        they are cut as a ramp.
+     2. chroma at gamut maximum under a 0.12 cap. the cap is where --chip-*
+        already sits (C=0.085-0.113) and is what keeps the set reading as one
+        soft family rather than as one neon rung beside eight pastels - the
+        aqua and sky rungs are the ones that would otherwise run away.
+     3. hue placed for SEPARATION, not for arithmetic. nine hues at even 40°
+        steps, offset to 29°, which is where a hill-climb over the sRGB gamut
+        at that lightness lands when you maximise the minimum perceptual
+        distance between any two rungs: 29 / 69 / 109 / 147 / 186 / 225 / 267 /
+        309 / 348. the closest pair is 0.078 apart in OKLab, which is about
+        4x a just-noticeable difference at this size - measured, because at
+        nine rungs "they look different to me" stops being evidence.
+   six of the nine are the same families the site already speaks - coral,
+   amber, citron, green, sky, orchid sit next to --chip-1..6's coral, amber,
+   chartreuse, green, blue, orchid - so a reader who has seen a badge on
+   Current Project sees the same vocabulary here. the three that are new to the
+   site are the aqua (186°), the periwinkle (267°) and the pink (348°).
+
+   THE ONE RULE THIS RELAXES, and why it is safe here. the shared ramp is cut
+   to clear the accent's three hues (pink, violet, cyan) by at least 29°, so a
+   category chip can never read as a washed-out CTA. nine rungs cannot clear
+   three neighbourhoods and still be nine: the three the shared ramp reserves
+   are exactly the three slots left on the wheel. spending them is safe HERE
+   and only here, for a reason that is a property of the location and not a
+   preference: --adm-* is declared inside a case study, case studies only
+   render inside .ovl, and .ovl contains no CTA, no nav state and no link pill
+   for the accent to own (the COLOUR note above already says the accent does
+   not appear on this page at all). there is nothing on screen for a 34px
+   badge to be confused with. this is also why the ramp is NOT promoted to
+   TOKENS: out on the page, where the CTA lives, three of these rungs would be
+   exactly the mistake the clearance rule exists to stop.
+
+   NO PAPER SET, and no @property registration. every other colour ramp in
+   this file is restated in .theme-light and registered on the crossfade list,
+   because it renders on both palettes and has to turn over. these nine render
+   in exactly one place - the always-dark .ovl - so a second cut would be a
+   set of values nothing can ever paint, and there is no flip to animate. the
+   contrast figures below are therefore the only ones that exist.
+
+   MEASURED, against this overlay's --card-fill (#0F1324), which is the ground
+   every one of these actually sits on:
+     glyph on its own 14% wash    7.69 - 8.34 : 1
+     glyph on the 22% hover wash  6.28 - 6.76 : 1
+     glyph on the bare card       10.07 - 11.09 : 1
+   the tightest of those is more than double the 4.5:1 text floor and more than
+   4x the 3:1 a graphic has to clear, and the 0.65 spread across all nine at
+   the resting wash is the point of step 1 above: none of the nine is the faint
+   one. */
+.adm-rail,
+.adm-capgrid {
+  --adm-1: #FFAB9C; /* 29°  coral      */
+  --adm-2: #F4B768; /* 69°  amber      */
+  --adm-3: #C2CD6F; /* 109° citron     */
+  --adm-4: #7BDCA6; /* 147° green      */
+  --adm-5: #4CDCE0; /* 186° aqua       */
+  --adm-6: #60D4FE; /* 225° sky        */
+  --adm-7: #AAC3FF; /* 267° periwinkle */
+  --adm-8: #DBAFFF; /* 309° violet     */
+  --adm-9: #FEA4D2; /* 348° pink       */
+}
+
+/* the badge, in one rule for both consumers. this is deliberately the SAME
+   recipe [data-cat] applies at the bottom of this file - 14% of the hue over
+   the card it sits on, a 30% hairline, the glyph at full strength, 22%/55% on
+   hover - so a coloured badge here and a coloured badge on Current Project are
+   the same object at the same weight and only the ramp behind them differs. it
+   is a separate rule rather than a tenth and eleventh consumer of [data-cat]
+   because that attribute resolves --chip-c off the six-rung ramp; a nine-rung
+   attribute that quietly worked on any element would be the stretch this whole
+   block exists to avoid. hence data-adm, which resolves --adm-c and nothing
+   else, and which only ever appears on a badge inside this component. */
+[data-adm="1"] { --adm-c: var(--adm-1); }
+[data-adm="2"] { --adm-c: var(--adm-2); }
+[data-adm="3"] { --adm-c: var(--adm-3); }
+[data-adm="4"] { --adm-c: var(--adm-4); }
+[data-adm="5"] { --adm-c: var(--adm-5); }
+[data-adm="6"] { --adm-c: var(--adm-6); }
+[data-adm="7"] { --adm-c: var(--adm-7); }
+[data-adm="8"] { --adm-c: var(--adm-8); }
+[data-adm="9"] { --adm-c: var(--adm-9); }
+
+.adm-cap-ic,
+.adm-stop-ic {
+  display: grid;
+  place-items: center;
+  width: var(--chip-sm);
+  height: var(--chip-sm);
+  flex-shrink: 0;
+  color: var(--adm-c);
+  background: color-mix(in srgb, var(--adm-c) 14%, var(--card-fill));
+  border: 1px solid color-mix(in srgb, var(--adm-c) 30%, var(--line2));
+  transition: background 0.3s, border-color 0.3s;
+}
+.adm-cap-ic svg,
+.adm-stop-ic svg { display: block; width: 18px; height: 18px; }
+.adm-cap:hover .adm-cap-ic,
+.adm-stop:hover .adm-stop-ic {
+  background: color-mix(in srgb, var(--adm-c) 22%, var(--card-fill));
+  border-color: color-mix(in srgb, var(--adm-c) 55%, var(--line2));
+}
+
+/* ---------------- THE RAIL ----------------
+   .adm-rail: the six stops of an order, on a line that is drawn in the six
+   stops' own colours.
+
+   WHAT IT REPLACED. this section used to be .dv-pipe + .adm-pipe - the shared
+   toolchain strip, a dashed hairline box holding six monochrome pills with an
+   → between each pair. that device is right for a toolchain (Developer Portal,
+   Knowledge Base, Customer Portal all still use it) and wrong for this: a
+   journey's whole point is that it is one connected path, and six separate
+   pills in a dashed grey box is six objects that happen to be in a row. .dv-p
+   and every other shared device on the page is untouched; only this strip
+   changed, and .dv-pipe itself is not modified in any way.
+
+   WHICH EXISTING DEVICE IT IS BUILT ON. the site already had the right
+   construction, twice, both vertical: .tl-rail (Current Project's chapter
+   path) and .tlx (My Journey's stacked steps) each draw ONE continuous
+   hairline as the container's own ::before and let each step's dot sit on top
+   of it, rather than giving every step a line segment of its own - which is
+   what keeps the thread reading as continuous no matter how tall or wide an
+   individual step turns out to be. that is exactly the property this needs, so
+   this is that construction turned 90°, and it inherits the same z-index
+   discipline (line at 0 on the container, stops at 1) and the same "the dot
+   is opaque, so it interrupts the line by covering it" behaviour.
+
+   HOW THE LINE IS COLOURED, which is the one part that is new. the line is a
+   single 2px linear-gradient, inset to run from the CENTRE of the first badge
+   to the centre of the last: with six equal grid columns those two centres sit
+   at 1/12 and 11/12 of the container's width, hence the calc(100% / 12) on
+   both sides. six equally spaced centres then divide that span into five equal
+   parts, so gradient stops at 0 / 20 / 40 / 60 / 80 / 100% land EXACTLY under
+   the six badges. each stop therefore meets the line in its own hue and the
+   run between any two stops is the blend between them - the line is not a
+   decorated grey rule, it is the ramp itself drawn along the path.
+
+   WHY A SEQUENCE IS ALLOWED A HUE HERE. the shared --chip-* rule says a set
+   stays neutral when it is a beat in a sequence, because position already
+   identifies it. that rule is about a CATEGORY label, and it is right: nothing
+   here claims that "KYC approval" is a category. what the colour does on this
+   rail is carry the ORDER - rungs 1-6 are taken in rung order, which is a
+   warm-to-cool sweep, so hue and position say the same thing rather than two
+   different things, and the gradient between the stops is only readable as a
+   direction. the six also share the ramp with capability cards 1-6, and that
+   shares nothing else: a rung means "the nth of this set", the two sets are
+   different objects in different sections, and neither claims a relationship
+   to the other.
+
+   MOBILE. below 700px six columns of 11ch labels do not fit, so the rail
+   rotates to the vertical form the two devices it is based on already are: the
+   gradient becomes 180deg down the left, the stops become rows, and the badge
+   keeps sitting on the line. the top/bottom insets are the badge's own
+   half-height plus the row padding, which is why the row padding is a fixed
+   9px rather than a token - the line has to end in the centre of the first and
+   last badge, and that arithmetic needs a number. */
+.adm-rail {
+  position: relative;
+  list-style: none;
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  margin-top: var(--sp-block);
+  padding: 20px 18px 18px;
+  border: 1px solid var(--line);
+  border-radius: var(--r-md);
+}
+/* left/right, not width: the line has to start and end at a badge centre, and
+   an inset pair says that in one declaration at any container width. */
+.adm-rail::before {
+  content: "";
+  position: absolute;
+  z-index: 0;
+  left: calc(100% / 12);
+  right: calc(100% / 12);
+  top: 37px; /* 20px of padding + half of --chip-sm */
+  height: 2px;
+  border-radius: 2px;
+  background: linear-gradient(90deg,
+    var(--adm-1) 0%, var(--adm-2) 20%, var(--adm-3) 40%,
+    var(--adm-4) 60%, var(--adm-5) 80%, var(--adm-6) 100%);
+}
+.adm-stop { position: relative; z-index: 1; display: flex; flex-direction: column; align-items: center; gap: 10px; padding: 0 5px; text-align: center; }
+/* the label stays --mute. the hue is the badge's, exactly as it is on every
+   other coloured badge on the site - a coloured label would spend the
+   category twice and cost the row its reading order. */
+.adm-stop b { font-family: var(--mono); font-weight: 500; font-size: var(--t-meta); letter-spacing: 0.07em; text-transform: uppercase; color: var(--mute); transition: color 0.3s; }
+.adm-stop:hover b { color: var(--text); }
+.adm-stop-ic { border-radius: 50%; }
+
+/* .dv-p carries no top margin of its own - on the Developer Portal it always
+   follows .dv-h, which supplies the gap. the two paragraphs on this page
+   follow a chip row and the rail instead, so they state the rung themselves
+   rather than sitting flush against the device above them. --sp-block is the
+   step SPACING already defines for "heading (or lede) to the block it
+   introduces", read the other way round. */
+.adm-scatter + .dv-p,
+.adm-rail + .dv-p { margin-top: var(--sp-block); }
+
+/* the nine capability cards. a flex column with the mono job tag pushed to the
+   bottom (margin-top: auto), because the nine titles run one and two lines -
+   without it the three tags in a row start at three different heights and the
+   grid reads as nine unrelated cards rather than three rows of a job. the
+   badge is square-ish (--r-sm) while the rail's is round (50%): a capability
+   is a thing and a stop on a path is a point, and the two badges being
+   different shapes is what stops the shared ramp reading as a claim that a
+   card and a stop are the same kind of object. */
+.adm-capgrid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-top: var(--sp-block); }
+.adm-cap { display: flex; flex-direction: column; border: 1px solid var(--line); border-radius: var(--r-md); padding: var(--pad-card-sm); transition: border-color 0.3s, transform 0.3s var(--ease), box-shadow 0.3s; }
+.adm-cap:hover { border-color: var(--line2); transform: translateY(-3px); }
+.adm-cap-ic { border-radius: var(--r-sm); }
+.adm-cap b { display: block; font-family: var(--disp); font-weight: 600; font-size: var(--t-card-sm); margin-top: 12px; }
+/* --mute at --t-meta, which is exactly what .adm-caps li (the label rows this
+   card replaced) carried - not the --dim/--t-micro a decorative kicker like
+   .adm-duo-tag gets. the tag is the only thing left carrying the three-job
+   grouping, so it is load-bearing text: --dim measures 3.66:1 on this card and
+   --mute measures 6.71:1, and a 3.66 is fine for a label a reader can ignore
+   and not for the one that answers "which job is this". */
+.adm-cap-job { font-family: var(--mono); font-size: var(--t-meta); letter-spacing: 0.14em; text-transform: uppercase; color: var(--mute); margin-top: auto; padding-top: 14px; }
 
 .adm-duo { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-top: var(--sp-block); }
 .adm-duo-card { border: 1px solid var(--line); border-radius: var(--r-lg); background: var(--raise); padding: var(--pad-card-lg); }
@@ -4854,14 +5205,10 @@ body.ovl-lock { overflow: hidden; }
 .adm-chiprow { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 16px; }
 .adm-chiprow .chip { font-size: 11px; }
 
-.adm-loop { display: flex; flex-wrap: wrap; align-items: stretch; gap: 14px 10px; margin-top: var(--sp-block); }
-.adm-loop-step { display: flex; align-items: center; gap: 10px; }
-.adm-loop-card { border: 1px solid var(--line); border-radius: var(--r-md); background: var(--raise); padding: var(--pad-card-sm); width: 168px; flex-shrink: 0; }
-.adm-loop-n { font-family: var(--mono); font-size: 10px; letter-spacing: 0.2em; color: var(--dim); }
-.adm-loop-card b { display: block; font-family: var(--disp); font-weight: 600; font-size: var(--t-card-sm); margin-top: 6px; }
-.adm-loop-card p { color: var(--mute); font-size: var(--t-body-xs); margin-top: 6px; line-height: 1.35; }
-.adm-loop-arrow { color: var(--line2); font-size: 16px; flex-shrink: 0; }
-.adm-loop-arrow.loopback { font-family: var(--mono); font-size: 10px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--mute); white-space: nowrap; }
+/* the page's two inline marks - the whole colour budget outside the nine
+   badges. the reasoning and the once-each count are in the block above. */
+b.adm-was { font-family: var(--body); font-weight: 600; color: var(--rose); }
+.adm-verdict { color: var(--up); }
 /* ================= MY PROCESS — orbit loop (About, scroll-scrubbed) ================= */
 .loop-grid { display: grid; grid-template-columns: minmax(280px, 440px) 1fr; gap: 64px; align-items: center; width: 100%; }
 .orbit-stage { position: relative; perspective: 900px; display: grid; place-items: center; }
@@ -4900,19 +5247,56 @@ body.ovl-lock { overflow: hidden; }
 .loop-reset-ic { display: inline-block; font-size: 14px; color: var(--mute); animation: loop-spin 2.2s linear infinite; }
 @keyframes loop-spin { to { transform: rotate(360deg); } }
 
-@media (max-width: 900px) {
-  .adm-modgrid { grid-template-columns: 1fr 1fr; }
-  .adm-teams { grid-template-columns: 1fr 1fr; }
+/* the Admin Portal's three devices, collapsing. the .adm-loop, .adm-teams and
+   .adm-modgrid entries that used to sit here went with the components
+   themselves - see the note at ADMIN PORTAL CASE STUDY.
+
+   .adm-capgrid holds THREE columns much further down than a card grid usually
+   would, and that is deliberate rather than stubborn: three-up is the width at
+   which each row of three is one job, which is half of what the grid's colour
+   order is saying (see THE NINE HUES). the two steps below are where the
+   longest title, "Infrastructure readiness", stops fitting - 620px leaves
+   ~141px of card interior at three-up and "Infrastructure" measures ~115px at
+   --t-card-sm, so that is the floor with a margin rather than a guess. under
+   both steps the job tag on each card is what carries the grouping, which is
+   the reason it is a tag and not a row heading.
+
+   .adm-rail turns vertical at the same 700px the .adm-duo pair collapses at:
+   just above that width six mono labels in six columns still fit (~78px of
+   stop against "allocation" at ~73px) and just below it they stop. the
+   vertical form is
+   the shape .tl-rail and .tlx already are, which is the point - it is the same
+   construction, and rotating it is a change of direction, not of device. the
+   two insets are arithmetic, not taste: 14px of container padding + 9px of row
+   padding + half of --chip-sm = 40px from each end lands the line's two ends
+   dead centre in the first and last badge. it holds at any label length
+   because the ROW's height is set by the 34px badge, not by the label - two
+   lines of --t-meta is ~29px, so a wrapped label cannot move a badge centre.
+   the only thing that would is a three-line label, and the longest of the six
+   is two words. */
+@media (max-width: 700px) {
+  .adm-duo { grid-template-columns: 1fr; }
+  .adm-rail { grid-template-columns: 1fr; padding: 14px 18px; }
+  .adm-rail::before {
+    left: 35px; /* 18px of padding + half of --chip-sm */
+    right: auto;
+    top: 40px;
+    bottom: 40px;
+    width: 2px;
+    height: auto;
+    background: linear-gradient(180deg,
+      var(--adm-1) 0%, var(--adm-2) 20%, var(--adm-3) 40%,
+      var(--adm-4) 60%, var(--adm-5) 80%, var(--adm-6) 100%);
+  }
+  .adm-stop { flex-direction: row; align-items: center; gap: 14px; padding: 9px 0; text-align: left; }
 }
 
-@media (max-width: 700px) {
-  .adm-modgrid { grid-template-columns: 1fr; }
-  .adm-teams { grid-template-columns: 1fr; }
-  .adm-duo { grid-template-columns: 1fr; }
-  .adm-loop-step { flex-direction: column; align-items: flex-start; width: 100%; }
-  .adm-loop-card { width: 100%; }
-  .adm-loop-arrow { transform: rotate(90deg); margin: 2px 0 2px 24px; }
-  .adm-loop-arrow.loopback { transform: none; margin-left: 0; }
+@media (max-width: 620px) {
+  .adm-capgrid { grid-template-columns: 1fr 1fr; }
+}
+
+@media (max-width: 430px) {
+  .adm-capgrid { grid-template-columns: 1fr; }
 }
 .inv-brm p b { color: var(--text); }
 
@@ -5605,6 +5989,92 @@ body.ovl-lock { overflow: hidden; }
 @media (max-width: 760px) {
   .cjx-step .cj-day b { font-size: clamp(34px, 9vw, 50px); }
 }
+
+/* ---- Ananya's portrait + name, folded into AlexJourney's own hook screen ----
+   this used to be static copy sitting above the scroll scene: a small icon,
+   a heading, a paragraph, then the scene started. now the persona IS the
+   hook screen - the first thing a reader scrolls into, not a caption above
+   it - so there's exactly one intro moment instead of two. a minimal line
+   illustration rather than a photo, stroke and fill both in currentColor so
+   it can sit inside .cjx-hook's centred text color without a second color
+   decision. */
+.ana-portrait { width: 120px; height: 120px; margin: 0 auto 20px; color: var(--mute); }
+.cjx-name { font-family: var(--disp); font-weight: 800; font-size: clamp(44px, 7vw, 76px); letter-spacing: -0.03em; color: var(--signal); }
+.cjx-hook .cjx-q { margin-top: 10px; font-size: var(--t-sub); }
+
+/* ---- shared color accents across the case study's key numbers ----
+   the same three semantic tokens the rest of the site already uses for
+   good/bad/highlight (--up, --rose, --signal) rather than a new Customer-
+   Portal-only palette - "more color to highlight the main text" reads as
+   an accent, not a rebrand, so it borrows hues a reader has already seen
+   elsewhere on the site instead of introducing a fourth meaning for color. */
+/* !important because every real use site (.ivp b, .aud-finding em, .inv-hero
+   h2, .inv-result span) already sets its own color at higher specificity
+   than one plain class - a stat number's own component rule is exactly what
+   these need to beat, on purpose, everywhere they're used. */
+.cp-up { color: var(--up) !important; }
+.cp-rose { color: var(--rose) !important; }
+.cp-signal { color: var(--signal) !important; }
+
+/* ---- effort vs. impact map, in the Process section ----
+   a real prioritisation artefact rather than a plain list - position (not
+   colour alone) is what separates "shipped first" from "shipped later", so
+   the read survives grayscale or a colour-blind viewer. dot labels are a
+   hover-only tooltip: seven of them at once, always visible, would overlap
+   at this scale - the explicit five-name list right below carries the
+   information that has to be readable without hovering anything. */
+.eff-map { position: relative; height: 240px; margin: 20px 0 4px; border: 1px solid var(--line); border-radius: var(--r-md); background: var(--raise); }
+.eff-axis-y, .eff-axis-x { position: absolute; font-family: var(--mono); font-size: 9.5px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--dim); }
+.eff-axis-y { top: 10px; left: 10px; }
+.eff-axis-x { bottom: 10px; right: 12px; }
+.eff-dot { position: absolute; transform: translate(-50%, 50%); }
+.eff-dot i { display: block; width: 9px; height: 9px; border-radius: 50%; background: var(--raise2); border: 1.5px solid var(--line2); transition: transform 0.25s var(--ease); }
+.eff-dot.first i { background: var(--text); border-color: var(--text); }
+.eff-dot span { position: absolute; bottom: 16px; left: 50%; transform: translateX(-50%); white-space: nowrap; font-family: var(--mono); font-size: 10px; color: var(--text); background: var(--raise2); border: 1px solid var(--line2); border-radius: var(--r-xs); padding: 3px 8px; opacity: 0; pointer-events: none; transition: opacity 0.2s; }
+.eff-dot:hover i { transform: scale(1.3); }
+.eff-dot:hover span { opacity: 1; }
+.eff-first { margin-top: 22px; }
+.eff-first-lead { font-family: var(--mono); font-size: 11px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--dim); margin-bottom: 12px; }
+.eff-first-grid { display: flex; flex-wrap: wrap; gap: 8px; }
+.eff-first-grid span { font-size: var(--t-body-xs); color: var(--text); border: 1px solid var(--line2); border-radius: 99px; padding: 6px 14px; background: var(--raise2); }
+
+/* ---- design-system tokens, full-bleed per scroll beat, in the System section ----
+   the small bordered swatch cards this replaced undersold the point - a
+   color token is a claim about a whole screen, not a chip. .sys-full fills
+   the entire sticky stage (same 74vh .oscn-stage every other scene in this
+   file uses) edge-to-edge, one hue at a time, name and role the only two
+   words on screen. text color is per-swatch (SYS_COLORS.text in the
+   component), not currentColor - five backgrounds ranging from near-black
+   to bright amber can't share one contrast-safe foreground. */
+.sys-stage { padding: 0; }
+.sys-full { width: 100%; height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; border-radius: var(--r-lg); animation: sysfade 0.4s ease; }
+.sys-full-name { font-family: var(--disp); font-weight: 800; font-size: clamp(40px, 6vw, 72px); letter-spacing: -0.03em; }
+.sys-full-role { margin-top: 10px; font-family: var(--mono); font-size: 12px; letter-spacing: 0.16em; text-transform: uppercase; opacity: 0.72; }
+.sys-full-type { background: var(--raise); color: var(--text); }
+.sys-full-sample { font-family: var(--disp); font-weight: 700; font-size: clamp(48px, 8vw, 92px); letter-spacing: -0.02em; }
+.sys-full-cap { margin-top: 14px; font-family: var(--mono); font-size: 12px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--dim); }
+@keyframes sysfade { from { opacity: 0.4; } to { opacity: 1; } }
+@media (prefers-reduced-motion: reduce) {
+  .sys-full { animation: none; }
+}
+
+/* ---- customer portal's corner index ----
+   position (top/right) is written inline from JS - see the useSectionIndex
+   comment in CustomerPortalCaseStudy.jsx for why this is measured off
+   .ovl-panel's real rect rather than expressed here as a clamp(). what's
+   declared here is everything that ISN'T position: the small vertical list
+   itself, a left hairline that fills in for the active row rather than a
+   background fill (a filled pill this small, this close to the panel's own
+   corner, read like a second close button), and the reduced-motion / narrow-
+   viewport opt-outs. hidden under 1400px - past that width .ovl-panel's own
+   margin (it caps at max-width: 1320px) shrinks below what a legible column
+   of labels plus a comfortable gap from the case study's own copy needs. */
+.cp-index { position: fixed; z-index: 3; display: flex; flex-direction: column; gap: 2px; text-align: right; }
+.cp-index button { font-family: var(--mono); font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--dim); background: none; border: none; border-right: 2px solid transparent; padding: 5px 12px 5px 0; cursor: pointer; transition: color 0.25s, border-color 0.25s; }
+.cp-index button:hover { color: var(--mute); }
+.cp-index button.on { color: var(--text); border-right-color: var(--mute); }
+@media (max-width: 1400px) { .cp-index { display: none; } }
+@media (prefers-reduced-motion: reduce) { .cp-index button { transition: none; } }
 
 /* ---- the knowledge base's site map ----
    a raised card holding an inverted-neutral root pill, a dashed tier of
@@ -6476,11 +6946,9 @@ body.static .scene { height: auto !important; }
 .inv-page-card,
 .inv-learn-card,
 .inv-quote,
-.adm-mod,
-.adm-trio-card,
-.adm-team,
+.adm-cap,
+.adm-rail,
 .adm-duo-card,
-.adm-loop-card,
 .gac-card,
 .gac-open,
 .gac-in,
@@ -6538,7 +7006,7 @@ body.static .scene { height: auto !important; }
 .ivp:hover,
 .aud-gap:hover,
 .gac-card:hover,
-.adm-mod:hover,
+.adm-cap:hover,
 .kbx-job:hover,
 .kbx-job:focus-visible,
 .kbx-job.on {
@@ -6558,11 +7026,14 @@ body.static .scene { height: auto !important; }
    --ink2 fill it had - see the note on its own rule for why that fill was
    inconsistent inside its own component. .tl-cs-icon is still deliberately
    outside this list (it wants a brighter badge than --surface2; its own rule
-   says so). */
+   says so), and so are the Admin Portal's .adm-cap-ic / .adm-stop-ic, for the
+   stronger reason that they are never neutral: every one of the fifteen wears
+   a hue from that page's own ramp, so there is no rest state for this fill to
+   be (see THE NINE HUES). .adm-mod-ic, the chip they replaced, was on this
+   list until that pass. */
 .cj-ico,
 .gac-card > i,
 .gac-step > i,
-.adm-mod-ic,
 .kbx-ic {
   background: var(--surface2);
   border: 1px solid var(--line2);
@@ -6588,9 +7059,13 @@ body.static .scene { height: auto !important; }
    dark, 4.7-5.8:1 on paper, and 4.2-5.1:1 at the deeper hover wash.
 
    this block has to sit after the neutral rule and after every component's own
-   chip rule - .kbx-ic, .adm-mod-ic and .tl-cs-icon are all one class deep, the
-   same as [data-cat], so source order is what settles the tie. the hover list
-   below is likewise the same depth as each component's own hover. */
+   chip rule - .kbx-ic and .tl-cs-icon are both one class deep, the same as
+   [data-cat], so source order is what settles the tie. the hover list below is
+   likewise the same depth as each component's own hover.
+
+   the Admin Portal's badges are NOT wired through this attribute - they carry
+   data-adm off a nine-rung ramp scoped to that component, and the reason is
+   set out at THE NINE HUES. the recipe below is what they copy. */
 [data-cat="1"] { --chip-c: var(--chip-1); }
 [data-cat="2"] { --chip-c: var(--chip-2); }
 [data-cat="3"] { --chip-c: var(--chip-3); }
@@ -6612,7 +7087,6 @@ body.static .scene { height: auto !important; }
    state, including the click-to-open .on state that touch and keyboard use. */
 .tl-cs-card:hover [data-cat],
 .tl-cs-card:focus-visible [data-cat],
-.adm-mod:hover [data-cat],
 .kbx-job:hover [data-cat],
 .kbx-job:focus-visible [data-cat],
 .kbx-job.on [data-cat] {

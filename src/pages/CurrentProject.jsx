@@ -517,7 +517,12 @@ export default function CurrentProject() {
                     </svg>
                   </span>
                   <h4>Admin Portal</h4>
-                  <div className="tl-cs-row"><span>about</span><p>the internal ops console - user management, KYC, inventory, billing</p></div>
+                  {/* reconciled with the case study's rewrite: "user management" was a
+                      module name the study no longer has. its nine capabilities are
+                      grouped as Deliver / Serve / Control, and the beat this teaser
+                      should carry is the lifecycle it covers, which is the study's own
+                      opening line. */}
+                  <div className="tl-cs-row"><span>about</span><p>the internal ops console - order to activation, KYC, inventory, billing</p></div>
                   <div className="tl-cs-row"><span>role</span><p>understood internal users, defined & designed the flows - then built and deployed them</p></div>
                   <div className="tl-cs-foot"><span className="tl-cs-impact">faster <small>order → delivery cycle</small></span><span className="tl-cs-link">Deep dive →</span></div>
                 </article>
