@@ -22,6 +22,19 @@ const AUDIT = [
   { name: 'Equinix Fabric', serve: 'partial', onboard: 'moderate', india: 'limited' },
 ];
 
+// the same four names as AUDIT, replotted on one chart instead of a table -
+// reach vs. built-for-India, illustrative placement (same convention as
+// EFFORT_MAP below) rather than a literal published metric. the four global
+// platforms cluster on reach with little to no India fit; Polarin sits in
+// the opposite corner entirely - not a closer competitor on the same axis,
+// a different bet altogether.
+const LANDSCAPE = [
+  { name: 'Megaport', reach: 82, india: 40 },
+  { name: 'Console Connect', reach: 38, india: 18 },
+  { name: 'PacketFabric', reach: 64, india: 58 },
+  { name: 'Equinix Fabric', reach: 62, india: 30 },
+];
+
 const AUDIT_GAPS = [
   { gap: 'network monitoring', found: 'no live visibility into availability, packet loss, jitter or latency once a circuit went live', built: 'a per-circuit health dashboard - availability, packets in/out, traffic in/out, jitter & latency' },
   { gap: 'plan flexibility', found: 'locked into whatever was ordered, no self-serve way to scale', built: 'upgrade or downgrade an active service without raising a ticket' },
@@ -39,10 +52,13 @@ const SHOTS = {
 };
 const SHOT_ORDER = ['globe', 'map', 'order', 'services'];
 
-// the case study's own nine .inv-section stops, short enough to read as a
+// the case study's own eleven .inv-section stops, short enough to read as a
 // corner index rather than a repeat of each section's own .inv-step-tag text.
+// no separate "Overview" stop - the hero fold above these already carries
+// that job (wordmark, headline, role/team/devices, a lead paragraph), so a
+// second summary immediately under it was the same job done twice.
 const CP_SECTIONS = [
-  'Ananya', 'The bet', 'Discovery', 'Process', 'Screens', 'System', 'Impact', 'Lessons', 'Result',
+  'Problem', 'Solution', 'Approach', 'Research', 'IA & flows', 'Exploration', 'Design system', 'Screens', 'Impact', 'Learnings', 'Still building',
 ];
 
 // text is the contrast pick for each hex, not a computed one - five colors is
@@ -105,43 +121,67 @@ function useScrollBeat(ref, beats) {
   return [beat, jump];
 }
 
-/* the corner index. this is the one case study long enough (9 sections, four
-   of them their own pinned scroll-scenes) that a reader can lose their place,
-   so it's the only one that gets a jump-nav - not a site-wide pattern, a
-   answer to this component's own length.
+/* the top route line - the same "where am I" mechanism the site's own nav
+   uses on every page (App.jsx's #routeLine: a gradient fill, a caret with a
+   running head, ruler-mark ticks), reused here rather than the standalone
+   right-corner list this replaced, so the one case study long enough to
+   need an index (11 sections, several of them their own pinned scroll-
+   scenes) still looks like part of the same site instead of a bespoke
+   widget. the
+   site's version drives off window.scrollY and document.documentElement;
+   this one can't reuse it directly because the case study scrolls inside
+   .ovl-panel, its own scroll container, not the window - so it's the same
+   math (fill % from scrollTop/scrollable range, tick left% from each
+   section's real offset within that range), rerun against the panel.
 
    position is measured off .ovl-panel's own rect rather than expressed in
    CSS, because .ovl-panel is centred with a max-width (1320px) - past that
    width a CSS clamp() keyed to the viewport edge drifts away from the
    panel's real edge, exactly where every desktop viewport this site is
-   actually tested at (1512px and up) sits. re-measured on resize.
+   actually tested at (1512px and up) sits. re-measured on resize. the bar
+   sits flush at the panel's own top edge, sharing .ovl-close's row rather
+   than dropping below it - its width stops short of the close button's own
+   left edge (read live off the button's rect, since the button's own
+   right-inset is a clamp() that moves with viewport width) instead.
 
    "active" is a scrollspy read - the LAST section whose heading has scrolled
    up past a fixed line near the panel's top - PLUS an explicit pin set by
-   jump() itself. the plain scrollspy rule alone can't tell "Lessons" and
-   "Result" (the last two stops) apart: both sit close enough to the very end
-   of the document that clicking either one clamps the panel to the exact
-   same maximum scrollTop (there's only .ovl-nav after Result, and only
-   Result after Lessons - neither leaves enough room below to drag its own
-   heading up to the line). two different clicks producing an IDENTICAL final
-   scroll position means no amount of reading that position can recover which
-   one was actually clicked - the geometry alone has already lost the
-   information by the time update() runs. so jump() records which index it
-   sent the panel to and the scrollTop that landed at; update() defers to
-   that pin as long as the panel is still sitting at the position the jump
-   left it at, and only falls back to reading heading positions once the
-   user's own scrolling has actually moved it somewhere else. an area-based
-   read (compare intersectionRatio, take the largest) was tried instead and
-   reverted for a different reason: a short section (e.g. "System", just a
-   stats card) can lose the area contest to a taller neighbour the instant
-   it's scrolled to the top, even though it's unambiguously the one just
-   navigated to - comparing heading position rather than area avoids that,
-   since a short section wins outright the moment its own heading crosses the
-   line regardless of how little of the panel it fills. */
+   jump() itself. the plain scrollspy rule alone can't tell "Learnings" and
+   "Still building" (the last two stops) apart: both sit close enough to the
+   very end of the document that clicking either one clamps the panel to the
+   exact same maximum scrollTop (there's only .ovl-nav after "Still
+   building", and only "Still building" after "Learnings" - neither leaves
+   enough room below to drag its own heading up to the line). two different
+   clicks producing an IDENTICAL final scroll position means no amount of
+   reading that position can recover which one was actually clicked - the
+   geometry alone has already lost the information by the time update() runs.
+   so jump() records which index it sent the panel to and the scrollTop that
+   landed at; update() defers to that pin as long as the panel is still
+   sitting at the position the jump left it at, and only falls back to
+   reading heading positions once the user's own scrolling has actually moved
+   it somewhere else. an area-based read (compare intersectionRatio, take the
+   largest) was tried instead and reverted for a different reason: a short
+   section (e.g. "Design system", just a stats card) can lose the area
+   contest to a taller neighbour the instant it's scrolled to the top, even
+   though it's unambiguously the one just navigated to - comparing heading
+   position rather than area avoids that, since a short section wins outright
+   the moment its own heading crosses the line regardless of how little of
+   the panel it fills.
+
+   tick left% is a separate measurement from the active-line check above,
+   despite both reading section positions - active-detection only needs
+   ordering (which section's heading has passed a fixed line), but a tick's
+   left% needs each section's actual offset as a fraction of the whole
+   scrollable range, the same thing the site's own placeTicks() computes
+   against document height. it only needs recomputing on resize (layout),
+   not on every scroll tick like progress/active do. */
 function useSectionIndex(count) {
   const refs = useRef([]);
   const [active, setActive] = useState(0);
+  const [progress, setProgress] = useState(0);
   const [pos, setPos] = useState(null);
+  const [tickLeft, setTickLeft] = useState([]);
+  const [panelRect, setPanelRect] = useState(null);
   const pinnedIndex = useRef(null);
   const pinnedTop = useRef(null);
 
@@ -158,7 +198,21 @@ function useSectionIndex(count) {
     // one mechanism instead of an initial call plus a window listener.
     const place = () => {
       const r = panel.getBoundingClientRect();
-      setPos({ top: r.top + 70, right: window.innerWidth - r.right + 22 });
+      setPanelRect({ top: r.top, left: r.left, width: r.width, height: r.height });
+      // sits at the panel's own top edge, not dropped below .ovl-close - the
+      // close button's left edge (read live, since its own right-inset is a
+      // clamp() that moves with viewport width) is what the bar's width
+      // stops short of instead, so the two share the same row rather than
+      // the bar giving up the whole top strip to dodge the button vertically.
+      const closeBtn = document.querySelector('.ovl-close');
+      const closeLeft = closeBtn ? closeBtn.getBoundingClientRect().left : r.right - 28;
+      setPos({ top: r.top, left: r.left + 28, width: Math.max(120, closeLeft - r.left - 28 - 14) });
+      const scrollable = panel.scrollHeight - panel.clientHeight;
+      setTickLeft(refs.current.map((el) => {
+        if (!el || scrollable <= 0) return 0;
+        const top = el.getBoundingClientRect().top - r.top + panel.scrollTop;
+        return Math.min(100, Math.max(0, (top / scrollable) * 100));
+      }));
     };
     // the line a heading has to cross, in px from the panel's own top edge -
     // generous enough that a section registers as soon as it's meaningfully
@@ -166,6 +220,9 @@ function useSectionIndex(count) {
     const LINE = 120;
     const bottomedOut = () => panel.scrollTop + panel.clientHeight >= panel.scrollHeight - 4;
     const update = () => {
+      const scrollable = panel.scrollHeight - panel.clientHeight;
+      setProgress(scrollable > 0 ? Math.min(100, (panel.scrollTop / scrollable) * 100) : 0);
+
       // still sitting where the last jump() left it - trust the click over
       // the geometry, see the block comment above for why the geometry
       // itself can't distinguish the last couple of stops.
@@ -230,13 +287,61 @@ function useSectionIndex(count) {
     setActive(i);
   };
 
-  return [refs, active, pos, jump];
+  return [refs, active, pos, jump, progress, tickLeft, panelRect];
 }
+
+// reveal-on-scroll for [data-rv] children, scoped to the overlay panel - same
+// pattern as Invoice/Knowledge Base/GenAI (copied per-file, not shared, so one
+// case study's triggers never race another's). only touches the plain static
+// content below (step-tags, headings, paragraphs, card grids); the hero and
+// the pinned scroll-scenes (AlexJourney, TheBetScene, AuditScene, SysScene,
+// ScreensScene) already reveal themselves via their own obeat progression.
+function useBlockReveal(ref) {
+  useEffect(() => {
+    const root = ref.current;
+    if (!root) return undefined;
+    const nodes = root.querySelectorAll('[data-rv]');
+    if (typeof IntersectionObserver === 'undefined') {
+      nodes.forEach((n) => n.classList.add('on'));
+      return undefined;
+    }
+    const panel = root.closest('.ovl-panel') || document.querySelector('.ovl-panel');
+    const obs = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((e) => {
+          if (e.isIntersecting) {
+            e.target.classList.add('on');
+            obs.unobserve(e.target);
+          }
+        });
+      },
+      // a shallower -8% bottom margin fired the reveal the instant an element's
+      // top pixel peeked into the panel - by the time a reader's eye actually
+      // reached it, the transition had already finished off-screen and it just
+      // looked pre-rendered. -28% holds it off until the element is well into
+      // the panel's real reading area, so there's real runway left for the
+      // slide/blur/scale to still be running while it crosses into view -
+      // visibly arriving, not already sitting there.
+      { root: panel || null, rootMargin: '0px 0px -28% 0px', threshold: 0.15 },
+    );
+    nodes.forEach((n) => obs.observe(n));
+    return () => obs.disconnect();
+  }, [ref]);
+}
+
+// the hook phase is four scroll beats, not one static screen: a time-jump
+// back to 2022 first (a narrator's aside, not the persona's own voice - the
+// one line in the whole sequence that isn't bold sans, so it reads as
+// stepping out of the case study rather than into it), then why a persona (a
+// method, not yet a name), who she is, then the one thing she's trying to do
+// - each its own small graphic rather than a paragraph of setup, so the
+// reader arrives at "day 0" already knowing what they're watching happen.
+const HOOK_BEATS = 4;
 
 function AlexJourney() {
   const ref = useRef(null);
-  const [beat, jump] = useScrollBeat(ref, CJ_STEPS.length + 1);
-  const stepIdx = beat - 1; // -1 = hook screen
+  const [beat, jump] = useScrollBeat(ref, CJ_STEPS.length + HOOK_BEATS);
+  const stepIdx = beat - HOOK_BEATS; // < 0 = hook screen, hook beat = beat itself
   const [displayDay, setDisplayDay] = useState(0);
   const prevDay = useRef(0);
   const [flashKey, setFlashKey] = useState(0);
@@ -284,21 +389,86 @@ function AlexJourney() {
   }
 
   return (
-    <div className="cjx" ref={ref}>
+    <div className="cjx" ref={ref} style={{ '--beats': CJ_STEPS.length + HOOK_BEATS }}>
       <div className="cjx-stage" data-heat={heat}>
         {!current ? (
-          <div className="cjx-hook">
-            <svg className="ana-portrait" viewBox="0 0 96 96" aria-hidden="true">
-              <circle cx="48" cy="48" r="47" fill="none" stroke="currentColor" strokeOpacity="0.18" />
-              <path d="M22 82c2-16 11-25 26-25s24 9 26 25" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" />
-              <circle cx="48" cy="38" r="16" fill="none" stroke="currentColor" strokeWidth="2.4" />
-              <path d="M33 33c1-9 7-15 15-15s14 6 15 15c-5 1-9-1-11-4-2 4-9 6-19 4z" fill="currentColor" fillOpacity="0.9" stroke="none" />
-              <path d="M33 34c-1 6 0 11 3 15M63 34c1 6 0 11-3 15" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" />
-              <rect x="41" y="60" width="14" height="9" rx="2" fill="none" stroke="currentColor" strokeWidth="2" />
-              <circle cx="48" cy="65" r="1.4" fill="currentColor" stroke="none" />
-            </svg>
-            <p className="cjx-name">Ananya</p>
-            <p className="cjx-q">VP of Infrastructure.<br />Needs <em>one</em> connection.</p>
+          <div className="cjx-hook" key={beat}>
+            {beat === 0 && (
+              <p className="cjx-flash">Now, let&apos;s go back to 2022…</p>
+            )}
+            {beat === 1 && (
+              <>
+                <svg className="cjx-hook-ico" viewBox="0 0 96 96" aria-hidden="true">
+                  <defs>
+                    <radialGradient id="cpLensGlow" cx="50%" cy="50%" r="50%">
+                      <stop offset="0%" stopColor="#FF6B8A" stopOpacity="0.4" />
+                      <stop offset="100%" stopColor="#FF6B8A" stopOpacity="0" />
+                    </radialGradient>
+                    <linearGradient id="cpLensStroke" x1="0%" y1="0%" x2="100%" y2="100%">
+                      <stop offset="0%" stopColor="#FF6B8A" stopOpacity="0.95" />
+                      <stop offset="100%" stopColor="#FF6B8A" stopOpacity="0.4" />
+                    </linearGradient>
+                  </defs>
+                  {/* red, not --mute like the rest of the hook's icons - this
+                      is the one beat naming the problem itself, and the lens
+                      glowing the same colour as the word makes that the
+                      icon's whole point instead of a generic magnifier. */}
+                  <circle cx="40" cy="40" r="32" fill="url(#cpLensGlow)" />
+                  <circle cx="40" cy="40" r="25" fill="none" stroke="url(#cpLensStroke)" strokeWidth="3" />
+                  <circle cx="40" cy="40" r="17" fill="none" stroke="url(#cpLensStroke)" strokeWidth="1" opacity="0.45" />
+                  <circle cx="40" cy="40" r="7" fill="#FF6B8A" opacity="0.9" />
+                  <line x1="59" y1="59" x2="82" y2="82" stroke="url(#cpLensStroke)" strokeWidth="3.6" strokeLinecap="round" />
+                </svg>
+                <p className="cjx-q">A persona will walk us<br />through <em className="cp-problem">the problem</em>.</p>
+              </>
+            )}
+            {beat === 2 && (
+              <>
+                <svg className="ana-portrait" viewBox="0 0 96 96" aria-hidden="true">
+                  <circle cx="48" cy="48" r="47" fill="none" stroke="currentColor" strokeOpacity="0.18" />
+                  {/* blazer shoulders with an open collar (two lapel lines),
+                      not a plain rounded body - "corporate", not generic. */}
+                  <path d="M18 84c2-17 13-28 30-28s28 11 30 28" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" />
+                  <path d="M40 58l8 11 8-11" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
+                  {/* hair: one bob-shaped silhouette behind an opaque face
+                      circle, not an outline wrapped over it - only the
+                      crown and two shoulder-length side panels end up
+                      showing, framing the face the way a real bob cut
+                      does, rather than reading as a helmet. #0A0D1A is
+                      --ink2, .ovl-panel's own background - .cjx-stage
+                      carries no gradient of its own to fight, so a flat
+                      hex here sits flush against the real backdrop. */}
+                  <path d="M48 18c-13 0-21 10-21 23 0 9 2 19 4 27 2 1 4 1 5 0-1-6-1-19-1-23 0-2 0-9 1-13 3 6 8 10 12 10s9-4 12-10c1 4 1 11 1 13 0 4 0 17-1 23 1 1 3 1 5 0 2-8 4-18 4-27 0-13-8-23-21-23z" fill="currentColor" fillOpacity="0.92" stroke="none" />
+                  <circle cx="48" cy="40" r="14" fill="#0A0D1A" stroke="currentColor" strokeWidth="2.2" />
+                  <circle cx="43" cy="40" r="1.3" fill="currentColor" stroke="none" />
+                  <circle cx="53" cy="40" r="1.3" fill="currentColor" stroke="none" />
+                  {/* ID badge on a lanyard, not floating on the chest alone */}
+                  <path d="M48 54v6" stroke="currentColor" strokeWidth="1.6" />
+                  <rect x="42" y="60" width="12" height="8" rx="1.8" fill="none" stroke="currentColor" strokeWidth="1.8" />
+                </svg>
+                <p className="cjx-name">Ananya</p>
+                <p className="cjx-q">VP of Infrastructure<br />at a Mumbai fintech.</p>
+              </>
+            )}
+            {beat === 3 && (
+              <>
+                <svg className="cjx-hook-ico" viewBox="0 0 96 48" aria-hidden="true">
+                  <defs>
+                    <linearGradient id="cpNodeStroke" x1="0%" y1="0%" x2="100%" y2="0%">
+                      <stop offset="0%" stopColor="#3696B1" stopOpacity="0.95" />
+                      <stop offset="100%" stopColor="#3696B1" stopOpacity="0.55" />
+                    </linearGradient>
+                  </defs>
+                  <circle cx="14" cy="24" r="9" fill="none" stroke="url(#cpNodeStroke)" strokeWidth="2.6" />
+                  <circle cx="14" cy="24" r="3" fill="#3696B1" />
+                  <circle cx="82" cy="24" r="9" fill="none" stroke="url(#cpNodeStroke)" strokeWidth="2.6" />
+                  <circle cx="82" cy="24" r="3" fill="#3696B1" />
+                  <line x1="23" y1="24" x2="73" y2="24" stroke="url(#cpNodeStroke)" strokeWidth="2" strokeDasharray="4 5" />
+                  <path d="M66 17l8 7-8 7" fill="none" stroke="url(#cpNodeStroke)" strokeWidth="2.6" strokeLinecap="round" strokeLinejoin="round" />
+                </svg>
+                <p className="cjx-q">Needs <em>one</em> connection:<br />datacenter → AWS ap-south-1.</p>
+              </>
+            )}
             <span className="cjx-cue">scroll to watch the days pile up →</span>
           </div>
         ) : (
@@ -307,7 +477,7 @@ function AlexJourney() {
               <div className="cj-day">day <b>{displayDay}</b></div>
               <div className="cj-dots">
                 {CJ_STEPS.map((s, i) => (
-                  <i key={s.t} className={i <= stepIdx ? 'on' : ''} onClick={() => jump(i + 1)} />
+                  <i key={s.t} className={i <= stepIdx ? 'on' : ''} onClick={() => jump(i + HOOK_BEATS)} />
                 ))}
               </div>
             </div>
@@ -348,7 +518,7 @@ function TheBetScene() {
 
         {beat === 1 && (
           <>
-            <div className="inv-step-tag obeat on"><i></i>The bet</div>
+            <div className="inv-step-tag obeat on"><i></i>Solution</div>
             <h3 className="plain obeat on">What happens instead</h3>
             <p className="dv-p obeat on">A Network-as-a-Service platform, pre-connected everywhere Ananya needs. Keep scrolling:</p>
           </>
@@ -419,19 +589,14 @@ function AuditScene() {
   );
 }
 
-const PROCESS_STEPS = [
-  { i: '📚', t: 'desk research', x: 'regs, market maps, competitor docs' },
-  { i: '🗣️', t: 'primary research', x: '12 interviews - users + internal stakeholders' },
-  { i: '📊', t: 'benchmarking', x: '4 platforms, feature-by-feature' },
-  { i: '⚡', t: 'quick prototypes', x: 'low-fi Figma, built fast' },
-  { i: '👀', t: 'internal review', x: 'sales, ops, engineering - before shipping' },
-  { i: '🔁', t: 'feedback loop', x: 'three rounds, before "final"' },
-  { i: '✅', t: 'final designs', x: 'evidence-backed - the easy part, by now' },
-];
-
 // where effort met impact, plotted per module - the five in the top-left
 // (low effort, high impact) are what actually shipped first; the rest were
-// real modules too, just further down the map.
+// real modules too, just further down the map. static now (the "Information
+// architecture" section renders it directly, no scroll-beat reveal) - it
+// used to live inside a pinned scroll scene that also carried the seven-step
+// research walkthrough and the design-system hand-off note, both of which
+// now have their own dedicated sections ("Desk research" and "Design
+// system") instead of sharing this one's screen time.
 const EFFORT_MAP = [
   { m: 'KYC / org profile verification', effort: 20, impact: 86, first: true },
   { m: 'user management', effort: 30, impact: 76, first: true },
@@ -441,58 +606,6 @@ const EFFORT_MAP = [
   { m: 'billing & invoicing', effort: 74, impact: 62, first: false },
   { m: 'network health monitoring', effort: 82, impact: 80, first: false },
 ];
-
-function ProcessScene() {
-  const ref = useRef(null);
-  const [beat] = useScrollBeat(ref, 11);
-  const on = (b) => (beat >= b ? 'on' : '');
-  const stepIdx = Math.min(beat, PROCESS_STEPS.length - 1);
-  const step = PROCESS_STEPS[stepIdx];
-
-  return (
-    <div className="oscn" ref={ref} style={{ '--beats': 11 }}>
-      <div className="oscn-stage">
-        {beat < PROCESS_STEPS.length ? (
-          <div className="cj cj-process">
-            <div className="cj-track" aria-hidden="true">
-              <i style={{ width: `${((stepIdx + 1) / PROCESS_STEPS.length) * 100}%` }}></i>
-            </div>
-            <div className="cj-body">
-              <span className="cj-ico">{step.i}</span>
-              <span className="cj-day">step {String(stepIdx + 1).padStart(2, '0')} / 07</span>
-              <b className="cj-t">{step.t}</b>
-              <p className="cj-x">{step.x}</p>
-            </div>
-          </div>
-        ) : beat < 9 ? (
-          <div className="eff-wrap">
-            <p className="dv-p">seven stages in, before a single final screen: effort mapped against impact across the whole platform - what to build first, and why.</p>
-            <div className="eff-map">
-              <span className="eff-axis-y">impact</span>
-              <span className="eff-axis-x">effort</span>
-              {EFFORT_MAP.map((m) => (
-                <div key={m.m} className={`eff-dot ${m.first ? 'first' : ''}`} style={{ left: `${m.effort}%`, bottom: `${m.impact}%` }}>
-                  <i></i><span>{m.m}</span>
-                </div>
-              ))}
-            </div>
-            <div className={`eff-first obeat ${on(8)}`}>
-              <p className="eff-first-lead">five modules shipped first:</p>
-              <div className="eff-first-grid">
-                {EFFORT_MAP.filter((m) => m.first).map((m) => <span key={m.m}>{m.m}</span>)}
-              </div>
-            </div>
-          </div>
-        ) : (
-          <div>
-            <p className="dv-p">one thing was obvious by then: a solo designer against 12 developers doesn&apos;t scale on screens alone. before the modules above got a single final pixel, a design system came first - not for visual polish, but for build speed: a component library so consistency, uniformity and look-and-feel didn&apos;t depend on reviewing every PR.</p>
-            <p className={`dv-p dim obeat ${on(10)}`} style={{ marginTop: '16px' }}>the vertical is design - four years deep, screens to systems to interaction. AI stretched the horizontal wide enough to run discovery, PRDs, frontend and deploys alone, without diluting the vertical.</p>
-          </div>
-        )}
-      </div>
-    </div>
-  );
-}
 
 function ScreensScene() {
   const ref = useRef(null);
@@ -563,28 +676,177 @@ function SysScene() {
   );
 }
 
+// the Exploration section's own framework, not a one-off scene: each real
+// exploration gets its own "chapter" - a title beat, then the same five
+// beats every time (objective/metric, versions tried, how it was tested,
+// what was asked, what it taught) - so a reader learns the shape once and
+// can skim every chapter after that the same way. chapter 1 (the order
+// journey) is real; chapter 2 is a placeholder tag, same convention as the
+// other sections still being rebuilt one at a time. the seven beats live in
+// one array, not inline per-beat JSX in the render - EXPLORE_BEATS[beat] is
+// the scroll-driven view (one beat mounted at a time, see the note below),
+// and the same array maps straight down the page for prefersReducedMotion,
+// so neither path can drift out of sync with the other.
+const EXPLORE_BEATS = [
+  <div className="expl-ch" key="ch1">
+    <span className="expl-ch-n">Chapter 1</span>
+    <p className="cjx-flash expl-ch-t">Designing the order journey</p>
+  </div>,
+  <div className="expl-cols" key="obj">
+    <div>
+      <span className="expl-eyebrow">Objective</span>
+      <h3 className="plain">Get from browsing to a live order, alone.</h3>
+    </div>
+    <div>
+      <span className="expl-eyebrow">Success metric</span>
+      <p className="bet-90"><s className="from">~90 days</s><span className="arr">→</span><b className="to">10 minutes.</b></p>
+    </div>
+  </div>,
+  <div key="versions">
+    <span className="expl-eyebrow">Versions explored</span>
+    <div className="ivx-principles">
+      <div className="ivp"><b>v1 · dashboard-first</b><p>led with network health - buyers wanted to order before they wanted to monitor. dropped.</p></div>
+      <div className="ivp"><b>v2 · wizard-only</b><p>a linear step-by-step order flow - too rigid for enterprise buyers comparing options. dropped.</p></div>
+      <div className="ivp"><b>v3 · explore, then commit</b><p>browse services and check feasibility before ordering, self-serve the whole way. shipped.</p></div>
+    </div>
+  </div>,
+  <div key="testing">
+    <span className="expl-eyebrow">Prototype testing</span>
+    <h3 className="plain">Internally first, then a handful of approachable customers.</h3>
+    <p className="dv-p dim">not a formal panel - real accounts, people who&apos;d actually place this order.</p>
+  </div>,
+  <div key="ask">
+    <span className="expl-eyebrow">What we asked</span>
+    <div className="expl-ask">
+      <p>&quot;find and order [a service] without any help.&quot;</p>
+      <p>&quot;where did you pause, or want to double-check something?&quot;</p>
+      <p>&quot;would you trust this enough to skip the phone call?&quot;</p>
+    </div>
+  </div>,
+  <div key="insights">
+    <span className="expl-eyebrow">Insights</span>
+    <div className="inv-learn">
+      <div className="inv-learn-card"><h4>trust comes before speed</h4><p>hesitation was never about the UI - it was &quot;can I really do this without a person?&quot;</p></div>
+      <div className="inv-learn-card"><h4>comparison beats a fast wizard</h4><p>buyers wanted options side by side before committing, not to be rushed through one path</p></div>
+      <div className="inv-learn-card"><h4>plain language, not clever copy</h4><p>simple pricing and status language beat every shortcut we tried</p></div>
+    </div>
+  </div>,
+  <div className="expl-ch" key="ch2">
+    <span className="expl-ch-n">Chapter 2</span>
+    <span className="cp-wip"><i></i>in progress</span>
+  </div>,
+];
+
+function ExploreScene() {
+  const ref = useRef(null);
+  const [beat] = useScrollBeat(ref, EXPLORE_BEATS.length);
+
+  if (prefersReducedMotion) {
+    return <div className="expl-static">{EXPLORE_BEATS}</div>;
+  }
+
+  // one beat's content in the DOM at a time, not an AuditScene-style
+  // cumulative build-up - a chapter is meant to be read as a slide deck (see
+  // the reference this was modelled on), and stacking all seven beats into
+  // .oscn-stage's fixed 74vh box would have clipped the earliest ones the
+  // moment total content outgrew the box, since overflow:hidden + a centred
+  // flex column crops symmetrically as height grows, not from the bottom only.
+  return (
+    <div className="oscn expl-oscn" ref={ref} style={{ '--beats': EXPLORE_BEATS.length }}>
+      <div className="oscn-stage expl-stage" key={beat}>
+        {EXPLORE_BEATS[beat]}
+      </div>
+    </div>
+  );
+}
+
 export default function CustomerPortalCaseStudy({ onPrev, onNext, idx, total }) {
-  const [sectionRefs, activeSection, indexPos, jumpToSection] = useSectionIndex(CP_SECTIONS.length);
+  const [sectionRefs, activeSection, routePos, jumpToSection, routeProgress, tickLeft, panelRect] = useSectionIndex(CP_SECTIONS.length);
   const at = (i) => (el) => { sectionRefs.current[i] = el; };
+  const wrap = useRef(null);
+  useBlockReveal(wrap);
 
   return (
-    <div className="inv-wrap">
-      {indexPos && (
-        <nav className="cp-index" style={{ top: indexPos.top, right: indexPos.right }} aria-label="Jump to section">
-          {CP_SECTIONS.map((label, i) => (
-            <button
-              key={label}
-              type="button"
-              className={i === activeSection ? 'on' : ''}
-              onClick={() => jumpToSection(i)}
-            >
-              {label}
-            </button>
-          ))}
-        </nav>
+    <div className="inv-wrap cp-wrap" ref={wrap}>
+      {/* fixed to the panel's own rect (not .cp-wrap's own absolute
+          background, which scrolled with the tens-of-thousands-of-px-tall
+          content and could only ever fade near its very top or bottom edge)
+          - this one stays visually pinned to the panel while the actual
+          sections scroll underneath it, so the same "grid fading to plain
+          background" spotlight is what's on screen at every scroll
+          position, not just once near the start of the page. */}
+      {panelRect && (
+        <div
+          className="cp-grid-fixed"
+          style={{ top: panelRect.top, left: panelRect.left, width: panelRect.width, height: panelRect.height }}
+        ></div>
       )}
-      <div className="inv-hero">
-        <p className="eyebrow">Polarin · Customer Portal</p>
+      {routePos && (
+        <div className="cp-route-wrap" style={{ top: routePos.top, left: routePos.left, width: routePos.width }}>
+          <div className="route-line" aria-label="Jump to section">
+            <div className="route-fill" style={{ width: `${routeProgress}%` }}></div>
+            <div className="route-packet" style={{ left: `${routeProgress}%` }}>
+              <span className="route-now" style={{ transform: `translateX(-${routeProgress}%)` }}>
+                <i>{String(activeSection + 1).padStart(2, '0')}</i>{CP_SECTIONS[activeSection]}
+              </span>
+            </div>
+            {CP_SECTIONS.map((label, i) => (
+              <button
+                key={label}
+                type="button"
+                className={`route-tick ${i === activeSection ? 'on' : ''}`}
+                data-cp-ch={label}
+                aria-label={`Jump to ${label}`}
+                style={{ left: `${tickLeft[i] || 0}%` }}
+                onClick={() => jumpToSection(i)}
+              />
+            ))}
+          </div>
+        </div>
+      )}
+      <div className="inv-hero cp-hero">
+        {/* globe centred behind the wordmark, not floated separately in a
+            corner - a large shape off on its own read as unbalanced no
+            matter how it was sized or faded; orbiting the one thing every
+            other element in this fold is already centred around fixes that
+            for free, since the wrapper's own centring is the same centring
+            everything else here uses. */}
+        <div className="cp-logo-wrap">
+          <svg className="cp-globe" viewBox="0 0 400 400" aria-hidden="true">
+            <defs>
+              <radialGradient id="cpGlobeGlow" cx="50%" cy="50%" r="50%">
+                <stop offset="0%" stopColor="#3696B1" stopOpacity="0.5" />
+                <stop offset="100%" stopColor="#3696B1" stopOpacity="0" />
+              </radialGradient>
+              <linearGradient id="cpGlobeLine" x1="0%" y1="0%" x2="100%" y2="100%">
+                <stop offset="0%" stopColor="#3696B1" stopOpacity="0.85" />
+                <stop offset="100%" stopColor="#3696B1" stopOpacity="0.05" />
+              </linearGradient>
+            </defs>
+            {/* a soft glow behind the wireframe, not just the wireframe alone -
+                a flat single-colour outline read as a technical diagram; the
+                radial fill underneath is what makes it read as something lit
+                from within instead. */}
+            <circle cx="200" cy="200" r="180" fill="url(#cpGlobeGlow)" />
+            <circle cx="200" cy="200" r="150" fill="none" stroke="url(#cpGlobeLine)" strokeWidth="1.2" />
+            <ellipse cx="200" cy="200" rx="150" ry="38" fill="none" stroke="url(#cpGlobeLine)" strokeWidth="0.8" />
+            <ellipse cx="200" cy="200" rx="150" ry="80" fill="none" stroke="url(#cpGlobeLine)" strokeWidth="0.8" />
+            <ellipse cx="200" cy="200" rx="150" ry="120" fill="none" stroke="url(#cpGlobeLine)" strokeWidth="0.8" />
+            <ellipse cx="200" cy="200" rx="38" ry="150" fill="none" stroke="url(#cpGlobeLine)" strokeWidth="0.8" />
+            <ellipse cx="200" cy="200" rx="95" ry="150" fill="none" stroke="url(#cpGlobeLine)" strokeWidth="0.8" />
+            <line x1="50" y1="200" x2="350" y2="200" stroke="url(#cpGlobeLine)" strokeWidth="1" />
+            {/* three nodes, arced connections between each pair - the same
+                "network across the globe" idea the case study itself is
+                about, not a literal map. */}
+            <path d="M120 140 Q200 40 290 130" fill="none" stroke="url(#cpGlobeLine)" strokeWidth="1.4" strokeDasharray="3 5" />
+            <path d="M290 130 Q330 240 210 300" fill="none" stroke="url(#cpGlobeLine)" strokeWidth="1.4" strokeDasharray="3 5" />
+            <path d="M210 300 Q100 260 120 140" fill="none" stroke="url(#cpGlobeLine)" strokeWidth="1.4" strokeDasharray="3 5" />
+            <circle cx="120" cy="140" r="5" fill="#3696B1" stroke="none" />
+            <circle cx="290" cy="130" r="5" fill="#3696B1" stroke="none" />
+            <circle cx="210" cy="300" r="5" fill="#3696B1" stroke="none" />
+          </svg>
+          <img className="cp-logo" src="/polarin-logo.png" alt="Polarin, by Lightstorm" />
+        </div>
         <h2>Ordering connectivity, <span className="cp-signal">without picking up the phone.</span></h2>
         <p>Polarin was a name on a whiteboard in 2022. I was Lightstorm&apos;s first designer, no telecom background, no template to copy. Four years later it&apos;s live, trusted, and I&apos;ve gone from designing it to running it.</p>
         <div className="inv-meta">
@@ -607,7 +869,6 @@ export default function CustomerPortalCaseStudy({ onPrev, onNext, idx, total }) 
       </div>
 
       <div className="inv-section" ref={at(0)}>
-        <div className="inv-step-tag"><i></i>Meet Ananya</div>
         <AlexJourney />
       </div>
 
@@ -615,68 +876,70 @@ export default function CustomerPortalCaseStudy({ onPrev, onNext, idx, total }) 
         <TheBetScene />
       </div>
 
+      {/* sections 2-6 (Approach through Design system) are placeholders,
+          content stripped deliberately - the old copy/scenes/charts here were
+          replaced piece by piece as each one gets rebuilt for real, one
+          section at a time, rather than rewritten in one pass. AuditScene,
+          SysScene, LANDSCAPE and EFFORT_MAP stay defined further up (not
+          deleted): each is reference material for rebuilding its own section,
+          not dead code from a direction that got abandoned. */}
       <div className="inv-section" ref={at(2)}>
-        <div className="inv-step-tag"><i></i>Discovery</div>
-        <h3 className="dv-h">4 months before touching Figma</h3>
-        <div className="ivx-principles">
-          <div className="ivp"><b>technical immersion</b><p>learned networking from the architects - L1/L2/L3, ports, VRs, VCs - sat in sales calls, walked the manual provisioning workflows</p></div>
-          <div className="ivp"><b>12 user interviews</b><p>IT managers, network engineers, enterprise buyers - mapped where every competitor demo broke</p></div>
-          <div className="ivp"><b>competitive audit</b><p>4 global NaaS platforms - every UX gap became a design requirement</p></div>
-        </div>
-        <AuditScene />
+        <div className="inv-step-tag cps-rv" data-rv><i></i>How we achieved it</div>
+        <span className="cp-wip cps-rv" data-rv style={{ '--d': '90ms' }}><i></i>in progress</span>
       </div>
 
       <div className="inv-section" ref={at(3)}>
-        <div className="inv-step-tag"><i></i>Process</div>
-        <h3 className="dv-h">From research to first pixel</h3>
-        <p className="dv-p">Seven stages, each shaping the next. Scroll through it:</p>
-        <ProcessScene />
+        <div className="inv-step-tag cps-rv" data-rv><i></i>Desk research</div>
+        <span className="cp-wip cps-rv" data-rv style={{ '--d': '90ms' }}><i></i>in progress</span>
       </div>
 
       <div className="inv-section" ref={at(4)}>
-        <div className="inv-step-tag"><i></i>The screens</div>
-        <h3 className="dv-h">Scroll through the product</h3>
-        <ScreensScene />
+        <div className="inv-step-tag cps-rv" data-rv><i></i>Information architecture</div>
+        <span className="cp-wip cps-rv" data-rv style={{ '--d': '90ms' }}><i></i>in progress</span>
       </div>
 
       <div className="inv-section" ref={at(5)}>
-        <div className="inv-step-tag"><i></i>Why solo scaled</div>
-        <h3 className="dv-h">The system before the screens</h3>
-        <div className="cj-result">
-          <span><b>100+</b> reusable components</span>
-          <span><b>20+</b> design tokens</span>
-          <span><b>4 yrs</b> of solo delivery, scaled by it</span>
-        </div>
-        <SysScene />
-        <p className="dv-p dim">one Figma library, one synced code component set - the system, not the screens, is what made four years of solo delivery possible.</p>
+        <div className="inv-step-tag cps-rv" data-rv><i></i>Exploration</div>
+        <ExploreScene />
       </div>
 
       <div className="inv-section" ref={at(6)}>
-        <div className="inv-step-tag"><i></i>What moved</div>
-        <h3 className="dv-h">Impact</h3>
-        <div className="ivx-principles dv4">
+        <div className="inv-step-tag cps-rv" data-rv><i></i>Design system</div>
+        <span className="cp-wip cps-rv" data-rv style={{ '--d': '90ms' }}><i></i>in progress</span>
+      </div>
+
+      <div className="inv-section" ref={at(7)}>
+        <div className="inv-step-tag cps-rv" data-rv><i></i>Major screens</div>
+        <h3 className="dv-h cps-rv" data-rv style={{ '--d': '90ms' }}>Scroll through the product</h3>
+        <ScreensScene />
+      </div>
+
+      <div className="inv-section" ref={at(8)}>
+        <div className="inv-step-tag cps-rv" data-rv><i></i>What moved</div>
+        <h3 className="dv-h cps-rv" data-rv style={{ '--d': '90ms' }}>Impact</h3>
+        <div className="ivx-principles dv4 cps-stagger" data-rv style={{ '--d': '160ms' }}>
           <div className="ivp"><b className="cp-up">95% faster</b><p>onboarding & deployment - 5–7 days → 15 minutes</p></div>
           <div className="ivp"><b className="cp-signal">3× self-serve</b><p>non-technical users now order & manage independently</p></div>
           <div className="ivp"><b className="cp-signal">40% handoff cut</b><p>design-to-dev time reduced by the system</p></div>
           <div className="ivp"><b className="cp-up">CSAT 6.2 → 9.1</b><p>enterprise customers rate the experience</p></div>
         </div>
-        <p className="dv-p dim" style={{ marginTop: '20px' }}>still building - new modules ship every quarter, and the system above is what lets one designer keep pace with them.</p>
       </div>
 
-      <div className="inv-section" ref={at(7)}>
-        <div className="inv-step-tag"><i></i>Four years</div>
-        <h3 className="dv-h">Three things I know for sure</h3>
-        <div className="inv-learn">
+      <div className="inv-section" ref={at(9)}>
+        <div className="inv-step-tag cps-rv" data-rv><i></i>What I learned</div>
+        <h3 className="dv-h cps-rv" data-rv style={{ '--d': '90ms' }}>Three things I know for sure</h3>
+        <div className="inv-learn cps-stagger" data-rv style={{ '--d': '160ms' }}>
           {LEARNED.map((l) => (
             <div className="inv-learn-card" key={l.t}><h4>{l.t}</h4><p>{l.p}</p></div>
           ))}
         </div>
       </div>
 
-      <div className="inv-section" ref={at(8)}>
-        <div className="inv-step-tag"><i></i>Final result</div>
-        <h3 className="plain">What changed</h3>
-        <div className="inv-result"><span className="cp-signal">3× self-serve</span> adoption · 90 days → <span className="cp-up">10 minutes</span> · India&apos;s <span className="cp-rose">first</span> self-serve NaaS platform.</div>
+      <div className="inv-section" ref={at(10)}>
+        <div className="inv-step-tag cps-rv" data-rv><i></i>Still building</div>
+        <h3 className="plain cps-rv" data-rv style={{ '--d': '90ms' }}>What changed, and what&apos;s next</h3>
+        <div className="inv-result cps-rv" data-rv style={{ '--d': '160ms' }}><span className="cp-signal">3× self-serve</span> adoption · 90 days → <span className="cp-up">10 minutes</span> · India&apos;s <span className="cp-rose">first</span> self-serve NaaS platform.</div>
+        <p className="dv-p dim cps-rv" data-rv style={{ marginTop: '20px', '--d': '240ms' }}>still building - new modules ship every quarter, and the system built in month one is what lets one designer keep pace with them.</p>
       </div>
 
       <div className="ovl-nav">

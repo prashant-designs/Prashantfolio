@@ -3576,7 +3576,7 @@ footer .g {
 .ch-head { padding: var(--sp-sec) var(--wrap-pad) var(--sp-head); }
 .ch-num { font-family: var(--mono); font-size: var(--t-eyebrow); letter-spacing: 0.24em; text-transform: uppercase; color: var(--dim); }
 .ch-num b { color: var(--text); font-weight: 500; }
-.ch-title { font-family: var(--disp); font-weight: 800; font-size: var(--t-chapter); letter-spacing: -0.03em; line-height: 1; margin-top: 12px; }
+.ch-title { font-family: var(--disp); font-weight: 800; font-size: var(--t-chapter); letter-spacing: -0.03em; line-height: 1.2; margin-top: 12px; }
 .ch-title span { color: var(--mute); }
 /* the paragraph under a chapter title. it was written inline twice on My
    Journey - `color: var(--mute); max-width: 58ch; margin-top: 14px` on Ch.2
@@ -4723,7 +4723,7 @@ body.ovl-lock { overflow: hidden; }
 /* the opening fold used to carry a warm/cool glow pair. ambient red on the
    first screen of every case study is decoration, so it went - and its cool
    half went with it rather than read as an orphan. */
-.inv-hero h2 { font-family: var(--disp); font-weight: 700; font-size: var(--t-lead); letter-spacing: -0.02em; line-height: 1.15; margin-top: 14px; max-width: 20ch; }
+.inv-hero h2 { font-family: var(--disp); font-weight: 700; font-size: var(--t-lead); letter-spacing: -0.02em; line-height: 1.3; margin-top: 14px; max-width: 20ch; }
 .inv-hero p { color: var(--mute); max-width: 62ch; margin-top: 16px; font-size: var(--t-body); }
 .inv-meta { display: flex; gap: 40px; margin-top: var(--sp-block); flex-wrap: wrap; }
 .inv-meta div span { display: block; font-family: var(--mono); font-size: 10px; letter-spacing: 0.18em; text-transform: uppercase; color: var(--dim); margin-bottom: 4px; }
@@ -4764,7 +4764,7 @@ body.ovl-lock { overflow: hidden; }
 }
 
 .inv-section { margin-top: var(--sp-sec-lg); }
-.inv-highlight { font-family: var(--disp); font-weight: 700; font-size: var(--t-lead); line-height: 1.15; letter-spacing: -0.02em; max-width: 20ch; }
+.inv-highlight { font-family: var(--disp); font-weight: 700; font-size: var(--t-lead); line-height: 1.3; letter-spacing: -0.02em; max-width: 20ch; }
 .inv-highlight mark { background: color-mix(in srgb, var(--rose) 18%, transparent); color: var(--rose); padding: 0 8px; border-radius: 4px; box-decoration-break: clone; -webkit-box-decoration-break: clone; }
 .inv-section p.body { color: var(--mute); font-size: var(--t-body); max-width: 66ch; margin-top: 18px; }
 .inv-transition { display: inline-flex; align-items: baseline; gap: 8px; margin-top: var(--sp-block); font-family: var(--disp); font-weight: 600; font-size: 18px; color: var(--text); }
@@ -5648,7 +5648,7 @@ b.adm-was { font-family: var(--body); font-weight: 600; color: var(--rose); }
    than as an inline max-width on the element, which is what it was. */
 .ab-journey .ab-lede { max-width: 56ch; }
 .ab-lede2 { color: var(--mute); margin-top: 14px; font-size: var(--t-body); }
-.ab-h { font-family: var(--disp); font-weight: 800; font-size: var(--t-section); letter-spacing: -0.03em; line-height: 1.05; margin-top: 10px; }
+.ab-h { font-family: var(--disp); font-weight: 800; font-size: var(--t-section); letter-spacing: -0.03em; line-height: 1.3; margin-top: 10px; }
 .ab-h em { font-style: normal; background: linear-gradient(100deg, var(--text), var(--mute)); -webkit-background-clip: text; background-clip: text; color: transparent; }
 .ab-split, .ab-skills, .ab-facts { padding: var(--sp-sec) 0; }
 .ab-journey { padding: var(--sp-sec) 0 var(--sp-sec-lg); }
@@ -5714,7 +5714,7 @@ b.adm-was { font-family: var(--body); font-weight: 600; color: var(--rose); }
 .ab-fact span { font-size: 24px; line-height: 1; }
 .ab-fact p { color: var(--mute); font-size: var(--t-body-sm); }
 
-.ab-big { font-family: var(--disp); font-weight: 800; font-size: var(--t-chapter); letter-spacing: -0.03em; line-height: 1.02; margin: 10px 0 20px; }
+.ab-big { font-family: var(--disp); font-weight: 800; font-size: var(--t-chapter); letter-spacing: -0.03em; line-height: 1.2; margin: 10px 0 20px; }
 .ab-big span { color: transparent; -webkit-text-stroke: 1.4px var(--mute); transition: color 0.5s, -webkit-text-stroke-color 0.5s; }
 .ab-big:hover span { color: var(--text); -webkit-text-stroke-color: var(--text); }
 
@@ -5923,10 +5923,20 @@ b.adm-was { font-family: var(--body); font-weight: 600; color: var(--rose); }
 @keyframes shotFadeIn { from { opacity: 0; transform: scale(0.99); } to { opacity: 1; transform: scale(1); } }
 
 /* ---- pinned scroll scenes (inside the overlay panel) ---- */
-.oscn { position: relative; margin-top: 16px; height: calc(var(--beats, 5) * 46vh); }
-/* more scroll distance per beat than the default - each reveal here carries
-   real narrative weight, and 46vh let people scroll straight past it. */
-.oscn.bet-oscn { height: calc(var(--beats, 7) * 72vh); }
+/* 46vh/beat (and bet-oscn's 72vh) let a fast trackpad flick or a hard mouse-
+   wheel scroll cross several beats' worth of scrollTop in one native scroll
+   event - beat is read straight off scrollTop with no per-frame smoothing,
+   so a jump that big just never renders the beats in between, it isn't a
+   glimpse-and-gone, it's skipped outright. more scroll distance per beat is
+   the fix that doesn't fight native scroll to get it: the same physical
+   flick now covers proportionally less of the scene, so it takes a harder
+   scroll to skip the same number of beats. */
+.oscn { position: relative; margin-top: 16px; height: calc(var(--beats, 5) * 60vh); }
+.oscn.bet-oscn, .oscn.expl-oscn { height: calc(var(--beats, 7) * 90vh); }
+/* one beat's content at a time (see ExploreScene) - key={beat} remounts
+   .expl-stage on every change, so the same pagein keyframe .cjx-step.flash
+   already uses for its own per-beat remounts plays here too. */
+.expl-stage { animation: pagein 0.45s var(--ease); }
 .oscn-stage { position: sticky; top: 5vh; height: 74vh; display: flex; flex-direction: column; justify-content: center; overflow: hidden; }
 /* same trick as .tl-stage - the glow rides the pinned stage so a multi-
    viewport case-study scene keeps its own air the whole way down. purely
@@ -5956,7 +5966,12 @@ b.adm-was { font-family: var(--body); font-weight: 600; color: var(--rose); }
 .shots-stage .cs-shot img { max-height: 52vh; }
 
 /* ---- alex journey: pinned scroll story ---- */
-.cjx { position: relative; margin-top: 16px; height: 340vh; }
+/* height keyed to --beats (set inline from the component, CJ_STEPS.length +
+   HOOK_BEATS) at the same 60vh/beat as .oscn, rather than a flat number -
+   a flat height is exactly what let this scene go under-provisioned the
+   moment HOOK_BEATS grew from 1 to 3 without anyone revisiting the 340vh
+   that was tuned for the old, shorter beat count. */
+.cjx { position: relative; margin-top: 16px; height: calc(var(--beats, 12) * 60vh); }
 .cjx-stage { position: sticky; top: 5vh; height: 74vh; display: flex; flex-direction: column; justify-content: center; overflow: hidden; }
 /* the "day in the life" scene used to sit in a warm wash. the heat of that
    day is carried by the copy and by the day counter's own escalation below -
@@ -5966,8 +5981,28 @@ b.adm-was { font-family: var(--body); font-weight: 600; color: var(--rose); }
 .cjx-stage[data-heat="1"] .cj-day b { text-shadow: 0 0 24px var(--glow-soft); }
 .cjx-stage[data-heat="2"] .cj-day b { color: var(--rose); text-shadow: 0 0 26px color-mix(in srgb, var(--rose) 50%, transparent); }
 .cjx-hook { text-align: center; }
-.cjx-q { font-family: var(--disp); font-weight: 800; font-size: var(--t-section); letter-spacing: -0.03em; line-height: 1.08; }
+/* the one line in the whole hook sequence that isn't var(--disp) bold sans -
+   a plain system serif stack (no new webfont load for one line) reads as a
+   narrator stepping outside the case study to set the scene, rather than
+   the persona's own voice the surrounding beats use. muted, not --text: it's
+   scene-setting, not the point itself. */
+.cjx-flash { font-family: Georgia, 'Times New Roman', serif; font-weight: 400; font-size: clamp(28px, 4vw, 44px); letter-spacing: 0; line-height: 1.3; color: var(--mute); }
+/* 1.3, not the tighter ~1.08 a short single-line phrase could get away with -
+   all three real uses (see CustomerPortalCaseStudy.jsx) are two lines of
+   bold var(--t-section)-sized (30-54px) text, and at that size and weight
+   1.08 left the lines almost touching, cap-height to cap-height. */
+.cjx-q { font-family: var(--disp); font-weight: 800; font-size: var(--t-section); letter-spacing: -0.03em; line-height: 1.3; }
 .cjx-q em { font-style: normal; color: var(--mute); }
+/* the one em that isn't a plain emphasis word - "the problem" names the
+   thing the whole case study exists to fix, so it gets the site's own
+   negative/removed colour instead of the muted de-emphasis every other em
+   in this scene uses ("one" in the task beat, "one" elsewhere in the
+   journey). .cjx-q .cp-problem, not .cp-problem alone: a bare class loses
+   to .cjx-q em's class+type specificity (0,1,1 beats 0,1,0) the same way
+   .cp-up lost to .ivp b before it needed !important - two classes here
+   (0,2,0) is what actually outranks it, without needing !important this
+   time since nothing else contests it. */
+.cjx-q .cp-problem { color: var(--rose); }
 .cjx-cue { display: block; margin-top: 26px; font-family: var(--mono); font-size: 10.5px; letter-spacing: 0.24em; text-transform: uppercase; color: var(--dim); animation: cuepulse 2s ease-in-out infinite; }
 @keyframes cuepulse { 0%, 100% { opacity: 0.45; } 50% { opacity: 1; } }
 .cjx-step .cj-day b { font-size: clamp(42px, 6.5vw, 68px); }
@@ -5990,6 +6025,150 @@ b.adm-was { font-family: var(--body); font-weight: 600; color: var(--rose); }
   .cjx-step .cj-day b { font-size: clamp(34px, 9vw, 50px); }
 }
 
+/* ---- Customer Portal's own texture: a faint grid behind the whole case
+   study, plus the hero fold's logo/globe ---- scoped to .cp-wrap / .cp-hero
+   (not the shared .inv-wrap / .inv-hero every case study uses) so none of
+   this bleeds into the other five - a flat page reads fine as one of six,
+   but this is the one the reader spends the longest in, so it gets its own
+   texture the whole way down, not just on the first fold. .ovl doesn't
+   repin --grid-line for its always-dark scope the way it does
+   --text/--mute/--line (nothing else in the overlay draws a grid), so the
+   line color here is a literal white at the same 6% the site's own
+   dark-mode grid uses, not var(--grid-line) - inheriting that var would
+   silently flip to the near-black light-mode value if the reader had the
+   site in light mode when they opened this.
+
+   .cp-grid-fixed (position: fixed, sized/positioned inline from JS to
+   .ovl-panel's own rect - see useSectionIndex's panelRect in
+   CustomerPortalCaseStudy.jsx) replaced an earlier version painted as
+   .cp-wrap's own absolutely-positioned background. that version scrolled
+   WITH the content, so across a page this tall (every pinned scene
+   included, tens of thousands of pixels) any single fade could only ever
+   read as one lit patch wherever it happened to fall, with the rest of the
+   page either flat-visible or flat-invisible depending which way the fade
+   pointed - centred-on-the-box math has no way to answer "fade near
+   whatever the reader is actually looking at" when the box is that tall.
+   fixed to the panel instead, so the mask is recentred on the panel's own
+   viewport-sized window at every scroll position, because the layer itself
+   never moves - only the sections scrolling underneath it change.
+
+   five separate radial spotlights, not one centred fade - a single fade
+   read as "corners dark, middle lit", which is a vignette, not the
+   scattered texture asked for. five is a number that can be laid out
+   symmetrically (mirrored left/right across the panel's own centre line,
+   at three different heights) while still landing at positions that don't
+   look like a deliberate grid of dots - two nearer the top, two nearer the
+   bottom, one bigger one at true centre tying the other four together.
+   multiple comma-separated mask layers composite by union (mask-composite's
+   initial value is "add"), so overlapping circles simply combine rather
+   than cancelling each other out.
+
+   each spotlight is its own mask LAYER (a fixed-size tile, mask-repeat:
+   no-repeat, positioned via mask-position) rather than a position baked
+   into the radial-gradient()'s own "at X% Y%" - that was the only way to
+   make the spotlights drift: an "at" coordinate inside the gradient string
+   itself isn't something a CSS transition/animation can interpolate, but
+   mask-position is a real, animatable property the same way background-
+   position is, so gridDrift below animates that instead. mask-size has to
+   be smaller than the full layer for mask-position to have anywhere to
+   move a layer TO - sized to roughly twice each circle's radius (with a
+   little slack for the fade) - a mask-size the same as the element's own
+   size leaves a same-size image nowhere to reposition within an identically
+   -sized box. 34s and gentle single-digit percentage drifts, not anything
+   faster or larger - this is meant to read as ambient, not as motion
+   competing with the actual content scrolling past it. */
+.cp-wrap { position: relative; z-index: 0; }
+.cp-grid-fixed {
+  /* z-index: -1, not 0 - a positioned element at z-index: 0 still paints
+     AFTER ordinary static content in the same stacking context (position,
+     not the z-index value itself, is what promotes paint order), so at 0
+     this would sit on top of .inv-hero/.inv-section instead of behind them,
+     the same trap .cp-hero's own stacking had to be built around earlier.
+     negative pushes it behind them without needing every section to carry
+     its own z-index: 1 the way .cp-hero's direct children do. */
+  position: fixed;
+  z-index: -1;
+  pointer-events: none;
+  background-image:
+    linear-gradient(to right, rgba(255, 255, 255, 0.05) 0 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(255, 255, 255, 0.05) 0 1px, transparent 1px);
+  background-size: 64px 64px;
+  background-position: center center;
+  -webkit-mask-repeat: no-repeat;
+  mask-repeat: no-repeat;
+  -webkit-mask-size: 560px 560px, 420px 420px, 420px 420px, 460px 460px, 460px 460px;
+  mask-size: 560px 560px, 420px 420px, 420px 420px, 460px 460px, 460px 460px;
+  -webkit-mask-image:
+    radial-gradient(circle, black 0%, transparent 70%),
+    radial-gradient(circle, black 0%, transparent 70%),
+    radial-gradient(circle, black 0%, transparent 70%),
+    radial-gradient(circle, black 0%, transparent 70%),
+    radial-gradient(circle, black 0%, transparent 70%);
+  mask-image:
+    radial-gradient(circle, black 0%, transparent 70%),
+    radial-gradient(circle, black 0%, transparent 70%),
+    radial-gradient(circle, black 0%, transparent 70%),
+    radial-gradient(circle, black 0%, transparent 70%),
+    radial-gradient(circle, black 0%, transparent 70%);
+  -webkit-mask-position: 50% 46%, 21% 20%, 79% 20%, 27% 82%, 73% 82%;
+  mask-position: 50% 46%, 21% 20%, 79% 20%, 27% 82%, 73% 82%;
+  animation: cpGridDrift 34s ease-in-out infinite;
+}
+@keyframes cpGridDrift {
+  0%, 100% {
+    -webkit-mask-position: 50% 46%, 21% 20%, 79% 20%, 27% 82%, 73% 82%;
+    mask-position: 50% 46%, 21% 20%, 79% 20%, 27% 82%, 73% 82%;
+  }
+  50% {
+    -webkit-mask-position: 46% 52%, 27% 16%, 73% 26%, 21% 76%, 79% 88%;
+    mask-position: 46% 52%, 27% 16%, 73% 26%, 21% 76%, 79% 88%;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .cp-grid-fixed { animation: none; }
+}
+/* z-index: 0 on .cp-hero itself, not just position: relative, is load-
+   bearing: a positioned descendant with the default z-index: auto still
+   paints ABOVE ordinary static content in the same context regardless of
+   source order (position, not z-index, is what promotes it), so without
+   .cp-hero establishing its own stacking context here, the absolutely-
+   positioned globe below would sit on top of the logo/headline/meta row
+   instead of behind them. giving the globe z-index: 0 and the text content
+   z-index: 1 inside that one contained context is what actually orders
+   them correctly. */
+.cp-hero { position: relative; z-index: 0; overflow: hidden; }
+/* a globe, not a map - three nodes and the arcs between them are the case
+   study's own "network across distance" idea. two earlier positions both
+   read as unbalanced: centred behind the whole text column competed with
+   the headline for attention, and parked large in a top-right corner threw
+   the fold's weight to one side no matter how it was sized, inset or faded
+   - a shape with nothing else to answer it just doesn't read as balanced.
+   centred on .cp-logo-wrap instead, i.e. behind the wordmark specifically:
+   .cp-logo-wrap is only as wide as the logo itself (an absolutely-positioned
+   child doesn't add to a parent's content size), so top: 50%; left: 50%;
+   here centres the globe on the mark exactly, and the mark already sits on
+   the same vertical axis as the headline/paragraph/stats below it - the
+   globe orbits the one fixed point everything else in the fold is already
+   centred around, instead of being its own, competing anchor. */
+.cp-logo-wrap { position: relative; z-index: 1; width: fit-content; margin: 0 auto 24px; }
+.cp-globe { position: absolute; z-index: 0; top: 50%; left: 50%; transform: translate(-50%, -50%); width: min(300px, 60vw); height: min(300px, 60vw); opacity: 0.4; }
+.cp-logo { position: relative; z-index: 1; display: block; height: 54px; width: auto; margin: 0; }
+.cp-hero h2, .cp-hero p, .cp-hero .inv-meta { position: relative; z-index: 1; }
+/* wider than the shared .inv-hero h2's 20ch (the other five case studies'
+   headlines were measured against that cap, see the block comment on
+   .inv-section h3.plain - this headline wasn't one of them) - 20ch is what
+   forced "Ordering connectivity, without picking up the phone." into three
+   short lines instead of two, which read as cramped rather than confident.
+   .cp-hero.inv-hero (both classes the element actually carries) rather than
+   .cp-hero h2 alone, so this beats the shared rule on specificity and
+   doesn't depend on which one happens to sit later in the file. same
+   reasoning for the paragraph and meta row below - more vertical air
+   between logo, headline, paragraph and stats, and a wider gap between the
+   three meta columns, is the fix for "cluttered", not a smaller typeface. */
+.cp-hero.inv-hero h2 { max-width: 32ch; }
+.cp-hero.inv-hero p { margin-top: 26px; }
+.cp-hero .inv-meta { margin-top: 44px; gap: 64px; }
+
 /* ---- Ananya's portrait + name, folded into AlexJourney's own hook screen ----
    this used to be static copy sitting above the scroll scene: a small icon,
    a heading, a paragraph, then the scene started. now the persona IS the
@@ -5999,22 +6178,91 @@ b.adm-was { font-family: var(--body); font-weight: 600; color: var(--rose); }
    it can sit inside .cjx-hook's centred text color without a second color
    decision. */
 .ana-portrait { width: 120px; height: 120px; margin: 0 auto 20px; color: var(--mute); }
-.cjx-name { font-family: var(--disp); font-weight: 800; font-size: clamp(44px, 7vw, 76px); letter-spacing: -0.03em; color: var(--signal); }
+/* same 120px slot as .ana-portrait for the two hook beats either side of the
+   persona reveal (method, then task) - beat 2's icon is a wide 96x48 viewBox
+   rather than square, so it renders centred and shorter inside the same box
+   instead of needing its own sizing rule. */
+.cjx-hook-ico { width: 120px; height: 120px; margin: 0 auto 20px; color: var(--mute); }
+.cjx-name { font-family: var(--disp); font-weight: 800; font-size: clamp(44px, 7vw, 76px); letter-spacing: -0.03em; color: #3696B1; }
 .cjx-hook .cjx-q { margin-top: 10px; font-size: var(--t-sub); }
 
 /* ---- shared color accents across the case study's key numbers ----
-   the same three semantic tokens the rest of the site already uses for
-   good/bad/highlight (--up, --rose, --signal) rather than a new Customer-
-   Portal-only palette - "more color to highlight the main text" reads as
-   an accent, not a rebrand, so it borrows hues a reader has already seen
-   elsewhere on the site instead of introducing a fourth meaning for color. */
+   --up and --rose are still the site's own good/bad tokens, but the third
+   accent (the highlight, used for the persona's name and every "this is the
+   point" phrase) is a Customer-Portal-specific teal (#3696B1) rather than
+   the site-wide --signal violet, by request - it's a deliberate departure
+   from "borrow the site's existing hues" for this one case study, not an
+   oversight. hardcoded rather than a new custom property: it's used in
+   exactly two rules (here and .cjx-name above), which doesn't earn a token
+   of its own the way a value used across many rules would. */
 /* !important because every real use site (.ivp b, .aud-finding em, .inv-hero
    h2, .inv-result span) already sets its own color at higher specificity
    than one plain class - a stat number's own component rule is exactly what
    these need to beat, on purpose, everywhere they're used. */
 .cp-up { color: var(--up) !important; }
 .cp-rose { color: var(--rose) !important; }
-.cp-signal { color: var(--signal) !important; }
+.cp-signal { color: #3696B1 !important; }
+
+/* ---- placeholder tag for sections still being rebuilt one at a time ----
+   amber, not --up/--rose/--signal - none of this case study's existing
+   accents mean "pending," so reusing one would misread as a verdict on
+   content that hasn't been written yet. reuses .cjx-cue's cuepulse
+   animation on the dot for the same "actively happening" cue, at pill
+   rather than plain-text scale. */
+.cp-wip { display: inline-flex; align-items: center; gap: 8px; margin-top: 16px; font-family: var(--mono); font-size: 11px; letter-spacing: 0.16em; text-transform: uppercase; color: #E8A33D; border: 1px solid rgba(232, 163, 61, 0.35); border-radius: 99px; background: rgba(232, 163, 61, 0.1); padding: 8px 16px; }
+.cp-wip i { width: 6px; height: 6px; border-radius: 50%; background: #E8A33D; animation: cuepulse 2s ease-in-out infinite; }
+
+/* ---- Exploration's chapter framework (.expl-), in the Exploration section ----
+   deliberately spare - one eyebrow, one line, move on - the same restraint
+   as the reference deck this was modelled on (a cream page, one amber label,
+   one serif or plain line, nothing crowding it). every chapter reuses these
+   same handful of classes rather than earning its own, so the pattern reads
+   as a template the moment a second chapter has real content in it. */
+/* prefersReducedMotion fallback - EXPLORE_BEATS stacked plainly, each on its
+   own card, same spacing convention as .cj-timeline's own reduced-motion list. */
+.expl-static { display: flex; flex-direction: column; gap: var(--sp-block); margin-top: var(--sp-block); }
+.expl-static > * { border: 1px solid var(--line2); border-radius: var(--r-md); background: var(--ink2); padding: var(--pad-card); }
+.expl-ch { text-align: center; }
+.expl-ch-n { display: block; font-family: var(--mono); font-size: 11px; letter-spacing: 0.24em; text-transform: uppercase; color: var(--dim); margin-bottom: 14px; }
+.expl-ch-t { font-size: clamp(34px, 5vw, 52px); color: var(--text); }
+.expl-ch .cp-wip { margin-top: 4px; }
+.expl-eyebrow { display: block; font-family: var(--mono); font-size: 11px; letter-spacing: 0.14em; text-transform: uppercase; color: #E8A33D; margin-bottom: 10px; }
+.expl-cols { display: flex; gap: 40px; flex-wrap: wrap; }
+.expl-cols > div { flex: 1 1 260px; max-width: 380px; }
+.expl-ask { display: flex; flex-direction: column; gap: 10px; }
+.expl-ask p { font-size: var(--t-body); color: var(--mute); font-style: italic; }
+/* .inv-section h3.plain/.dv-p are centred site-wide (see the case-study-intro
+   rule above) - every other beat here is left, matching .expl-eyebrow and
+   the reference deck's own left-aligned body slides, so the testing beat
+   (the one using h3.plain + .dv-p) needs its own override back to left. */
+.expl-stage h3.plain, .expl-stage .dv-p { text-align: left; margin-left: 0; margin-right: 0; }
+
+/* ---- the competitive landscape, in the Desk research section ----
+   same positioning-map recipe as .eff-map/.eff-dot below (reach vs.
+   built-for-India instead of effort vs. impact) - labels stay always-on
+   rather than hover-only, since five dots at this scale don't crowd the way
+   the effort map's seven did. Polarin's own dot is the one deliberate
+   exception to the whole map's neutral palette: the same teal used for its
+   name and wordmark everywhere else in this case study (#3696B1, --cp-signal),
+   sized up and glowing, with the real logo inside instead of a plain marker -
+   the one thing on the chart the eye is supposed to land on first. */
+.land-wrap { margin-top: 28px; }
+.land-lead { font-family: var(--mono); font-size: 11px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--dim); margin-bottom: 4px; }
+.land-map { position: relative; height: 280px; margin: 20px 0 4px; border: 1px solid var(--line); border-radius: var(--r-md); background: var(--raise); }
+.land-axis-y, .land-axis-x { position: absolute; font-family: var(--mono); font-size: 9.5px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--dim); }
+.land-axis-y { top: 10px; left: 10px; }
+.land-axis-x { bottom: 10px; right: 12px; }
+.land-dot { position: absolute; transform: translate(-50%, 50%); text-align: center; }
+.land-dot i { display: block; width: 9px; height: 9px; margin: 0 auto; border-radius: 50%; background: var(--raise2); border: 1.5px solid var(--line2); }
+.land-dot span { display: inline-block; margin-top: 8px; white-space: nowrap; font-family: var(--mono); font-size: 10px; color: var(--mute); background: var(--raise2); border: 1px solid var(--line2); border-radius: var(--r-xs); padding: 3px 8px; }
+.land-polarin { z-index: 1; }
+.land-polarin img { display: block; width: 32px; height: 32px; margin: 0 auto; border-radius: 50%; background: #fff; padding: 4px; box-shadow: 0 0 0 3px rgba(54, 150, 177, 0.35), 0 0 22px rgba(54, 150, 177, 0.55); }
+.land-polarin span { margin-top: 10px; color: #3696B1; background: rgba(54, 150, 177, 0.14); border-color: rgba(54, 150, 177, 0.45); font-weight: 700; }
+.land-note { margin-top: 14px; font-size: var(--t-body-sm); color: var(--mute); }
+@media (max-width: 640px) {
+  .land-map { height: 320px; }
+  .land-dot span { font-size: 9px; padding: 2px 6px; }
+}
 
 /* ---- effort vs. impact map, in the Process section ----
    a real prioritisation artefact rather than a plain list - position (not
@@ -6037,6 +6285,67 @@ b.adm-was { font-family: var(--body); font-weight: 600; color: var(--rose); }
 .eff-first-lead { font-family: var(--mono); font-size: 11px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--dim); margin-bottom: 12px; }
 .eff-first-grid { display: flex; flex-wrap: wrap; gap: 8px; }
 .eff-first-grid span { font-size: var(--t-body-xs); color: var(--text); border: 1px solid var(--line2); border-radius: 99px; padding: 6px 14px; background: var(--raise2); }
+/* the Approach section's five preview chips are real <button>s, not <span>s -
+   each names a stage that's already its own section further down (desk
+   research -> Research, information architecture -> IA & flows, and so on),
+   so clicking one jumps straight there via the same jumpToSection() the top
+   route bar uses, instead of only being a plain label repeating what's
+   already in the index. */
+.eff-first-grid button {
+  font-family: inherit;
+  font-size: var(--t-body-xs);
+  color: var(--text);
+  border: 1px solid var(--line2);
+  border-radius: 99px;
+  padding: 6px 14px;
+  background: var(--raise2);
+  cursor: pointer;
+  transition: border-color 0.2s var(--ease), color 0.2s var(--ease), transform 0.2s var(--ease);
+}
+.eff-first-grid button:hover, .eff-first-grid button:focus-visible {
+  border-color: #3696B1;
+  color: #3696B1;
+  transform: translateY(-2px);
+  outline: none;
+}
+
+/* ---- reveal-on-scroll, cps- prefixed ----
+   same recipe as .ivs-rv/.ivs-stagger (Invoice's own copy of the same
+   pattern) - restated here rather than shared, per this codebase's one
+   local-hook-per-case-study convention (see useBlockReveal in
+   CustomerPortalCaseStudy.jsx). covers the plain static content only: step
+   tags, headings, paragraphs, and card grids across the nine sections below
+   the hook/bet scenes. the hero and the five pinned scroll-scenes
+   (AlexJourney, TheBetScene, AuditScene, SysScene, ScreensScene) already
+   reveal themselves via their own obeat progression and never carry [data-rv]. */
+/* bigger travel (48px), a starting blur, and a full second of transition -
+   36px/no-blur still read as a quick dissolve rather than something
+   physically arriving. the blur is the part that actually sells "moving
+   into focus": a flat opacity+position fade looks similar to a dissolve at
+   a glance, but a element sharpening as it settles reads unmistakably as
+   motion even out of the corner of your eye. */
+.cps-rv {
+  opacity: 0;
+  filter: blur(6px);
+  transform: translateY(48px) scale(0.96);
+  transition: opacity 0.9s var(--ease) var(--d, 0ms), filter 0.9s var(--ease) var(--d, 0ms), transform 1s var(--ease) var(--d, 0ms);
+}
+.cps-rv.on { opacity: 1; filter: blur(0); transform: none; }
+
+.cps-stagger > * {
+  opacity: 0;
+  filter: blur(5px);
+  transform: translateY(40px) scale(0.96);
+  transition:
+    opacity 0.8s var(--ease) calc(var(--d, 0ms) + var(--sd, 0ms)),
+    filter 0.8s var(--ease) calc(var(--d, 0ms) + var(--sd, 0ms)),
+    transform 0.95s var(--ease) calc(var(--d, 0ms) + var(--sd, 0ms));
+}
+.cps-stagger.on > * { opacity: 1; filter: blur(0); transform: none; }
+
+@media (prefers-reduced-motion: reduce) {
+  .cps-rv, .cps-stagger > * { opacity: 1; filter: none; transform: none; }
+}
 
 /* ---- design-system tokens, full-bleed per scroll beat, in the System section ----
    the small bordered swatch cards this replaced undersold the point - a
@@ -6058,33 +6367,37 @@ b.adm-was { font-family: var(--body); font-weight: 600; color: var(--rose); }
   .sys-full { animation: none; }
 }
 
-/* ---- customer portal's corner index ----
-   position (top/right) is written inline from JS - see the useSectionIndex
-   comment in CustomerPortalCaseStudy.jsx for why this is measured off
-   .ovl-panel's real rect rather than expressed here as a clamp(). what's
-   declared here is everything that ISN'T position: the small vertical list
-   itself, a left hairline that fills in for the active row rather than a
-   background fill (a filled pill this small, this close to the panel's own
-   corner, read like a second close button), and the reduced-motion / narrow-
-   viewport opt-outs. hidden under 1400px - past that width .ovl-panel's own
-   margin (it caps at max-width: 1320px) shrinks below what a legible column
-   of labels plus a comfortable gap from the case study's own copy needs. */
-/* left-aligned labels, so every row's text starts at the same x regardless
-   of word length ("Ananya" vs "Discovery") - text-align: right (the
-   original) instead right-aligned each button's own box, which is stretched
-   to the widest label's width by the column flex default, so shorter words
-   drifted rightward relative to longer ones. the active indicator moves
-   from border-right to border-left with it - a bar on the trailing edge of
-   right-aligned text and a bar on the trailing edge of left-aligned text are
-   the same idea, just mirrored; leaving it on the right here would strand it
-   far from short labels' text. position (top/right, written inline from JS)
-   is untouched - this is purely how the column reads internally. */
-.cp-index { position: fixed; z-index: 3; display: flex; flex-direction: column; gap: 2px; text-align: left; }
-.cp-index button { font-family: var(--mono); font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--dim); background: none; border: none; border-left: 2px solid transparent; padding: 5px 0 5px 12px; cursor: pointer; transition: color 0.25s, border-color 0.25s; }
-.cp-index button:hover { color: var(--mute); }
-.cp-index button.on { color: var(--text); border-left-color: var(--mute); }
-@media (max-width: 1400px) { .cp-index { display: none; } }
-@media (prefers-reduced-motion: reduce) { .cp-index button { transition: none; } }
+/* ---- customer portal's top route line ----
+   the site's own #routeLine mechanism (App.jsx / .route-line, .route-fill,
+   .route-packet, .route-now, .route-tick, all reused verbatim here rather
+   than a lookalike copy) rebuilt against .ovl-panel's own scroll instead of
+   window.scrollY, so the one case study long enough to need a jump-nav (9
+   sections, four of them their own pinned scroll-scenes) reads as the same
+   piece of site furniture instead of a bespoke widget - a corner list of
+   labels was tried first and reverted for exactly that inconsistency.
+
+   this wrapper is the only new CSS: position (top/left/width, written
+   inline from JS - see the useSectionIndex comment in
+   CustomerPortalCaseStudy.jsx) plus stacking. position is measured off
+   .ovl-panel's real rect rather than expressed here as a clamp(), same
+   reason the corner index needed that - past .ovl-panel's 1320px max-width,
+   a viewport-keyed clamp() drifts away from the panel's real edge. sits
+   flush at the panel's own top edge, sharing .ovl-close's row instead of
+   dropping below it - width stops short of the button's own (live-measured)
+   left edge instead. hidden under 1400px, matching the corner index's old
+   cutoff - past that width .ovl-panel's own margin leaves too little room
+   for a readable bar plus a comfortable gap from the case study's own copy. */
+.cp-route-wrap { position: fixed; z-index: 3; }
+@media (max-width: 1400px) { .cp-route-wrap { display: none; } }
+/* data-cp-ch, not data-ch: the overlay this bar lives in renders inside
+   .page (App.jsx's ref="pageRef"), the exact subtree the site's own
+   rebuildTicks() walks for [data-ch] to build ITS header ticks - a tick
+   here carrying data-ch would get picked up as a bogus extra "chapter" on
+   the real page nav the instant this case study opens. the tooltip content
+   is the one thing that actually needs the label read back out of the DOM,
+   so it gets its own attribute and its own (scoped) content rule instead of
+   sharing the site's. */
+.cp-route-wrap .route-tick::after { content: attr(data-cp-ch); }
 
 /* ---- the knowledge base's site map ----
    a raised card holding an inverted-neutral root pill, a dashed tier of
@@ -6717,7 +7030,7 @@ body.static .scene { height: auto !important; }
 .cross-q.on { opacity: 1; transform: none; }
 .cross-q .yr { font-family: var(--mono); font-size: 11.5px; letter-spacing: 0.22em; color: var(--dim); text-transform: uppercase; }
 .cross-q .yr b { color: var(--text); font-weight: 500; }
-.cross-q h3 { font-family: var(--disp); font-weight: 700; font-size: var(--t-sub); letter-spacing: -0.02em; line-height: 1.15; margin-top: 6px; }
+.cross-q h3 { font-family: var(--disp); font-weight: 700; font-size: var(--t-sub); letter-spacing: -0.02em; line-height: 1.3; margin-top: 6px; }
 .cross-q h3 em { font-style: normal; color: var(--mute); }
 .cross-q.on h3 em { color: var(--text); }
 .cross-q p { color: var(--mute); font-size: 14.5px; max-width: 46ch; margin-top: 8px; }
@@ -6794,14 +7107,14 @@ body.static .scene { height: auto !important; }
 
 /* ================= EPILOGUE ================= */
 .epi { min-height: 80vh; display: flex; align-items: center; padding: var(--sp-sec) 0 var(--sp-sec-lg); }
-.epi h2 { font-family: var(--disp); font-weight: 800; font-size: var(--t-chapter); letter-spacing: -0.03em; line-height: 1; max-width: 14ch; }
+.epi h2 { font-family: var(--disp); font-weight: 800; font-size: var(--t-chapter); letter-spacing: -0.03em; line-height: 1.2; max-width: 14ch; }
 .epi h2 .hot { color: var(--mute); }
 .epi p { color: var(--mute); max-width: 54ch; margin-top: 22px; font-size: var(--t-body); }
 .epi-row { display: flex; flex-wrap: wrap; gap: 14px; margin-top: var(--sp-fold); }
 
 /* ================= 404 / ERROR SCREENS ================= */
 .notfound { min-height: calc(100vh - var(--nav-h)); display: flex; align-items: center; }
-.nf-title { font-family: var(--disp); font-weight: 800; font-size: var(--t-hero); letter-spacing: -0.035em; line-height: 1; max-width: 16ch; margin-top: 14px; }
+.nf-title { font-family: var(--disp); font-weight: 800; font-size: var(--t-hero); letter-spacing: -0.035em; line-height: 1.15; max-width: 16ch; margin-top: 14px; }
 .nf-title span { color: var(--mute); }
 .nf-sub { color: var(--mute); max-width: 52ch; margin-top: 20px; font-size: var(--t-body); line-height: 1.6; }
 .notfound .btn-big { margin-top: var(--sp-fold); }
