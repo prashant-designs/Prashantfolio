@@ -424,28 +424,7 @@ function AlexJourney() {
             )}
             {beat === 2 && (
               <>
-                <svg className="ana-portrait" viewBox="0 0 96 96" aria-hidden="true">
-                  <circle cx="48" cy="48" r="47" fill="none" stroke="currentColor" strokeOpacity="0.18" />
-                  {/* blazer shoulders with an open collar (two lapel lines),
-                      not a plain rounded body - "corporate", not generic. */}
-                  <path d="M18 84c2-17 13-28 30-28s28 11 30 28" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" />
-                  <path d="M40 58l8 11 8-11" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
-                  {/* hair: one bob-shaped silhouette behind an opaque face
-                      circle, not an outline wrapped over it - only the
-                      crown and two shoulder-length side panels end up
-                      showing, framing the face the way a real bob cut
-                      does, rather than reading as a helmet. #0A0D1A is
-                      --ink2, .ovl-panel's own background - .cjx-stage
-                      carries no gradient of its own to fight, so a flat
-                      hex here sits flush against the real backdrop. */}
-                  <path d="M48 18c-13 0-21 10-21 23 0 9 2 19 4 27 2 1 4 1 5 0-1-6-1-19-1-23 0-2 0-9 1-13 3 6 8 10 12 10s9-4 12-10c1 4 1 11 1 13 0 4 0 17-1 23 1 1 3 1 5 0 2-8 4-18 4-27 0-13-8-23-21-23z" fill="currentColor" fillOpacity="0.92" stroke="none" />
-                  <circle cx="48" cy="40" r="14" fill="#0A0D1A" stroke="currentColor" strokeWidth="2.2" />
-                  <circle cx="43" cy="40" r="1.3" fill="currentColor" stroke="none" />
-                  <circle cx="53" cy="40" r="1.3" fill="currentColor" stroke="none" />
-                  {/* ID badge on a lanyard, not floating on the chest alone */}
-                  <path d="M48 54v6" stroke="currentColor" strokeWidth="1.6" />
-                  <rect x="42" y="60" width="12" height="8" rx="1.8" fill="none" stroke="currentColor" strokeWidth="1.8" />
-                </svg>
+                <img className="ana-portrait" src="/Ananya.png" alt="Ananya" />
                 <p className="cjx-name">Ananya</p>
                 <p className="cjx-q">VP of Infrastructure<br />at a Mumbai fintech.</p>
               </>
@@ -498,12 +477,12 @@ function AlexJourney() {
 
 function TheBetScene() {
   const ref = useRef(null);
-  const [beat] = useScrollBeat(ref, 7);
+  const [beat] = useScrollBeat(ref, 8);
   const on = (b) => `obeat ${beat >= b ? 'on' : ''}`;
 
   return (
-    <div className="oscn bet-oscn" ref={ref} style={{ '--beats': 7 }}>
-      <div className="oscn-stage bet-stage" key={beat < 2 ? beat : 'combo'}>
+    <div className="oscn bet-oscn" ref={ref} style={{ '--beats': 8 }}>
+      <div className="oscn-stage bet-stage" key={beat < 2 ? beat : beat === 7 ? 'map' : 'combo'}>
         {beat === 0 && (
           <>
             <div className="cj-result obeat on">
@@ -526,7 +505,7 @@ function TheBetScene() {
 
         {/* Ananya opens Polarin → the swaps: builds up as one combined scene,
             each piece staying visible as the next fades in - not a replace. */}
-        {beat >= 2 && (
+        {beat >= 2 && (beat < 7 || prefersReducedMotion) && (
           <>
             <p className={`bet-l1 ${on(2)}`}>Ananya doesn&apos;t call anyone.</p>
             <p className={`bet-l2 ${on(3)}`}>She opens <em>Polarin.</em></p>
@@ -544,6 +523,16 @@ function TheBetScene() {
               <span><s>zero visibility</s><b>real-time tracking</b></span>
             </div>
           </>
+        )}
+
+        {/* the Solution section's own capstone - not squeezed into the swap
+            comparison above (its own beat, its own remount) so it reads as
+            one clean "here's where Polarin is" moment rather than one more
+            row bolted onto an already-busy screen. */}
+        {(beat === 7 || prefersReducedMotion) && (
+          <div className="bet-map obeat on">
+            <img src="/Poalrin on Map.png" alt="Polarin, building the NaaS category from India" />
+          </div>
         )}
       </div>
     </div>
@@ -677,64 +666,358 @@ function SysScene() {
 }
 
 // the Exploration section's own framework, not a one-off scene: each real
-// exploration gets its own "chapter" - a title beat, then the same five
-// beats every time (objective/metric, versions tried, how it was tested,
-// what was asked, what it taught) - so a reader learns the shape once and
-// can skim every chapter after that the same way. chapter 1 (the order
-// journey) is real; chapter 2 is a placeholder tag, same convention as the
-// other sections still being rebuilt one at a time. the seven beats live in
-// one array, not inline per-beat JSX in the render - EXPLORE_BEATS[beat] is
-// the scroll-driven view (one beat mounted at a time, see the note below),
-// and the same array maps straight down the page for prefersReducedMotion,
+// exploration gets its own "chapter" - a title beat, then the same shape
+// every time (the challenge, the objective, how it was explored, what was
+// asked, what it taught, the final experience, the outcome) - so a reader
+// learns the shape once and can skim every chapter after that the same way.
+// chapter 1 (the order journey) is real; chapter 2 is a placeholder tag,
+// same convention as the other sections still being rebuilt one at a time.
+// the beats live in one array, not inline per-beat JSX in the render -
+// EXPLORE_BEATS[beat] is the scroll-driven view (one beat mounted at a time,
+// see the note below), and the same array maps straight down the page for
+// prefersReducedMotion,
 // so neither path can drift out of sync with the other.
-const EXPLORE_BEATS = [
-  <div className="expl-ch" key="ch1">
+// the order-journey process, kept as its own small array (not inlined into
+// EXPLORE_BEATS) purely because it's mapped twice as densely as everything
+// else here - six nodes, not a paragraph.
+const EXPLORE_PROCESS = [
+  { n: '01', t: 'Understand', d: 'users, roles, goals, technical confidence' },
+  { n: '02', t: 'Map', d: 'the current journey and its operational handoffs' },
+  { n: '03', t: 'Find friction', d: 'terminology, uncertainty, hidden status' },
+  { n: '04', t: 'Explore', d: 'wizard, progressive disclosure, live states' },
+  { n: '05', t: 'Test', d: 'task-based walkthroughs with real users' },
+  { n: '06', t: 'Refine', d: 'clearer labels, defaults, next actions' },
+];
+
+// the six real rail steps, walked left to right: which stop is "on" is
+// baked into each EXPLORE_BEATS entry as a plain number, not read from live
+// scroll state - the rail has to render identically whether it's the one
+// active beat on screen (normal scroll) or one of six stacked cards
+// (prefersReducedMotion), and a fixed index is the only thing that means the
+// same thing in both places. the filled-in stops behind it are the
+// "building" cue the chapter asked for - progress accumulating stop by stop
+// reads as construction, not just a location marker. Outcome isn't a rail
+// stop - it closes the chapter as its own full-screen beat, the same
+// treatment the opening "Chapter 1" title gets, once Final is behind it.
+const EXPLORE_STEPS = ['Challenge', 'Objective', 'Exploration', 'Asked', 'Learned', 'Final'];
+
+function ExplRail({ step }) {
+  const lastIdx = EXPLORE_STEPS.length - 1;
+  return (
+    <div className="expl-rail" aria-hidden="true">
+      <span className="expl-rail-ch">Chapter 1</span>
+      {EXPLORE_STEPS.map((label, i) => {
+        // the last stop reaching "on" IS the chapter finishing, not one more
+        // thing still loading - an open-ended spinner there undersold that,
+        // so it gets "final" too, swapping the spinner for a real checkmark
+        // (see .expl-rail-stop.on.final in the CSS) - an actual <svg> tick
+        // rather than a CSS border-triangle hack, since that read as a
+        // crude diagonal blob rather than a checkmark at this small a size.
+        const isFinalOn = i === step && i === lastIdx;
+        const cls = ['expl-rail-stop', i < step && 'done', i === step && 'on', isFinalOn && 'final']
+          .filter(Boolean).join(' ');
+        return (
+          <div className={cls} key={label}>
+            <i>
+              {isFinalOn && (
+                <svg className="expl-rail-tick" viewBox="0 0 24 24" aria-hidden="true">
+                  <path d="M4 12.5l5 5L20 6" pathLength="1" fill="none" stroke="#0A0D1A" strokeWidth="3.4" strokeLinecap="round" strokeLinejoin="round" />
+                </svg>
+              )}
+            </i>
+            <span>{label}</span>
+          </div>
+        );
+      })}
+    </div>
+  );
+}
+
+// one gradient glow-badge icon per beat, all built from the same recipe
+// AlexJourney's own hook icons use (a soft radial glow behind a gradient-
+// stroked glyph) so the new graphics read as part of the same visual
+// language rather than a bolted-on icon set. colour carries meaning: rose
+// for the problem, teal for the plan and its execution, amber for the
+// research beats, green for the payoff - the same palette this case study
+// already uses everywhere else (.cp-problem, .cp-signal, .cp-up).
+function ExplIcon({ variant }) {
+  if (variant === 'challenge') {
+    return (
+      <svg className="expl-icon" viewBox="0 0 96 96" aria-hidden="true">
+        <defs>
+          <radialGradient id="explRoseGlow" cx="50%" cy="50%" r="50%">
+            <stop offset="0%" stopColor="#FF6B8A" stopOpacity="0.38" />
+            <stop offset="100%" stopColor="#FF6B8A" stopOpacity="0" />
+          </radialGradient>
+          <linearGradient id="explRose" gradientUnits="userSpaceOnUse" x1="4" y1="4" x2="92" y2="92">
+            <stop offset="0%" stopColor="#FF6B8A" stopOpacity="0.95" />
+            <stop offset="100%" stopColor="#FF6B8A" stopOpacity="0.4" />
+          </linearGradient>
+        </defs>
+        <circle cx="48" cy="48" r="44" fill="url(#explRoseGlow)" />
+        {/* two tangled lines resolving into one straight one - complexity,
+            then the simplification the whole chapter is about. */}
+        <path d="M14 32q10-14 20 0t20 0q10-14 20 0" fill="none" stroke="url(#explRose)" strokeWidth="2" strokeLinecap="round" opacity="0.5" />
+        <path d="M14 46q7-10 14 0t14 0 14 0 14 0" fill="none" stroke="url(#explRose)" strokeWidth="2" strokeLinecap="round" opacity="0.75" />
+        <path d="M14 66h60" fill="none" stroke="url(#explRose)" strokeWidth="3" strokeLinecap="round" />
+        <circle cx="80" cy="66" r="4.5" fill="#FF6B8A" />
+      </svg>
+    );
+  }
+  if (variant === 'objective') {
+    return (
+      <svg className="expl-icon" viewBox="0 0 96 96" aria-hidden="true">
+        <defs>
+          <radialGradient id="explTealGlow" cx="50%" cy="50%" r="50%">
+            <stop offset="0%" stopColor="#3696B1" stopOpacity="0.4" />
+            <stop offset="100%" stopColor="#3696B1" stopOpacity="0" />
+          </radialGradient>
+          <linearGradient id="explTeal" gradientUnits="userSpaceOnUse" x1="4" y1="4" x2="92" y2="92">
+            <stop offset="0%" stopColor="#3696B1" stopOpacity="0.95" />
+            <stop offset="100%" stopColor="#3696B1" stopOpacity="0.45" />
+          </linearGradient>
+        </defs>
+        <circle cx="48" cy="48" r="44" fill="url(#explTealGlow)" />
+        <circle cx="48" cy="48" r="30" fill="none" stroke="url(#explTeal)" strokeWidth="1.8" opacity="0.5" />
+        <circle cx="48" cy="48" r="18" fill="none" stroke="url(#explTeal)" strokeWidth="2.4" opacity="0.85" />
+        <circle cx="48" cy="48" r="6" fill="#3696B1" />
+        <line x1="48" y1="2" x2="48" y2="14" stroke="url(#explTeal)" strokeWidth="2.4" strokeLinecap="round" />
+      </svg>
+    );
+  }
+  if (variant === 'exploration') {
+    return (
+      <svg className="expl-icon" viewBox="0 0 96 96" aria-hidden="true">
+        <defs>
+          <radialGradient id="explTealGlow2" cx="50%" cy="50%" r="50%">
+            <stop offset="0%" stopColor="#3696B1" stopOpacity="0.4" />
+            <stop offset="100%" stopColor="#3696B1" stopOpacity="0" />
+          </radialGradient>
+          <linearGradient id="explTeal2" gradientUnits="userSpaceOnUse" x1="4" y1="4" x2="92" y2="92">
+            <stop offset="0%" stopColor="#3696B1" stopOpacity="0.95" />
+            <stop offset="100%" stopColor="#3696B1" stopOpacity="0.45" />
+          </linearGradient>
+        </defs>
+        <circle cx="48" cy="48" r="44" fill="url(#explTealGlow2)" />
+        <circle cx="48" cy="48" r="32" fill="none" stroke="url(#explTeal2)" strokeWidth="1.8" />
+        <path d="M61 35l-9 17-17 9 9-17z" fill="url(#explTeal2)" opacity="0.9" />
+        <circle cx="48" cy="48" r="3.4" fill="#0A0D1A" stroke="url(#explTeal2)" strokeWidth="1.6" />
+      </svg>
+    );
+  }
+  if (variant === 'ask') {
+    return (
+      <svg className="expl-icon" viewBox="0 0 96 96" aria-hidden="true">
+        <defs>
+          <radialGradient id="explAmberGlow" cx="50%" cy="50%" r="50%">
+            <stop offset="0%" stopColor="#E8A33D" stopOpacity="0.4" />
+            <stop offset="100%" stopColor="#E8A33D" stopOpacity="0" />
+          </radialGradient>
+          <linearGradient id="explAmber" gradientUnits="userSpaceOnUse" x1="4" y1="4" x2="92" y2="92">
+            <stop offset="0%" stopColor="#E8A33D" stopOpacity="0.95" />
+            <stop offset="100%" stopColor="#E8A33D" stopOpacity="0.45" />
+          </linearGradient>
+        </defs>
+        <circle cx="48" cy="48" r="44" fill="url(#explAmberGlow)" />
+        <path d="M20 28h56a6 6 0 016 6v20a6 6 0 01-6 6H46l-14 12V60H20a6 6 0 01-6-6V34a6 6 0 016-6z" fill="none" stroke="url(#explAmber)" strokeWidth="2.2" />
+        <text x="47" y="52" fontSize="22" fontWeight="700" fill="#E8A33D" textAnchor="middle" fontFamily="Arial, sans-serif">?</text>
+      </svg>
+    );
+  }
+  if (variant === 'learned') {
+    return (
+      <svg className="expl-icon" viewBox="0 0 96 96" aria-hidden="true">
+        <defs>
+          <radialGradient id="explAmberGlow2" cx="50%" cy="50%" r="50%">
+            <stop offset="0%" stopColor="#E8A33D" stopOpacity="0.4" />
+            <stop offset="100%" stopColor="#E8A33D" stopOpacity="0" />
+          </radialGradient>
+          <linearGradient id="explAmber2" gradientUnits="userSpaceOnUse" x1="4" y1="4" x2="92" y2="92">
+            <stop offset="0%" stopColor="#E8A33D" stopOpacity="0.95" />
+            <stop offset="100%" stopColor="#E8A33D" stopOpacity="0.45" />
+          </linearGradient>
+        </defs>
+        <circle cx="48" cy="48" r="44" fill="url(#explAmberGlow2)" />
+        <path d="M48 18a19 19 0 00-11 34c2.4 1.7 3.5 3.9 3.5 6.5v3h15v-3c0-2.6 1.1-4.8 3.5-6.5a19 19 0 00-11-34z" fill="none" stroke="url(#explAmber2)" strokeWidth="2.2" />
+        <line x1="40.5" y1="68" x2="55.5" y2="68" stroke="url(#explAmber2)" strokeWidth="2.2" strokeLinecap="round" />
+        <line x1="42.5" y1="74" x2="53.5" y2="74" stroke="url(#explAmber2)" strokeWidth="2.2" strokeLinecap="round" />
+        <line x1="48" y1="4" x2="48" y2="11" stroke="url(#explAmber2)" strokeWidth="2" strokeLinecap="round" opacity="0.7" />
+        <line x1="22" y1="21" x2="27" y2="26" stroke="url(#explAmber2)" strokeWidth="2" strokeLinecap="round" opacity="0.55" />
+        <line x1="74" y1="21" x2="69" y2="26" stroke="url(#explAmber2)" strokeWidth="2" strokeLinecap="round" opacity="0.55" />
+      </svg>
+    );
+  }
+  if (variant === 'final') {
+    return (
+      <svg className="expl-icon" viewBox="0 0 96 96" aria-hidden="true">
+        <defs>
+          <radialGradient id="explTealGlow3" cx="50%" cy="50%" r="50%">
+            <stop offset="0%" stopColor="#3696B1" stopOpacity="0.4" />
+            <stop offset="100%" stopColor="#3696B1" stopOpacity="0" />
+          </radialGradient>
+          <linearGradient id="explTeal3" gradientUnits="userSpaceOnUse" x1="4" y1="4" x2="92" y2="92">
+            <stop offset="0%" stopColor="#3696B1" stopOpacity="0.95" />
+            <stop offset="100%" stopColor="#3696B1" stopOpacity="0.45" />
+          </linearGradient>
+        </defs>
+        <circle cx="48" cy="48" r="44" fill="url(#explTealGlow3)" />
+        <circle cx="18" cy="52" r="6.5" fill="none" stroke="url(#explTeal3)" strokeWidth="2" />
+        <circle cx="46" cy="28" r="6.5" fill="none" stroke="url(#explTeal3)" strokeWidth="2" />
+        <circle cx="74" cy="52" r="6.5" fill="none" stroke="url(#explTeal3)" strokeWidth="2" />
+        <circle cx="46" cy="72" r="7.5" fill="#3696B1" />
+        <path d="M24 48l16-14M52 24l16 22M46 62V38" fill="none" stroke="url(#explTeal3)" strokeWidth="1.8" strokeDasharray="3 4" />
+      </svg>
+    );
+  }
+  return (
+    <svg className="expl-icon" viewBox="0 0 96 96" aria-hidden="true">
+      <defs>
+        <radialGradient id="explUpGlow" cx="50%" cy="50%" r="50%">
+          <stop offset="0%" stopColor="#7DF9A6" stopOpacity="0.4" />
+          <stop offset="100%" stopColor="#7DF9A6" stopOpacity="0" />
+        </radialGradient>
+        <linearGradient id="explUp" gradientUnits="userSpaceOnUse" x1="4" y1="4" x2="92" y2="92">
+          <stop offset="0%" stopColor="#7DF9A6" stopOpacity="0.95" />
+          <stop offset="100%" stopColor="#7DF9A6" stopOpacity="0.5" />
+        </linearGradient>
+      </defs>
+      <circle cx="48" cy="48" r="44" fill="url(#explUpGlow)" />
+      <path d="M14 62l19-19 13 11 26-29" fill="none" stroke="url(#explUp)" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" />
+      <path d="M60 22h14v14" fill="none" stroke="url(#explUp)" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" />
+    </svg>
+  );
+}
+
+// the three bookend beats' inner content, each named so the live scroll
+// path and the prefersReducedMotion static path can both render the exact
+// same JSX without copy-pasting it twice.
+const CH1_CONTENT = (
+  <>
     <span className="expl-ch-n">Chapter 1</span>
-    <p className="cjx-flash expl-ch-t">Designing the order journey</p>
-  </div>,
-  <div className="expl-cols" key="obj">
-    <div>
-      <span className="expl-eyebrow">Objective</span>
-      <h3 className="plain">Get from browsing to a live order, alone.</h3>
+    <p className="cjx-flash expl-ch-t">An order journey that makes networks feel simple</p>
+  </>
+);
+const OUTCOME_CONTENT = (
+  <>
+    <span className="expl-ch-n">The outcome</span>
+    <p className="cjx-flash expl-ch-t">Less network knowledge. <em className="cp-up">More user confidence.</em></p>
+    <div className="eff-first-grid" style={{ justifyContent: 'center', marginTop: '24px' }}>
+      <span>guided four-step flow</span>
+      <span>progressive disclosure</span>
+      <span>live availability</span>
+      <span>persistent price &amp; commitment</span>
+      <span>clear next actions</span>
+      <span>a reusable pattern</span>
     </div>
-    <div>
-      <span className="expl-eyebrow">Success metric</span>
-      <p className="bet-90"><s className="from">~90 days</s><span className="arr">→</span><b className="to">10 minutes.</b></p>
-    </div>
-  </div>,
-  <div key="versions">
-    <span className="expl-eyebrow">Versions explored</span>
-    <div className="ivx-principles">
-      <div className="ivp"><b>v1 · dashboard-first</b><p>led with network health - buyers wanted to order before they wanted to monitor. dropped.</p></div>
-      <div className="ivp"><b>v2 · wizard-only</b><p>a linear step-by-step order flow - too rigid for enterprise buyers comparing options. dropped.</p></div>
-      <div className="ivp"><b>v3 · explore, then commit</b><p>browse services and check feasibility before ordering, self-serve the whole way. shipped.</p></div>
-    </div>
-  </div>,
-  <div key="testing">
-    <span className="expl-eyebrow">Prototype testing</span>
-    <h3 className="plain">Internally first, then a handful of approachable customers.</h3>
-    <p className="dv-p dim">not a formal panel - real accounts, people who&apos;d actually place this order.</p>
-  </div>,
-  <div key="ask">
-    <span className="expl-eyebrow">What we asked</span>
-    <div className="expl-ask">
-      <p>&quot;find and order [a service] without any help.&quot;</p>
-      <p>&quot;where did you pause, or want to double-check something?&quot;</p>
-      <p>&quot;would you trust this enough to skip the phone call?&quot;</p>
-    </div>
-  </div>,
-  <div key="insights">
-    <span className="expl-eyebrow">Insights</span>
-    <div className="inv-learn">
-      <div className="inv-learn-card"><h4>trust comes before speed</h4><p>hesitation was never about the UI - it was &quot;can I really do this without a person?&quot;</p></div>
-      <div className="inv-learn-card"><h4>comparison beats a fast wizard</h4><p>buyers wanted options side by side before committing, not to be rushed through one path</p></div>
-      <div className="inv-learn-card"><h4>plain language, not clever copy</h4><p>simple pricing and status language beat every shortcut we tried</p></div>
-    </div>
-  </div>,
-  <div className="expl-ch" key="ch2">
+  </>
+);
+const CH2_CONTENT = (
+  <>
     <span className="expl-ch-n">Chapter 2</span>
     <span className="cp-wip"><i></i>in progress</span>
-  </div>,
+  </>
+);
+
+// the six rail-step beats' inner content only - no rail, no .expl-main
+// wrapper. kept separate from EXPLORE_BEATS below for the same reason the
+// bookends are named consts: the live scroll path needs to swap just this
+// part (see the "blink" note on ExploreScene) while the rail stays mounted
+// and merely updates which stop is "on".
+const EXPLORE_CONTENT = [
+  <>
+    <ExplIcon variant="challenge" />
+    <span className="expl-eyebrow">The challenge</span>
+    <h3 className="expl-h">Connectivity is <em className="cp-rose">complex</em>. The experience shouldn&apos;t be.</h3>
+    <blockquote className="expl-quote">&quot;I know what I need to connect. I shouldn&apos;t need to understand the entire network behind it.&quot;</blockquote>
+  </>,
+  <>
+    <ExplIcon variant="objective" />
+    <span className="expl-eyebrow">The objective</span>
+    <h3 className="expl-h">From intent to <em className="cp-signal">live network</em>, in minutes - not handoffs.</h3>
+    <div className="cj-result">
+      <span><b>10 min</b> target time for eligible connections</span>
+      <span><b>4 steps</b> one guided path, port to checkout</span>
+      <span><b className="cp-up">Live</b> visibility from order to connection live</span>
+    </div>
+  </>,
+  <>
+    <ExplIcon variant="exploration" />
+    <span className="expl-eyebrow">Exploration</span>
+    <h3 className="expl-h">Start with the <em className="cp-rose">problem</em>, not the polished screen.</h3>
+    <div className="expl-process">
+      {EXPLORE_PROCESS.map((p) => (
+        <div className="expl-proc-node" key={p.n}><i>{p.n}</i><b>{p.t}</b><p>{p.d}</p></div>
+      ))}
+    </div>
+  </>,
+  <>
+    <ExplIcon variant="ask" />
+    <span className="expl-eyebrow">What we asked</span>
+    <h3 className="expl-h">Could a first-time user complete the task <em className="cp-rose">without an expert</em>?</h3>
+    <ul className="expl-bullets">
+      <li>what would you expect to select first when connecting two locations?</li>
+      <li>would A-End and Z-End make sense without context?</li>
+      <li>what information would help you trust a port choice?</li>
+      <li>what would you need to understand before committing to a price?</li>
+      <li>what should happen when an order is delayed, or needs a purchase order?</li>
+      <li>how would you know when the connection is actually live?</li>
+    </ul>
+  </>,
+  <>
+    <ExplIcon variant="learned" />
+    <span className="expl-eyebrow">What we learned</span>
+    <h3 className="expl-h">Users understand the <em className="cp-up">outcome</em> before they understand the architecture.</h3>
+    <ul className="expl-bullets">
+      <li>lead with &quot;connect two places,&quot; not network terminology</li>
+      <li>show availability, location and speed at the decision point</li>
+      <li>keep price and commitment visible through the whole flow</li>
+      <li>explain exceptions inside the product, not through support</li>
+      <li>make every state actionable - what happened, what&apos;s next, who owns it</li>
+    </ul>
+  </>,
+  <>
+    <ExplIcon variant="final" />
+    <span className="expl-eyebrow">The final experience</span>
+    <h3 className="expl-h">A guided path from port to <em className="cp-up">live</em>.</h3>
+    <p className="dv-p dim">progressive disclosure - each screen answers one decision, while a step indicator and a live price summary keep the user oriented.</p>
+    {/* autoPlay/loop only without prefersReducedMotion - an autoplaying
+        video is exactly the unrequested motion that setting exists to
+        suppress. controls stay either way, so it's still one click to
+        watch it - the poster frame (the real Port Selection screen, not a
+        black box) is what shows until then. */}
+    <video
+      className="expl-video"
+      src="/dci-l2-order-flow.mp4"
+      poster="/dci-l2-order-flow-poster.png"
+      autoPlay={!prefersReducedMotion}
+      loop={!prefersReducedMotion}
+      muted
+      playsInline
+      controls
+      preload="metadata"
+    >
+      order journey walkthrough - DCI Layer 2 order flow
+    </video>
+  </>,
+];
+
+// prefersReducedMotion's own flat list - every beat stacked plainly, each
+// rail-step beat carrying its own baked-in rail (safe here: nothing here
+// ever remounts on scroll, so there's no "blink" risk the live path had).
+const EXPLORE_BEATS = [
+  <div className="expl-ch" key="ch1">{CH1_CONTENT}</div>,
+  ...EXPLORE_CONTENT.map((content, i) => (
+    <div className="expl-layout" key={EXPLORE_STEPS[i]}>
+      <ExplRail step={i} />
+      <div className="expl-main">{content}</div>
+    </div>
+  )),
+  // the chapter's own close, not an eighth rail stop - same full-width,
+  // no-rail treatment as the "Chapter 1" title screen it echoes, so the
+  // chapter reads as opening and closing on the same kind of beat, with
+  // the six worked steps running between them.
+  <div className="expl-ch" key="outcome">{OUTCOME_CONTENT}</div>,
+  <div className="expl-ch" key="ch2">{CH2_CONTENT}</div>,
 ];
 
 function ExploreScene() {
@@ -751,10 +1034,37 @@ function ExploreScene() {
   // .oscn-stage's fixed 74vh box would have clipped the earliest ones the
   // moment total content outgrew the box, since overflow:hidden + a centred
   // flex column crops symmetrically as height grows, not from the bottom only.
+  //
+  // key={beat} used to sit on .expl-stage itself, which remounted the RAIL
+  // along with the content on every single beat change - the rail's own
+  // dots don't need to (and visually shouldn't) disappear and refade in six
+  // times in a row just because the copy beside them changed; that's the
+  // "blink" this was rewritten to fix. now key={beat} sits only on the
+  // swapped content (.expl-main for a rail beat, .expl-ch for a bookend),
+  // so the rail mounts once and simply re-renders with a new `step` prop -
+  // its dots transition their own colour/border smoothly via the plain CSS
+  // transitions already on .expl-rail-stop, never touching the DOM node.
+  const railStep = beat - 1;
+  const showRail = railStep >= 0 && railStep < EXPLORE_CONTENT.length;
+  const bookend = beat === 0
+    ? CH1_CONTENT
+    : beat === EXPLORE_CONTENT.length + 1
+      ? OUTCOME_CONTENT
+      : beat === EXPLORE_CONTENT.length + 2
+        ? CH2_CONTENT
+        : null;
+
   return (
     <div className="oscn expl-oscn" ref={ref} style={{ '--beats': EXPLORE_BEATS.length }}>
-      <div className="oscn-stage expl-stage" key={beat}>
-        {EXPLORE_BEATS[beat]}
+      <div className="oscn-stage expl-stage">
+        {showRail ? (
+          <div className="expl-layout">
+            <ExplRail step={railStep} />
+            <div className="expl-main expl-fade" key={beat}>{EXPLORE_CONTENT[railStep]}</div>
+          </div>
+        ) : (
+          <div className="expl-ch expl-fade" key={beat}>{bookend}</div>
+        )}
       </div>
     </div>
   );

@@ -5889,6 +5889,8 @@ b.adm-was { font-family: var(--body); font-weight: 600; color: var(--rose); }
 .bet-swaps span { border: 1px solid var(--line); border-radius: var(--r-sm); background: var(--raise); padding: 11px 16px; font-family: var(--mono); font-size: 11px; letter-spacing: 0.06em; display: flex; gap: 10px; align-items: center; }
 .bet-swaps s { color: var(--dim); }
 .bet-swaps b { color: var(--up); font-weight: 500; }
+.bet-map { display: flex; justify-content: center; }
+.bet-map img { width: 100%; max-width: 760px; max-height: 62vh; object-fit: contain; border-radius: var(--r-lg); border: 1px solid var(--line2); box-shadow: 0 30px 60px -20px rgba(0, 0, 0, 0.6); }
 
 .aud { margin-top: 18px; border: 1px solid var(--line); border-radius: var(--r-md); overflow: hidden; font-size: var(--t-body-xs); }
 .aud-r { display: grid; grid-template-columns: 1.4fr 1fr 1fr 0.8fr; gap: 10px; padding: 11px 16px; border-bottom: 1px solid var(--line); color: var(--mute); }
@@ -5933,17 +5935,15 @@ b.adm-was { font-family: var(--body); font-weight: 600; color: var(--rose); }
    scroll to skip the same number of beats. */
 .oscn { position: relative; margin-top: 16px; height: calc(var(--beats, 5) * 60vh); }
 .oscn.bet-oscn, .oscn.expl-oscn { height: calc(var(--beats, 7) * 90vh); }
-/* one beat's content at a time (see ExploreScene) - key={beat} remounts
-   .expl-stage on every change, so the same pagein keyframe .cjx-step.flash
-   already uses for its own per-beat remounts plays here too. */
-.expl-stage { animation: pagein 0.45s var(--ease); }
+/* one beat's content at a time (see ExploreScene) - key={beat} used to sit
+   on .expl-stage itself, remounting the progress rail along with the copy
+   on every single beat change (a visible "blink" - the rail flashing away
+   and back for no reason, since its own dots barely changed). key={beat}
+   now sits only on .expl-fade, the swapped content, so only that plays the
+   same pagein keyframe .cjx-step.flash uses for its own per-beat remounts;
+   the rail stays mounted throughout and only its props change. */
+.expl-fade { animation: pagein 0.45s var(--ease); }
 .oscn-stage { position: sticky; top: 5vh; height: 74vh; display: flex; flex-direction: column; justify-content: center; overflow: hidden; }
-/* same trick as .tl-stage - the glow rides the pinned stage so a multi-
-   viewport case-study scene keeps its own air the whole way down. purely
-   additive: background-image only, no structural properties re-declared. */
-.oscn-stage {
-  background-image: radial-gradient(900px 620px at 50% 0%, var(--glow-cool), transparent 58%);
-}
 .obeat { opacity: 0; transform: translateY(20px); transition: opacity 0.55s var(--ease), transform 0.55s var(--ease); }
 .obeat.on { opacity: 1; transform: none; }
 
@@ -6173,11 +6173,12 @@ b.adm-was { font-family: var(--body); font-weight: 600; color: var(--rose); }
    this used to be static copy sitting above the scroll scene: a small icon,
    a heading, a paragraph, then the scene started. now the persona IS the
    hook screen - the first thing a reader scrolls into, not a caption above
-   it - so there's exactly one intro moment instead of two. a minimal line
-   illustration rather than a photo, stroke and fill both in currentColor so
-   it can sit inside .cjx-hook's centred text color without a second color
-   decision. */
-.ana-portrait { width: 120px; height: 120px; margin: 0 auto 20px; color: var(--mute); }
+   it - so there's exactly one intro moment instead of two. the portrait
+   itself is a real illustration now (Ananya.png, square source), clipped to
+   a circle with border-radius rather than drawn as line art - object-fit:
+   cover keeps the square source filling the round frame with no letterboxing
+   regardless of the source's exact crop. */
+.ana-portrait { width: 120px; height: 120px; margin: 0 auto 20px; border-radius: 50%; object-fit: cover; border: 1px solid var(--line2); }
 /* same 120px slot as .ana-portrait for the two hook beats either side of the
    persona reveal (method, then task) - beat 2's icon is a wide 96x48 viewBox
    rather than square, so it renders centred and shorter inside the same box
@@ -6227,15 +6228,202 @@ b.adm-was { font-family: var(--body); font-weight: 600; color: var(--rose); }
 .expl-ch-t { font-size: clamp(34px, 5vw, 52px); color: var(--text); }
 .expl-ch .cp-wip { margin-top: 4px; }
 .expl-eyebrow { display: block; font-family: var(--mono); font-size: 11px; letter-spacing: 0.14em; text-transform: uppercase; color: #E8A33D; margin-bottom: 10px; }
-.expl-cols { display: flex; gap: 40px; flex-wrap: wrap; }
-.expl-cols > div { flex: 1 1 260px; max-width: 380px; }
+/* ---- the rail + icon + copy layout every real chapter beat shares ----
+   .expl-stage overrides .oscn-stage's own overflow:hidden - clipping cut
+   the spinner ring below off at the stage edge, and there's no reason this
+   scene needs the clip other scenes (which slide content in from off-frame)
+   actually rely on. height:100% is the fix for the rail visibly drifting
+   between beats: .oscn-stage centres its one child vertically, and that
+   child's height used to equal whichever beat's content was tallest, so
+   the whole row (rail included) re-centred to a different position every
+   time the beat changed. pinning the row to the stage's own fixed height
+   means that centring reference never moves again - align-items:center (not
+   flex-start) then centres the rail AND the copy independently inside that
+   same fixed frame, so the rail sits at the same y every time (its own
+   height never changes) while the copy is never pinned awkwardly to the
+   top with dead space below it. */
+.expl-stage { overflow: visible; }
+.expl-layout { display: flex; align-items: center; gap: 56px; height: 100%; }
+/* max-height:100% (of .expl-layout, itself pinned to .oscn-stage's own
+   fixed height) + overflow-y:auto is the backstop the note on .expl-icon
+   above refers to - invisible whenever a beat's real content fits (which
+   the size reductions there aim to guarantee at any realistic window
+   height), but it means a still-too-tall beat scrolls inside its own box
+   instead of spilling out and getting clipped by .ovl-panel above it. */
+.expl-main { flex: 1 1 auto; min-width: 0; max-height: 100%; overflow-y: auto; }
+/* 72px, not 92 - .expl-layout centres the rail and the copy together
+   inside .oscn-stage's fixed 74vh box (see the note there on why it's
+   fixed at all), and on a short enough real viewport height the tallest
+   beat's own content (The final experience: heading, paragraph, the gif
+   placeholder, eight pills) could still add up to more than that box has
+   room for even centred - pushing the icon above .ovl-panel's own visible
+   area, where IT (not .expl-stage, which was already set to overflow:
+   visible) clips it. shrinking the icon and, further down, .expl-gif's
+   min-height buys back enough room that this doesn't happen at realistic
+   window heights; .expl-main's own max-height/overflow-y below is the
+   backstop for whatever height it still doesn't. */
+.expl-icon { display: block; width: 72px; height: 72px; margin-bottom: 14px; }
+/* clamp(32px,4.5vw,50px), not var(--t-sub) (~24-28px) - the original size
+   read as thin and unbalanced against a 92px icon and a 180px rail; this is
+   close to .inv-hero h2's own weight so the beat headline reads as the
+   headline, not a caption underneath the graphic. no max-width: the beat's
+   own available width (the panel minus the rail) is the wrap point now, not
+   an arbitrary character count - a fixed ch-cap was forcing 2-3 short lines
+   while most of the row sat empty. */
+.expl-h { font-family: var(--disp); font-weight: 800; font-size: clamp(32px, 4.5vw, 50px); letter-spacing: -0.03em; line-height: 1.12; margin: 0 0 4px; }
+/* the one word or phrase per heading that actually carries colour (.cp-rose/
+   .cp-signal/.cp-up, the same three accents this case study already uses
+   everywhere else) - font-style:normal so the emphasis reads as colour, not
+   an italic slant browsers apply to a bare <em> by default. */
+.expl-h em { font-style: normal; }
+/* the progress rail - a small "Chapter 1" label sits above the stops
+   (persistent across every beat, not just the opening title screen), then
+   the six real steps. stops fill in solid and the connecting line behind
+   them grows as the reader scrolls from the challenge to the final step,
+   so the whole left edge reads as construction in progress rather than a
+   static wayfinder. the current stop gets an actual spinner - a rotating
+   ring around its dot (railspin) - standing in for "something is actively
+   being built here" more literally than a plain pulse did. */
+.expl-rail { flex: 0 0 176px; padding-top: 6px; }
+.expl-rail-ch { display: block; font-family: var(--mono); font-size: 10px; letter-spacing: 0.2em; text-transform: uppercase; color: var(--dim); margin-bottom: 22px; }
+.expl-rail-stop { position: relative; padding: 0 0 30px 24px; font-family: var(--mono); font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--dim); transition: color 0.3s var(--ease); }
+.expl-rail-stop:last-child { padding-bottom: 0; }
+.expl-rail-stop i { position: absolute; left: 0; top: 2px; width: 9px; height: 9px; border-radius: 50%; background: var(--raise2); border: 1.5px solid var(--line2); transition: background 0.3s var(--ease), border-color 0.3s var(--ease), box-shadow 0.3s var(--ease); }
+.expl-rail-stop:not(:last-child)::after { content: ''; position: absolute; left: 4px; top: 13px; width: 1px; height: calc(100% - 15px); background: var(--line2); }
+.expl-rail-stop.done { color: var(--mute); }
+.expl-rail-stop.done i { background: #3696B1; border-color: #3696B1; }
+/* a completed connector just sits solid, not still animating - an endless
+   shimmer here read as "still in motion" fighting the checkmark's own
+   settled, arrived-at feeling once Final was reached. */
+.expl-rail-stop.done:not(:last-child)::after { background: #3696B1; }
+.expl-rail-stop.on { color: var(--text); font-weight: 700; }
+/* not position:relative here - the base rule above already gives .i
+   position:absolute (a valid containing block on its own for the ::before/
+   ::after ring below); overriding it to relative at this higher specificity
+   would drop the dot back into normal inline flow, right where the vertical
+   bar bug came from the first time. */
+.expl-rail-stop.on i { background: #3696B1; border-color: #3696B1; box-shadow: 0 0 10px rgba(54, 150, 177, 0.6); animation: raildotpulse 1.6s ease-in-out infinite; }
+/* the spinner ring - one pseudo-element on the DOT itself (i::after), not
+   the stop, and centred with left/top:50% + a negative margin of half the
+   ring's own size - percentage-based centring on the element it actually
+   needs to ring, rather than hand-measured px offsets against a sibling
+   element, which is what let the ring drift off-centre from the dot in the
+   first place. a static always-visible full ring was tried underneath this
+   (::before) to frame the dot between rotations, but it read as a second,
+   independently-misaligned circle rather than context for the spinner - so
+   it's gone, and the conic-gradient "comet" below is the only ring. it's a
+   fading head-to-tail sweep (not the flat two-colour border-arc this
+   replaced) masked down to a thin band with radial-gradient so only the
+   ring shows, not a filled pie slice. */
+.expl-rail-stop.on i::after {
+  content: '';
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 22px;
+  height: 22px;
+  margin: -11px 0 0 -11px;
+  border-radius: 50%;
+  background: conic-gradient(from 0deg, rgba(54, 150, 177, 0) 0deg, rgba(54, 150, 177, 0) 250deg, rgba(54, 150, 177, 0.85) 330deg, #8FE3F5 360deg);
+  -webkit-mask: radial-gradient(farthest-side, transparent calc(100% - 2.5px), #000 calc(100% - 2.5px));
+  mask: radial-gradient(farthest-side, transparent calc(100% - 2.5px), #000 calc(100% - 2.5px));
+  animation: railspin 1.1s linear infinite;
+}
+/* the last stop's "on" state is the chapter finishing, not one more thing
+   still loading - a real <svg> tick instead of the spinner (see the
+   .expl-rail-tick markup in ExplRail), not a CSS border-triangle hack.
+   ::after (the spinner ring) is switched off outright with content:none
+   rather than fought property-by-property - .final never needs it back. */
+.expl-rail-stop.on.final i::after { content: none; }
+/* a one-time pop, not the endless pulse the other "on" dots get - settling
+   into place reads as "arrived," where a loop left running here would have
+   undercut the "this is finished" the checkmark itself is making. */
+.expl-rail-stop.on.final i { animation: railfinalpop 0.4s var(--ease) both; }
+.expl-rail-tick { position: absolute; inset: 0; width: 100%; height: 100%; }
+/* pathLength="1" on the <path> makes the dasharray/dashoffset math trivial -
+   1 full length, 1 to 0 - regardless of the actual checkmark geometry.
+   an animation, not a transition: the <svg> only exists in the DOM once
+   .final is true, and a transition has no "before" state to animate from
+   on an element that just mounted - a keyframe plays from its 0% regardless. */
+.expl-rail-tick path { stroke-dasharray: 1; stroke-dashoffset: 1; animation: railtickdraw 0.4s var(--ease) 0.15s both; }
+@keyframes railfinalpop {
+  0% { transform: scale(0.55); }
+  65% { transform: scale(1.12); }
+  100% { transform: scale(1); }
+}
+@keyframes railtickdraw {
+  to { stroke-dashoffset: 0; }
+}
+@keyframes railspin {
+  to { transform: rotate(360deg); }
+}
+@keyframes raildotpulse {
+  0%, 100% { box-shadow: 0 0 10px rgba(54, 150, 177, 0.6); }
+  50% { box-shadow: 0 0 15px rgba(54, 150, 177, 0.9); }
+}
+@media (max-width: 900px) {
+  .expl-layout { gap: 32px; }
+  .expl-rail { flex-basis: 120px; }
+  .expl-rail-stop { padding-left: 18px; font-size: 9.5px; }
+}
+@media (max-width: 640px) {
+  /* the rail as a wrapped horizontal row still overflowed a phone's
+     available width once stacked above a full beat's icon + heading +
+     cards - there's no room left to shrink without the rail becoming
+     unreadable, so it's hidden here rather than squeezed.
+     prefersReducedMotion's stacked static view still carries full progress
+     context (every EXPLORE_STEPS rail renders there too), so nothing is
+     lost, just not shown inside the pinned scroll scene itself. */
+  .expl-stage .expl-rail { display: none; }
+  .expl-layout { flex-direction: column; gap: 20px; height: auto; }
+  .expl-icon { width: 72px; height: 72px; margin-bottom: 14px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .expl-rail-stop.on i, .expl-rail-stop.on i::after { animation: none; }
+  /* animation:none alone would freeze the tick at its base (hidden,
+     stroke-dashoffset:1) state rather than the drawn-in one - it needs the
+     end state set explicitly, not just the animation turned off. */
+  .expl-rail-tick path { animation: none; stroke-dashoffset: 0; }
+}
 .expl-ask { display: flex; flex-direction: column; gap: 10px; }
 .expl-ask p { font-size: var(--t-body); color: var(--mute); font-style: italic; }
+/* the challenge beat's own pull-quote - a red rule, not a card, so it reads
+   as the one line a user actually said rather than another design artefact. */
+.expl-quote { margin: 16px 0 0; border-left: 3px solid var(--rose); padding-left: 20px; font-family: var(--disp); font-weight: 600; font-size: clamp(18px, 2.2vw, 24px); line-height: 1.3; letter-spacing: -0.01em; color: var(--text); max-width: 46ch; }
+/* the six-step research process - a grid of small nodes rather than the
+   reference's arrow-linked row, since a real left-to-right arrow chain
+   doesn't survive wrapping onto a second row at this width. */
+.expl-process { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-top: 16px; }
+.expl-proc-node { border: 1px solid var(--line2); border-radius: var(--r-md); background: var(--raise2); padding: 14px 16px; }
+.expl-proc-node i { display: block; font-style: normal; font-family: var(--mono); font-size: 11px; color: #3696B1; margin-bottom: 8px; }
+.expl-proc-node b { display: block; font-family: var(--disp); font-weight: 700; font-size: 14px; margin-bottom: 4px; }
+.expl-proc-node p { font-size: 12px; color: var(--mute); line-height: 1.35; }
+/* the asked/learned lists - plain bullets, not cards, matching the
+   reference's own restraint (a <ul>, nothing heavier). */
+.expl-bullets { list-style: none; margin: 16px 0 0; padding: 0; display: flex; flex-direction: column; gap: 9px; max-width: 56ch; }
+.expl-bullets li { position: relative; padding-left: 16px; font-size: var(--t-body-sm); color: var(--mute); line-height: 1.4; }
+.expl-bullets li::before { content: ''; position: absolute; left: 0; top: 0.55em; width: 5px; height: 5px; border-radius: 50%; background: var(--dim); }
+/* the real order-journey walkthrough - a plain solid frame now, not the
+   dashed "coming soon" placeholder box this replaced. width:100% scales
+   the video down to whatever .expl-main actually has room for rather than
+   playing at its native 1280px and overflowing a narrower panel; height is
+   never set explicitly so the browser keeps the source's own aspect ratio
+   instead of letterboxing or stretching it. */
+/* left-aligned (margin: ...0, not auto 0 - centred read as disconnected
+   from the left-aligned heading/paragraph above it), and back up to 640 now
+   that dropping the eight-pill grid below it freed the vertical room this
+   needed - still comfortably inside .oscn-stage's fixed height (see the
+   note on .expl-icon) at realistic window heights, re-verified the same
+   way after the resize. */
+.expl-video { margin: 8px 0 0; display: block; width: 100%; max-width: 640px; border: 1px solid var(--line2); border-radius: var(--r-lg); background: #000; }
+@media (max-width: 640px) {
+  .expl-process { grid-template-columns: repeat(2, 1fr); }
+}
 /* .inv-section h3.plain/.dv-p are centred site-wide (see the case-study-intro
    rule above) - every other beat here is left, matching .expl-eyebrow and
    the reference deck's own left-aligned body slides, so the testing beat
    (the one using h3.plain + .dv-p) needs its own override back to left. */
-.expl-stage h3.plain, .expl-stage .dv-p { text-align: left; margin-left: 0; margin-right: 0; }
+.expl-stage .dv-p, .expl-static .dv-p { text-align: left; margin-left: 0; margin-right: 0; }
 
 /* ---- the competitive landscape, in the Desk research section ----
    same positioning-map recipe as .eff-map/.eff-dot below (reach vs.
