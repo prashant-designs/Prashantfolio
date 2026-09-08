@@ -129,11 +129,12 @@
      "the neutral half of the pair" wherever it appears below.
      the warm wash survives only as narrative - the "two halves meeting"
      device in .zone-duo and on the home fold, the only place on the site
-     where two tones share a section. its hue used to be the old signal red;
-     it is the gradient's pink stop now, at the same whisper alpha, so the one
-     ambient colour left on the site belongs to the accent language rather
-     than to a colour nothing else uses any more. */
-  --glow-warm: rgba(255, 46, 154, 0.028);
+     where two tones share a section. its hue used to be the old signal red,
+     then the gradient's old pink stop; it is g1's current indigo now, at the
+     same whisper alpha, so the one ambient colour left on the site still
+     belongs to the accent language rather than to a colour nothing else
+     uses any more. */
+  --glow-warm: rgba(106, 111, 255, 0.028);
   --glow-duo-cool: rgba(255, 255, 255, 0.03);
   --glow-cool: rgba(255, 255, 255, 0.045);
 
@@ -154,13 +155,14 @@
      decisive action per screen, with blue explicitly retired so nothing could
      compete with it. that bought a very disciplined page and a very quiet one.
      the accent language is now the identity's three-stop gradient instead -
-     pink into violet into cyan - and it is spent in the same places, under the
-     same discipline. what changed is the colour, not the rule about how often
-     it appears.
+     indigo into blue into cyan (originally pink into violet into cyan; see
+     the note down at --g1 for why the warm end moved) - and it is spent in
+     the same places, under the same discipline. what changed is the colour,
+     not the rule about how often it appears.
 
        --g1 / --g2 / --g3   the three stops, exposed individually for the
                             handful of places that need one of them alone
-                            (--glow-warm's pink wash, a mid-stop glow).
+                            (--glow-warm's g1 wash, a mid-stop glow).
        --grad               the gradient itself, at the reference's 100deg.
                             this is the accent. it goes on a fill
                             (.btn-big, .tab.active), on a text-clip
@@ -239,8 +241,19 @@
        --glow-warm           whisper-strength, .zone-duo only
        .home-hero            whisper-strength, the two-halves fold
      a tenth place needs an argument, exactly as a sixth red did. */
-  --g1: #FF2E9A;
-  --g2: #7B5BFF;
+  /* indigo into blue into cyan, not pink into violet into cyan - same three-
+     stop mechanics, same discipline about where it's allowed (the list right
+     above), a cooler and narrower hue range for a quieter, more circuit-
+     board reading. g1 is deliberately not the sky blue --link already owns
+     (#4C82FF, two lines to the right of --g1's old value's original slot) -
+     landing g1 that close would blur the one thing --signal exists to keep
+     distinct: the gradient is the accent, --link is just a link. contrast
+     re-verified the same way as the original note below documents, at every
+     stop and the two interpolated midpoints:
+       dark, #06070F on it   5.10 / 5.72 / 6.78 / 8.71 / 11.12 : 1
+     all five clear 4.5:1, same bar the original set. */
+  --g1: #6A6FFF;
+  --g2: #2E9EE0;
   --g3: #22D3EE;
   /* 90deg, not the reference's 100deg: a pill (border-radius: 99px) is
      exactly where the tilt shows up as a bug rather than a sweep - a 10°
@@ -249,7 +262,7 @@
      line of colour riding the curve at both ends. dead horizontal has no
      vertical component to disagree with itself, on a pill or anywhere else. */
   --grad: linear-gradient(90deg, var(--g1) 0%, var(--g2) 52%, var(--g3) 100%);
-  --signal: #7B5BFF;
+  --signal: #2E9EE0;
   --grad-ink: #06070F;
 
   /* reinstated, on purpose, after a direct request to bring blue back for text
@@ -284,12 +297,12 @@
      is not an approval, it wants --grad or a --bar-* rung, not this.
 
      --rose is its opposite number, and the reference has one of those too: a
-     pink-red distinct from the gradient's own pink, used only for removed /
-     negative states in a before-after diff. that is the role --rose already
-     played (the strike-through "then" column, the cost tags, the failure
-     codes), so it is re-cut to the reference's #FF6B8A - close enough to the
-     gradient's --g1 to belong to the palette, far enough (and much lighter)
-     never to be mistaken for the accent. 7.4:1 on --ink. */
+     pink-red, used only for removed / negative states in a before-after
+     diff - unrelated to the accent gradient's own hues (g1 moved off pink
+     since this was first written; --rose stayed put on purpose, since its
+     job is "negative state," not "part of the identity palette"), and
+     nowhere close to being mistaken for the accent regardless. 7.4:1 on
+     --ink. */
   --up: #7DF9A6;
   --rose: #FF6B8A;
 
@@ -315,17 +328,30 @@
         and now sits on a navy #0F1324, so each is nudged a few degrees cooler
         and a touch brighter to hold the same separation from the ground.
      2. HUE CLEARANCE from the accent, which is the new constraint and the
-        only reason any rung moved family. the gradient owns three hue
-        neighbourhoods - pink 330°, violet 255°, cyan 187° - and two rungs sat
-        inside them: rung 5 was a lavender at 258° (dead on the violet stop)
-        and rung 6 a teal at 175° (12° off the cyan stop). a chart series that
-        reads as a washed-out CTA is the same failure as two competing
-        accents, one category down. so rung 5 moved to orchid (291°) and
-        rung 6 to chartreuse (74°) - the two open slots left on the wheel once
-        the accent, the lime and the four rungs that did not move are placed.
-        the ramp is now 7 / 42 / 148 / 219 / 291 / 74°, and its closest
-        approach to any gradient stop is 29° (rung 4's blue to the cyan).
-     rungs 1-4 keep their families - coral, amber, green, blue - so a reader
+        only reason any rung moved family. the gradient originally owned pink
+        330° / violet 255° / cyan 187°, and two rungs sat inside those
+        neighbourhoods: rung 5 was a lavender at 258° (dead on the violet
+        stop) and rung 6 a teal at 175° (12° off the cyan stop). a chart
+        series that reads as a washed-out CTA is the same failure as two
+        competing accents, one category down. so rung 5 moved to orchid
+        (291°) and rung 6 to chartreuse (74°) - the two open slots left on
+        the wheel once the accent, the lime and the four rungs that did not
+        move were placed. the ramp was 7 / 42 / 148 / 219 / 291 / 74°, and its
+        closest approach to any gradient stop was 29° (rung 4's blue to the
+        cyan).
+        that held until the accent itself moved off pink/violet to indigo
+        238° / blue 202° / cyan 187° (see --g1's own note at :root) - a wider,
+        cooler neighbourhood that swallowed rung 4's old 219° outright (as
+        close as 17° to the new blue stop). rung 4 is the one that moves this
+        time, to a blue-violet 260° - not a full 29° from every stop (22° is
+        the closest, to g1; nothing between 188° and 260° clears everything
+        by 29° once the accent itself spans that wide an arc), but clear of
+        rung 5's orchid by 31° and desaturated enough as a chart pastel
+        against a saturated CTA gradient that 22° reads as distinct in
+        practice, not just on paper.
+     rungs 1-3 and 5-6 keep their families - coral, amber, green, orchid,
+     chartreuse - and rung 4 moves from sky-blue to a blue-violet still
+     recognisably in the same family, so a reader
      who has seen the chart before still sees the same chart.
 
      all six are registered @property colours on the crossfade list so they
@@ -334,7 +360,7 @@
   --bar-1: #FF9A8C;
   --bar-2: #FFC978;
   --bar-3: #8FE3B4;
-  --bar-4: #8FB8FF;
+  --bar-4: #B48FFF;
   --bar-5: #E4A0F0;
   --bar-6: #D2E97F;
   /* dark ink riding on top of a bright chart bar - the page floor at 85%, so
@@ -424,7 +450,7 @@
   --chip-1: #FFAC9C;
   --chip-2: #FFD48F;
   --chip-3: #A2E8C1;
-  --chip-4: #A8C8FF;
+  --chip-4: #C5A8FF;
   --chip-5: #EDB4F6;
   --chip-6: #DEEF97;
 
@@ -918,10 +944,11 @@ body::before {
 
 /* the accent's smallest appearance, and the only one that is chrome rather
    than content (see THE ACCENT in TOKENS). the pill is a --grad fill with
-   --grad-ink on top rather than white: white is legible on the pink and violet
-   ends of this gradient and falls to 1.8:1 on the cyan end, so a white label
-   would fade out across its own background. --grad-ink flips with the palette
-   and clears 4.6:1 at the worst point of the sweep in both. */
+   --grad-ink on top rather than white: white sits under 4:1 even at the
+   indigo end of this gradient and falls to 1.8:1 at the cyan end, so a white
+   label would fade out across its own background well before the sweep is
+   over. --grad-ink flips with the palette and clears 4.6:1 at the worst
+   point of the sweep in both. */
 .tab.active {
   color: var(--grad-ink);
   border-color: transparent;
@@ -937,7 +964,7 @@ body::before {
      to this exact box before clipping it to the 99px radius - confirmed by
      screenshot, not guessed: the unclipped/default sizing let a sliver of
      the gradient's far end show through at the near rounded cap, a thin
-     cyan fringe at the pink corner. explicit size + no-repeat removed it. */
+     cyan fringe at g1's corner. explicit size + no-repeat removed it. */
   background-repeat: no-repeat;
   background-size: 100% 100%;
 }
@@ -1690,7 +1717,7 @@ body::before {
 /* two tones at opposite corners - the one section-level place warm light
    survives, and only because the two-halves-meeting pair IS the point being
    made: it lights Ch.2 "The Crossing", the chapter about design and product
-   meeting. the pair is the accent's pink stop against cool-neutral, and the
+   meeting. the pair is the accent's g1 stop against cool-neutral, and the
    device still works: what the fold needs is two lights converging from
    opposite sides, not two hues, and the tinted half is the one carrying the
    meaning ("the design side"). both run at whisper strength - see --glow-warm
@@ -1804,22 +1831,22 @@ body::before {
    the gradient only ever appears on five small filled shapes and one glyph,
    all of which are opaque and none of which is large enough for the cut to
    register against the whole page turning over behind it. */
-@property --g1 { syntax: '<color>'; inherits: true; initial-value: #FF2E9A; }
-@property --g2 { syntax: '<color>'; inherits: true; initial-value: #7B5BFF; }
+@property --g1 { syntax: '<color>'; inherits: true; initial-value: #6A6FFF; }
+@property --g2 { syntax: '<color>'; inherits: true; initial-value: #2E9EE0; }
 @property --g3 { syntax: '<color>'; inherits: true; initial-value: #22D3EE; }
-@property --signal { syntax: '<color>'; inherits: true; initial-value: #7B5BFF; }
+@property --signal { syntax: '<color>'; inherits: true; initial-value: #2E9EE0; }
 @property --grad-ink { syntax: '<color>'; inherits: true; initial-value: #06070F; }
 @property --bar-1 { syntax: '<color>'; inherits: true; initial-value: #FF9A8C; }
 @property --bar-2 { syntax: '<color>'; inherits: true; initial-value: #FFC978; }
 @property --bar-3 { syntax: '<color>'; inherits: true; initial-value: #8FE3B4; }
-@property --bar-4 { syntax: '<color>'; inherits: true; initial-value: #8FB8FF; }
+@property --bar-4 { syntax: '<color>'; inherits: true; initial-value: #B48FFF; }
 @property --bar-5 { syntax: '<color>'; inherits: true; initial-value: #E4A0F0; }
 @property --bar-6 { syntax: '<color>'; inherits: true; initial-value: #D2E97F; }
 @property --bar-num { syntax: '<color>'; inherits: true; initial-value: rgba(6, 7, 15, 0.85); }
 @property --chip-1 { syntax: '<color>'; inherits: true; initial-value: #FFAC9C; }
 @property --chip-2 { syntax: '<color>'; inherits: true; initial-value: #FFD48F; }
 @property --chip-3 { syntax: '<color>'; inherits: true; initial-value: #A2E8C1; }
-@property --chip-4 { syntax: '<color>'; inherits: true; initial-value: #A8C8FF; }
+@property --chip-4 { syntax: '<color>'; inherits: true; initial-value: #C5A8FF; }
 @property --chip-5 { syntax: '<color>'; inherits: true; initial-value: #EDB4F6; }
 @property --chip-6 { syntax: '<color>'; inherits: true; initial-value: #DEEF97; }
 @property --ghost-stroke { syntax: '<color>'; inherits: true; initial-value: rgba(255, 255, 255, 0.16); }
@@ -2016,8 +2043,9 @@ body {
      --glow-duo-cool: they were mid-blue on paper (rgba(47, 95, 224, 0.06 /
      0.05)) and are neutral at 2% here, so a "cool" section is a section
      with slightly deeper air in one corner rather than a blue-washed one.
-     --glow-warm keeps its hue, alone, in .zone-duo only - the accent's pink
-     stop now rather than the retired red, at the same alpha.
+     --glow-warm keeps its hue, alone, in .zone-duo only - g1's current
+     indigo (the retired red, then the gradient's old pink, before that), at
+     the same alpha.
      --tint-sink matters most: at its dark value
      (34% black) it would paint a paper section mud, and every sink zone on
      the site is now in scope, not just the flipped ones - Ch.2, the Epilogue,
@@ -2042,7 +2070,7 @@ body {
   --tint-lift-hi: rgba(18, 20, 31, 0.04);
   --tint-sink: rgba(18, 20, 31, 0.06);
   --glow-cool: rgba(18, 20, 31, 0.022);
-  --glow-warm: rgba(255, 46, 154, 0.05);
+  --glow-warm: rgba(106, 111, 255, 0.05);
   --glow-duo-cool: rgba(18, 20, 31, 0.02);
   --glow-soft: rgba(18, 20, 31, 0.3);
   --dot-light: rgba(18, 20, 31, 0.055);
@@ -2083,36 +2111,34 @@ body {
   --mute: #4E5468;
   --dim: #616779;
 
-  /* THE ACCENT, ON WHITE. this is the half of the light mode that actually
-     changed identity, and the technique is the one this block already used
-     for --up / --rose: the same hue family, deepened until it holds on the
-     page it is printed on, rather than the dark value carried over unchanged.
-     the accent that came before this did get carried over unchanged - a
-     saturated red at ~3.6:1 against the page in both states - and it is the
-     reason the light mode never read as its own thing.
+  /* THE ACCENT, ON WHITE. indigo/blue/cyan here too (see the dark cut's own
+     note at :root for why that hue range replaced pink/violet/cyan), deepened
+     the same way this block already deepens --up / --rose: the same hue
+     family, taken darker until it holds on the page it is printed on, rather
+     than the dark value carried over unchanged.
 
-     all three stops are deepened, and unevenly, because the failure is uneven.
-     white text on the dark cyan stop is 1.8:1, which is not a near miss - it
-     is the single worst reading anywhere in either palette, and it is why
-     --g3 drops the furthest here (a two-thirds cut in luminance against --g1's
-     third). measured with white on top, at the three stops and at both
-     interpolated midpoints, because a gradient's worst point is usually
-     between two stops rather than on one:
+     all three stops are deepened, and unevenly, because the failure is
+     uneven. white text on the cyan stop is 1.8:1 regardless of what g1/g2
+     are, since g3 (the cyan) is unchanged from the previous palette - it was
+     already the tightest reading in the old gradient too, which is why it
+     drops the furthest here again. measured with white on top, at the three
+     stops and at both interpolated midpoints, because a gradient's worst
+     point is usually between two stops rather than on one:
 
-       --g1 #D10D74   5.22:1
-       g1→g2 midpoint 5.88:1
-       --g2 #5B33E0   7.06:1
-       g2→g3 midpoint 6.54:1
-       --g3 #0A7C96   4.88:1
+       --g1 #3B3FC8   7.69:1
+       g1→g2 midpoint 6.85:1
+       --g2 #146F94   5.63:1
+       g2→g3 midpoint 5.19:1
+       --g3 #0A7C96   4.84:1
 
      so every point along the paper gradient clears 4.5:1 with white on it,
      which is what --grad-ink flips to here. the dark state runs the mirror of
-     this - bright stops, #06070F ink, worst point 4.61:1 - so the CTA holds
+     this - bright stops, #06070F ink, worst point 5.10:1 - so the CTA holds
      its label all the way through the 0.6s flip rather than passing through a
      mid-state that fails.
 
      --signal, the solid stand-in, is the deepened mid stop, so a focus ring
-     and a filled pill still read as one accent. 6.5:1 against the page.
+     and a filled pill still read as one accent. 5.6:1 against the page.
 
      --link is a neutral in both palettes and used on purpose nowhere (see the
      note on it in TOKENS); it is here only to keep the token's two states
@@ -2123,8 +2149,8 @@ body {
      and the naive inversion of a dark-mode pastel lands near 2:1 here. --up is
      the lime, and its paper twin has to stay a lime rather than drift to a
      corporate green - 5.4:1 as a label. --rose is the removed/negative mark at
-     6.6:1, deliberately kept off --g1's deepened pink so a struck-out "then"
-     column never reads as the accent.
+     6.6:1, deliberately kept off the accent's own hue range so a struck-out
+     "then" column never reads as the gradient.
 
      the chart palette is restated below for the same reason - the dark-mode
      pastels are tuned to glow against near-black and land nowhere near 3:1 as
@@ -2132,10 +2158,10 @@ body {
      saturated version of the same hue rather than carried over as-is. all six
      stay registered @property colours (see just above TOKENS) so the
      deepen-on-flip still animates through the crossfade instead of cutting. */
-  --g1: #D10D74;
-  --g2: #5B33E0;
+  --g1: #3B3FC8;
+  --g2: #146F94;
   --g3: #0A7C96;
-  --signal: #5B33E0;
+  --signal: #146F94;
   --grad-ink: #FFFFFF;
   /* deepened from the dark #4C82FF the same way g1/g2/g3 are just above -
      a vivid sky blue glows on near-black and loses too much contrast on
@@ -2157,14 +2183,17 @@ body {
      never the only carrier of a value, which is the reason that is acceptable
      here and would not be on a chip (the --chip-* set below is the one that
      has to clear a real floor, and does).
-     the two rungs that moved family - 5 to orchid, 6 to chartreuse - moved for
-     hue clearance from the accent, and it matters more on paper than on dark:
-     the deepened --g2 violet #5B33E0 and the old rung-5 lavender #8A6FD9 were
-     the same colour at two lightnesses. */
+     three rungs have now moved family for hue clearance from the accent (see
+     the fuller note at the dark set above) - 5 to orchid and 6 to chartreuse
+     from the original pink/violet/cyan accent, and 4 to blue-violet once the
+     accent itself moved to indigo/blue/cyan and swallowed rung 4's old spot.
+     it matters more on paper than on dark: the deepened --g2 violet #5B33E0
+     and the old rung-5 lavender #8A6FD9 were the same colour at two
+     lightnesses, and that risk runs on every rung now, not just 5. */
   --bar-1: #D96A52;
   --bar-2: #C08A1C;
   --bar-3: #2E9B68;
-  --bar-4: #3F76C4;
+  --bar-4: #6B3FC4;
   --bar-5: #9A4DB8;
   --bar-6: #6E8C14;
 
@@ -2182,15 +2211,17 @@ body {
      to read as a large filled shape at 0.85 opacity, not as a hairline. so each
      hue is taken down until the glyph clears 4.5:1 even at the deeper hover
      tint (22%). same six hues, same order, same family as the chart - a
-     deeper cut of it, and now including rung 4, which used to break from the
-     chart's blue on purpose and no longer needs to (see --chip-4 in :root).
+     deeper cut of it, including rung 4 - which has moved twice now: once to
+     briefly rejoin the chart's blue on purpose, and again just above to the
+     same blue-violet the chart's own rung 4 moved to, for the same accent-
+     clearance reason (see --chip-4 in :root).
      rungs 1-3 are unchanged: their hues did not move in the harmonisation
      pass, they already clear the floor, and the card they are measured
      against is still #FFFFFF - so re-cutting them would have been churn. */
   --chip-1: #B23E24;
   --chip-2: #8A5A06;
   --chip-3: #1C7247;
-  --chip-4: #2B5C9E;
+  --chip-4: #512B9E;
   --chip-5: #7E3399;
   --chip-6: #5F7010;
 
@@ -2902,16 +2933,17 @@ body {
      other place the two-halves device survives: what the fold needs is light
      arriving from two sides, and the tinted side is the one carrying an idea.
      at 2-5% it is a lean in the air rather than a colour either way. the
-     tinted half is the accent's pink stop now rather than the retired red,
-     which is the same swap --glow-warm made and for the same reason: the one
-     ambient hue on the site should belong to the accent language.
-     worth knowing that on paper the white half flattens out entirely while the
-     pink one still whispers - which is acceptable at this strength (the page's
+     tinted half is g1's current indigo (the retired red, then the gradient's
+     old pink, before that), the same swap --glow-warm made and for the same
+     reason: the one ambient hue on the site should belong to the accent
+     language.
+     worth knowing that on paper the white half flattens out entirely while
+     the indigo one still whispers - which is acceptable at this strength (the page's
      own light already reads as the "product" side of the fold) and is the one
      place a token could not do better, since these two alphas animate as
      <number>s and rgba() cannot take a var() colour. */
   background-image:
-    radial-gradient(860px 620px at 0% 42%, rgba(255, 46, 154, var(--hg-warm, 0.022)), transparent 58%),
+    radial-gradient(860px 620px at 0% 42%, rgba(106, 111, 255, var(--hg-warm, 0.022)), transparent 58%),
     radial-gradient(860px 620px at 100% 42%, rgba(255, 255, 255, var(--hg-cool, 0.024)), transparent 58%);
   transition: --hg-warm 0.55s var(--ease), --hg-cool 0.55s var(--ease);
 }
@@ -4624,7 +4656,7 @@ footer .g {
   --tint-lift-hi: rgba(255, 255, 255, 0.055);
   --tint-sink: rgba(0, 0, 0, 0.34);
   --glow-cool: rgba(255, 255, 255, 0.045);
-  --glow-warm: rgba(255, 46, 154, 0.028);
+  --glow-warm: rgba(106, 111, 255, 0.028);
   --glow-duo-cool: rgba(255, 255, 255, 0.03);
   --glow-soft: rgba(255, 255, 255, 0.4);
   --line: rgba(255, 255, 255, 0.09);
@@ -4646,8 +4678,8 @@ footer .g {
      --grad-ink comes with them: it is #FFFFFF on paper, and a white CTA label
      on the bright dark gradient is the 1.8:1 reading the token exists to
      avoid. */
-  --g1: #FF2E9A;
-  --g2: #7B5BFF;
+  --g1: #6A6FFF;
+  --g2: #2E9EE0;
   --g3: #22D3EE;
   /* 90deg, not the reference's 100deg: a pill (border-radius: 99px) is
      exactly where the tilt shows up as a bug rather than a sweep - a 10°
@@ -4656,12 +4688,12 @@ footer .g {
      line of colour riding the curve at both ends. dead horizontal has no
      vertical component to disagree with itself, on a pill or anywhere else. */
   --grad: linear-gradient(90deg, var(--g1) 0%, var(--g2) 52%, var(--g3) 100%);
-  --signal: #7B5BFF;
+  --signal: #2E9EE0;
   --grad-ink: #06070F;
   --bar-1: #FF9A8C;
   --bar-2: #FFC978;
   --bar-3: #8FE3B4;
-  --bar-4: #8FB8FF;
+  --bar-4: #B48FFF;
   --bar-5: #E4A0F0;
   --bar-6: #D2E97F;
   --bar-num: rgba(6, 7, 15, 0.85);
@@ -4679,7 +4711,7 @@ footer .g {
   --chip-1: #FFAC9C;
   --chip-2: #FFD48F;
   --chip-3: #A2E8C1;
-  --chip-4: #A8C8FF;
+  --chip-4: #C5A8FF;
   --chip-5: #EDB4F6;
   --chip-6: #DEEF97;
   --ghost-stroke: rgba(255, 255, 255, 0.16);
@@ -5000,8 +5032,10 @@ body.ovl-lock { overflow: hidden; }
    site are the aqua (186°), the periwinkle (267°) and the pink (348°).
 
    THE ONE RULE THIS RELAXES, and why it is safe here. the shared ramp is cut
-   to clear the accent's three hues (pink, violet, cyan) by at least 29°, so a
-   category chip can never read as a washed-out CTA. nine rungs cannot clear
+   to clear the accent's three hue neighbourhoods (indigo, blue, cyan as of
+   this writing - see --g1's own note at :root for the colour history) by as
+   much as the accent's own width allows, so a category chip can never read
+   as a washed-out CTA. nine rungs cannot clear
    three neighbourhoods and still be nine: the three the shared ramp reserves
    are exactly the three slots left on the wheel. spending them is safe HERE
    and only here, for a reason that is a property of the location and not a
@@ -6191,7 +6225,8 @@ b.adm-was { font-family: var(--body); font-weight: 600; color: var(--rose); }
    --up and --rose are still the site's own good/bad tokens, but the third
    accent (the highlight, used for the persona's name and every "this is the
    point" phrase) is a Customer-Portal-specific teal (#3696B1) rather than
-   the site-wide --signal violet, by request - it's a deliberate departure
+   the site-wide --signal (violet when this was written; blue now - see
+   --g1's note at :root), by request - it's a deliberate departure
    from "borrow the site's existing hues" for this one case study, not an
    oversight. hardcoded rather than a new custom property: it's used in
    exactly two rules (here and .cjx-name above), which doesn't earn a token
