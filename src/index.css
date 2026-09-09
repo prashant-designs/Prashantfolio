@@ -6321,7 +6321,12 @@ b.adm-was { font-family: var(--body); font-weight: 600; color: var(--rose); }
    being built here" more literally than a plain pulse did. */
 .expl-rail { flex: 0 0 176px; padding-top: 6px; }
 .expl-rail-ch { display: block; font-family: var(--mono); font-size: 10px; letter-spacing: 0.2em; text-transform: uppercase; color: var(--dim); margin-bottom: 22px; }
-.expl-rail-stop { position: relative; padding: 0 0 30px 24px; font-family: var(--mono); font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--dim); transition: color 0.3s var(--ease); }
+/* 34px, not 24: the active stop's label is a filled pill that starts 11px
+   left of its own text, and the dot it sits beside throws a 10px glow. at
+   24 the pill's cap landed inside that glow and the two read as one blob.
+   the indent moves for every stop, not just the active one, so the labels
+   stay in a single column. */
+.expl-rail-stop { position: relative; padding: 0 0 30px 34px; font-family: var(--mono); font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--dim); transition: color 0.3s var(--ease); }
 .expl-rail-stop:last-child { padding-bottom: 0; }
 .expl-rail-stop i { position: absolute; left: 0; top: 2px; width: 9px; height: 9px; border-radius: 50%; background: var(--raise2); border: 1.5px solid var(--line2); transition: background 0.3s var(--ease), border-color 0.3s var(--ease), box-shadow 0.3s var(--ease); }
 .expl-rail-stop:not(:last-child)::after { content: ''; position: absolute; left: 4px; top: 13px; width: 1px; height: calc(100% - 15px); background: var(--line2); }
@@ -6420,7 +6425,7 @@ b.adm-was { font-family: var(--body); font-weight: 600; color: var(--rose); }
 @media (max-width: 900px) {
   .expl-layout { gap: 32px; }
   .expl-rail { flex-basis: 120px; }
-  .expl-rail-stop { padding-left: 18px; font-size: 9.5px; }
+  .expl-rail-stop { padding-left: 28px; font-size: 9.5px; }
   /* the two-column split can't hold both a mockup and its copy once the
      rail has already taken its share of a 900px row - stacked, the visual
      still leads and the copy still follows it. */
