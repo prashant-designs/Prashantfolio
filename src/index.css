@@ -6400,6 +6400,19 @@ b.adm-was { font-family: var(--body); font-weight: 600; color: var(--rose); }
   .expl-layout { gap: 32px; }
   .expl-rail { flex-basis: 120px; }
   .expl-rail-stop { padding-left: 18px; font-size: 9.5px; }
+  /* the two-column split can't hold both a mockup and its copy once the
+     rail has already taken its share of a 900px row - stacked, the visual
+     still leads and the copy still follows it. */
+  .expl-split { grid-template-columns: 1fr; gap: 24px; }
+  .expl-note, .expl-cap { max-width: none; }
+  .expl-cols { grid-template-columns: 1fr; gap: 12px; }
+  .expl-col { padding: 15px 16px 16px; }
+  .expl-anat-copy { grid-template-columns: 1fr; gap: 12px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  /* the spotlight still moves - it's the content, not decoration - but it
+     jumps rather than travelling. */
+  .expl-spot-hole { transition: none; }
 }
 @media (max-width: 640px) {
   /* the rail as a wrapped horizontal row still overflowed a phone's
@@ -6425,14 +6438,102 @@ b.adm-was { font-family: var(--body); font-weight: 600; color: var(--rose); }
 /* the challenge beat's own pull-quote - a red rule, not a card, so it reads
    as the one line a user actually said rather than another design artefact. */
 .expl-quote { margin: 16px 0 0; border-left: 3px solid var(--rose); padding-left: 20px; font-family: var(--disp); font-weight: 600; font-size: clamp(18px, 2.2vw, 24px); line-height: 1.3; letter-spacing: -0.01em; color: var(--text); max-width: 46ch; }
-/* the six-step research process - a grid of small nodes rather than the
-   reference's arrow-linked row, since a real left-to-right arrow chain
-   doesn't survive wrapping onto a second row at this width. */
-.expl-process { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-top: 16px; }
-.expl-proc-node { border: 1px solid var(--line2); border-radius: var(--r-md); background: var(--raise2); padding: 14px 16px; }
-.expl-proc-node i { display: block; font-style: normal; font-family: var(--mono); font-size: 11px; color: #3696B1; margin-bottom: 8px; }
-.expl-proc-node b { display: block; font-family: var(--disp); font-weight: 700; font-size: 14px; margin-bottom: 4px; }
-.expl-proc-node p { font-size: 12px; color: var(--mute); line-height: 1.35; }
+/* the mockup-led beats: a visual carrying the weight on one side, and only
+   the copy the visual can't say itself on the other - a headline, three
+   short labels, one line. no paragraphs, deliberately: these beats read on
+   scroll, and a paragraph can't be read in the second a beat is on screen.
+   the visual column is the wider of the two - the copy is the caption here,
+   not the other way round. */
+.expl-split { display: grid; grid-template-columns: minmax(0, 1.2fr) minmax(0, 0.8fr); gap: 44px; align-items: center; }
+.expl-viz { min-width: 0; }
+.expl-viz img { display: block; width: 100%; border: 1px solid var(--line2); border-radius: var(--r-md); }
+/* the pinned Exploration scene runs wider than the 1080px reading column
+   the rest of the case study sits in: these beats are mockup-led, and a
+   screenshot at reading-column width reads as a thumbnail rather than as
+   the thing being shown. only where .ovl-panel actually has room to give
+   (it caps at 1320, the wrap at 1080) - on anything narrower the negative
+   margin would pull the stage off the panel instead. */
+@media (min-width: 1300px) {
+  .expl-oscn { width: calc(100% + 240px); margin-left: -120px; }
+}
+.expl-copy { min-width: 0; }
+/* the headline is clamped smaller here than .expl-h's own full-width size -
+   at half the row it would otherwise wrap to four or five lines. */
+.expl-split .expl-h { font-size: clamp(26px, 2.7vw, 38px); }
+.expl-cap { margin-top: 12px; font-size: 12px; line-height: 1.45; color: var(--dim); max-width: 46ch; }
+.expl-note { margin-top: 20px; font-size: 13px; line-height: 1.55; color: var(--dim); max-width: 36ch; }
+/* the raw questions, before they were a flow - laid out loose and slightly
+   off-axis so the beat reads as a pile of things people said, not as an
+   ordered list we'd already tidied. rotation via nth-child rather than
+   per-item positions: it keeps the scatter responsive (it reflows on a
+   narrow panel) where absolute placement wouldn't. */
+.expl-scatter { display: flex; flex-wrap: wrap; align-content: center; gap: 26px 30px; min-height: 240px; padding: 8px 0; }
+.expl-scatter span { font-family: var(--disp); font-weight: 600; font-size: 17px; letter-spacing: -0.01em; color: var(--mute); white-space: nowrap; }
+.expl-scatter span:nth-child(3n+1) { transform: rotate(-3.5deg); }
+.expl-scatter span:nth-child(3n+2) { transform: rotate(2.5deg); }
+.expl-scatter span:nth-child(3n) { transform: rotate(-1.5deg); }
+/* the wireframe of what those questions became - inherits the panel's own
+   tokens (var() inside the SVG's fills), so it stays on-palette without a
+   second set of hard-coded colours to keep in sync. */
+.expl-wire { display: block; width: 100%; height: auto; }
+.expl-wire-t { font-family: var(--mono); font-size: 11px; letter-spacing: 0.04em; fill: var(--mute); }
+/* the three principles behind the grouping - pills, one per line, short
+   enough to take in at a glance. */
+.expl-pills { list-style: none; margin: 22px 0 0; padding: 0; display: flex; flex-direction: column; align-items: flex-start; gap: 10px; }
+.expl-pill { font-family: var(--disp); font-weight: 600; font-size: 15.5px; letter-spacing: -0.01em; color: var(--text); background: var(--raise2); border: 1px solid var(--line2); border-radius: 999px; padding: 9px 20px; }
+/* the three teams each question had to survive - one column per team, since
+   the point is that they answered in parallel, not in sequence. this beat
+   has no screenshot on purpose: it's the part of the process that never had
+   a screen. */
+.expl-cols { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 20px; margin-top: 26px; }
+.expl-col { border: 1px solid var(--line2); border-radius: var(--r-md); background: var(--ink2); padding: 20px 20px 22px; }
+.expl-col-who { display: block; font-family: var(--mono); font-size: 10.5px; letter-spacing: 0.16em; text-transform: uppercase; color: #E8A33D; margin-bottom: 12px; }
+.expl-col-q { font-family: var(--disp); font-weight: 700; font-size: 16px; letter-spacing: -0.01em; line-height: 1.3; color: var(--text); margin: 0 0 14px; }
+.expl-col ul { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 7px; }
+.expl-col li { position: relative; padding-left: 15px; font-size: 13px; line-height: 1.4; color: var(--mute); }
+.expl-col li::before { content: ''; position: absolute; left: 0; top: 0.5em; width: 5px; height: 5px; border-radius: 50%; background: #3696B1; }
+.expl-note-wide { max-width: 68ch; }
+/* the paper stage - three sketches pinned up side by side, each nudged off
+   square so the row reads as paper rather than as three more diagrams. the
+   strokes are deliberately unfilled and round-capped; the sketches are
+   drawn, not rendered, because the beat is about the arguing, not the
+   artefact. */
+.expl-sketches { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 18px; }
+.expl-sketch { margin: 0; }
+.expl-sketch svg { display: block; width: 100%; height: auto; background: var(--ink2); border: 1px solid var(--line2); border-radius: var(--r-md); padding: 6px; }
+.expl-sketch svg path, .expl-sketch svg circle { fill: none; stroke: var(--mute); stroke-width: 1.6; stroke-linecap: round; stroke-linejoin: round; opacity: 0.75; }
+.expl-sketch .expl-sketch-x { stroke: var(--rose); opacity: 0.5; stroke-width: 2; }
+.expl-sketch .expl-sketch-note { stroke: #E8A33D; opacity: 0.8; }
+.expl-sketch-win svg { border-color: rgba(54, 150, 177, 0.5); }
+.expl-sketch-win svg path, .expl-sketch-win svg circle { stroke: #3696B1; opacity: 0.9; }
+.expl-sketch figcaption { margin-top: 9px; font-size: 11.5px; line-height: 1.4; color: var(--dim); }
+.expl-sketch:nth-child(1) { transform: rotate(-1.2deg); }
+.expl-sketch:nth-child(2) { transform: rotate(0.8deg); }
+.expl-sketch:nth-child(3) { transform: rotate(-0.5deg); }
+/* the anatomy spotlight: one transparent box with an enormous spread shadow,
+   clipped by the frame - the box IS the hole, so there's no second mask to
+   keep aligned with it. transitioning position/size (not opacity) is what
+   makes the highlight travel across the screenshot between beats. */
+.expl-anat { display: flex; flex-direction: column; gap: 16px; }
+/* the screenshot is 1400x771, so capping width in vh caps its height too:
+   94vh of width is ~52vh of image. on a tall window nothing clamps (100%
+   wins) and the screen runs full width; on a short one the image gives up
+   height rather than pushing the copy past the bottom of the stage. */
+.expl-anat .expl-spot { width: min(100%, 94vh); }
+.expl-anat-copy { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 40px; align-items: start; }
+.expl-anat .expl-h { font-size: clamp(23px, 2.2vw, 31px); }
+.expl-anat .expl-note { margin-top: 3px; max-width: 54ch; }
+.expl-spot { position: relative; overflow: hidden; border-radius: var(--r-md); border: 1px solid var(--line2); }
+.expl-spot img { display: block; width: 100%; }
+.expl-spot-hole {
+  position: absolute;
+  border-radius: 5px;
+  box-shadow: 0 0 0 9999px rgba(5, 8, 16, 0.74);
+  outline: 1.5px solid #3696B1;
+  outline-offset: 1px;
+  transition: left 0.6s var(--ease), top 0.6s var(--ease), width 0.6s var(--ease), height 0.6s var(--ease);
+}
+.expl-count { display: inline-block; font-family: var(--mono); font-size: 10.5px; letter-spacing: 0.12em; color: var(--dim); background: var(--raise2); border: 1px solid var(--line2); border-radius: 999px; padding: 4px 11px; margin-bottom: 14px; }
 /* the asked/learned lists - plain bullets, not cards, matching the
    reference's own restraint (a <ul>, nothing heavier). */
 .expl-bullets { list-style: none; margin: 16px 0 0; padding: 0; display: flex; flex-direction: column; gap: 9px; max-width: 56ch; }
@@ -6451,9 +6552,6 @@ b.adm-was { font-family: var(--body); font-weight: 600; color: var(--rose); }
    note on .expl-icon) at realistic window heights, re-verified the same
    way after the resize. */
 .expl-video { margin: 8px 0 0; display: block; width: 100%; max-width: 640px; border: 1px solid var(--line2); border-radius: var(--r-lg); background: #000; }
-@media (max-width: 640px) {
-  .expl-process { grid-template-columns: repeat(2, 1fr); }
-}
 /* .inv-section h3.plain/.dv-p are centred site-wide (see the case-study-intro
    rule above) - every other beat here is left, matching .expl-eyebrow and
    the reference deck's own left-aligned body slides, so the testing beat

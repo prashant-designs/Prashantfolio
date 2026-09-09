@@ -677,29 +677,217 @@ function SysScene() {
 // see the note below), and the same array maps straight down the page for
 // prefersReducedMotion,
 // so neither path can drift out of sync with the other.
-// the order-journey process, kept as its own small array (not inlined into
-// EXPLORE_BEATS) purely because it's mapped twice as densely as everything
-// else here - six nodes, not a paragraph.
-const EXPLORE_PROCESS = [
-  { n: '01', t: 'Understand', d: 'users, roles, goals, technical confidence' },
-  { n: '02', t: 'Map', d: 'the current journey and its operational handoffs' },
-  { n: '03', t: 'Find friction', d: 'terminology, uncertainty, hidden status' },
-  { n: '04', t: 'Explore', d: 'wizard, progressive disclosure, live states' },
-  { n: '05', t: 'Test', d: 'task-based walkthroughs with real users' },
-  { n: '06', t: 'Refine', d: 'clearer labels, defaults, next actions' },
+// the buyer's own questions, in their words and in the order they ask them
+// - kept short on purpose. these are scattered raw on the Exploration beat
+// (what came out of the conversations) and then bracketed into three steps
+// on the beat after it (what we did with them), so the pair reads as before
+// and after rather than as a list plus a summary of the list.
+const EXPLORE_THOUGHTS = [
+  'Are you even in my DC?',
+  'Can I get this bandwidth?',
+  'For how long?',
+  'What does it cost?',
+  'Where does it get billed?',
+  'How do I want to pay?',
 ];
 
-// the six real rail steps, walked left to right: which stop is "on" is
+// the customer's six questions were only the first pass - each one had to be
+// answered by a team that owns a different part of the product's life, and
+// each of those teams added requirements the customer never mentions. this
+// beat is deliberately text-only: it's the one part of the process that
+// never had a screen, and inventing one would misrepresent it.
+const EXPLORE_VALIDATION = [
+  {
+    who: 'Network engineering',
+    q: 'Can the platform actually provision this?',
+    got: ['A-end and Z-end, exactly', 'MACSec, tagging, rate limit', 'what the router config needs'],
+  },
+  {
+    who: 'Delivery',
+    q: 'Can we actually deliver what was ordered?',
+    got: ['which DC, which rack', 'realistic lead times to promise', 'who signs off at each end'],
+  },
+  {
+    who: 'Sales',
+    q: 'Is this organisation allowed to order?',
+    got: ['KYC on the organisation', 'the legal entity being billed', 'credit terms before checkout'],
+  },
+];
+
+// paper first. three of the versions the four steps went through before any
+// of it became a screen - drawn as sketches rather than shown as clean
+// wireframes, because the point of this beat is that the shape was argued
+// over on paper, and a tidy vector would hide exactly that.
+function ExplSketches() {
+  return (
+    <div className="expl-sketches">
+      <figure className="expl-sketch">
+        <svg viewBox="0 0 150 170" role="img" aria-label="First sketch: every field in one long form">
+          <path d="M9 8 L141 10 L140 161 L10 159 Z" />
+          <path d="M20 26 L96 27M20 40 L128 41M20 54 L128 55M20 68 L128 69M20 82 L128 83M20 96 L128 97M20 110 L128 111M20 124 L128 125M20 138 L104 139" />
+          <path className="expl-sketch-x" d="M26 22 L126 146M126 22 L26 146" />
+        </svg>
+        <figcaption>v1 — one long form. too much at once.</figcaption>
+      </figure>
+      <figure className="expl-sketch">
+        <svg viewBox="0 0 150 170" role="img" aria-label="Second sketch: fields split across tabs">
+          <path d="M9 9 L141 8 L141 160 L9 161 Z" />
+          <path d="M10 34 L140 33" />
+          <path d="M22 20 L48 21M62 20 L88 21M102 20 L128 21" />
+          <path d="M22 50 L128 51M22 66 L128 67M22 82 L96 83" />
+          <path d="M22 104 L128 105M22 120 L128 121M22 136 L96 137" />
+          <path className="expl-sketch-note" d="M96 148 L134 149" />
+        </svg>
+        <figcaption>v2 — tabs. people missed the ones they hadn&apos;t opened.</figcaption>
+      </figure>
+      <figure className="expl-sketch expl-sketch-win">
+        <svg viewBox="0 0 150 170" role="img" aria-label="Third sketch: a four-step flow with a running price panel">
+          <path d="M9 8 L141 9 L140 160 L10 161 Z" />
+          <circle cx="28" cy="26" r="6" /><circle cx="58" cy="27" r="6" /><circle cx="88" cy="26" r="6" /><circle cx="118" cy="27" r="6" />
+          <path d="M34 26 L52 27M64 27 L82 26M94 26 L112 27" />
+          <path d="M22 48 L92 49M22 64 L92 65M22 80 L92 81M22 96 L74 97" />
+          <path d="M102 44 L132 45 L131 122 L101 121 Z" />
+          <path d="M108 58 L126 59M108 70 L124 71M108 84 L126 85" />
+          <path d="M22 130 L58 131M96 130 L132 131" />
+        </svg>
+        <figcaption>v3 — four steps, price always on screen. this one held up.</figcaption>
+      </figure>
+    </div>
+  );
+}
+
+// the finished Configure step, read region by region - percentages, not
+// pixels, so the spotlight tracks the screenshot at whatever width the
+// column gives it. coordinates measured off the 1400x771 source.
+const ANATOMY = [
+  {
+    box: { left: 31.8, top: 1, width: 39.6, height: 5.2 },
+    title: 'You always know how much is left.',
+    body: 'the same four steps for every product, always visible, never branching - so nobody commits to step one without seeing what step four asks for.',
+  },
+  {
+    box: { left: 32.1, top: 25.9, width: 65.7, height: 19.5 },
+    title: 'The answer sits beside the question.',
+    body: 'available rate limit is live inventory for the exact pair of ports already chosen. no one has to go and ask what capacity exists before typing a number into the field.',
+  },
+  {
+    box: { left: 32.5, top: 50.3, width: 36.8, height: 15.3 },
+    title: 'Commitment, shown as value.',
+    body: 'pay as you go, short term, or 24 months - with the saving marked on the option itself rather than revealed in a total further down.',
+  },
+  {
+    box: { left: 32.5, top: 69, width: 38.9, height: 15.6 },
+    title: 'Finance decides this, not the form.',
+    body: 'some buyers pay everything upfront for the discount, some need it monthly. the form asks how they already pay instead of assuming one answer.',
+  },
+  {
+    box: { left: 1, top: 55.8, width: 28.6, height: 37.6 },
+    title: 'Price never arrives as a surprise.',
+    body: 'on screen the whole time, recalculating as the term and payment split change - upfront, monthly and total commitment all readable before checkout is reached.',
+  },
+];
+
+// the walkthrough itself. all five beats render this same component under one
+// key, so React keeps the node mounted and only the `i` prop changes - which
+// is what lets the highlight glide from region to region instead of cutting.
+// the dimming is one element: a small transparent box with a very large
+// spread shadow, clipped by the frame's overflow, so the "hole" is the box
+// itself and there's no second mask to keep in sync.
+function ExplAnatomy({ i }) {
+  const h = ANATOMY[i];
+  return (
+    <>
+      <span className="expl-eyebrow">Anatomy of the screen</span>
+      {/* full width rather than the usual half-and-half split: the region
+          being explained has to stay readable, and at half a column the
+          highlighted text is too small to make the point. */}
+      <div className="expl-anat">
+        <div className="expl-spot">
+          <img src="/dci-form-steps.png" alt="The finished Configure Connection screen, with the rate limit, subscription term, payment options and running price summary" />
+          <span
+            className="expl-spot-hole"
+            style={{ left: `${h.box.left}%`, top: `${h.box.top}%`, width: `${h.box.width}%`, height: `${h.box.height}%` }}
+          />
+        </div>
+        <div className="expl-anat-copy">
+          <div>
+            <span className="expl-count">{i + 1} / {ANATOMY.length}</span>
+            <h3 className="expl-h">{h.title}</h3>
+          </div>
+          <p className="expl-note">{h.body}</p>
+        </div>
+      </div>
+    </>
+  );
+}
+
+// the three steps those six questions collapsed into, with the row span each
+// one brackets in ExplFlowViz - grouped by decision, and ordered so each
+// answer is available before the next question needs it (no price before a
+// port, no tax treatment before a price).
+const EXPLORE_GROUPS = [
+  { label: 'Location & inventory', rows: [0, 1] },
+  { label: 'Term & price', rows: [2, 3] },
+  { label: 'Billing & payment', rows: [4, 5] },
+];
+
+// the wireframe the six questions became: one field per question, bracketed
+// into the three ordered steps. drawn rather than screenshotted because this
+// is the shaping stage - the point is the grouping, not the finished UI, and
+// a wireframe says "this was a decision" where a polished screen wouldn't.
+function ExplFlowViz() {
+  const rowY = (i) => 56 + i * 40;
+  return (
+    <svg className="expl-wire" viewBox="0 0 460 300" role="img" aria-label="Wireframe of the order form: six fields bracketed into three steps - location and inventory, term and price, billing and payment">
+      <rect x="10" y="10" width="250" height="282" rx="10" fill="var(--ink2)" stroke="var(--line2)" />
+      <line x1="10" y1="38" x2="260" y2="38" stroke="var(--line2)" />
+      <rect x="24" y="20" width="42" height="8" rx="4" fill="var(--line2)" />
+      {EXPLORE_THOUGHTS.map((q, i) => (
+        <g key={q}>
+          <rect x="26" y={rowY(i) - 12} width="46" height="5" rx="2.5" fill="var(--line2)" />
+          <rect x="26" y={rowY(i)} width="206" height="18" rx="4" fill="var(--raise2)" stroke="var(--line2)" />
+        </g>
+      ))}
+      {EXPLORE_GROUPS.map((g, gi) => {
+        const top = rowY(g.rows[0]) - 16;
+        const bottom = rowY(g.rows[1]) + 22;
+        const mid = (top + bottom) / 2;
+        return (
+          <g key={g.label}>
+            <path
+              d={`M274 ${top} h8 v${bottom - top} h-8`}
+              fill="none"
+              stroke={gi === 1 ? '#E8A33D' : '#3696B1'}
+              strokeWidth="1.5"
+              strokeLinecap="round"
+            />
+            <path d={`M282 ${mid} h7`} stroke={gi === 1 ? '#E8A33D' : '#3696B1'} strokeWidth="1.5" strokeLinecap="round" />
+            <text x="297" y={mid + 4} className="expl-wire-t">{g.label}</text>
+          </g>
+        );
+      })}
+    </svg>
+  );
+}
+
+// the ten real rail steps, walked left to right: which stop is "on" is
 // baked into each EXPLORE_BEATS entry as a plain number, not read from live
 // scroll state - the rail has to render identically whether it's the one
-// active beat on screen (normal scroll) or one of six stacked cards
+// active beat on screen (normal scroll) or one of nine stacked cards
 // (prefersReducedMotion), and a fixed index is the only thing that means the
 // same thing in both places. the filled-in stops behind it are the
 // "building" cue the chapter asked for - progress accumulating stop by stop
 // reads as construction, not just a location marker. Outcome isn't a rail
 // stop - it closes the chapter as its own full-screen beat, the same
 // treatment the opening "Chapter 1" title gets, once Final is behind it.
-const EXPLORE_STEPS = ['Challenge', 'Objective', 'Exploration', 'Asked', 'Learned', 'Final'];
+// Inputs/Simplify/Scale sit between Exploration and Asked - the actual form-
+// design work (what the API needed, how that got simplified, how it stayed
+// reusable across products) rather than a summary of it.
+// beats name the stop they belong to rather than mapping to it one-for-one:
+// the Anatomy walkthrough is five beats under a single stop, so the rail
+// holds "Anatomy" lit while the highlight moves across the screen instead of
+// sprouting five near-identical stops.
+const EXPLORE_STEPS = ['Challenge', 'Objective', 'Exploration', 'Validate', 'Sketches', 'The flow', 'Simplify', 'Scale', 'Anatomy', 'Asked', 'Learned', 'Final'];
 
 function ExplRail({ step }) {
   const lastIdx = EXPLORE_STEPS.length - 1;
@@ -782,26 +970,6 @@ function ExplIcon({ variant }) {
         <circle cx="48" cy="48" r="18" fill="none" stroke="url(#explTeal)" strokeWidth="2.4" opacity="0.85" />
         <circle cx="48" cy="48" r="6" fill="#3696B1" />
         <line x1="48" y1="2" x2="48" y2="14" stroke="url(#explTeal)" strokeWidth="2.4" strokeLinecap="round" />
-      </svg>
-    );
-  }
-  if (variant === 'exploration') {
-    return (
-      <svg className="expl-icon" viewBox="0 0 96 96" aria-hidden="true">
-        <defs>
-          <radialGradient id="explTealGlow2" cx="50%" cy="50%" r="50%">
-            <stop offset="0%" stopColor="#3696B1" stopOpacity="0.4" />
-            <stop offset="100%" stopColor="#3696B1" stopOpacity="0" />
-          </radialGradient>
-          <linearGradient id="explTeal2" gradientUnits="userSpaceOnUse" x1="4" y1="4" x2="92" y2="92">
-            <stop offset="0%" stopColor="#3696B1" stopOpacity="0.95" />
-            <stop offset="100%" stopColor="#3696B1" stopOpacity="0.45" />
-          </linearGradient>
-        </defs>
-        <circle cx="48" cy="48" r="44" fill="url(#explTealGlow2)" />
-        <circle cx="48" cy="48" r="32" fill="none" stroke="url(#explTeal2)" strokeWidth="1.8" />
-        <path d="M61 35l-9 17-17 9 9-17z" fill="url(#explTeal2)" opacity="0.9" />
-        <circle cx="48" cy="48" r="3.4" fill="#0A0D1A" stroke="url(#explTeal2)" strokeWidth="1.6" />
       </svg>
     );
   }
@@ -924,81 +1092,226 @@ const CH2_CONTENT = (
 // part (see the "blink" note on ExploreScene) while the rail stays mounted
 // and merely updates which stop is "on".
 const EXPLORE_CONTENT = [
-  <>
-    <ExplIcon variant="challenge" />
-    <span className="expl-eyebrow">The challenge</span>
-    <h3 className="expl-h">Connectivity is <em className="cp-rose">complex</em>. The experience shouldn&apos;t be.</h3>
-    <blockquote className="expl-quote">&quot;I know what I need to connect. I shouldn&apos;t need to understand the entire network behind it.&quot;</blockquote>
-  </>,
-  <>
-    <ExplIcon variant="objective" />
-    <span className="expl-eyebrow">The objective</span>
-    <h3 className="expl-h">From intent to <em className="cp-signal">live network</em>, in minutes - not handoffs.</h3>
-    <div className="cj-result">
-      <span><b>10 min</b> target time for eligible connections</span>
-      <span><b>4 steps</b> one guided path, port to checkout</span>
-      <span><b className="cp-up">Live</b> visibility from order to connection live</span>
-    </div>
-  </>,
-  <>
-    <ExplIcon variant="exploration" />
-    <span className="expl-eyebrow">Exploration</span>
-    <h3 className="expl-h">Start with the <em className="cp-rose">problem</em>, not the polished screen.</h3>
-    <div className="expl-process">
-      {EXPLORE_PROCESS.map((p) => (
-        <div className="expl-proc-node" key={p.n}><i>{p.n}</i><b>{p.t}</b><p>{p.d}</p></div>
-      ))}
-    </div>
-  </>,
-  <>
-    <ExplIcon variant="ask" />
-    <span className="expl-eyebrow">What we asked</span>
-    <h3 className="expl-h">Could a first-time user complete the task <em className="cp-rose">without an expert</em>?</h3>
-    <ul className="expl-bullets">
-      <li>what would you expect to select first when connecting two locations?</li>
-      <li>would A-End and Z-End make sense without context?</li>
-      <li>what information would help you trust a port choice?</li>
-      <li>what would you need to understand before committing to a price?</li>
-      <li>what should happen when an order is delayed, or needs a purchase order?</li>
-      <li>how would you know when the connection is actually live?</li>
-    </ul>
-  </>,
-  <>
-    <ExplIcon variant="learned" />
-    <span className="expl-eyebrow">What we learned</span>
-    <h3 className="expl-h">Users understand the <em className="cp-up">outcome</em> before they understand the architecture.</h3>
-    <ul className="expl-bullets">
-      <li>lead with &quot;connect two places,&quot; not network terminology</li>
-      <li>show availability, location and speed at the decision point</li>
-      <li>keep price and commitment visible through the whole flow</li>
-      <li>explain exceptions inside the product, not through support</li>
-      <li>make every state actionable - what happened, what&apos;s next, who owns it</li>
-    </ul>
-  </>,
-  <>
-    <ExplIcon variant="final" />
-    <span className="expl-eyebrow">The final experience</span>
-    <h3 className="expl-h">A guided path from port to <em className="cp-up">live</em>.</h3>
-    <p className="dv-p dim">progressive disclosure - each screen answers one decision, while a step indicator and a live price summary keep the user oriented.</p>
-    {/* autoPlay/loop only without prefersReducedMotion - an autoplaying
-        video is exactly the unrequested motion that setting exists to
-        suppress. controls stay either way, so it's still one click to
-        watch it - the poster frame (the real Port Selection screen, not a
-        black box) is what shows until then. */}
-    <video
-      className="expl-video"
-      src="/dci-l2-order-flow.mp4"
-      poster="/dci-l2-order-flow-poster.png"
-      autoPlay={!prefersReducedMotion}
-      loop={!prefersReducedMotion}
-      muted
-      playsInline
-      controls
-      preload="metadata"
-    >
-      order journey walkthrough - DCI Layer 2 order flow
-    </video>
-  </>,
+  {
+    step: 'Challenge',
+    node: (
+      <>
+      <ExplIcon variant="challenge" />
+      <span className="expl-eyebrow">The challenge</span>
+      <h3 className="expl-h">Connectivity is <em className="cp-rose">complex</em>. The experience shouldn&apos;t be.</h3>
+      <blockquote className="expl-quote">&quot;I know what I need to connect. I shouldn&apos;t need to understand the entire network behind it.&quot;</blockquote>
+      </>
+    ),
+  },
+  {
+    step: 'Objective',
+    node: (
+      <>
+      <ExplIcon variant="objective" />
+      <span className="expl-eyebrow">The objective</span>
+      <h3 className="expl-h">From intent to <em className="cp-signal">live network</em>, in minutes - not handoffs.</h3>
+      <div className="cj-result">
+        <span><b>10 min</b> target time for eligible connections</span>
+        <span><b>4 steps</b> one guided path, port to checkout</span>
+        <span><b className="cp-up">Live</b> visibility from order to connection live</span>
+      </div>
+      </>
+    ),
+  },
+  {
+    step: 'Exploration',
+    node: (
+      <>
+      <span className="expl-eyebrow">Exploration</span>
+      <div className="expl-split">
+        <div className="expl-viz">
+          <div className="expl-scatter">
+            {EXPLORE_THOUGHTS.map((q) => <span key={q}>{q}</span>)}
+          </div>
+          <p className="expl-cap">what buyers actually asked - in their words, before any of it was a screen.</p>
+        </div>
+        <div className="expl-copy">
+          <h3 className="expl-h">They arrive with <em className="cp-rose">six questions</em>.</h3>
+          <p className="expl-note">already in a data centre. already have a router. the flow only has to answer what they walked in asking.</p>
+        </div>
+      </div>
+      </>
+    ),
+  },
+  {
+    step: 'Validate',
+    node: (
+      <>
+      <span className="expl-eyebrow">Validating it</span>
+      <h3 className="expl-h">Six questions in. <em className="cp-signal">Three teams</em> answered back.</h3>
+      <div className="expl-cols">
+        {EXPLORE_VALIDATION.map((v) => (
+          <div className="expl-col" key={v.who}>
+            <span className="expl-col-who">{v.who}</span>
+            <p className="expl-col-q">{v.q}</p>
+            <ul>
+              {v.got.map((g) => <li key={g}>{g}</li>)}
+            </ul>
+          </div>
+        ))}
+      </div>
+      <p className="expl-note expl-note-wide">the customer never mentions KYC, or a lead time, or a rate limit. every one of them still has to be on the form - or somebody downstream cannot do their job.</p>
+      </>
+    ),
+  },
+  {
+    step: 'Sketches',
+    node: (
+      <>
+      <span className="expl-eyebrow">Iterating on paper</span>
+      <div className="expl-split">
+        <div className="expl-viz">
+          <ExplSketches />
+        </div>
+        <div className="expl-copy">
+          <h3 className="expl-h">Argued out on <em className="cp-up">paper</em> first.</h3>
+          <p className="expl-note">cheap to draw, cheap to throw away. the version that survived wasn&apos;t the prettiest one - it was the one where nothing important could be missed by not clicking on it.</p>
+        </div>
+      </div>
+      </>
+    ),
+  },
+  {
+    step: 'The flow',
+    node: (
+      <>
+      <span className="expl-eyebrow">Shaping the flow</span>
+      <div className="expl-split">
+        <div className="expl-viz">
+          <ExplFlowViz />
+          <p className="expl-cap">one field per question, bracketed into three steps.</p>
+        </div>
+        <div className="expl-copy">
+          <h3 className="expl-h">Grouped into <em className="cp-signal">steps</em>, then made a process.</h3>
+          <ul className="expl-pills">
+            <li className="expl-pill">Grouped by decision</li>
+            <li className="expl-pill">Ordered by dependency</li>
+            <li className="expl-pill">Every answer inline</li>
+          </ul>
+          <p className="expl-note">a missing data centre becomes a request, not a dead end. billing is tagged per state, for GST - not wherever the order was placed.</p>
+        </div>
+      </div>
+      </>
+    ),
+  },
+  {
+    step: 'Simplify',
+    node: (
+      <>
+      <span className="expl-eyebrow">Simplifying the input</span>
+      <div className="expl-split">
+        <div className="expl-viz">
+          <img src="/dci-form-simple.png" alt="Port selection, showing a real vendor, location and live availability for the A-End and Z-End ports" />
+          <p className="expl-cap">a real vendor, a real location, a live availability count - not a port ID.</p>
+        </div>
+        <div className="expl-copy">
+          <h3 className="expl-h">Then said in the <em className="cp-up">plainest words</em>.</h3>
+          <ul className="expl-pills">
+            <li className="expl-pill">Advanced off by default</li>
+            <li className="expl-pill">One decision at a time</li>
+            <li className="expl-pill">Numbers where they&apos;re needed</li>
+          </ul>
+          <p className="expl-note">still collects everything the API needs. never asks the buyer to speak network first.</p>
+        </div>
+      </div>
+      </>
+    ),
+  },
+  {
+    step: 'Scale',
+    node: (
+      <>
+      <span className="expl-eyebrow">Designing for scale</span>
+      <div className="expl-split">
+        <div className="expl-viz">
+          <img src="/dci-form-steps.png" alt="The Configure Connection step with the live price summary panel and the shared four-step indicator" />
+          <p className="expl-cap">the same four steps and the same live price panel, whichever product is being ordered.</p>
+        </div>
+        <div className="expl-copy">
+          <h3 className="expl-h">One shape, <em className="cp-rose">reused</em>.</h3>
+          <ul className="expl-pills">
+            <li className="expl-pill">One four-step skeleton</li>
+            <li className="expl-pill">Only Configure changes</li>
+            <li className="expl-pill">New product, one step</li>
+          </ul>
+          <p className="expl-note">what made four years of solo output possible - a new product needs one step&apos;s fields, not a new form.</p>
+        </div>
+      </div>
+      </>
+    ),
+  },
+  // one entry per highlighted region, all under the same rail stop and the
+  // same React key - see the note on ExplAnatomy for why the key matters.
+  ...ANATOMY.map((_, i) => ({ step: 'Anatomy', key: 'anatomy', node: <ExplAnatomy i={i} /> })),
+  {
+    step: 'Asked',
+    node: (
+      <>
+      <ExplIcon variant="ask" />
+      <span className="expl-eyebrow">What we asked</span>
+      <h3 className="expl-h">Could a first-time user complete the task <em className="cp-rose">without an expert</em>?</h3>
+      <ul className="expl-bullets">
+        <li>what would you expect to select first when connecting two locations?</li>
+        <li>would A-End and Z-End make sense without context?</li>
+        <li>what information would help you trust a port choice?</li>
+        <li>what would you need to understand before committing to a price?</li>
+        <li>what should happen when an order is delayed, or needs a purchase order?</li>
+        <li>how would you know when the connection is actually live?</li>
+      </ul>
+      </>
+    ),
+  },
+  {
+    step: 'Learned',
+    node: (
+      <>
+      <ExplIcon variant="learned" />
+      <span className="expl-eyebrow">What we learned</span>
+      <h3 className="expl-h">Users understand the <em className="cp-up">outcome</em> before they understand the architecture.</h3>
+      <ul className="expl-bullets">
+        <li>lead with &quot;connect two places,&quot; not network terminology</li>
+        <li>show availability, location and speed at the decision point</li>
+        <li>keep price and commitment visible through the whole flow</li>
+        <li>explain exceptions inside the product, not through support</li>
+        <li>make every state actionable - what happened, what&apos;s next, who owns it</li>
+      </ul>
+      </>
+    ),
+  },
+  {
+    step: 'Final',
+    node: (
+      <>
+      <ExplIcon variant="final" />
+      <span className="expl-eyebrow">The final experience</span>
+      <h3 className="expl-h">A guided path from port to <em className="cp-up">live</em>.</h3>
+      <p className="dv-p dim">progressive disclosure - each screen answers one decision, while a step indicator and a live price summary keep the user oriented.</p>
+      {/* autoPlay/loop only without prefersReducedMotion - an autoplaying
+          video is exactly the unrequested motion that setting exists to
+          suppress. controls stay either way, so it's still one click to
+          watch it - the poster frame (the real Port Selection screen, not a
+          black box) is what shows until then. */}
+      <video
+        className="expl-video"
+        src="/dci-l2-order-flow.mp4"
+        poster="/dci-l2-order-flow-poster.png"
+        autoPlay={!prefersReducedMotion}
+        loop={!prefersReducedMotion}
+        muted
+        playsInline
+        controls
+        preload="metadata"
+      >
+        order journey walkthrough - DCI Layer 2 order flow
+      </video>
+      </>
+    ),
+  },
 ];
 
 // prefersReducedMotion's own flat list - every beat stacked plainly, each
@@ -1006,10 +1319,10 @@ const EXPLORE_CONTENT = [
 // ever remounts on scroll, so there's no "blink" risk the live path had).
 const EXPLORE_BEATS = [
   <div className="expl-ch" key="ch1">{CH1_CONTENT}</div>,
-  ...EXPLORE_CONTENT.map((content, i) => (
-    <div className="expl-layout" key={EXPLORE_STEPS[i]}>
-      <ExplRail step={i} />
-      <div className="expl-main">{content}</div>
+  ...EXPLORE_CONTENT.map((entry, i) => (
+    <div className="expl-layout" key={i}>
+      <ExplRail step={EXPLORE_STEPS.indexOf(entry.step)} />
+      <div className="expl-main">{entry.node}</div>
     </div>
   )),
   // the chapter's own close, not an eighth rail stop - same full-width,
@@ -1044,8 +1357,9 @@ function ExploreScene() {
   // so the rail mounts once and simply re-renders with a new `step` prop -
   // its dots transition their own colour/border smoothly via the plain CSS
   // transitions already on .expl-rail-stop, never touching the DOM node.
-  const railStep = beat - 1;
-  const showRail = railStep >= 0 && railStep < EXPLORE_CONTENT.length;
+  const beatIdx = beat - 1;
+  const showRail = beatIdx >= 0 && beatIdx < EXPLORE_CONTENT.length;
+  const entry = showRail ? EXPLORE_CONTENT[beatIdx] : null;
   const bookend = beat === 0
     ? CH1_CONTENT
     : beat === EXPLORE_CONTENT.length + 1
@@ -1059,8 +1373,11 @@ function ExploreScene() {
       <div className="oscn-stage expl-stage">
         {showRail ? (
           <div className="expl-layout">
-            <ExplRail step={railStep} />
-            <div className="expl-main expl-fade" key={beat}>{EXPLORE_CONTENT[railStep]}</div>
+            <ExplRail step={EXPLORE_STEPS.indexOf(entry.step)} />
+            {/* entry.key, where a run of beats shares one: the node stays
+                mounted across them, so the highlight animates between
+                regions rather than the whole panel refading each time. */}
+            <div className="expl-main expl-fade" key={entry.key ?? beat}>{entry.node}</div>
           </div>
         ) : (
           <div className="expl-ch expl-fade" key={beat}>{bookend}</div>
