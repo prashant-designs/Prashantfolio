@@ -63,14 +63,6 @@ const CP_SECTIONS = [
 
 // text is the contrast pick for each hex, not a computed one - five colors is
 // few enough to eyeball once rather than run a luminance formula for.
-const SYS_COLORS = [
-  { name: 'Ink Navy', hex: '#0B1220', role: 'surface / base', text: '#EDEFF7' },
-  { name: 'Signal Blue', hex: '#2F6FED', role: 'primary action', text: '#FFFFFF' },
-  { name: 'Live Green', hex: '#22C55E', role: 'healthy · online', text: '#06210F' },
-  { name: 'Alert Amber', hex: '#F5A524', role: 'warnings', text: '#241300' },
-  { name: 'Fault Red', hex: '#EF4444', role: 'errors · down', text: '#2A0505' },
-];
-
 const LEARNED = [
   { t: 'simplicity is a decision', p: "complexity doesn't simplify itself - someone does that work, and it's invisible to the person who benefits" },
   { t: 'visibility is a feature', p: 'when enterprises can watch their network work in real time, they relax - visual feedback builds trust' },
@@ -294,7 +286,7 @@ function useSectionIndex(count) {
 // pattern as Invoice/Knowledge Base/GenAI (copied per-file, not shared, so one
 // case study's triggers never race another's). only touches the plain static
 // content below (step-tags, headings, paragraphs, card grids); the hero and
-// the pinned scroll-scenes (AlexJourney, TheBetScene, AuditScene, SysScene,
+// the pinned scroll-scenes (AlexJourney, TheBetScene, AuditScene,
 // ScreensScene) already reveal themselves via their own obeat progression.
 function useBlockReveal(ref) {
   useEffect(() => {
@@ -596,6 +588,247 @@ const EFFORT_MAP = [
   { m: 'network health monitoring', effort: 82, impact: 80, first: false },
 ];
 
+// the real Polarin palette, sampled off the product screenshots rather than
+// recalled - the placeholder set this replaced had invented names and a dark
+// surface, and Polarin is a light product built on teal. `key` is what ties
+// a token to the specimens built out of it, further down.
+const DS_COLORS = [
+  { key: 'teal', hex: '#00828F', name: 'Teal 600', role: 'primary action, active state', ink: '#FFFFFF' },
+  { key: 'deep', hex: '#003A56', name: 'Deep 900', role: 'hero surfaces', ink: '#FFFFFF' },
+  { key: 'ink', hex: '#003350', name: 'Ink', role: 'body text, values', ink: '#FFFFFF' },
+  { key: 'blue', hex: '#0386FF', name: 'Blue 500', role: 'links, inline answers', ink: '#FFFFFF' },
+  { key: 'live', hex: '#19AD52', name: 'Live 600', role: 'healthy, online, saving', ink: '#FFFFFF' },
+  { key: 'page', hex: '#F7F9FC', name: 'Page', role: 'the ground everything sits on', ink: '#003350', light: true },
+  { key: 'surface', hex: '#FFFFFF', name: 'Surface', role: 'cards, inputs', ink: '#003350', light: true },
+  { key: 'line', hex: '#E3E8EF', name: 'Hairline', role: 'borders, dividers', ink: '#003350', light: true },
+];
+
+const DS_TYPE = [
+  { px: 26, w: 650, label: 'Page title', sample: 'Create Data Center Interconnect' },
+  { px: 17, w: 650, label: 'Section', sample: 'Subscription Term' },
+  { px: 14, w: 400, label: 'Body', sample: 'Choose the term that best fits your needs' },
+  { px: 12, w: 400, label: 'Caption', sample: 'Available Rate Limit: 6.9 Gbps' },
+];
+
+const DS_STEPS = ['Port Selection', 'Configure', 'Add Ons', 'Checkout'];
+// the two real term/price pairs off the Configure screen - the specimen
+// swaps between them so the price is seen recalculating rather than sitting
+// there as a number, which is the only part of it that's actually a system
+// behaviour rather than a layout.
+const DS_TERMS = [
+  { term: 'PAYG', sub: 'Pay as you go', price: '₹10,032.00', off: null, was: null },
+  { term: '24 Months', sub: 'Better savings', price: '₹9,028.80', off: '10% off', was: '₹10,032.00' },
+];
+
+// one slow clock drives the whole section: which token is lit, how far the
+// step indicator has walked, and which term the price is showing. they run
+// on different divisors so the canvas never looks like a single thing
+// blinking in unison. paused whenever the section is off screen, and never
+// started at all under prefersReducedMotion - the components below are the
+// content here, so they still render, just holding still.
+function useDsClock(ref) {
+  const [t, setT] = useState(0);
+  useEffect(() => {
+    if (prefersReducedMotion || !ref.current) return undefined;
+    let id = null;
+    const start = () => { if (id === null) id = setInterval(() => setT((n) => n + 1), 1900); };
+    const stop = () => { if (id !== null) { clearInterval(id); id = null; } };
+    const io = new IntersectionObserver(([e]) => (e.isIntersecting ? start() : stop()), { threshold: 0.15 });
+    io.observe(ref.current);
+    return () => { stop(); io.disconnect(); };
+  }, [ref]);
+  return t;
+}
+
+// the components, rendered as live DOM rather than shown as cropped
+// screenshots. every specimen is built out of the tokens declared once on
+// .ds-canvas, and lighting a token in the spectrum above dims everything
+// that isn't made of it - which is the claim this section exists to make,
+// demonstrated instead of asserted.
+function DesignSystemScene() {
+  const ref = useRef(null);
+  const t = useDsClock(ref);
+  const [pick, setPick] = useState(null);
+  const auto = DS_COLORS[t % DS_COLORS.length].key;
+  const focus = pick ?? (prefersReducedMotion ? null : auto);
+  const step = prefersReducedMotion ? 1 : t % DS_STEPS.length;
+  const term = DS_TERMS[prefersReducedMotion ? 1 : Math.floor(t / 2) % DS_TERMS.length];
+
+  return (
+    <div className="ds" ref={ref}>
+      <div className="ds-head cps-rv" data-rv>
+        <h3 className="ds-h">One system. Every <em className="cp-signal">product</em>.</h3>
+        <p className="ds-lede">Polarin sells a growing list of connectivity products and has had one designer. That arithmetic only works if a new product is an assembly job - so the system had to be the deliverable, not the screens.</p>
+      </div>
+
+      {/* the palette as one continuous band rather than a grid of chips: a
+          colour is a claim about a whole surface, and the lit token widens
+          to take the room its claim deserves. */}
+      <div className="ds-spectrum cps-rv" data-rv style={{ '--d': '60ms' }}>
+        {DS_COLORS.map((c) => (
+          <button
+            type="button"
+            key={c.key}
+            className={`ds-sp${focus === c.key ? ' on' : ''}${c.light ? ' ds-sp-light' : ''}`}
+            style={{ background: c.hex, color: c.ink }}
+            onClick={() => setPick(pick === c.key ? null : c.key)}
+            aria-pressed={focus === c.key}
+          >
+            <span className="ds-sp-hex">{c.hex}</span>
+            <span className="ds-sp-name">{c.name}</span>
+            <span className="ds-sp-role">{c.role}</span>
+          </button>
+        ))}
+      </div>
+      <p className="ds-hint cps-rv" data-rv>
+        {pick ? 'showing every component built from this token - tap again to release' : 'each token lights the components built from it'}
+      </p>
+
+      <div className="ds-row">
+        <section className="ds-block ds-block-canvas cps-rv" data-rv style={{ '--d': '120ms' }}>
+          <span className="ds-tag">Components</span>
+          {/* undefined, not '' - an empty data-focus still satisfies the
+              [data-focus] selector that dims the specimens, which would
+              leave every one of them faded with no token lit to explain
+              why (exactly what prefersReducedMotion hits, since it never
+              lights one). */}
+          <div className="ds-canvas" data-focus={focus || undefined} data-surf="page">
+            <div className="ds-cell" data-surf="surface line">
+              <span className="ds-cell-t">Actions</span>
+              <div className="ds-cell-b">
+                <button type="button" className="ds-btn ds-btn-p" data-tok="teal">Upgrade</button>
+                <button type="button" className="ds-btn ds-btn-s" data-tok="line ink">Raise a Ticket</button>
+                <span className="ds-link" data-tok="blue">View Details</span>
+              </div>
+            </div>
+
+            <div className="ds-cell" data-surf="surface line">
+              <span className="ds-cell-t">Service state</span>
+              <div className="ds-cell-b">
+                <span className="ds-badge ds-badge-live" data-tok="live"><i className="ds-dot" />Live</span>
+                <span className="ds-badge ds-badge-down" data-tok="down">Down</span>
+                <span className="ds-badge ds-badge-design" data-tok="line">Design</span>
+              </div>
+            </div>
+
+            <div className="ds-cell" data-surf="surface line">
+              <span className="ds-cell-t">Filters, counted</span>
+              <div className="ds-cell-b">
+                <span className="ds-chip" data-tok="line">All <b>17</b></span>
+                <span className="ds-chip ds-chip-on" data-tok="teal">Live <b>6</b></span>
+                <span className="ds-chip" data-tok="line">Down <b>0</b></span>
+              </div>
+            </div>
+
+            {/* the hero band, and the only place Deep 900 appears at size */}
+            <div className="ds-cell ds-cell-3" data-surf="surface line">
+              <span className="ds-cell-t">Capacity band</span>
+              <div className="ds-hero" data-tok="deep">
+                <span className="ds-hero-l">EFFECTIVE RATE LIMIT</span>
+                <span className="ds-hero-v">3100 Mbps</span>
+              </div>
+            </div>
+
+            <div className="ds-cell ds-cell-3" data-surf="surface line">
+              <span className="ds-cell-t">Field, with its own answer</span>
+              <div className="ds-cell-b ds-cell-col">
+                <label className="ds-lbl" htmlFor="ds-rate" data-tok="ink">Rate Limit</label>
+                <input id="ds-rate" className="ds-input" data-tok="line" defaultValue="100" readOnly />
+                <span className="ds-help" data-tok="blue">Available Rate Limit: <b>6.9 Gbps</b></span>
+              </div>
+            </div>
+
+            {/* the four-step skeleton, walking - it is the one shape every
+                product's order flow reuses, so it earns being shown moving */}
+            <div className="ds-cell ds-cell-3" data-surf="surface line">
+              <span className="ds-cell-t">The four-step shape</span>
+              <ol className="ds-steps" data-tok="teal">
+                {DS_STEPS.map((s, i) => (
+                  <li key={s} className={i === step ? 'on' : i < step ? 'done' : ''}>
+                    <i>{i < step ? '✓' : i + 1}</i>{s}
+                  </li>
+                ))}
+              </ol>
+            </div>
+
+            <div className="ds-cell ds-cell-3" data-surf="surface line">
+              <span className="ds-cell-t">Service card</span>
+              <div className="ds-card" data-tok="teal">
+                <div className="ds-card-h">
+                  <b data-tok="ink">VCFor10GBPAYGSep</b>
+                  <span className="ds-badge ds-badge-live" data-tok="live"><i className="ds-dot" />Live</span>
+                </div>
+                <div className="ds-topo">
+                  <span className="ds-node">Sify</span>
+                  <span className="ds-wire"><em>3100 Mbps</em></span>
+                  <span className="ds-node">YOTTA</span>
+                </div>
+              </div>
+            </div>
+
+            {/* price and term move together: the specimen swaps term and the
+                number follows, which is the behaviour, not the layout */}
+            <div className="ds-cell ds-cell-6" data-surf="surface line">
+              <span className="ds-cell-t">Term, and the price that follows it</span>
+              <div className="ds-money">
+                <span className="ds-term" data-tok="teal" key={term.term}>
+                  <b>{term.term}</b><em>{term.sub}</em>
+                </span>
+                <span className="ds-price">
+                  <span className="ds-price-v" data-tok="ink" key={term.price}>{term.price}</span>
+                  {term.off && <span className="ds-off" data-tok="live">{term.off}</span>}
+                  {term.was && <span className="ds-price-was">{term.was}</span>}
+                </span>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section className="ds-block cps-rv" data-rv style={{ '--d': '180ms' }}>
+          <span className="ds-tag">Type</span>
+          <div className="ds-type">
+            {DS_TYPE.map((ty) => (
+              <div className="ds-type-row" key={ty.label}>
+                <span className="ds-type-meta">{ty.label} · {ty.px}px</span>
+                <span className="ds-type-sample" style={{ fontSize: `${ty.px}px`, fontWeight: ty.w }}>{ty.sample}</span>
+              </div>
+            ))}
+            <div className="ds-type-row">
+              <span className="ds-type-meta">Identifiers · mono</span>
+              <span className="ds-type-mono">PVCDEL05BOM0401649</span>
+            </div>
+          </div>
+
+          {/* the other half of the foundations - the numbers every specimen
+              above is actually built to, rather than a second colour story */}
+          <span className="ds-tag ds-tag-2">Geometry</span>
+          <div className="ds-geo">
+            {[{ r: 7, l: 'controls' }, { r: 8, l: 'cards' }, { r: 10, l: 'panels' }, { r: 99, l: 'pills' }].map((g) => (
+              <div className="ds-geo-r" key={g.l}>
+                <i style={{ borderRadius: `${g.r}px` }} />
+                <b>{g.r === 99 ? '999' : g.r}</b>
+                <em>{g.l}</em>
+              </div>
+            ))}
+          </div>
+          <div className="ds-space">
+            {[4, 8, 12, 16, 20].map((sp) => (
+              <div className="ds-space-r" key={sp}>
+                <i style={{ width: `${sp * 2.6}px` }} />
+                <b>{sp}</b>
+              </div>
+            ))}
+          </div>
+        </section>
+      </div>
+
+      <p className="ds-foot cps-rv" data-rv style={{ '--d': '240ms' }}>
+        a new product doesn&apos;t get a new design. it gets the same four steps, the same price panel, the same states - and one step&apos;s worth of fields that are actually its own.
+      </p>
+    </div>
+  );
+}
+
 function ScreensScene() {
   const ref = useRef(null);
   const [beat, jump] = useScrollBeat(ref, 4);
@@ -635,35 +868,6 @@ function ScreensScene() {
   );
 }
 
-// the design-system tokens as a full-bleed swatch per scroll beat, not a
-// bordered card grid - a color is a claim about the whole screen, and a
-// small chip never makes that claim. one beat per color, then a beat for the
-// type scale; the last beat's font-size is the one real measurement here,
-// everything else about that beat is a caption underneath it.
-function SysScene() {
-  const ref = useRef(null);
-  const [beat] = useScrollBeat(ref, SYS_COLORS.length + 1);
-  const isType = beat >= SYS_COLORS.length;
-  const c = SYS_COLORS[Math.min(beat, SYS_COLORS.length - 1)];
-
-  return (
-    <div className="oscn sys-oscn" ref={ref} style={{ '--beats': SYS_COLORS.length + 1 }}>
-      <div className="oscn-stage sys-stage">
-        {!isType ? (
-          <div className="sys-full" style={{ background: c.hex, color: c.text }} key={c.name}>
-            <span className="sys-full-name">{c.name}</span>
-            <span className="sys-full-role">{c.role}</span>
-          </div>
-        ) : (
-          <div className="sys-full sys-full-type">
-            <span className="sys-full-sample">Order journey</span>
-            <span className="sys-full-cap">Semibold · 32px · -1% tracking</span>
-          </div>
-        )}
-      </div>
-    </div>
-  );
-}
 
 // the Exploration section's own framework, not a one-off scene: each real
 // exploration gets its own "chapter" - a title beat, then the same shape
@@ -1753,7 +1957,7 @@ export default function CustomerPortalCaseStudy({ onPrev, onNext, idx, total }) 
           content stripped deliberately - the old copy/scenes/charts here were
           replaced piece by piece as each one gets rebuilt for real, one
           section at a time, rather than rewritten in one pass. AuditScene,
-          SysScene, LANDSCAPE and EFFORT_MAP stay defined further up (not
+          LANDSCAPE and EFFORT_MAP stay defined further up (not
           deleted): each is reference material for rebuilding its own section,
           not dead code from a direction that got abandoned. */}
       <div className="inv-section" ref={at(2)}>
@@ -1793,7 +1997,7 @@ export default function CustomerPortalCaseStudy({ onPrev, onNext, idx, total }) 
 
       <div className="inv-section" ref={at(6)}>
         <div className="inv-step-tag cps-rv" data-rv><i></i>Design system</div>
-        <span className="cp-wip cps-rv" data-rv style={{ '--d': '90ms' }}><i></i>in progress</span>
+        <DesignSystemScene />
       </div>
 
       <div className="inv-section" ref={at(7)}>

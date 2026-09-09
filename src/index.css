@@ -6700,24 +6700,163 @@ b.adm-was { font-family: var(--body); font-weight: 600; color: var(--rose); }
   .cps-rv, .cps-stagger > * { opacity: 1; filter: none; transform: none; }
 }
 
-/* ---- design-system tokens, full-bleed per scroll beat, in the System section ----
-   the small bordered swatch cards this replaced undersold the point - a
-   color token is a claim about a whole screen, not a chip. .sys-full fills
-   the entire sticky stage (same 74vh .oscn-stage every other scene in this
-   file uses) edge-to-edge, one hue at a time, name and role the only two
-   words on screen. text color is per-swatch (SYS_COLORS.text in the
-   component), not currentColor - five backgrounds ranging from near-black
-   to bright amber can't share one contrast-safe foreground. */
-.sys-stage { padding: 0; }
-.sys-full { width: 100%; height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; border-radius: var(--r-lg); animation: sysfade 0.4s ease; }
-.sys-full-name { font-family: var(--disp); font-weight: 800; font-size: clamp(40px, 6vw, 72px); letter-spacing: -0.03em; }
-.sys-full-role { margin-top: 10px; font-family: var(--mono); font-size: 12px; letter-spacing: 0.16em; text-transform: uppercase; opacity: 0.72; }
-.sys-full-type { background: var(--raise); color: var(--text); }
-.sys-full-sample { font-family: var(--disp); font-weight: 700; font-size: clamp(48px, 8vw, 92px); letter-spacing: -0.02em; }
-.sys-full-cap { margin-top: 14px; font-family: var(--mono); font-size: 12px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--dim); }
-@keyframes sysfade { from { opacity: 0.4; } to { opacity: 1; } }
+/* ---- the Design system section (.ds-) ---------------------------------
+   the palette is Polarin's, sampled off the product screenshots, and the
+   specimens are live DOM rather than crops: every one reads the tokens
+   declared once on .ds-canvas. lighting a token dims everything not built
+   from it, which is the section's actual argument, shown rather than
+   claimed. all of the motion here is content - a step indicator walking and
+   a price following its term are behaviours of the system, not decoration -
+   so prefersReducedMotion holds them still rather than removing them. */
+.ds { margin-top: var(--sp-block); }
+.ds-h { font-family: var(--disp); font-weight: 800; font-size: clamp(30px, 4vw, 46px); letter-spacing: -0.03em; line-height: 1.12; margin: 0 0 12px; }
+.ds-h em { font-style: normal; }
+.ds-lede { font-size: var(--t-body); line-height: 1.55; color: var(--mute); max-width: 60ch; margin: 0; }
+
+/* the palette as one band. the lit token grows to take the room its claim
+   deserves and reveals its role; the rest hold a narrow stripe. */
+.ds-spectrum { display: flex; gap: 6px; margin-top: 30px; height: 132px; }
+.ds-sp {
+  flex: 1 1 0; min-width: 0; position: relative; overflow: hidden; cursor: pointer;
+  border: 0; border-radius: var(--r-md); padding: 13px; text-align: left;
+  font: inherit; display: flex; flex-direction: column; justify-content: flex-end;
+  transition: flex-grow 0.75s var(--ease), box-shadow 0.4s var(--ease);
+}
+.ds-sp.on { flex-grow: 3.4; box-shadow: 0 10px 30px rgba(0, 0, 0, 0.45); }
+.ds-sp-light { box-shadow: inset 0 0 0 1px rgba(0, 51, 80, 0.14); }
+.ds-sp-light.on { box-shadow: inset 0 0 0 1px rgba(0, 51, 80, 0.14), 0 10px 30px rgba(0, 0, 0, 0.45); }
+.ds-sp-hex { position: absolute; top: 12px; left: 13px; font-family: var(--mono); font-size: 10.5px; letter-spacing: 0.06em; opacity: 0; transition: opacity 0.4s var(--ease); }
+.ds-sp.on .ds-sp-hex { opacity: 0.8; }
+.ds-sp-name { font-family: var(--disp); font-weight: 700; font-size: 14px; letter-spacing: -0.01em; white-space: nowrap; }
+.ds-sp-role { font-size: 11.5px; line-height: 1.3; opacity: 0; max-height: 0; transition: opacity 0.45s var(--ease), max-height 0.45s var(--ease); }
+.ds-sp.on .ds-sp-role { opacity: 0.85; max-height: 40px; }
+.ds-hint { margin: 10px 0 0; font-family: var(--mono); font-size: 10.5px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--dim); }
+
+.ds-row { display: grid; grid-template-columns: minmax(0, 1.55fr) minmax(0, 0.75fr); gap: 22px; margin-top: 26px; align-items: start; }
+.ds-block { border: 1px solid var(--line2); border-radius: var(--r-lg); background: var(--ink2); padding: 20px; }
+.ds-tag { display: block; font-family: var(--mono); font-size: 10.5px; letter-spacing: 0.2em; text-transform: uppercase; color: var(--dim); margin-bottom: 14px; }
+.ds-type { display: flex; flex-direction: column; gap: 13px; }
+.ds-type-row { display: flex; flex-direction: column; gap: 3px; }
+.ds-type-meta { font-family: var(--mono); font-size: 10px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--dim); }
+.ds-type-sample { font-family: var(--disp); letter-spacing: -0.02em; color: var(--text); line-height: 1.2; }
+.ds-type-mono { font-family: var(--mono); font-size: 13px; letter-spacing: 0.04em; color: var(--mute); }
+.ds-tag-2 { margin-top: 22px; padding-top: 18px; border-top: 1px solid var(--line2); }
+.ds-geo { display: flex; gap: 14px; flex-wrap: wrap; }
+.ds-geo-r { display: flex; flex-direction: column; gap: 5px; align-items: flex-start; }
+.ds-geo-r i { width: 30px; height: 30px; border: 1.5px solid #3696B1; background: rgba(54, 150, 177, 0.12); }
+.ds-geo-r b { font-family: var(--mono); font-size: 11px; color: var(--text); font-weight: 400; }
+.ds-geo-r em { font-style: normal; font-size: 10px; color: var(--dim); }
+.ds-space { display: flex; flex-direction: column; gap: 6px; margin-top: 16px; }
+.ds-space-r { display: flex; align-items: center; gap: 9px; }
+.ds-space-r i { height: 7px; border-radius: 2px; background: linear-gradient(90deg, #3696B1, rgba(54, 150, 177, 0.25)); }
+.ds-space-r b { font-family: var(--mono); font-size: 10.5px; font-weight: 400; color: var(--dim); }
+
+/* the product's own surface, dropped into a dark page on purpose. the nine
+   tokens below are the whole system - every specimen reads them, and
+   nothing inside hard-codes a colour of its own. */
+.ds-canvas {
+  --pol-teal: #00828F;
+  --pol-deep: #003A56;
+  --pol-ink: #003350;
+  --pol-blue: #0386FF;
+  --pol-live: #19AD52;
+  --pol-live-bg: #D4FDE7;
+  --pol-tint: #EDFBFD;
+  --pol-line: #E3E8EF;
+  --pol-mute: #5B7186;
+  background: #F7F9FC;
+  border-radius: var(--r-md);
+  padding: 16px;
+  display: grid;
+  grid-template-columns: repeat(6, minmax(0, 1fr));
+  gap: 12px;
+  color: var(--pol-ink);
+}
+.ds-cell { grid-column: span 2; background: #FFFFFF; border: 1px solid var(--pol-line); border-radius: 10px; padding: 13px; transition: box-shadow 0.45s var(--ease); }
+.ds-cell-3 { grid-column: span 3; }
+.ds-cell-6 { grid-column: span 6; }
+.ds-cell-t { display: block; font-family: var(--mono); font-size: 9.5px; letter-spacing: 0.16em; text-transform: uppercase; color: var(--pol-mute); margin-bottom: 11px; }
+.ds-cell-b { display: flex; flex-wrap: wrap; align-items: center; gap: 9px; }
+.ds-cell-col { flex-direction: column; align-items: stretch; gap: 7px; }
+
+/* token -> specimen wiring. [data-tok] are the leaves and dim when they are
+   not made of the lit token; [data-surf] are the containers, which only
+   ever gain a ring - dimming a container would take its own children down
+   with it and the canvas would just go dark. */
+.ds-canvas [data-tok] { transition: opacity 0.45s var(--ease), box-shadow 0.45s var(--ease); }
+.ds-canvas[data-focus] [data-tok] { opacity: 0.28; }
+.ds-canvas[data-focus="teal"] [data-tok~="teal"],
+.ds-canvas[data-focus="deep"] [data-tok~="deep"],
+.ds-canvas[data-focus="ink"] [data-tok~="ink"],
+.ds-canvas[data-focus="blue"] [data-tok~="blue"],
+.ds-canvas[data-focus="live"] [data-tok~="live"],
+.ds-canvas[data-focus="line"] [data-tok~="line"] { opacity: 1; }
+.ds-canvas[data-focus="surface"] [data-tok], .ds-canvas[data-focus="page"] [data-tok] { opacity: 0.5; }
+.ds-canvas[data-focus="surface"] [data-surf~="surface"],
+.ds-canvas[data-focus="line"] [data-surf~="line"] { box-shadow: 0 0 0 2px var(--pol-teal); }
+.ds-canvas[data-focus="page"] { box-shadow: inset 0 0 0 2px var(--pol-teal); }
+
+.ds-btn { font-family: inherit; font-size: 12.5px; font-weight: 600; border-radius: 7px; padding: 8px 14px; cursor: default; border: 1px solid transparent; }
+.ds-btn-p { background: var(--pol-teal); color: #FFFFFF; }
+.ds-btn-s { background: #FFFFFF; color: var(--pol-ink); border-color: var(--pol-line); }
+.ds-link { font-size: 12.5px; font-weight: 600; color: var(--pol-blue); }
+.ds-badge { display: inline-flex; align-items: center; gap: 5px; font-size: 10.5px; font-weight: 700; border-radius: 999px; padding: 3px 10px; }
+.ds-badge-live { background: var(--pol-live-bg); color: var(--pol-live); }
+.ds-badge-down { background: #FEE4E2; color: #C4320A; }
+.ds-badge-design { background: #E8EDF5; color: var(--pol-mute); }
+.ds-dot { width: 5px; height: 5px; border-radius: 50%; background: currentColor; animation: dspulse 1.9s ease-in-out infinite; }
+@keyframes dspulse { 0%, 100% { opacity: 1; transform: scale(1); } 50% { opacity: 0.35; transform: scale(0.72); } }
+.ds-chip { font-size: 11.5px; border-radius: 999px; padding: 5px 12px; border: 1px solid var(--pol-line); background: #FFFFFF; color: var(--pol-ink); }
+.ds-chip b { font-weight: 700; margin-left: 5px; color: var(--pol-mute); }
+.ds-chip-on { background: var(--pol-teal); border-color: var(--pol-teal); color: #FFFFFF; }
+.ds-chip-on b { color: #FFFFFF; opacity: 0.85; }
+.ds-hero { background: linear-gradient(100deg, #007C96, var(--pol-deep)); border-radius: 8px; padding: 13px 15px; display: flex; align-items: baseline; justify-content: space-between; gap: 10px; }
+.ds-hero-l { font-family: var(--mono); font-size: 9px; letter-spacing: 0.16em; color: rgba(255, 255, 255, 0.72); }
+.ds-hero-v { font-size: 17px; font-weight: 800; letter-spacing: -0.02em; color: #FFFFFF; }
+.ds-lbl { font-size: 12px; font-weight: 700; }
+.ds-input { font-family: inherit; font-size: 12.5px; color: var(--pol-ink); background: #FFFFFF; border: 1px solid var(--pol-line); border-radius: 7px; padding: 8px 11px; width: 100%; }
+.ds-help { font-size: 11px; color: var(--pol-mute); text-align: right; }
+.ds-help b { color: var(--pol-blue); }
+.ds-steps { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; align-items: center; gap: 7px; }
+.ds-steps li { display: flex; align-items: center; gap: 5px; font-size: 11px; color: var(--pol-mute); transition: color 0.4s var(--ease); }
+.ds-steps li i { width: 17px; height: 17px; border-radius: 50%; background: #E8EDF5; color: var(--pol-mute); font-size: 9.5px; font-style: normal; font-weight: 700; display: flex; align-items: center; justify-content: center; transition: background 0.4s var(--ease), color 0.4s var(--ease), transform 0.4s var(--ease); }
+.ds-steps li.done i, .ds-steps li.on i { background: var(--pol-teal); color: #FFFFFF; }
+.ds-steps li.on { color: var(--pol-ink); font-weight: 700; }
+.ds-steps li.on i { transform: scale(1.16); box-shadow: 0 0 0 3px rgba(0, 130, 143, 0.18); }
+.ds-card { border: 1px solid var(--pol-teal); background: var(--pol-tint); border-radius: 8px; padding: 11px; }
+.ds-card-h { display: flex; align-items: center; justify-content: space-between; gap: 8px; font-size: 12px; }
+.ds-topo { display: flex; align-items: center; gap: 7px; margin-top: 10px; }
+.ds-node { font-size: 10px; background: #FFFFFF; border: 1px solid var(--pol-line); border-radius: 6px; padding: 5px 8px; }
+/* the wire carries a moving dash - a live circuit is the one thing on this
+   card that is actually doing something */
+.ds-wire { flex: 1; height: 1px; position: relative; background-image: linear-gradient(90deg, var(--pol-teal) 0 6px, transparent 6px 12px); background-size: 12px 1px; animation: dswire 0.9s linear infinite; }
+@keyframes dswire { to { background-position: 12px 0; } }
+.ds-wire em { position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%); white-space: nowrap; font-style: normal; font-size: 9.5px; background: #B6F0F5; color: var(--pol-ink); border-radius: 999px; padding: 3px 8px; }
+.ds-money { display: flex; align-items: center; justify-content: space-between; gap: 16px; flex-wrap: wrap; }
+.ds-term { display: flex; flex-direction: column; background: var(--pol-tint); border: 1px solid var(--pol-teal); border-radius: 8px; padding: 7px 14px; animation: dsswap 0.5s var(--ease); }
+.ds-term b { font-size: 12.5px; }
+.ds-term em { font-style: normal; font-size: 10px; color: var(--pol-mute); }
+.ds-price { display: flex; align-items: center; gap: 9px; flex-wrap: wrap; }
+.ds-price-v { font-size: 21px; font-weight: 800; letter-spacing: -0.02em; animation: dsswap 0.5s var(--ease); }
+.ds-off { font-size: 10.5px; font-weight: 700; background: var(--pol-live-bg); color: var(--pol-live); border-radius: 999px; padding: 3px 9px; }
+.ds-price-was { font-size: 12px; color: var(--pol-mute); text-decoration: line-through; }
+@keyframes dsswap { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: none; } }
+.ds-foot { margin: 22px 0 0; font-size: 13.5px; line-height: 1.55; color: var(--dim); max-width: 66ch; }
+
+@media (max-width: 900px) {
+  .ds-row { grid-template-columns: 1fr; gap: 18px; }
+  .ds-canvas { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .ds-cell, .ds-cell-3, .ds-cell-6 { grid-column: span 2; }
+  /* the band cannot hold nine readable labels on a phone - it becomes a
+     stack of stripes, still lighting its token, just not narrating it */
+  .ds-spectrum { flex-wrap: wrap; height: auto; }
+  .ds-sp { flex: 1 1 30%; min-height: 74px; }
+  .ds-sp.on { flex-grow: 1; }
+}
 @media (prefers-reduced-motion: reduce) {
-  .sys-full { animation: none; }
+  .ds-dot, .ds-wire { animation: none; }
+  .ds-term, .ds-price-v { animation: none; }
+  .ds-sp, .ds-sp-role, .ds-sp-hex, .ds-canvas [data-tok] { transition: none; }
 }
 
 /* ---- customer portal's top route line ----
