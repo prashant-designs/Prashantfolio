@@ -6332,6 +6332,27 @@ b.adm-was { font-family: var(--body); font-weight: 600; color: var(--rose); }
    settled, arrived-at feeling once Final was reached. */
 .expl-rail-stop.done:not(:last-child)::after { background: #3696B1; }
 .expl-rail-stop.on { color: var(--text); font-weight: 700; }
+/* the chapter rail's "you are here", carrying the same --grad fill as
+   .tab.active. it takes that entry's exception to one-accent-per-viewport
+   for the same reason the nav tab does: it's chrome, not content - 11px, in
+   a fixed rail, off the reading column - so it never competes with the
+   beat's own focal point. --grad-ink for the label and --signal underneath
+   it for the same reason as .tab.active (see THE ACCENT): white falls below
+   4:1 at the cyan end, and a dropped gradient would otherwise leave dark
+   ink on a transparent rail. the negative margin cancels the pill's own
+   padding so the label's left edge still lines up with every other stop's,
+   and the stops keep their rhythm. */
+.expl-rail-stop.on span {
+  display: inline-block;
+  margin: -4px 0 -4px -11px;
+  padding: 4px 11px;
+  border-radius: 99px;
+  color: var(--grad-ink);
+  background-color: var(--signal);
+  background-image: var(--grad);
+  background-repeat: no-repeat;
+  background-size: 100% 100%;
+}
 /* not position:relative here - the base rule above already gives .i
    position:absolute (a valid containing block on its own for the ::before/
    ::after ring below); overriding it to relative at this higher specificity
@@ -6477,6 +6498,12 @@ b.adm-was { font-family: var(--body); font-weight: 600; color: var(--rose); }
    second set of hard-coded colours to keep in sync. */
 .expl-wire { display: block; width: 100%; height: auto; }
 .expl-wire-t { font-family: var(--mono); font-size: 11px; letter-spacing: 0.04em; fill: var(--mute); }
+.expl-wire-n { font-family: var(--mono); font-size: 10px; font-weight: 700; fill: #0A0D1A; text-anchor: middle; }
+/* the wireframe's numbered legend, in HTML rather than inside the SVG so a
+   longer label reflows instead of running past the viewBox edge. */
+.expl-legend { list-style: none; margin: 14px 0 0; padding: 0; display: flex; flex-direction: column; gap: 8px; }
+.expl-legend li { display: flex; align-items: center; gap: 10px; font-size: 12.5px; line-height: 1.4; color: var(--mute); }
+.expl-legend span { flex: 0 0 18px; height: 18px; border-radius: 50%; background: #E8A33D; color: #0A0D1A; font-family: var(--mono); font-size: 10px; font-weight: 700; display: flex; align-items: center; justify-content: center; }
 /* the three principles behind the grouping - pills, one per line, short
    enough to take in at a glance. */
 .expl-pills { list-style: none; margin: 22px 0 0; padding: 0; display: flex; flex-direction: column; align-items: flex-start; gap: 10px; }

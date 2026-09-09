@@ -793,17 +793,17 @@ const ANATOMY = [
 // the dimming is one element: a small transparent box with a very large
 // spread shadow, clipped by the frame's overflow, so the "hole" is the box
 // itself and there's no second mask to keep in sync.
-function ExplAnatomy({ i }) {
-  const h = ANATOMY[i];
+function ExplAnatomy({ i, stops = ANATOMY, src = '/dci-form-steps.png', alt, eyebrow = 'Anatomy of the screen' }) {
+  const h = stops[i];
   return (
     <>
-      <span className="expl-eyebrow">Anatomy of the screen</span>
+      <span className="expl-eyebrow">{eyebrow}</span>
       {/* full width rather than the usual half-and-half split: the region
           being explained has to stay readable, and at half a column the
           highlighted text is too small to make the point. */}
       <div className="expl-anat">
         <div className="expl-spot">
-          <img src="/dci-form-steps.png" alt="The finished Configure Connection screen, with the rate limit, subscription term, payment options and running price summary" />
+          <img src={src} alt={alt ?? 'The finished Configure Connection screen, with the rate limit, subscription term, payment options and running price summary'} />
           <span
             className="expl-spot-hole"
             style={{ left: `${h.box.left}%`, top: `${h.box.top}%`, width: `${h.box.width}%`, height: `${h.box.height}%` }}
@@ -811,7 +811,7 @@ function ExplAnatomy({ i }) {
         </div>
         <div className="expl-anat-copy">
           <div>
-            <span className="expl-count">{i + 1} / {ANATOMY.length}</span>
+            <span className="expl-count">{i + 1} / {stops.length}</span>
             <h3 className="expl-h">{h.title}</h3>
           </div>
           <p className="expl-note">{h.body}</p>
@@ -889,12 +889,12 @@ function ExplFlowViz() {
 // sprouting five near-identical stops.
 const EXPLORE_STEPS = ['Challenge', 'Objective', 'Exploration', 'Validate', 'Sketches', 'The flow', 'Simplify', 'Scale', 'Anatomy', 'Asked', 'Learned', 'Final'];
 
-function ExplRail({ step }) {
-  const lastIdx = EXPLORE_STEPS.length - 1;
+function ExplRail({ step, steps = EXPLORE_STEPS, chapter = 'Chapter 1' }) {
+  const lastIdx = steps.length - 1;
   return (
     <div className="expl-rail" aria-hidden="true">
-      <span className="expl-rail-ch">Chapter 1</span>
-      {EXPLORE_STEPS.map((label, i) => {
+      <span className="expl-rail-ch">{chapter}</span>
+      {steps.map((label, i) => {
         // the last stop reaching "on" IS the chapter finishing, not one more
         // thing still loading - an open-ended spinner there undersold that,
         // so it gets "final" too, swapping the spinner for a real checkmark
@@ -1082,7 +1082,14 @@ const OUTCOME_CONTENT = (
 const CH2_CONTENT = (
   <>
     <span className="expl-ch-n">Chapter 2</span>
-    <span className="cp-wip"><i></i>in progress</span>
+    <h2 className="expl-ch-t">Managing what&apos;s already live</h2>
+  </>
+);
+
+const CH2_OUTCOME = (
+  <>
+    <span className="expl-ch-n">Chapter 2 - outcome</span>
+    <h2 className="expl-ch-t">Seventeen circuits, one page, no phone call</h2>
   </>
 );
 
@@ -1314,66 +1321,305 @@ const EXPLORE_CONTENT = [
   },
 ];
 
+// ---- Chapter 2: the service, once it's running ----------------------------
+// ordering is one afternoon; running the circuit is every day after it. these
+// are the questions that replace the six ordering ones the moment a service
+// goes live - same treatment as Chapter 1's scatter, deliberately, because
+// they came out of the same conversations.
+const SERVICES_QUESTIONS = [
+  'Is it up right now?',
+  'Was it up all week?',
+  'Can I prove that to my boss?',
+  'What am I locked into?',
+  'What will I be billed?',
+  'Can I get more bandwidth today?',
+];
+
+// the page's own shape, drawn rather than screenshotted: a product rail, a
+// filterable list of every service, and one service in detail behind four
+// tabs. the badges key to the legend beside it.
+const SERVICES_SHAPE_LEGEND = [
+  'every service, filtered by state',
+  'one service, always identified',
+  'four questions, four tabs',
+];
+
+function ServicesShapeViz() {
+  return (
+    <>
+      <svg className="expl-wire" viewBox="0 0 312 300" role="img" aria-label="Wireframe of the services page: a product rail, a filterable service list, and one service in detail behind four tabs">
+      <rect x="10" y="10" width="290" height="280" rx="10" fill="var(--ink2)" stroke="var(--line2)" />
+      <line x1="10" y1="42" x2="300" y2="42" stroke="var(--line2)" />
+      <rect x="22" y="21" width="40" height="8" rx="4" fill="var(--line2)" />
+      {/* product rail */}
+      <line x1="52" y1="42" x2="52" y2="290" stroke="var(--line2)" />
+      {[58, 76, 94, 112, 130].map((y) => <rect key={y} x="20" y={y} width="24" height="5" rx="2.5" fill="var(--line2)" />)}
+      {/* the list column */}
+      <line x1="140" y1="42" x2="140" y2="290" stroke="var(--line2)" />
+      <rect x="62" y="56" width="68" height="14" rx="7" fill="none" stroke="var(--line2)" />
+      <rect x="62" y="78" width="20" height="10" rx="5" fill="#3696B1" opacity="0.5" />
+      <rect x="86" y="78" width="20" height="10" rx="5" fill="none" stroke="var(--line2)" />
+      <rect x="110" y="78" width="20" height="10" rx="5" fill="none" stroke="var(--line2)" />
+      {[100, 148, 196, 244].map((y, k) => (
+        <rect key={y} x="62" y={y} width="68" height="40" rx="5" fill={k === 0 ? 'rgba(54,150,177,0.14)' : 'var(--raise2)'} stroke={k === 0 ? '#3696B1' : 'var(--line2)'} />
+      ))}
+      {/* the detail pane */}
+      <rect x="152" y="56" width="80" height="9" rx="4.5" fill="var(--line2)" />
+      <rect x="152" y="72" width="46" height="12" rx="6" fill="none" stroke="var(--line2)" />
+      <rect x="204" y="72" width="46" height="12" rx="6" fill="none" stroke="var(--line2)" />
+      <line x1="140" y1="96" x2="300" y2="96" stroke="var(--line2)" />
+      {[152, 188, 224, 260].map((x, k) => (
+        <rect key={x} x={x} y="102" width="32" height="12" rx="6" fill={k === 0 ? '#3696B1' : 'none'} opacity={k === 0 ? 0.55 : 1} stroke={k === 0 ? 'none' : 'var(--line2)'} />
+      ))}
+      <rect x="152" y="128" width="136" height="42" rx="5" fill="rgba(54,150,177,0.16)" stroke="#3696B1" />
+      {[182, 226].map((y) => <rect key={y} x="152" y={y} width="136" height="34" rx="5" fill="var(--raise2)" stroke="var(--line2)" />)}
+      {/* badges keyed to the legend rendered below - the labels live in HTML
+          rather than as <text>, where they'd have to fit the viewBox and
+          would be clipped by it the moment one of them got longer. */}
+      {[{ n: 1, x: 96, y: 92 }, { n: 2, x: 244, y: 52 }, { n: 3, x: 296, y: 108 }].map((b) => (
+        <g key={b.n}>
+          <circle cx={b.x} cy={b.y} r="9" fill="#E8A33D" />
+          <text x={b.x} y={b.y + 4} className="expl-wire-n">{b.n}</text>
+        </g>
+      ))}
+      </svg>
+      <ol className="expl-legend">
+        {SERVICES_SHAPE_LEGEND.map((t, k) => (
+          <li key={t}><span>{k + 1}</span>{t}</li>
+        ))}
+      </ol>
+    </>
+  );
+}
+
+// regions of the Overview tab, measured off the 1600x885 screenshot.
+const SERVICES_ANATOMY = [
+  {
+    box: { left: 12.9, top: 9.7, width: 22.7, height: 88.5 },
+    title: 'Every service, and which ones need you.',
+    body: 'seventeen connections, counted by state before anything else - six live, none down, six still in design. the filter is the first thing on the page because "which one is broken" is the first thing asked of it.',
+  },
+  {
+    box: { left: 36.8, top: 11.5, width: 30, height: 16.5 },
+    title: 'Identity, status, and the two ways out.',
+    body: 'name, service ID and live state stay pinned above the tabs - and the two actions anyone actually arrives wanting, raise a ticket or upgrade, sit beside them rather than behind a menu.',
+  },
+  {
+    box: { left: 36.8, top: 29.2, width: 30.5, height: 5 },
+    title: 'Four questions, four tabs.',
+    body: 'is it up, was it healthy, what am I committed to, what will I pay. tabs rather than separate pages, so the service stays in focus and nothing needs re-finding between answers.',
+  },
+  {
+    box: { left: 37, top: 36.6, width: 60.3, height: 19.6 },
+    title: 'Capacity, and the way to more of it.',
+    body: 'the effective rate limit is the number customers ring up about. it leads the tab, with the base rate, any temporary add-on, and the upgrade path all readable without leaving the page.',
+  },
+  {
+    box: { left: 37, top: 60.5, width: 60.3, height: 16 },
+    title: 'Health, at a glance, with a timestamp.',
+    body: 'flaps, latency and availability for the last 24 hours - and the time the numbers were last updated, because a health figure without a timestamp is not evidence of anything.',
+  },
+];
+
+const SERVICES_STEPS = ['Challenge', 'Questions', 'The shape', 'Anatomy', 'Performance', 'Subscription', 'Invoices'];
+
+const SERVICES_CONTENT = [
+  {
+    step: 'Challenge',
+    node: (
+      <>
+        <span className="expl-eyebrow">The challenge</span>
+        <h3 className="expl-h">Ordering happens once. <em className="cp-rose">Running it</em> never stops.</h3>
+        <blockquote className="expl-quote">&quot;The order was the easy part. Now I have seventeen of these, and no idea which one is down.&quot;</blockquote>
+        <p className="expl-note expl-note-wide">before this, the answer lived in an email thread or a call to the NOC - which meant the customer only found out how their network was doing by asking someone.</p>
+      </>
+    ),
+  },
+  {
+    step: 'Questions',
+    node: (
+      <>
+        <span className="expl-eyebrow">Questions after go-live</span>
+        <div className="expl-split">
+          <div className="expl-viz">
+            <div className="expl-scatter">
+              {SERVICES_QUESTIONS.map((q) => <span key={q}>{q}</span>)}
+            </div>
+            <p className="expl-cap">the six ordering questions are gone. these replace them, permanently.</p>
+          </div>
+          <div className="expl-copy">
+            <h3 className="expl-h">A different <em className="cp-signal">six questions</em>.</h3>
+            <p className="expl-note">nobody asks about MACSec again after go-live. they ask whether it&apos;s up, whether it stayed up, and what it is going to cost them this month.</p>
+          </div>
+        </div>
+      </>
+    ),
+  },
+  {
+    step: 'The shape',
+    node: (
+      <>
+        <span className="expl-eyebrow">Shaping the page</span>
+        <div className="expl-split">
+          <div className="expl-viz">
+            <ServicesShapeViz />
+          </div>
+          <div className="expl-copy">
+            <h3 className="expl-h">One list, one service, <em className="cp-up">four tabs</em>.</h3>
+            <ul className="expl-pills">
+              <li className="expl-pill">State before detail</li>
+              <li className="expl-pill">One service in focus</li>
+              <li className="expl-pill">Tabs, not pages</li>
+            </ul>
+            <p className="expl-note">the list never goes away. whichever tab is open, the next service is one click sideways - because troubleshooting is rarely about only one circuit.</p>
+          </div>
+        </div>
+      </>
+    ),
+  },
+  ...SERVICES_ANATOMY.map((_, i) => ({
+    step: 'Anatomy',
+    key: 'services-anatomy',
+    node: (
+      <ExplAnatomy
+        i={i}
+        stops={SERVICES_ANATOMY}
+        src="/services-overview.png"
+        alt="The Services page Overview tab, showing the filtered connection list, service status, effective rate limit and 24-hour performance"
+        eyebrow="Anatomy of the page"
+      />
+    ),
+  })),
+  {
+    step: 'Performance',
+    node: (
+      <>
+        <span className="expl-eyebrow">Performance</span>
+        <div className="expl-split">
+          <div className="expl-viz">
+            <img src="/services-performance.png" alt="The Performance tab, showing traffic in and out over a selectable time range" />
+            <p className="expl-cap">traffic in and out, over whatever window the question needs.</p>
+          </div>
+          <div className="expl-copy">
+            <h3 className="expl-h">Proof, not <em className="cp-signal">reassurance</em>.</h3>
+            <ul className="expl-pills">
+              <li className="expl-pill">Their window, not ours</li>
+              <li className="expl-pill">Chart or table</li>
+              <li className="expl-pill">Exportable</li>
+            </ul>
+            <p className="expl-note">an IT manager asked about last Tuesday needs to answer with a chart, not with what support told them. so the range is theirs to set, and the data leaves the page.</p>
+          </div>
+        </div>
+      </>
+    ),
+  },
+  {
+    step: 'Subscription',
+    node: (
+      <>
+        <span className="expl-eyebrow">Subscription</span>
+        <div className="expl-split">
+          <div className="expl-viz">
+            <img src="/services-subscription.png" alt="The Subscription tab, showing term, dates, billing profile, billing cycle and active add-ons" />
+            <p className="expl-cap">term, dates, billing profile and add-ons - the Chapter 1 decisions, now as live state.</p>
+          </div>
+          <div className="expl-copy">
+            <h3 className="expl-h">What was agreed, still <em className="cp-up">visible</em>.</h3>
+            <ul className="expl-pills">
+              <li className="expl-pill">Term and dates up front</li>
+              <li className="expl-pill">Billing profile per entity</li>
+              <li className="expl-pill">Add-ons listed, not buried</li>
+            </ul>
+            <p className="expl-note">the billing profile chosen at order time for GST reasons is the same one shown here - so the reason the circuit bills to that state never has to be reconstructed later.</p>
+          </div>
+        </div>
+      </>
+    ),
+  },
+  {
+    step: 'Invoices',
+    node: (
+      <>
+        <span className="expl-eyebrow">Invoices &amp; payments</span>
+        <div className="expl-split">
+          <div className="expl-viz">
+            <img src="/services-invoices.png" alt="The Invoices and Payments tab, showing total monthly charge, next invoice date and a breakdown of base and add-on amounts" />
+            <p className="expl-cap">the next invoice, before it arrives - with the date it will generate on.</p>
+          </div>
+          <div className="expl-copy">
+            <h3 className="expl-h">The bill, before the <em className="cp-rose">bill</em>.</h3>
+            <ul className="expl-pills">
+              <li className="expl-pill">Total monthly, up top</li>
+              <li className="expl-pill">Base and add-ons split</li>
+              <li className="expl-pill">Next invoice dated</li>
+            </ul>
+            <p className="expl-note">finance teams don&apos;t like surprises more than engineers do. the amount, the split and the date it lands are all on the page before an invoice is ever raised.</p>
+          </div>
+        </div>
+      </>
+    ),
+  },
+];
+
 // prefersReducedMotion's own flat list - every beat stacked plainly, each
 // rail-step beat carrying its own baked-in rail (safe here: nothing here
 // ever remounts on scroll, so there's no "blink" risk the live path had).
-const EXPLORE_BEATS = [
-  <div className="expl-ch" key="ch1">{CH1_CONTENT}</div>,
-  ...EXPLORE_CONTENT.map((entry, i) => (
-    <div className="expl-layout" key={i}>
-      <ExplRail step={EXPLORE_STEPS.indexOf(entry.step)} />
-      <div className="expl-main">{entry.node}</div>
-    </div>
-  )),
-  // the chapter's own close, not an eighth rail stop - same full-width,
-  // no-rail treatment as the "Chapter 1" title screen it echoes, so the
-  // chapter reads as opening and closing on the same kind of beat, with
-  // the six worked steps running between them.
-  <div className="expl-ch" key="outcome">{OUTCOME_CONTENT}</div>,
-  <div className="expl-ch" key="ch2">{CH2_CONTENT}</div>,
-];
+function chapterBeats({ chapter, steps, content, open, close }) {
+  return [
+    <div className="expl-ch" key="open">{open}</div>,
+    ...content.map((entry, i) => (
+      <div className="expl-layout" key={i}>
+        <ExplRail step={steps.indexOf(entry.step)} steps={steps} chapter={chapter} />
+        <div className="expl-main">{entry.node}</div>
+      </div>
+    )),
+    // the chapter's own close, not one more rail stop - same full-width,
+    // no-rail treatment as the title screen it echoes, so a chapter reads as
+    // opening and closing on the same kind of beat, with the worked steps
+    // running between them.
+    ...close.map((node, i) => <div className="expl-ch" key={`close${i}`}>{node}</div>),
+  ];
+}
 
-function ExploreScene() {
+// one scroll scene, driven by a chapter's own rail steps and beats - both
+// chapters run through this rather than each keeping its own copy of the
+// pinning, beat-swapping and bookend logic.
+function ChapterScene({ chapter, steps, content, open, close }) {
   const ref = useRef(null);
-  const [beat] = useScrollBeat(ref, EXPLORE_BEATS.length);
+  const beats = chapterBeats({ chapter, steps, content, open, close });
+  const [beat] = useScrollBeat(ref, beats.length);
 
   if (prefersReducedMotion) {
-    return <div className="expl-static">{EXPLORE_BEATS}</div>;
+    return <div className="expl-static">{beats}</div>;
   }
 
   // one beat's content in the DOM at a time, not an AuditScene-style
   // cumulative build-up - a chapter is meant to be read as a slide deck (see
-  // the reference this was modelled on), and stacking all seven beats into
+  // the reference this was modelled on), and stacking every beat into
   // .oscn-stage's fixed 74vh box would have clipped the earliest ones the
   // moment total content outgrew the box, since overflow:hidden + a centred
   // flex column crops symmetrically as height grows, not from the bottom only.
   //
   // key={beat} used to sit on .expl-stage itself, which remounted the RAIL
   // along with the content on every single beat change - the rail's own
-  // dots don't need to (and visually shouldn't) disappear and refade in six
-  // times in a row just because the copy beside them changed; that's the
+  // dots don't need to (and visually shouldn't) disappear and refade every
+  // time in a row just because the copy beside them changed; that's the
   // "blink" this was rewritten to fix. now key={beat} sits only on the
   // swapped content (.expl-main for a rail beat, .expl-ch for a bookend),
   // so the rail mounts once and simply re-renders with a new `step` prop -
   // its dots transition their own colour/border smoothly via the plain CSS
   // transitions already on .expl-rail-stop, never touching the DOM node.
   const beatIdx = beat - 1;
-  const showRail = beatIdx >= 0 && beatIdx < EXPLORE_CONTENT.length;
-  const entry = showRail ? EXPLORE_CONTENT[beatIdx] : null;
-  const bookend = beat === 0
-    ? CH1_CONTENT
-    : beat === EXPLORE_CONTENT.length + 1
-      ? OUTCOME_CONTENT
-      : beat === EXPLORE_CONTENT.length + 2
-        ? CH2_CONTENT
-        : null;
+  const showRail = beatIdx >= 0 && beatIdx < content.length;
+  const entry = showRail ? content[beatIdx] : null;
+  const bookend = beat === 0 ? open : close[beat - content.length - 1] ?? null;
 
   return (
-    <div className="oscn expl-oscn" ref={ref} style={{ '--beats': EXPLORE_BEATS.length }}>
+    <div className="oscn expl-oscn" ref={ref} style={{ '--beats': beats.length }}>
       <div className="oscn-stage expl-stage">
         {showRail ? (
           <div className="expl-layout">
-            <ExplRail step={EXPLORE_STEPS.indexOf(entry.step)} />
+            <ExplRail step={steps.indexOf(entry.step)} steps={steps} chapter={chapter} />
             {/* entry.key, where a run of beats shares one: the node stays
                 mounted across them, so the highlight animates between
                 regions rather than the whole panel refading each time. */}
@@ -1527,7 +1773,22 @@ export default function CustomerPortalCaseStudy({ onPrev, onNext, idx, total }) 
 
       <div className="inv-section" ref={at(5)}>
         <div className="inv-step-tag cps-rv" data-rv><i></i>Exploration</div>
-        <ExploreScene />
+        {/* two chapters, one after the other: ordering the service, then
+            living with it. each is its own pinned scene with its own rail. */}
+        <ChapterScene
+          chapter="Chapter 1"
+          steps={EXPLORE_STEPS}
+          content={EXPLORE_CONTENT}
+          open={CH1_CONTENT}
+          close={[OUTCOME_CONTENT]}
+        />
+        <ChapterScene
+          chapter="Chapter 2"
+          steps={SERVICES_STEPS}
+          content={SERVICES_CONTENT}
+          open={CH2_CONTENT}
+          close={[CH2_OUTCOME]}
+        />
       </div>
 
       <div className="inv-section" ref={at(6)}>
