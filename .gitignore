@@ -23,3 +23,11 @@ dist-ssr
 *.sln
 *.sw?
 .vercel
+
+# source media kept locally, never shipped: screen recordings and the
+# full-size originals of screenshots that are committed resized. the .mov
+# sources are ~54MB and their exported .mp4 is already tracked, and the
+# "* - Services.png" originals duplicate the 1600px services-*.png files.
+public/*.mov
+public/* - [Ss]ervices.png
+public/dci-form-inputs.png
