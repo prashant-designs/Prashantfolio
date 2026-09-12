@@ -198,7 +198,13 @@ function useSectionIndex(count) {
       // the bar giving up the whole top strip to dodge the button vertically.
       const closeBtn = document.querySelector('.ovl-close');
       const closeLeft = closeBtn ? closeBtn.getBoundingClientRect().left : r.right - 28;
-      setPos({ top: r.top, left: r.left + 28, width: Math.max(120, closeLeft - r.left - 28 - 14) });
+      // the close button sits OUTSIDE the panel's right edge, so stopping
+      // short of it alone let the bar - and the section label riding its
+      // right end - run past the panel and get clipped by its rounded
+      // corner. whichever limit comes first wins: the button, or the panel's
+      // own edge at the same 28px inset the bar already uses on the left.
+      const rightLimit = Math.min(closeLeft - 14, r.right - 28);
+      setPos({ top: r.top, left: r.left + 28, width: Math.max(120, rightLimit - (r.left + 28)) });
       const scrollable = panel.scrollHeight - panel.clientHeight;
       setTickLeft(refs.current.map((el) => {
         if (!el || scrollable <= 0) return 0;

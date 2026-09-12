@@ -8211,3 +8211,72 @@ body.static .scene { height: auto !important; }
   .ivs-quotes, .ivs-pages, .ivs-learn .inv-learn { grid-template-columns: 1fr; }
   .ivs-reqs .inv-problems { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 }
+
+/* ---- the Knowledge Base case study's narrative (.kbs-) -----------------
+   pinned beats, one idea per screen, same height formula as the others
+   (see the derivation on .apr-stage). the copy here avoids tool names and
+   retrieval vocabulary on purpose: the reader this section is written for
+   has never operated a CMS, so a term they cannot evaluate is a term that
+   makes them stop reading. */
+.kbs-oscn { height: calc(var(--beats, 9) * 90vh); }
+.kbs-stage { height: calc(90vh - 142px); text-align: center; align-items: center; justify-content: center; gap: 0; }
+.kbs-eyebrow { display: block; font-family: var(--mono); font-size: var(--t-meta); letter-spacing: 0.22em; text-transform: uppercase; color: var(--dim); margin-bottom: 20px; }
+.kbs-big { font-family: var(--disp); font-weight: 800; font-size: var(--t-lead); letter-spacing: -0.03em; line-height: 1.2; margin: 0; max-width: 28ch; }
+.kbs-big em { font-style: normal; }
+.kbs-mid { font-family: var(--disp); font-weight: 800; font-size: var(--t-sub); letter-spacing: -0.02em; line-height: 1.2; margin: 0 0 22px; }
+.kbs-note { margin: 18px 0 0; font-size: var(--t-body-sm); color: var(--dim); }
+.kbs-cost, .kbs-honest, .kbs-now, .kbs-notes { width: 100%; max-width: 900px; }
+.kbs-cost-grid, .kbs-honest-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px; }
+.kbs-card { border: 1px solid var(--line2); border-radius: var(--r-md); background: var(--ink2); padding: 18px; text-align: left; }
+.kbs-card.ok { border-color: rgba(125, 249, 166, 0.35); }
+.kbs-k { display: block; font-family: var(--mono); font-size: var(--t-micro); letter-spacing: 0.18em; text-transform: uppercase; color: #E8A33D; margin-bottom: 10px; }
+.kbs-card b { display: block; font-family: var(--disp); font-weight: 700; font-size: var(--t-body-sm); color: var(--text); line-height: 1.3; }
+.kbs-card p { margin: 7px 0 0; font-size: var(--t-body-xs); line-height: 1.45; color: var(--mute); }
+.kbs-notes .kbx-ba { text-align: left; }
+/* prefersReducedMotion stacks every beat instead of parking on the last */
+.kbs-static { display: flex; flex-direction: column; align-items: center; text-align: center; gap: var(--sp-block); margin-top: var(--sp-block); }
+@media (max-width: 860px) {
+  .kbs-cost-grid, .kbs-honest-grid { grid-template-columns: 1fr; }
+}
+
+/* the real artefact behind the "open in any chatbot" feature: the prompt the
+   Copy page control puts on the clipboard. shown verbatim rather than
+   described, because the whole point of this beat is that there is no system
+   to describe - just a URL a reader hands to their own assistant. */
+.kbs-md { width: 100%; max-width: 900px; }
+.kbs-prompt { margin-top: 22px; border: 1px solid var(--line2); border-radius: var(--r-md); background: var(--ink2); padding: 18px 20px; text-align: left; }
+.kbs-prompt-h { display: block; font-family: var(--mono); font-size: var(--t-micro); letter-spacing: 0.16em; text-transform: uppercase; color: var(--dim); margin-bottom: 10px; }
+.kbs-prompt p { margin: 0; font-size: var(--t-body-sm); line-height: 1.5; color: var(--text); }
+.kbs-prompt em { font-style: normal; font-family: var(--mono); font-size: 0.92em; color: #3696B1; word-break: break-all; }
+
+/* a Pipe rendered inside a pinned beat never receives .on - useReveal only
+   observes what exists when the case study mounts - so its stops would sit
+   at the opacity:0 the staggered entrance starts from. .kbx-plain is that
+   entrance turned off: the beat swap is already the entrance. */
+.kbx-pipe.kbx-plain .dvp { opacity: 1; animation: none; }
+
+/* the nine-day timeline and its fifteen-minute counterpart - the same strip
+   twice, because the whole argument is that the steps did not change, only
+   who had to be in the room. */
+.kbs-wide { width: 100%; max-width: 980px; }
+.kbs-rail { display: flex; flex-wrap: wrap; border: 1px solid var(--line2); border-radius: var(--r-md); overflow: hidden; background: var(--ink2); }
+.kbs-rail-s { flex: 1 1 150px; padding: 16px; border-right: 1px solid var(--line2); text-align: left; }
+.kbs-rail-s:last-child { border-right: 0; }
+.kbs-rail-d { display: block; font-family: var(--mono); font-size: var(--t-micro); letter-spacing: 0.14em; text-transform: uppercase; color: var(--dim); }
+.kbs-rail-s b { display: block; margin-top: 8px; font-family: var(--disp); font-weight: 800; font-size: var(--t-card); letter-spacing: -0.02em; color: var(--rose); }
+.kbs-rail-new .kbs-rail-s b { color: var(--up); }
+.kbs-rail-s p { margin: 6px 0 0; font-size: var(--t-body-xs); line-height: 1.4; color: var(--mute); }
+.kbs-lim { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; }
+.kbs-lim-4 { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+.kbs-stats { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px; }
+.kbs-stat { border: 1px solid var(--line2); border-radius: var(--r-md); background: var(--ink2); padding: 18px; text-align: left; }
+.kbs-stat b { display: block; font-family: var(--disp); font-weight: 800; font-size: var(--t-stat-sm); letter-spacing: -0.03em; color: var(--text); line-height: 1; }
+.kbs-stat span { display: block; margin-top: 10px; font-family: var(--mono); font-size: var(--t-micro); letter-spacing: 0.12em; text-transform: uppercase; color: var(--dim); }
+.kbs-stat small { display: block; margin-top: 7px; font-size: var(--t-body-xs); line-height: 1.4; color: var(--mute); }
+/* the alternatives table reuses the audit table from the Customer Portal -
+   same job, same shape, so it should not be a second set of rules. */
+.kbs-tbl { text-align: left; }
+.kbs-tbl .aud-r { grid-template-columns: 1.3fr 1fr 1fr 1.4fr; }
+@media (max-width: 900px) {
+  .kbs-lim, .kbs-lim-4, .kbs-stats { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}

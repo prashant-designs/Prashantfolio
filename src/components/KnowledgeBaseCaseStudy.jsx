@@ -1,4 +1,4 @@
-import { Fragment, useEffect, useRef } from 'react';
+import { Fragment, useEffect, useRef, useState } from 'react';
 
 /* ---- line-icon set for this case study ----
    same language as GenAICaseStudy's ICONS / CurrentProject's .tl-cs-icon svgs:
@@ -36,37 +36,8 @@ function Ico({ name }) {
   );
 }
 
-/* a chip: icon in a recessed square. one shape, two sizes.
-   still no `cat` here, and the denser layout this pass produced makes the case
-   stronger rather than weaker. the categorical --chip-* ramp is for a set of
-   three or more parallel categories a reader has to tell apart (see CARD SYSTEM
-   in index.css); the only icon group left on the page is the three pipeline
-   rules, which are three facets of one guardrail rather than three categories,
-   and the last chip is a lone accent on a strip (.kbx-open). six hues over four
-   glyphs would be decoration. the teaser card in CurrentProject keeps its
-   data-cat="4" - that one IS one of six parallel cards. */
-function Chip({ name, lg }) {
-  return <i className={lg ? 'kbx-ic lg' : 'kbx-ic'}><Ico name={name} /></i>;
-}
 
-/* the problem, as fragments rather than failure modes. four short strings on
-   the shared .chip pill (AdminPortalCaseStudy's .adm-chiprow uses the same
-   pair) - a reader gets the shape of a documentation queue off four tags
-   faster than off three paragraphs describing it. */
-const PAIN = [
-  'no CMS for content owners',
-  'every edit through engineering',
-  'articles went stale',
-  'same process, two answers',
-];
 
-/* phase 1, as it runs today */
-const NOW = [
-  { i: 'users', t: 'product & engineering' },
-  { i: 'cms', t: 'Strapi' },
-  { i: 'book', t: 'KB portal' },
-  { i: 'reader', t: 'customers', n: 'live', last: true },
-];
 
 /* and the workflow the next phase proposes around Jira */
 const NEXT = [
@@ -78,18 +49,256 @@ const NEXT = [
   { i: 'book', t: 'knowledge base', n: 'phase 2', last: true },
 ];
 
-/* the three rules that make the pipeline above honest rather than fast - a spec
-   sheet now, not three essays: label, then the shortest qualifier that still
-   says something. `ok` puts the page's one lime on the approval rule. */
-const RULES = [
-  { i: 'notes', t: 'mandatory fields', p: 'epic, PRD, customer impact' },
-  { i: 'funnel', t: 'validate before generating', p: 'a missing field stops the run' },
-  { i: 'check', t: 'human approval, always', p: 'no autopilot while this is new', ok: true },
-];
 
 /* reveal-on-scroll for [data-rv] children, scoped to the overlay panel - the
    same hook GenAICaseStudy uses, kept local because a component file on this
    site only exports its component (see react/only-export-components) */
+function prefersReducedMotion() {
+  return typeof window !== 'undefined'
+    && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+}
+
+/* pinned-beat reader, same contract as the other case studies' */
+function useScrollBeat(ref, beats) {
+  const [beat, setBeat] = useState(prefersReducedMotion() ? beats - 1 : 0);
+  useEffect(() => {
+    const panel = document.querySelector('.ovl-panel');
+    const el = ref.current;
+    if (!panel || !el) return undefined;
+    let raf = null;
+    const update = () => {
+      const stage = el.firstElementChild;
+      if (!stage) return;
+      const top = el.getBoundingClientRect().top - panel.getBoundingClientRect().top + panel.scrollTop;
+      const span = el.offsetHeight - stage.offsetHeight;
+      if (span <= 0) return;
+      const pr = Math.min(1, Math.max(0, (panel.scrollTop - top) / span));
+      setBeat(Math.min(beats - 1, Math.floor(pr * beats)));
+    };
+    const onScroll = () => { if (raf) return; raf = requestAnimationFrame(() => { raf = null; update(); }); };
+    panel.addEventListener('scroll', onScroll);
+    update();
+    return () => panel.removeEventListener('scroll', onScroll);
+  }, [ref, beats]);
+  return beat;
+}
+
+/* the nine days, as they actually ran - mapped from ticket timestamps in
+   discovery. the point is that not one of these steps is hard; the delay is
+   entirely the dependency. */
+const KB_NINE = [
+  { d: 'Day 0', t: 'Spotted', n: 'support finds a wrong port speed in a guide' },
+  { d: 'Day 1', t: 'Ticketed', n: 'raised to the dev backlog - no content owner exists' },
+  { d: 'Day 4', t: 'Queued', n: 'waits for the next sprint, against roadmap work' },
+  { d: 'Day 7', t: 'Edited', n: "a developer edits wording they don't own the meaning of" },
+  { d: 'Day 9', t: 'Live', n: 'deployed. nobody checks whether it answered the question' },
+];
+
+/* six structural limits, not six bugs - each one is a thing the platform
+   could not do, rather than a thing it did badly. */
+const KB_LIMITS = [
+  { n: '01', t: 'Developer-gated', p: 'Publishing needed repo access, so the people who knew the answer could not write it.' },
+  { n: '02', t: 'Flat content', p: 'Everything was a page. No how-to, no reference, no release note - so nothing could be filtered or reused.' },
+  { n: '03', t: 'Fixed interface', p: 'One template, one theme. No API layout, no product landing pages.' },
+  { n: '04', t: 'Search returns pages', p: 'People arrived with a question and left with a reading list.' },
+  { n: '05', t: 'No governance', p: 'No owner, no review, no freshness date. Stale instructions read as authoritative as verified ones.' },
+  { n: '06', t: 'Blind operation', p: 'No view of what was read, searched, or not found. Content decisions were opinion.' },
+];
+
+/* what discovery actually consisted of - the numbers matter because they are
+   what turns "we should fix the docs" into a costed argument. */
+const KB_DISCOVERY = [
+  { b: '18', k: 'Stakeholder interviews', s: 'support, NOC, solution architects, sales engineers' },
+  { b: '1.2k', k: 'Support tickets clustered', s: 'tagged by intent, to find what docs should have answered' },
+  { b: '90d', k: 'Search logs read', s: 'zero-result queries became the content backlog' },
+  { b: '340', k: 'Pages audited', s: 'scored for accuracy, staleness, duplication, ownership' },
+];
+
+/* the four commitments made before any tool was chosen. */
+const KB_PRINCIPLES = [
+  { t: 'Answers, not pages', p: 'Success is a resolved question, not a pageview.' },
+  { t: 'Structure once, publish anywhere', p: 'Content is data. A layout is a consumer of it, never its container.' },
+  { t: 'Authors are the primary users', p: "If an expert can't publish in 15 minutes, the system failed." },
+  { t: 'Residency is non-negotiable', p: 'Telecom customers ask where their data sits. That answer comes first.' },
+];
+
+/* the decision, argued rather than asserted - residency eliminated most of
+   the field before cost or features were even discussed. */
+const KB_OPTIONS = [
+  { n: 'Wiki.js (current)', a: 'yes', b: 'flat pages', c: 'basic', v: 'ceiling already hit' },
+  { n: 'Confluence', a: 'cloud-first', b: 'weak', c: 'yes', v: 'a wiki, not a product surface' },
+  { n: 'Contentful', a: 'no', b: 'strong', c: 'yes', v: 'residency + cost blocked it' },
+  { n: 'Sanity', a: 'no', b: 'strong', c: 'yes', v: 'close second, hosting model failed' },
+  { n: 'Docusaurus', a: 'yes', b: 'files, not data', c: 'git PRs', v: 're-creates the dev dependency' },
+];
+
+/* publish is one button; these are the things it sets off. */
+const KB_PUBLISH = [
+  { d: 'Min 0', t: 'Draft', n: 'the expert writes in structured fields, with a live preview' },
+  { d: 'Min 5', t: 'Review', n: 'role-based approval - owner and verify-by date are required' },
+  { d: 'Min 6', t: 'Publish', n: 'webhook fires. no developer anywhere in the path' },
+  { d: 'Min 8', t: 'Build', n: 'incremental rebuild, cache invalidation, redirects' },
+  { d: 'Min 15', t: 'Live', n: 'and its markdown twin is live at the same moment' },
+];
+
+
+/* what shipped instead of an assistant. no model is hosted, nothing is
+   indexed, and there is no chatbot to keep correct - every page simply also
+   exists as a plain markdown file at its own URL, and a control on the page
+   hands that URL to whichever assistant the reader already uses. */
+const KB_MD = [
+  { i: 'book', t: 'Docs page' },
+  { i: 'notes', t: '/md/page.html' },
+  { i: 'pen', t: 'Copy page' },
+  { i: 'reader', t: 'their own assistant', n: 'live', last: true },
+];
+
+/* why that beats the chatbot everyone asked for - three consequences, not
+   three features. */
+const KB_WHY = [
+  { t: 'Nothing to keep in sync', p: 'The markdown IS the page. It cannot drift from what the reader is looking at.' },
+  { t: 'Nothing to host', p: 'No model, no index, no monthly bill that grows with questions asked.' },
+  { t: 'They use what they trust', p: 'The reader brings their own assistant. We just make the page legible to it.', ok: true },
+];
+
+
+/* the whole case study as one pinned run of beats, written for a reader who
+   has never operated a CMS: no tool names in the narrative, no retrieval
+   vocabulary, one idea per screen. the built/designed split the old version
+   was careful about is kept - beats 4 onward are explicitly the proposal. */
+function KbStoryScene() {
+  const ref = useRef(null);
+  const beat = useScrollBeat(ref, 13);
+  const reduced = prefersReducedMotion();
+
+  const beats = [
+    <h3 className="kbs-big" key="nine">
+      A one-word fix<br />took <em className="cp-rose">nine days</em>.
+    </h3>,
+    <div className="kbs-wide" key="timeline">
+      <span className="kbs-eyebrow">Not because it was hard</span>
+      <div className="kbs-rail">
+        {KB_NINE.map((x) => (
+          <div className="kbs-rail-s" key={x.d}>
+            <span className="kbs-rail-d">{x.d}</span>
+            <b>{x.t}</b>
+            <p>{x.n}</p>
+          </div>
+        ))}
+      </div>
+      <p className="kbs-note">content was code, and code needs a developer, a review, a merge and a deploy window.</p>
+    </div>,
+    <div className="kbs-wide" key="limits">
+      <span className="kbs-eyebrow">Six structural limits, not six bugs</span>
+      <div className="kbs-lim">
+        {KB_LIMITS.map((l) => (
+          <div className="kbs-card" key={l.n}>
+            <span className="kbs-k">{l.n}</span>
+            <b>{l.t}</b>
+            <p>{l.p}</p>
+          </div>
+        ))}
+      </div>
+    </div>,
+    <h3 className="kbs-big" key="dep">
+      The wiki wasn&apos;t slow.<br />The <em className="cp-amber">dependency</em> was.
+    </h3>,
+    <div className="kbs-wide" key="disc">
+      <span className="kbs-eyebrow">So I went looking for the question behind the ticket</span>
+      <div className="kbs-stats">
+        {KB_DISCOVERY.map((d) => (
+          <div className="kbs-stat" key={d.k}>
+            <b>{d.b}</b>
+            <span>{d.k}</span>
+            <small>{d.s}</small>
+          </div>
+        ))}
+      </div>
+    </div>,
+    <div className="kbs-wide" key="prin">
+      <span className="kbs-eyebrow">What I committed to before choosing a tool</span>
+      <div className="kbs-lim kbs-lim-4">
+        {KB_PRINCIPLES.map((x) => (
+          <div className="kbs-card" key={x.t}>
+            <b>{x.t}</b>
+            <p>{x.p}</p>
+          </div>
+        ))}
+      </div>
+    </div>,
+    <div className="kbs-wide" key="options">
+      <span className="kbs-eyebrow">Residency ruled out most of the field before cost did</span>
+      <div className="aud kbs-tbl">
+        <div className="aud-r aud-h"><span>option</span><span>self-host</span><span>content model</span><span>verdict</span></div>
+        {KB_OPTIONS.map((o) => (
+          <div className="aud-r" key={o.n}><span>{o.n}</span><span>{o.a}</span><span>{o.b}</span><span>{o.v}</span></div>
+        ))}
+        <div className="aud-r aud-p"><span>Strapi →</span><span>our AWS, our VPC</span><span>fully custom</span><span>chosen</span></div>
+      </div>
+    </div>,
+    <h3 className="kbs-big" key="model">
+      The content model<br />was the <em className="cp-up">real design work</em>.
+    </h3>,
+    <div className="kbs-wide" key="publish">
+      <span className="kbs-eyebrow">Publish is one button</span>
+      <div className="kbs-rail kbs-rail-new">
+        {KB_PUBLISH.map((x) => (
+          <div className="kbs-rail-s" key={x.d}>
+            <span className="kbs-rail-d">{x.d}</span>
+            <b>{x.t}</b>
+            <p>{x.n}</p>
+          </div>
+        ))}
+      </div>
+      <p className="kbs-note">portal built with Claude Code against the Figma structure - nine days became fifteen minutes.</p>
+    </div>,
+    <h3 className="kbs-big" key="chatbot">
+      Everyone said: <em className="cp-rose">add a chatbot</em>.<br />We didn&apos;t build one.
+    </h3>,
+    <div className="kbs-md" key="how">
+      <span className="kbs-eyebrow">Every page is also a plain markdown file</span>
+      <Pipe stops={KB_MD} plain />
+      <div className="kbs-prompt">
+        <span className="kbs-prompt-h">what &quot;Copy page&quot; hands you</span>
+        <p>
+          Could you pull up this Polarin Docs page and get familiar with it? I&apos;ll have questions once you&apos;ve had a look:{' '}
+          <em>https://polarin-docs.vercel.app/md/release-notes.html</em>
+        </p>
+      </div>
+      <p className="kbs-note">paste it into Claude, ChatGPT, anything - the reader brings their own assistant, we just make the page legible to it.</p>
+    </div>,
+    <div className="kbs-wide" key="why">
+      <span className="kbs-eyebrow">Why that beats the chatbot</span>
+      <div className="kbs-lim kbs-lim-3">
+        {KB_WHY.map((r) => (
+          <div className={`kbs-card${r.ok ? ' ok' : ''}`} key={r.t}>
+            <b>{r.t}</b>
+            <p>{r.p}</p>
+          </div>
+        ))}
+      </div>
+    </div>,
+    <div className="kbs-notes" key="notes">
+      <span className="kbs-eyebrow">Designed next · release notes from Jira</span>
+      <Pipe stops={NEXT} plain />
+      <div className="kbx-ba">
+        <p><span>an engineer types</span>Added centralized alert visibility across all customer services.</p>
+        <p className="to"><span>a customer reads</span>Alerts for every service now sit on one screen - and here is where to find it.</p>
+      </div>
+      <p className="kbs-note">they already write down what they built. we ask one more question while they still remember.</p>
+    </div>,
+    <div className="inv-highlight kb-pull" key="pull">No AI can write an honest article out of an empty field.</div>,
+  ];
+
+  if (reduced) return <div className="kbs-static">{beats}</div>;
+
+  return (
+    <div className="oscn kbs-oscn" ref={ref} style={{ '--beats': beats.length }}>
+      <div className="oscn-stage kbs-stage" key={beat}>{beats[beat]}</div>
+    </div>
+  );
+}
+
 function useReveal(ref) {
   useEffect(() => {
     const root = ref.current;
@@ -121,9 +330,13 @@ function useReveal(ref) {
    same dashed strip, same mono stops, same stepped reveal - so the "today" and
    "where it is headed" flows are visibly the same kind of object. with the
    prose under them gone, these two strips are now what carries beats 3 and 4. */
-function Pipe({ stops }) {
+/* `plain` drops the reveal hooks. useReveal collects its [data-rv] targets
+   once, when the case study mounts - a beat inside the pinned scene mounts
+   long after that, so its Pipe was never observed and simply sat at opacity
+   0 forever. inside the scene the beat swap is already the entrance. */
+function Pipe({ stops, plain }) {
   return (
-    <div className="dv-pipe kbx-pipe kbx-rv" data-rv>
+    <div className={plain ? 'dv-pipe kbx-pipe kbx-plain' : 'dv-pipe kbx-pipe kbx-rv'} data-rv={plain ? undefined : true}>
       {stops.map((s, i) => (
         <Fragment key={s.t + i}>
           {i > 0 ? <em aria-hidden="true">→</em> : null}
@@ -155,64 +368,7 @@ export default function KnowledgeBaseCaseStudy({ onPrev, onNext, idx, total }) {
         </div>
       </div>
 
-      {/* ---------- 1. the problem, as four tags ---------- */}
-      <div className="inv-section">
-        <div className="inv-step-tag"><i></i>The problem</div>
-        <h3 className="plain">WikiJS, and one team who could operate it</h3>
-        <div className="adm-chiprow kbx-pain kbx-rv" data-rv>
-          {PAIN.map((p) => (
-            <span className="chip" key={p}>{p}</span>
-          ))}
-        </div>
-      </div>
-
-      {/* ---------- 2. my approach, as three labels ---------- */}
-      <div className="inv-section">
-        <div className="inv-step-tag"><i></i>My approach</div>
-        <h3 className="plain">Built out of what we already had</h3>
-        <div className="inv-meta">
-          <div><span>Designed in</span><b>Figma - structure & UI, mine</b></div>
-          <div><span>Built with</span><b>Claude Code, Figma over MCP</b></div>
-          <div><span>Content in</span><b>Strapi - already ours</b></div>
-        </div>
-        <p className="dv-p dim">a wording fix is a content edit now, not a release.</p>
-      </div>
-
-      {/* ---------- 3. how much we solved, as the flow it runs ---------- */}
-      <div className="inv-section">
-        <div className="inv-step-tag"><i></i>How much we solved</div>
-        <h3 className="plain">Phase 1, live</h3>
-        <Pipe stops={NOW} />
-        <div className="kbx-open kbx-rv" data-rv>
-          <Chip name="nogauge" lg />
-          <div>
-            <span>how much, honestly</span>
-            <p>Publishing left engineering. Staying current did not. <b className="kbx-hl">No numbers yet.</b></p>
-          </div>
-        </div>
-      </div>
-
-      {/* ---------- 4. what's next: same strip, longer flow ---------- */}
-      <div className="inv-section">
-        <div className="inv-step-tag"><i></i>What&apos;s next</div>
-        <h3 className="plain">Make Jira the source of truth</h3>
-        <p className="kbx-hint">proposed · not built yet</p>
-        <Pipe stops={NEXT} />
-        <div className="kbx-ba kbx-rv" data-rv>
-          <p><span>jira says</span>Added centralized alert visibility across all customer services.</p>
-          <p className="to"><span>customer reads</span>Alerts for every service now sit on one screen - and here is where to find it.</p>
-        </div>
-        <div className="ivx-principles kbx-gates kbx-rv" data-rv>
-          {RULES.map((r) => (
-            <div className={r.ok ? 'ivp ok' : 'ivp'} key={r.t}>
-              <Chip name={r.i} />
-              <b>{r.t}</b>
-              <p>{r.p}</p>
-            </div>
-          ))}
-        </div>
-        <div className="inv-highlight kb-pull">No AI can write an honest article out of an empty field.</div>
-      </div>
+      <KbStoryScene />
 
       <div className="ovl-nav">
         <button type="button" onClick={onPrev}>← Prev</button>
