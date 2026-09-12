@@ -36,12 +36,12 @@ const LANDSCAPE = [
 ];
 
 const AUDIT_GAPS = [
-  { gap: 'network monitoring', found: 'no live visibility into availability, packet loss, jitter or latency once a circuit went live', built: 'a per-circuit health dashboard - availability, packets in/out, traffic in/out, jitter & latency' },
-  { gap: 'plan flexibility', found: 'locked into whatever was ordered, no self-serve way to scale', built: 'upgrade or downgrade an active service without raising a ticket' },
-  { gap: 'payment terms', found: 'one rigid payment model, take it or leave it', built: 'flexible payment terms and options at checkout' },
-  { gap: 'multi-location billing', found: 'no way to consolidate spend across locations for GST input-credit claims', built: 'billing that rolls up multi-location purchases the way Indian tax filing actually needs' },
-  { gap: 'API sandbox', found: 'nothing to test before committing budget', built: 'a live sandbox - try the API before you buy' },
-  { gap: 'assisted ordering', found: 'enterprise buyers still needed a human, but reps had no tool to help them', built: "a sales-assist flow - our team places and manages orders on a customer's behalf" },
+  { gap: 'network monitoring', found: 'no live visibility', built: 'per-circuit health - availability, loss, jitter, latency' },
+  { gap: 'plan flexibility', found: 'locked to what you ordered', built: 'upgrade or downgrade without a ticket' },
+  { gap: 'payment terms', found: 'one rigid model', built: 'flexible terms at checkout' },
+  { gap: 'multi-location billing', found: 'no GST input-credit rollup', built: 'billing that rolls up the way Indian tax filing needs' },
+  { gap: 'API sandbox', found: 'nothing to test first', built: 'a live sandbox - try before you buy' },
+  { gap: 'assisted ordering', found: 'reps had no tool', built: 'sales places and manages orders for a customer' },
 ];
 
 const SHOTS = {
@@ -469,11 +469,11 @@ function AlexJourney() {
 
 function TheBetScene() {
   const ref = useRef(null);
-  const [beat] = useScrollBeat(ref, 8);
+  const [beat] = useScrollBeat(ref, 7);
   const on = (b) => `obeat ${beat >= b ? 'on' : ''}`;
 
   return (
-    <div className="oscn bet-oscn" ref={ref} style={{ '--beats': 8 }}>
+    <div className="oscn bet-oscn" ref={ref} style={{ '--beats': 7 }}>
       <div className="oscn-stage bet-stage" key={beat < 2 ? beat : beat === 7 ? 'map' : 'combo'}>
         {beat === 0 && (
           <>
@@ -517,15 +517,6 @@ function TheBetScene() {
           </>
         )}
 
-        {/* the Solution section's own capstone - not squeezed into the swap
-            comparison above (its own beat, its own remount) so it reads as
-            one clean "here's where Polarin is" moment rather than one more
-            row bolted onto an already-busy screen. */}
-        {(beat === 7 || prefersReducedMotion) && (
-          <div className="bet-map obeat on">
-            <img src="/Poalrin on Map.png" alt="Polarin, building the NaaS category from India" />
-          </div>
-        )}
       </div>
     </div>
   );
@@ -535,36 +526,53 @@ function AuditScene() {
   const ref = useRef(null);
   const [beat] = useScrollBeat(ref, 10);
   const on = (b) => (beat >= b ? 'on' : '');
+  // two acts, not one accumulating pile: the benchmark (table + what it
+  // found) and then the gap list. stacking all ten beats into .oscn-stage's
+  // fixed 74vh box overflowed it by ~150px, and flexbox answered that by
+  // shrinking the one child that could shrink - the audit table - which its
+  // own overflow:hidden then cropped from six rows to a 104px sliver. the
+  // same reason ExploreScene swaps one beat's content at a time.
+  // useScrollBeat starts at the LAST beat under prefersReducedMotion, which
+  // with a two-act split would have hidden act one - i.e. the benchmark
+  // table itself - from exactly the readers who never scroll it into view.
+  // there, both acts render stacked; the stage's own overflow-y handles it.
+  const act2 = beat >= 8;
+  const showA1 = !act2 || prefersReducedMotion;
+  const showA2 = act2 || prefersReducedMotion;
 
   return (
     <div className="oscn" ref={ref} style={{ '--beats': 10 }}>
-      <div className="oscn-stage aud-stage">
-        <p className={`aud-lead obeat ${on(0)}`}>weeks of desk research first - regulatory filings, market maps, every public pricing page. then 4 global platforms audited feature-by-feature, every gap turned into a design requirement:</p>
-        <div className="aud">
-          <div className={`aud-r aud-h obeat ${on(0)}`}><span>platform</span><span>self-serve</span><span>onboarding</span><span>india</span></div>
-          {AUDIT.map((a, i) => (
-            <div className={`aud-r obeat ${on(i + 1)}`} key={a.name}><span>{a.name}</span><span>{a.serve}</span><span>{a.onboard}</span><span>{a.india}</span></div>
-          ))}
-          <div className={`aud-r aud-p obeat ${on(5)}`}><span>Polarin →</span><span>full</span><span>15 minutes</span><span>native</span></div>
-        </div>
-
-        <p className={`aud-finding obeat ${on(6)}`}><b>the output of that benchmark:</b> not one of the four runs end-to-end in India - two don&apos;t operate here at all, one is limited. <em className="cp-signal">Polarin would be the first self-serve NaaS platform built for the Indian market.</em></p>
-
-        <p className={`aud-insight obeat ${on(7)}`}>every one of them chose engineering power over buyer accessibility. the person who approves a ₹50L contract <em>can&apos;t place an order without help.</em> that&apos;s the gap Polarin closes.</p>
-
-        <div className={`aud-gaps obeat ${on(8)}`}>
-          <p className="aud-gaps-lead">the audit went past onboarding - every feature area, across all four:</p>
-          <div className="aud-gap-grid">
-            {AUDIT_GAPS.map((g) => (
-              <div className="aud-gap" key={g.gap}>
-                <b>{g.gap}</b>
-                <p><span className="aud-gap-found">{g.found}</span><span className="aud-gap-arrow">→ built:</span> {g.built}</p>
-              </div>
+      <div className={`oscn-stage aud-stage ${prefersReducedMotion ? 'aud-stage-stack' : ''}`}>
+        <div className={`aud-act ${showA1 ? '' : 'aud-act-out'}`}>
+          <p className={`aud-lead obeat ${on(0)}`}><b className="cp-signal">4 global platforms</b>, audited feature by feature. every gap became a requirement:</p>
+          <div className="aud">
+            <div className={`aud-r aud-h obeat ${on(0)}`}><span>platform</span><span>self-serve</span><span>onboarding</span><span>india</span></div>
+            {AUDIT.map((a, i) => (
+              <div className={`aud-r obeat ${on(i + 1)}`} key={a.name}><span>{a.name}</span><span>{a.serve}</span><span>{a.onboard}</span><span>{a.india}</span></div>
             ))}
+            <div className={`aud-r aud-p obeat ${on(5)}`}><span>Polarin →</span><span>full</span><span>15 minutes</span><span>native</span></div>
           </div>
+
+          <p className={`aud-finding obeat ${on(6)}`}><b className="cp-rose">None run end-to-end in India.</b> <em className="cp-up">Polarin would be the first.</em></p>
+
+          <p className={`aud-insight obeat ${on(7)}`}>the person approving <em className="cp-amber">₹50L</em> <em className="cp-rose">can&apos;t order without help.</em></p>
         </div>
 
-        <p className={`aud-next obeat ${on(9)}`}>next: benchmarking doesn&apos;t stop at features - it&apos;s extending to the experience itself, tracked every quarter as competitors ship and expectations move.</p>
+        <div className={`aud-act ${showA2 ? '' : 'aud-act-out'}`}>
+          <div className={`aud-gaps obeat ${showA2 ? 'on' : ''}`}>
+            <p className="aud-gaps-lead">six gaps, six things built:</p>
+            <div className="aud-gap-grid">
+              {AUDIT_GAPS.map((g) => (
+                <div className="aud-gap" key={g.gap}>
+                  <b>{g.gap}</b>
+                  <p><span className="aud-gap-found">{g.found}</span> <span className="aud-gap-arrow">→</span> {g.built}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          <p className={`aud-next obeat ${on(9)}`}>tracked <em className="cp-signal">every quarter</em> - competitors ship, expectations move.</p>
+        </div>
       </div>
     </div>
   );
@@ -579,13 +587,13 @@ function AuditScene() {
 // now have their own dedicated sections ("Desk research" and "Design
 // system") instead of sharing this one's screen time.
 const EFFORT_MAP = [
-  { m: 'KYC / org profile verification', effort: 20, impact: 86, first: true },
-  { m: 'user management', effort: 30, impact: 76, first: true },
-  { m: 'order journey', effort: 58, impact: 94, first: true },
-  { m: 'service details', effort: 36, impact: 66, first: true },
-  { m: 'activity logs', effort: 24, impact: 52, first: true },
-  { m: 'billing & invoicing', effort: 74, impact: 62, first: false },
-  { m: 'network health monitoring', effort: 82, impact: 80, first: false },
+  { m: 'KYC / org verification', effort: 20, impact: 86, first: true, weeks: '2-3 wks', value: 'no KYC, no contract - it gates every order' },
+  { m: 'User management', effort: 30, impact: 76, first: true, weeks: '3-4 wks', value: 'a team shares an account without sharing a password' },
+  { m: 'Order journey', effort: 58, impact: 94, first: true, weeks: '7-8 wks', value: 'the product itself - 90 days down to 10 minutes' },
+  { m: 'Service details', effort: 36, impact: 66, first: true, weeks: '4 wks', value: "answers 'is it up?' without a support call" },
+  { m: 'Activity logs', effort: 24, impact: 52, first: true, weeks: '2 wks', value: 'the audit trail procurement asks for' },
+  { m: 'Billing & invoicing', effort: 74, impact: 62, first: false, weeks: '10 wks', value: "GST input credit, or finance won't sign" },
+  { m: 'Health monitoring', effort: 82, impact: 80, first: false, weeks: '12 wks', value: "evidence for the customer's own SLA review" },
 ];
 
 // the real Polarin palette, sampled off the product screenshots rather than
@@ -642,188 +650,273 @@ function useDsClock(ref) {
 
 // the components, rendered as live DOM rather than shown as cropped
 // screenshots. every specimen is built out of the tokens declared once on
-// .ds-canvas, and lighting a token in the spectrum above dims everything
+// the tile, and lighting a token in the colour tile dims everything
 // that isn't made of it - which is the claim this section exists to make,
 // demonstrated instead of asserted.
+// the five stages this case study is organised into, each already its own
+// section further down - the chips jump there rather than restating them.
+const APPROACH_STAGES = [
+  { label: 'Desk research', to: 3 },
+  { label: 'Information architecture', to: 4 },
+  { label: 'Exploration', to: 5 },
+  { label: 'Design system', to: 6 },
+  { label: 'Screens', to: 7 },
+];
+
+const APPROACH_INPUTS = [
+  { k: 'Architects', n: '4 months', v: 'embedded with the network team' },
+  { k: 'Sales & ops', n: 'Interviews', v: 'what gets asked, what gets stuck' },
+  { k: 'Public record', n: 'Everything', v: 'filings, pricing, NaaS docs' },
+];
+
+// the portal's real taxonomy, straight off the product's own navigation: a
+// fixed app shell, and underneath it a catalogue grouped by what a buyer is
+// trying to connect rather than by the technology that does it.
+const IA_SHELL = ['Dashboard', 'Services', 'Settings', 'Invoices', 'Help'];
+const IA_CATALOGUE = [
+  { group: 'Cloud Connect', items: ['Cloud-to-Cloud', 'DC to Cloud'] },
+  { group: 'Global DCI', items: ['DCI Wave', 'DCI Layer 2'] },
+  { group: 'Internet', items: ['Internet Exchange'] },
+  { group: 'Core Products', items: ['Port', 'Virtual Router'] },
+];
+
+// one idea per beat, centred, the same shape Problem and Solution use - a
+// reader should take a screen in within a second or two and keep scrolling,
+// so nothing here carries more than a line or two. the research section is
+// the deliberate exception: that one earns its density.
+// one idea per beat, centred, the same shape Problem and Solution use - a
+// reader should take a screen in within a second or two and keep scrolling,
+// so nothing here carries more than a line or two. the research section is
+// the deliberate exception: that one earns its density.
+//
+// each beat is a function so prefersReducedMotion can render the whole set
+// stacked: useScrollBeat parks that mode on the LAST beat, which with a
+// `beat === n &&` structure would show a reader the closing slide and
+// nothing that led to it.
+function ApproachScene({ jump }) {
+  const ref = useRef(null);
+  const [beat] = useScrollBeat(ref, 5);
+
+  const beats = [
+    <div className="apr-briefwrap" key="brief">
+      <span className="apr-eyebrow obeat on">The brief</span>
+      <blockquote className="apr-brief obeat on">
+        &quot;Make ordering connectivity <em className="cp-signal">self-serve</em> - where nobody had.&quot;
+      </blockquote>
+    </div>,
+    <h3 className="apr-big obeat on" key="notemplate">
+      No template to copy.<br /><em className="cp-rose">None of them ran in India.</em>
+    </h3>,
+    <div key="inputs">
+      <span className="apr-eyebrow obeat on">Where the understanding came from</span>
+      <div className="apr-inputs obeat on">
+        {APPROACH_INPUTS.map((i) => (
+          <div className="apr-input" key={i.k}>
+            <b className="cp-signal">{i.n}</b>
+            <span>{i.k}</span>
+          </div>
+        ))}
+      </div>
+    </div>,
+    <h3 className="apr-big obeat on" key="doc">
+      The first thing I made<br />wasn&apos;t a screen. It was <em className="cp-up">the document</em>.
+    </h3>,
+    <div key="stages">
+      <p className="apr-willsee obeat on">In this case study we will see</p>
+      <div className="apr-stages obeat on">
+        {APPROACH_STAGES.map((st) => (
+          <button type="button" key={st.label} onClick={() => jump(st.to)}>{st.label}</button>
+        ))}
+      </div>
+    </div>,
+  ];
+
+  if (prefersReducedMotion) {
+    return <div className="apr-static">{beats}</div>;
+  }
+
+  return (
+    <div className="oscn apr-oscn" ref={ref} style={{ '--beats': beats.length }}>
+      <div className="oscn-stage apr-stage" key={beat}>{beats[beat]}</div>
+    </div>
+  );
+}
+
+function IAScene() {
+  const ref = useRef(null);
+  const [beat] = useScrollBeat(ref, 4);
+
+  const beats = [
+    <h3 className="apr-big obeat on" key="intent">
+      Engineering sees <em className="cp-rose">transport</em>.<br />A buyer sees <em className="cp-up">a rack here, a cloud there</em>.
+    </h3>,
+    <div key="tree">
+      <span className="apr-eyebrow obeat on">Grouped by intent, not by transport</span>
+      <div className="ia-tree obeat on">
+        <div className="ia-shell-row">
+          {IA_SHELL.map((n) => <span className="ia-nav" key={n}>{n}</span>)}
+        </div>
+        <div className="ia-cat-grid">
+          {IA_CATALOGUE.map((g) => (
+            <div className="ia-group" key={g.group}>
+              <b>{g.group}</b>
+              <ul>{g.items.map((i) => <li key={i}>{i}</li>)}</ul>
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>,
+    <h3 className="apr-big obeat on" key="seven">
+      <em className="cp-amber">Seven modules, one designer.</em><br />Cheap and unskippable <em className="cp-up">shipped first</em>.
+    </h3>,
+    <div className="ia-effort" key="effort">
+      <span className="apr-eyebrow obeat on">Effort against impact</span>
+      <div className="eff-map obeat on">
+        <span className="eff-axis-y">impact →</span>
+        <span className="eff-axis-x">effort →</span>
+        {EFFORT_MAP.map((m) => (
+          <div
+            className={`eff-dot ${m.first ? 'first' : ''} ${m.effort > 55 ? 'flip' : ''} ${m.impact > 72 ? 'vflip' : ''}`}
+            key={m.m}
+            style={{ left: `${m.effort}%`, bottom: `${m.impact}%` }}
+            tabIndex={0}
+          >
+            <i />
+            <b className="eff-name">{m.m}</b>
+            <div className="eff-pop">
+              <span className="eff-pop-w">{m.weeks} to build</span>
+              <span className="eff-pop-v">{m.value}</span>
+            </div>
+          </div>
+        ))}
+      </div>
+      <p className="apr-cap obeat on">filled = shipped in the first release</p>
+    </div>,
+  ];
+
+  if (prefersReducedMotion) {
+    return <div className="apr-static">{beats}</div>;
+  }
+
+  return (
+    <div className="oscn ia-oscn" ref={ref} style={{ '--beats': beats.length }}>
+      <div className="oscn-stage ia-stage" key={beat}>{beats[beat]}</div>
+    </div>
+  );
+}
+
+// the products the same four-step skeleton carries - only the Configure
+// step's fields differ between them, which is the whole argument.
+const DS_PRODUCTS = [
+  { name: 'DCI Layer 2', field: 'MACSec · rate limit' },
+  { name: 'Port', field: 'bandwidth · LAG' },
+  { name: 'Virtual Router', field: 'ASN · peering' },
+  { name: 'Internet Exchange', field: 'peer · prefix limit' },
+];
+
+// the section as four cinematic tiles rather than a spec sheet: each one is
+// a moment of the system moving, on a shared slow clock, so the reader sees
+// the system behave rather than reads a list of what it contains.
 function DesignSystemScene() {
   const ref = useRef(null);
   const t = useDsClock(ref);
   const [pick, setPick] = useState(null);
-  const auto = DS_COLORS[t % DS_COLORS.length].key;
-  const focus = pick ?? (prefersReducedMotion ? null : auto);
+  const auto = DS_COLORS[t % DS_COLORS.length];
+  const tok = pick ? DS_COLORS.find((c) => c.key === pick) : auto;
+  const typeStep = prefersReducedMotion ? DS_TYPE.length - 1 : t % DS_TYPE.length;
   const step = prefersReducedMotion ? 1 : t % DS_STEPS.length;
-  const term = DS_TERMS[prefersReducedMotion ? 1 : Math.floor(t / 2) % DS_TERMS.length];
+  const prod = DS_PRODUCTS[prefersReducedMotion ? 0 : Math.floor(t / 2) % DS_PRODUCTS.length];
+  const term = DS_TERMS[prefersReducedMotion ? 1 : Math.floor(t / 3) % DS_TERMS.length];
 
   return (
     <div className="ds" ref={ref}>
       <div className="ds-head cps-rv" data-rv>
         <h3 className="ds-h">One system. Every <em className="cp-signal">product</em>.</h3>
-        <p className="ds-lede">Polarin sells a growing list of connectivity products and has had one designer. That arithmetic only works if a new product is an assembly job - so the system had to be the deliverable, not the screens.</p>
+        <p className="ds-lede">A growing product line and one designer. That only works if a new product is an assembly job.</p>
       </div>
 
-      {/* the palette as one continuous band rather than a grid of chips: a
-          colour is a claim about a whole surface, and the lit token widens
-          to take the room its claim deserves. */}
-      <div className="ds-spectrum cps-rv" data-rv style={{ '--d': '60ms' }}>
-        {DS_COLORS.map((c) => (
-          <button
-            type="button"
-            key={c.key}
-            className={`ds-sp${focus === c.key ? ' on' : ''}${c.light ? ' ds-sp-light' : ''}`}
-            style={{ background: c.hex, color: c.ink }}
-            onClick={() => setPick(pick === c.key ? null : c.key)}
-            aria-pressed={focus === c.key}
-          >
-            <span className="ds-sp-hex">{c.hex}</span>
-            <span className="ds-sp-name">{c.name}</span>
-            <span className="ds-sp-role">{c.role}</span>
-          </button>
-        ))}
-      </div>
-      <p className="ds-hint cps-rv" data-rv>
-        {pick ? 'showing every component built from this token - tap again to release' : 'each token lights the components built from it'}
-      </p>
-
-      <div className="ds-row">
-        <section className="ds-block ds-block-canvas cps-rv" data-rv style={{ '--d': '120ms' }}>
-          <span className="ds-tag">Components</span>
-          {/* undefined, not '' - an empty data-focus still satisfies the
-              [data-focus] selector that dims the specimens, which would
-              leave every one of them faded with no token lit to explain
-              why (exactly what prefersReducedMotion hits, since it never
-              lights one). */}
-          <div className="ds-canvas" data-focus={focus || undefined} data-surf="page">
-            <div className="ds-cell" data-surf="surface line">
-              <span className="ds-cell-t">Actions</span>
-              <div className="ds-cell-b">
-                <button type="button" className="ds-btn ds-btn-p" data-tok="teal">Upgrade</button>
-                <button type="button" className="ds-btn ds-btn-s" data-tok="line ink">Raise a Ticket</button>
-                <span className="ds-link" data-tok="blue">View Details</span>
-              </div>
-            </div>
-
-            <div className="ds-cell" data-surf="surface line">
-              <span className="ds-cell-t">Service state</span>
-              <div className="ds-cell-b">
-                <span className="ds-badge ds-badge-live" data-tok="live"><i className="ds-dot" />Live</span>
-                <span className="ds-badge ds-badge-down" data-tok="down">Down</span>
-                <span className="ds-badge ds-badge-design" data-tok="line">Design</span>
-              </div>
-            </div>
-
-            <div className="ds-cell" data-surf="surface line">
-              <span className="ds-cell-t">Filters, counted</span>
-              <div className="ds-cell-b">
-                <span className="ds-chip" data-tok="line">All <b>17</b></span>
-                <span className="ds-chip ds-chip-on" data-tok="teal">Live <b>6</b></span>
-                <span className="ds-chip" data-tok="line">Down <b>0</b></span>
-              </div>
-            </div>
-
-            {/* the hero band, and the only place Deep 900 appears at size */}
-            <div className="ds-cell ds-cell-3" data-surf="surface line">
-              <span className="ds-cell-t">Capacity band</span>
-              <div className="ds-hero" data-tok="deep">
-                <span className="ds-hero-l">EFFECTIVE RATE LIMIT</span>
-                <span className="ds-hero-v">3100 Mbps</span>
-              </div>
-            </div>
-
-            <div className="ds-cell ds-cell-3" data-surf="surface line">
-              <span className="ds-cell-t">Field, with its own answer</span>
-              <div className="ds-cell-b ds-cell-col">
-                <label className="ds-lbl" htmlFor="ds-rate" data-tok="ink">Rate Limit</label>
-                <input id="ds-rate" className="ds-input" data-tok="line" defaultValue="100" readOnly />
-                <span className="ds-help" data-tok="blue">Available Rate Limit: <b>6.9 Gbps</b></span>
-              </div>
-            </div>
-
-            {/* the four-step skeleton, walking - it is the one shape every
-                product's order flow reuses, so it earns being shown moving */}
-            <div className="ds-cell ds-cell-3" data-surf="surface line">
-              <span className="ds-cell-t">The four-step shape</span>
-              <ol className="ds-steps" data-tok="teal">
-                {DS_STEPS.map((s, i) => (
-                  <li key={s} className={i === step ? 'on' : i < step ? 'done' : ''}>
-                    <i>{i < step ? '✓' : i + 1}</i>{s}
-                  </li>
-                ))}
-              </ol>
-            </div>
-
-            <div className="ds-cell ds-cell-3" data-surf="surface line">
-              <span className="ds-cell-t">Service card</span>
-              <div className="ds-card" data-tok="teal">
-                <div className="ds-card-h">
-                  <b data-tok="ink">VCFor10GBPAYGSep</b>
-                  <span className="ds-badge ds-badge-live" data-tok="live"><i className="ds-dot" />Live</span>
-                </div>
-                <div className="ds-topo">
-                  <span className="ds-node">Sify</span>
-                  <span className="ds-wire"><em>3100 Mbps</em></span>
-                  <span className="ds-node">YOTTA</span>
-                </div>
-              </div>
-            </div>
-
-            {/* price and term move together: the specimen swaps term and the
-                number follows, which is the behaviour, not the layout */}
-            <div className="ds-cell ds-cell-6" data-surf="surface line">
-              <span className="ds-cell-t">Term, and the price that follows it</span>
-              <div className="ds-money">
-                <span className="ds-term" data-tok="teal" key={term.term}>
-                  <b>{term.term}</b><em>{term.sub}</em>
-                </span>
-                <span className="ds-price">
-                  <span className="ds-price-v" data-tok="ink" key={term.price}>{term.price}</span>
-                  {term.off && <span className="ds-off" data-tok="live">{term.off}</span>}
-                  {term.was && <span className="ds-price-was">{term.was}</span>}
-                </span>
-              </div>
-            </div>
-          </div>
-        </section>
-
-        <section className="ds-block cps-rv" data-rv style={{ '--d': '180ms' }}>
-          <span className="ds-tag">Type</span>
-          <div className="ds-type">
-            {DS_TYPE.map((ty) => (
-              <div className="ds-type-row" key={ty.label}>
-                <span className="ds-type-meta">{ty.label} · {ty.px}px</span>
-                <span className="ds-type-sample" style={{ fontSize: `${ty.px}px`, fontWeight: ty.w }}>{ty.sample}</span>
-              </div>
-            ))}
-            <div className="ds-type-row">
-              <span className="ds-type-meta">Identifiers · mono</span>
-              <span className="ds-type-mono">PVCDEL05BOM0401649</span>
-            </div>
-          </div>
-
-          {/* the other half of the foundations - the numbers every specimen
-              above is actually built to, rather than a second colour story */}
-          <span className="ds-tag ds-tag-2">Geometry</span>
-          <div className="ds-geo">
-            {[{ r: 7, l: 'controls' }, { r: 8, l: 'cards' }, { r: 10, l: 'panels' }, { r: 99, l: 'pills' }].map((g) => (
-              <div className="ds-geo-r" key={g.l}>
-                <i style={{ borderRadius: `${g.r}px` }} />
-                <b>{g.r === 99 ? '999' : g.r}</b>
-                <em>{g.l}</em>
-              </div>
+      <div className="ds-reel cps-rv" data-rv style={{ '--d': '60ms' }}>
+        {/* 1 - colour. the lit token drives the swatch stack and names itself. */}
+        <div className="ds-tile ds-tile-col" style={{ '--glow': tok.hex }}>
+          <span className="ds-tile-t">Colour</span>
+          <div className="ds-stack">
+            {DS_COLORS.map((c) => (
+              <button
+                type="button"
+                key={c.key}
+                className={`ds-band${tok.key === c.key ? ' on' : ''}`}
+                style={{ background: c.hex }}
+                onClick={() => setPick(pick === c.key ? null : c.key)}
+                aria-label={c.name}
+              />
             ))}
           </div>
-          <div className="ds-space">
-            {[4, 8, 12, 16, 20].map((sp) => (
-              <div className="ds-space-r" key={sp}>
-                <i style={{ width: `${sp * 2.6}px` }} />
-                <b>{sp}</b>
-              </div>
+          <div className="ds-tile-read" key={tok.key}>
+            <b>{tok.name}</b>
+            <span>{tok.hex} · {tok.role}</span>
+          </div>
+        </div>
+
+        {/* 2 - type. the ramp reveals a step at a time, largest first. */}
+        <div className="ds-tile ds-tile-type">
+          <span className="ds-tile-t">Type</span>
+          <div className="ds-ramp">
+            {DS_TYPE.map((ty, i) => (
+              <span
+                key={ty.label}
+                className={`ds-ramp-l${i === typeStep ? ' on' : ''}${i < typeStep ? ' past' : ''}`}
+                style={{ fontSize: `${ty.px}px`, fontWeight: ty.w }}
+              >
+                {ty.sample}
+              </span>
             ))}
           </div>
-        </section>
+          <div className="ds-tile-read" key={DS_TYPE[typeStep].label}>
+            <b>{DS_TYPE[typeStep].label}</b>
+            <span>{DS_TYPE[typeStep].px}px · {DS_TYPE[typeStep].w}</span>
+          </div>
+        </div>
+
+        {/* 3 - components, actually running. */}
+        <div className="ds-tile ds-tile-comp">
+          <span className="ds-tile-t">Components</span>
+          <div className="ds-comp">
+            <div className="ds-comp-row">
+              <button type="button" className="ds-btn ds-btn-p">Upgrade</button>
+              <span className="ds-badge ds-badge-live"><i className="ds-dot" />Live</span>
+            </div>
+            <div className="ds-comp-row">
+              <span className="ds-chip">All <b>17</b></span>
+              <span className="ds-chip ds-chip-on">Live <b>6</b></span>
+            </div>
+            <div className="ds-money">
+              <span className="ds-price-v" key={term.price}>{term.price}</span>
+              {term.off && <span className="ds-off">{term.off}</span>}
+            </div>
+          </div>
+          <div className="ds-tile-read"><b>Built once</b><span>states, not screenshots</span></div>
+        </div>
+
+        {/* 4 - the shape that does not change, and the one step that does. */}
+        <div className="ds-tile ds-tile-shape">
+          <span className="ds-tile-t">One shape</span>
+          <div className="ds-shape">
+            <span className="ds-shape-p" key={prod.name}>{prod.name}</span>
+            <ol className="ds-steps">
+              {DS_STEPS.map((sname, i) => (
+                <li key={sname} className={i === step ? 'on' : i < step ? 'done' : ''}>
+                  <i>{i < step ? '✓' : i + 1}</i>{sname}
+                </li>
+              ))}
+            </ol>
+            <span className="ds-shape-f" key={prod.field}>Configure: {prod.field}</span>
+          </div>
+          <div className="ds-tile-read"><b>Only step 2 changes</b><span>a new product is one step&apos;s fields</span></div>
+        </div>
       </div>
 
-      <p className="ds-foot cps-rv" data-rv style={{ '--d': '240ms' }}>
-        a new product doesn&apos;t get a new design. it gets the same four steps, the same price panel, the same states - and one step&apos;s worth of fields that are actually its own.
+      <p className="ds-foot cps-rv" data-rv style={{ '--d': '180ms' }}>
+        four years of solo output, because a new product doesn&apos;t get a new design - it gets <em className="cp-up">one step&apos;s worth of fields</em>.
       </p>
     </div>
   );
@@ -1882,46 +1975,7 @@ export default function CustomerPortalCaseStudy({ onPrev, onNext, idx, total }) 
         </div>
       )}
       <div className="inv-hero cp-hero">
-        {/* globe centred behind the wordmark, not floated separately in a
-            corner - a large shape off on its own read as unbalanced no
-            matter how it was sized or faded; orbiting the one thing every
-            other element in this fold is already centred around fixes that
-            for free, since the wrapper's own centring is the same centring
-            everything else here uses. */}
         <div className="cp-logo-wrap">
-          <svg className="cp-globe" viewBox="0 0 400 400" aria-hidden="true">
-            <defs>
-              <radialGradient id="cpGlobeGlow" cx="50%" cy="50%" r="50%">
-                <stop offset="0%" stopColor="#3696B1" stopOpacity="0.5" />
-                <stop offset="100%" stopColor="#3696B1" stopOpacity="0" />
-              </radialGradient>
-              <linearGradient id="cpGlobeLine" x1="0%" y1="0%" x2="100%" y2="100%">
-                <stop offset="0%" stopColor="#3696B1" stopOpacity="0.85" />
-                <stop offset="100%" stopColor="#3696B1" stopOpacity="0.05" />
-              </linearGradient>
-            </defs>
-            {/* a soft glow behind the wireframe, not just the wireframe alone -
-                a flat single-colour outline read as a technical diagram; the
-                radial fill underneath is what makes it read as something lit
-                from within instead. */}
-            <circle cx="200" cy="200" r="180" fill="url(#cpGlobeGlow)" />
-            <circle cx="200" cy="200" r="150" fill="none" stroke="url(#cpGlobeLine)" strokeWidth="1.2" />
-            <ellipse cx="200" cy="200" rx="150" ry="38" fill="none" stroke="url(#cpGlobeLine)" strokeWidth="0.8" />
-            <ellipse cx="200" cy="200" rx="150" ry="80" fill="none" stroke="url(#cpGlobeLine)" strokeWidth="0.8" />
-            <ellipse cx="200" cy="200" rx="150" ry="120" fill="none" stroke="url(#cpGlobeLine)" strokeWidth="0.8" />
-            <ellipse cx="200" cy="200" rx="38" ry="150" fill="none" stroke="url(#cpGlobeLine)" strokeWidth="0.8" />
-            <ellipse cx="200" cy="200" rx="95" ry="150" fill="none" stroke="url(#cpGlobeLine)" strokeWidth="0.8" />
-            <line x1="50" y1="200" x2="350" y2="200" stroke="url(#cpGlobeLine)" strokeWidth="1" />
-            {/* three nodes, arced connections between each pair - the same
-                "network across the globe" idea the case study itself is
-                about, not a literal map. */}
-            <path d="M120 140 Q200 40 290 130" fill="none" stroke="url(#cpGlobeLine)" strokeWidth="1.4" strokeDasharray="3 5" />
-            <path d="M290 130 Q330 240 210 300" fill="none" stroke="url(#cpGlobeLine)" strokeWidth="1.4" strokeDasharray="3 5" />
-            <path d="M210 300 Q100 260 120 140" fill="none" stroke="url(#cpGlobeLine)" strokeWidth="1.4" strokeDasharray="3 5" />
-            <circle cx="120" cy="140" r="5" fill="#3696B1" stroke="none" />
-            <circle cx="290" cy="130" r="5" fill="#3696B1" stroke="none" />
-            <circle cx="210" cy="300" r="5" fill="#3696B1" stroke="none" />
-          </svg>
           <img className="cp-logo" src="/polarin-logo.png" alt="Polarin, by Lightstorm" />
         </div>
         <h2>Ordering connectivity, <span className="cp-signal">without picking up the phone.</span></h2>
@@ -1943,6 +1997,10 @@ export default function CustomerPortalCaseStudy({ onPrev, onNext, idx, total }) 
             </b>
           </div>
         </div>
+        {/* the fold used to simply stop under the spec strip, which left the
+            bottom third of a tall window empty with nothing saying there was
+            more below it. */}
+        <span className="cp-scroll" aria-hidden="true"><i></i>scroll</span>
       </div>
 
       <div className="inv-section" ref={at(0)}>
@@ -1962,17 +2020,17 @@ export default function CustomerPortalCaseStudy({ onPrev, onNext, idx, total }) 
           not dead code from a direction that got abandoned. */}
       <div className="inv-section" ref={at(2)}>
         <div className="inv-step-tag cps-rv" data-rv><i></i>How we achieved it</div>
-        <span className="cp-wip cps-rv" data-rv style={{ '--d': '90ms' }}><i></i>in progress</span>
+        <ApproachScene jump={jumpToSection} />
       </div>
 
       <div className="inv-section" ref={at(3)}>
         <div className="inv-step-tag cps-rv" data-rv><i></i>Desk research</div>
-        <span className="cp-wip cps-rv" data-rv style={{ '--d': '90ms' }}><i></i>in progress</span>
+        <AuditScene />
       </div>
 
       <div className="inv-section" ref={at(4)}>
         <div className="inv-step-tag cps-rv" data-rv><i></i>Information architecture</div>
-        <span className="cp-wip cps-rv" data-rv style={{ '--d': '90ms' }}><i></i>in progress</span>
+        <IAScene />
       </div>
 
       <div className="inv-section" ref={at(5)}>

@@ -489,7 +489,7 @@ export default function CurrentProject() {
                 GenAI card (6) now lives - they are one set of six parallel
                 categories that happens to be split over two steps, so the
                 numbering must not restart here. */}
-            <Step n="03" when="2022 - 2024" kicker="Building it, zero to one" title="Three products, built from nothing">
+            <Step n="03" when="2022 - 2024" kicker="Building it, zero to one" title="Built from nothing">
               <p>Five surfaces, one designer - a design system first, so screens could ship fast. Self-serve launched in 2023: 90 days of manual provisioning became 10 minutes.</p>
 
               <div className="tl-cs-grid">

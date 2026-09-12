@@ -476,21 +476,27 @@
 
   /* three roles, three families, loaded in index.html - and the weights
      requested there are the weights used here, which is worth keeping true:
-     --disp runs 500-900 across the type scale below, --mono runs 400/500/700.
-     --disp was Bricolage Grotesque, an optical-size variable face whose
-     tighter grades were doing a lot of the site's personality; Archivo is the
-     reference's display face and is squarer and more neutral at the same
-     weights, which is why the tracking on the type scale below (-0.035em at
-     hero, -0.02em at card) still reads correct rather than cramped - Archivo's
-     default sidebearings are wider than Bricolage's were at the same size.
-     --mono was IBM Plex Mono and is JetBrains Mono, which has a taller
-     x-height at the same px, so the 9.5-11.5px labels this site uses a lot of
-     gained legibility without any size changing.
-     --body is unchanged: the site was already on Instrument Sans, which is
-     also what the reference uses for body copy. */
-  --disp: "Archivo", system-ui, sans-serif;
-  --body: "Instrument Sans", -apple-system, "Segoe UI", sans-serif;
-  --mono: "JetBrains Mono", ui-monospace, monospace;
+     --disp runs 500-800 across the type scale below, --body 400-600, --mono
+     400/500/700. 900 is requested by nobody: the site uses 800 at its
+     heaviest (25 rules) and 900 at none, so asking for it only cost bytes.
+
+     the previous set was Archivo / Instrument Sans / JetBrains Mono. all
+     three are replaced here for one reason - Geist and Geist Mono are a
+     designed superfamily, so the display face and the label face finally
+     share metrics and skeletons instead of being two unrelated grotesques
+     that happened to sit near each other. Inter stays the reader between
+     them: it is the one face on this page tuned specifically for body text
+     at 15-17px, which is the size almost all the prose here is set at.
+
+     Geist over the other candidate, Space Grotesk, on a hard constraint
+     rather than taste: Space Grotesk stops at 700 and this site sets 800 in
+     25 places, which the browser would have had to fake. Geist carries a
+     real 100-900 and is squarer than Archivo was at the same weight, so the
+     negative tracking down the scale still reads as tight rather than
+     collapsed - re-checked at every tier after the swap, not assumed. */
+  --disp: "Geist", system-ui, sans-serif;
+  --body: "Inter", -apple-system, "Segoe UI", sans-serif;
+  --mono: "Geist Mono", ui-monospace, monospace;
   --ease: cubic-bezier(0.22, 1, 0.36, 1);
   --nav-h: 60px;
   --stack-top: 100px; /* sticky offset for THE STACK (Current Project timeline) - deliberately taller than --nav-h so a stuck panel doesn't butt against the bar */
@@ -560,16 +566,25 @@
   --t-lead: clamp(24px, 3.4vw, 40px);
   --t-sub: clamp(22px, 3vw, 32px);
   --t-card: clamp(17px, 1.7vw, 20px);
-  --t-card-sm: 15.5px;
+  /* the small tiers used to be flat px while every tier above them clamped
+     with vw, so on a genuinely large display (3358px wide, say) a headline
+     kept growing and the label under it stayed at 10.5px - the labels read
+     as microscopic against the screen rather than as a smaller step of the
+     same ladder.
+     the vw term on each is chosen so it only overtakes the minimum ABOVE
+     ~2300px: at 1440, 1680 and 1920 every one of these still computes to
+     exactly the px it always was, so no existing layout moves. they only
+     grow where the screen is big enough to have caused the complaint. */
+  --t-card-sm: clamp(15.5px, 0.66vw, 21px);
   --t-stat: clamp(30px, 3.6vw, 44px);
-  --t-stat-sm: 22px;
+  --t-stat-sm: clamp(22px, 0.95vw, 34px);
   --t-lede: clamp(16px, 1.7vw, 20px);
   --t-body: clamp(15px, 1.4vw, 17.5px);
-  --t-body-sm: 13.5px;
-  --t-body-xs: 12.5px;
-  --t-eyebrow: 11.5px;
-  --t-meta: 10.5px;
-  --t-micro: 9.5px;
+  --t-body-sm: clamp(13.5px, 0.58vw, 19px);
+  --t-body-xs: clamp(12.5px, 0.54vw, 17px);
+  --t-eyebrow: clamp(11.5px, 0.5vw, 16px);
+  --t-meta: clamp(10.5px, 0.46vw, 15px);
+  --t-micro: clamp(9.5px, 0.42vw, 14px);
 
   /* ---------------- CARD + SPACE SCALE ----------------
      three card recipes, and the only numbers they are allowed to use. the
@@ -3653,7 +3668,7 @@ footer .g {
    heading, mid-page, where it accents a name instead of competing with the
    page's opening statement.
    it is deliberately not an italic serif (the flourish this pattern is usually
-   built from): --disp is Archivo, loaded upright-only in index.html, so an
+   built from): --disp is Geist, loaded upright-only in index.html, so an
    italic here would be a browser-synthesised slant of a display sans - which
    looks like a rendering fault at 40px, not like a second voice.
    the sweep stays NEUTRAL - through --text and --mute - and does not take the
@@ -5923,8 +5938,6 @@ b.adm-was { font-family: var(--body); font-weight: 600; color: var(--rose); }
 .bet-swaps span { border: 1px solid var(--line); border-radius: var(--r-sm); background: var(--raise); padding: 11px 16px; font-family: var(--mono); font-size: 11px; letter-spacing: 0.06em; display: flex; gap: 10px; align-items: center; }
 .bet-swaps s { color: var(--dim); }
 .bet-swaps b { color: var(--up); font-weight: 500; }
-.bet-map { display: flex; justify-content: center; }
-.bet-map img { width: 100%; max-width: 760px; max-height: 62vh; object-fit: contain; border-radius: var(--r-lg); border: 1px solid var(--line2); box-shadow: 0 30px 60px -20px rgba(0, 0, 0, 0.6); }
 
 .aud { margin-top: 18px; border: 1px solid var(--line); border-radius: var(--r-md); overflow: hidden; font-size: var(--t-body-xs); }
 .aud-r { display: grid; grid-template-columns: 1.4fr 1fr 1fr 0.8fr; gap: 10px; padding: 11px 16px; border-bottom: 1px solid var(--line); color: var(--mute); }
@@ -5932,19 +5945,19 @@ b.adm-was { font-family: var(--body); font-weight: 600; color: var(--rose); }
 .aud-h { font-family: var(--mono); font-size: 10px; letter-spacing: 0.16em; text-transform: uppercase; color: var(--dim); background: var(--raise); }
 .aud-p { background: var(--raise2); color: var(--text); }
 .aud-p span:first-child { color: var(--text); font-weight: 600; }
-.aud-insight { margin-top: 16px; font-size: var(--t-body); color: var(--mute); max-width: 62ch; }
+.aud-insight { margin-top: 12px; font-size: var(--t-body); color: var(--mute); max-width: 62ch; }
 .aud-insight em { font-style: normal; color: var(--text); }
 @media (max-width: 640px) { .aud-r { grid-template-columns: 1.2fr 0.8fr 0.9fr 0.6fr; font-size: 11px; padding: 10px 12px; } }
 
-.aud-gaps { margin-top: 32px; }
-.aud-gaps-lead { font-family: var(--mono); font-size: 11px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--dim); margin-bottom: 14px; }
+.aud-gaps { margin-top: 22px; }
+.aud-gaps-lead { font-family: var(--mono); font-size: var(--t-eyebrow); letter-spacing: 0.14em; text-transform: uppercase; color: var(--dim); margin-bottom: 10px; }
 .aud-gap-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
 .aud-gap { border: 1px solid var(--line); border-radius: var(--r-md); background: var(--raise); padding: var(--pad-card-sm); text-align: left; transition: transform 0.3s var(--ease), border-color 0.3s, box-shadow 0.3s; }
 .aud-gap:hover { transform: translateY(-4px); border-color: var(--line2); }
-.aud-gap b { font-family: var(--mono); font-size: 10.5px; letter-spacing: 0.16em; text-transform: uppercase; color: var(--text); display: block; margin-bottom: 8px; }
-.aud-gap p { font-size: var(--t-body-xs); color: var(--mute); line-height: 1.5; }
-.aud-gap-found { color: var(--dim); }
-.aud-gap-arrow { display: block; color: var(--mute); font-size: 11px; margin: 6px 0 4px; }
+.aud-gap b { font-family: var(--mono); font-size: var(--t-meta); letter-spacing: 0.16em; text-transform: uppercase; color: var(--text); display: block; margin-bottom: 6px; }
+.aud-gap p { font-size: var(--t-body-xs); color: var(--text); line-height: 1.42; }
+.aud-gap-found { color: var(--rose); }
+.aud-gap-arrow { color: var(--up); }
 .aud-next { margin-top: 20px; font-size: var(--t-body); color: var(--mute); max-width: 62ch; }
 @media (max-width: 760px) { .aud-gap-grid { grid-template-columns: 1fr; } }
 
@@ -5988,7 +6001,55 @@ b.adm-was { font-family: var(--body); font-weight: 600; color: var(--rose); }
 .bet-l2 em { font-style: normal; background: linear-gradient(100deg, var(--text), var(--mute)); -webkit-background-clip: text; background-clip: text; color: transparent; }
 .oscn .bet-pipe { margin: 10px auto 16px; }
 
-.aud-stage { justify-content: center; }
+/* the two acts are stacked in ONE grid cell rather than laid out in a flex
+   column: they overlap, so the outgoing act can travel up and fade while the
+   incoming one fades in underneath it, and the stage still sizes itself to
+   whichever act is taller (no fixed height, so no void above or below it -
+   the 234px gap that a 74vh stage centring a 352px act used to leave).
+   flex-shrink:0 on the children stays relevant for the same reason it was
+   added: .aud's own overflow:hidden would otherwise crop four of its six
+   rows to a sliver if anything ever squeezed it. */
+.aud-stage {
+  display: grid;
+  /* exact viewport centring - see the derivation on .apr-stage/.ia-stage.
+     height:auto left this hanging just below the panel top with everything
+     under it empty, and a flat 74vh drifted further below centre the taller
+     the window got. */
+  height: calc(90vh - 142px);
+  align-content: center;
+  overflow-y: auto;
+  /* the act that is off-stage sits 42px above or below its resting place,
+     and a transform still counts toward scrollHeight - without room for it
+     the stage grew a scrollbar for an element nobody can see. */
+  padding: 48px 0;
+}
+.aud-act {
+  grid-area: 1 / 1;
+  align-self: center;
+  transition: opacity 0.55s var(--ease), transform 0.55s var(--ease), visibility 0s;
+}
+.aud-act > * { flex-shrink: 0; }
+/* out: up and gone. visibility trails the fade so the hidden act stops
+   taking clicks and leaves the accessibility tree once it is invisible,
+   without snapping out mid-transition the way display:none would. */
+/* direction matters: the first act only ever LEAVES (up, with the scroll)
+   and the second only ever ARRIVES (from below), so they get opposite
+   offsets rather than both sliding the same way - otherwise the incoming
+   act drops in from above, against the direction of travel. */
+.aud-act:first-child.aud-act-out { transform: translateY(-42px); }
+.aud-act:last-child.aud-act-out { transform: translateY(42px); }
+.aud-act-out {
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  transition: opacity 0.45s var(--ease), transform 0.45s var(--ease), visibility 0s 0.45s;
+}
+/* prefersReducedMotion renders BOTH acts, which in a single grid cell would
+   have them sitting on top of each other - there they stack in flow and
+   nothing is hidden or moved. */
+.aud-stage-stack { display: flex; flex-direction: column; gap: var(--sp-block); max-height: none; }
+.aud-stage-stack .aud-act { grid-area: auto; transition: none; }
+.aud-stage-stack .aud-act-out { opacity: 1; transform: none; visibility: visible; pointer-events: auto; }
 .aud-lead { font-family: var(--mono); font-size: 11px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--dim); margin-bottom: 14px; }
 .aud-stage .aud { margin-top: 0; }
 .aud-stage .aud-r { transform: translateX(-16px); }
@@ -6161,33 +6222,13 @@ b.adm-was { font-family: var(--body); font-weight: 600; color: var(--rose); }
 @media (prefers-reduced-motion: reduce) {
   .cp-grid-fixed { animation: none; }
 }
-/* z-index: 0 on .cp-hero itself, not just position: relative, is load-
-   bearing: a positioned descendant with the default z-index: auto still
-   paints ABOVE ordinary static content in the same context regardless of
-   source order (position, not z-index, is what promotes it), so without
-   .cp-hero establishing its own stacking context here, the absolutely-
-   positioned globe below would sit on top of the logo/headline/meta row
-   instead of behind them. giving the globe z-index: 0 and the text content
-   z-index: 1 inside that one contained context is what actually orders
-   them correctly. */
-.cp-hero { position: relative; z-index: 0; overflow: hidden; }
-/* a globe, not a map - three nodes and the arcs between them are the case
-   study's own "network across distance" idea. two earlier positions both
-   read as unbalanced: centred behind the whole text column competed with
-   the headline for attention, and parked large in a top-right corner threw
-   the fold's weight to one side no matter how it was sized, inset or faded
-   - a shape with nothing else to answer it just doesn't read as balanced.
-   centred on .cp-logo-wrap instead, i.e. behind the wordmark specifically:
-   .cp-logo-wrap is only as wide as the logo itself (an absolutely-positioned
-   child doesn't add to a parent's content size), so top: 50%; left: 50%;
-   here centres the globe on the mark exactly, and the mark already sits on
-   the same vertical axis as the headline/paragraph/stats below it - the
-   globe orbits the one fixed point everything else in the fold is already
-   centred around, instead of being its own, competing anchor. */
-.cp-logo-wrap { position: relative; z-index: 1; width: fit-content; margin: 0 auto 24px; }
-.cp-globe { position: absolute; z-index: 0; top: 50%; left: 50%; transform: translate(-50%, -50%); width: min(300px, 60vw); height: min(300px, 60vw); opacity: 0.4; }
-.cp-logo { position: relative; z-index: 1; display: block; height: 54px; width: auto; margin: 0; }
-.cp-hero h2, .cp-hero p, .cp-hero .inv-meta { position: relative; z-index: 1; }
+/* the globe that used to sit behind the wordmark is gone, and so is the
+   stacking scaffolding it needed: .cp-hero no longer has to establish its
+   own context, and nothing in this fold is absolutely positioned any more,
+   so the z-index: 1 that every text element carried to stay above the globe
+   has nothing left to outrank. */
+.cp-logo-wrap { width: fit-content; margin: 0 auto 24px; }
+.cp-logo { display: block; height: 54px; width: auto; margin: 0; }
 /* wider than the shared .inv-hero h2's 20ch (the other five case studies'
    headlines were measured against that cap, see the block comment on
    .inv-section h3.plain - this headline wasn't one of them) - 20ch is what
@@ -6201,7 +6242,49 @@ b.adm-was { font-family: var(--body); font-weight: 600; color: var(--rose); }
    three meta columns, is the fix for "cluttered", not a smaller typeface. */
 .cp-hero.inv-hero h2 { max-width: 32ch; }
 .cp-hero.inv-hero p { margin-top: 26px; }
-.cp-hero .inv-meta { margin-top: 44px; gap: 64px; }
+/* the three facts read as a spec strip rather than three phrases floating
+   in the middle of the fold - ruled top and bottom, split by hairlines, and
+   capped well short of the overlay's full width, which is what stopped them
+   drifting 1200px apart on a wide window. cells left-align inside their own
+   column: a ruled strip reads as a table, and centring each cell inside its
+   own division just made the rules look accidental. */
+.cp-hero .inv-meta {
+  margin: 44px auto 0;
+  gap: 0;
+  /* .inv-hero is a flex column, and auto inline margins on a flex item
+     make it shrink-to-fit rather than stretch - so max-width alone never
+     applied and the strip sized itself to its own content. width:100% is
+     what gives the cap something to cap. */
+  width: 100%;
+  max-width: 960px;
+  flex-wrap: nowrap;
+  border-top: 1px solid var(--line2);
+  border-bottom: 1px solid var(--line2);
+  padding: 18px 0;
+}
+.cp-hero .inv-meta > div { flex: 1 1 0; min-width: 0; padding: 0 20px; border-left: 1px solid var(--line2); text-align: left; }
+/* the role cell carries the longest line of the three; an equal split
+   wrapped it to two lines while the others sat on one, which read as a
+   layout accident rather than a spec strip. */
+.cp-hero .inv-meta > div:first-child { border-left: 0; flex-grow: 1.45; }
+/* the devices cell carries an icon as well as its line, so it needs more
+   than an equal third too - sized so all three sit on one line together. */
+.cp-hero .inv-meta > div:last-child { flex-grow: 1.3; }
+.cp-hero .inv-meta div b { font-size: 14px; line-height: 1.4; }
+/* a travelling line rather than a bouncing chevron: the fold is quiet and a
+   chevron would have been the loudest thing in it. */
+.cp-scroll { display: flex; flex-direction: column; align-items: center; gap: 10px; margin-top: 42px; font-family: var(--mono); font-size: var(--t-micro); letter-spacing: 0.22em; text-transform: uppercase; color: var(--dim); }
+.cp-scroll i { width: 1px; height: 36px; background: var(--line2); position: relative; overflow: hidden; }
+.cp-scroll i::after { content: ''; position: absolute; left: 0; top: 0; width: 1px; height: 14px; background: #3696B1; animation: cpscroll 2.2s var(--ease) infinite; }
+@keyframes cpscroll { 0% { transform: translateY(-14px); } 100% { transform: translateY(36px); } }
+@media (max-width: 720px) {
+  .cp-hero .inv-meta { flex-wrap: wrap; border: 0; padding: 0; gap: 0; }
+  .cp-hero .inv-meta > div { flex: 1 1 100%; padding: 13px 0; border-left: 0; border-top: 1px solid var(--line2); }
+  .cp-hero .inv-meta > div:first-child { border-top: 0; padding-top: 0; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .cp-scroll i::after { animation: none; top: 11px; }
+}
 
 /* ---- Ananya's portrait + name, folded into AlexJourney's own hook screen ----
    this used to be static copy sitting above the scroll scene: a small icon,
@@ -6238,6 +6321,7 @@ b.adm-was { font-family: var(--body); font-weight: 600; color: var(--rose); }
 .cp-up { color: var(--up) !important; }
 .cp-rose { color: var(--rose) !important; }
 .cp-signal { color: #3696B1 !important; }
+.cp-amber { color: #E8A33D !important; }
 
 /* ---- placeholder tag for sections still being rebuilt one at a time ----
    amber, not --up/--rose/--signal - none of this case study's existing
@@ -6259,10 +6343,10 @@ b.adm-was { font-family: var(--body); font-weight: 600; color: var(--rose); }
 .expl-static { display: flex; flex-direction: column; gap: var(--sp-block); margin-top: var(--sp-block); }
 .expl-static > * { border: 1px solid var(--line2); border-radius: var(--r-md); background: var(--ink2); padding: var(--pad-card); }
 .expl-ch { text-align: center; }
-.expl-ch-n { display: block; font-family: var(--mono); font-size: 11px; letter-spacing: 0.24em; text-transform: uppercase; color: var(--dim); margin-bottom: 14px; }
-.expl-ch-t { font-size: clamp(34px, 5vw, 52px); color: var(--text); }
+.expl-ch-n { display: block; font-family: var(--mono); font-size: var(--t-eyebrow); letter-spacing: 0.24em; text-transform: uppercase; color: var(--dim); margin-bottom: 14px; }
+.expl-ch-t { font-size: var(--t-section); color: var(--text); }
 .expl-ch .cp-wip { margin-top: 4px; }
-.expl-eyebrow { display: block; font-family: var(--mono); font-size: 11px; letter-spacing: 0.14em; text-transform: uppercase; color: #E8A33D; margin-bottom: 10px; }
+.expl-eyebrow { display: block; font-family: var(--mono); font-size: var(--t-eyebrow); letter-spacing: 0.14em; text-transform: uppercase; color: #E8A33D; margin-bottom: 10px; }
 /* ---- the rail + icon + copy layout every real chapter beat shares ----
    .expl-stage overrides .oscn-stage's own overflow:hidden - clipping cut
    the spinner ring below off at the stage edge, and there's no reason this
@@ -6305,7 +6389,7 @@ b.adm-was { font-family: var(--body); font-weight: 600; color: var(--rose); }
    own available width (the panel minus the rail) is the wrap point now, not
    an arbitrary character count - a fixed ch-cap was forcing 2-3 short lines
    while most of the row sat empty. */
-.expl-h { font-family: var(--disp); font-weight: 800; font-size: clamp(32px, 4.5vw, 50px); letter-spacing: -0.03em; line-height: 1.12; margin: 0 0 4px; }
+.expl-h { font-family: var(--disp); font-weight: 800; font-size: var(--t-lead); letter-spacing: -0.03em; line-height: 1.12; margin: 0 0 4px; }
 /* the one word or phrase per heading that actually carries colour (.cp-rose/
    .cp-signal/.cp-up, the same three accents this case study already uses
    everywhere else) - font-style:normal so the emphasis reads as colour, not
@@ -6320,13 +6404,13 @@ b.adm-was { font-family: var(--body); font-weight: 600; color: var(--rose); }
    ring around its dot (railspin) - standing in for "something is actively
    being built here" more literally than a plain pulse did. */
 .expl-rail { flex: 0 0 176px; padding-top: 6px; }
-.expl-rail-ch { display: block; font-family: var(--mono); font-size: 10px; letter-spacing: 0.2em; text-transform: uppercase; color: var(--dim); margin-bottom: 22px; }
+.expl-rail-ch { display: block; font-family: var(--mono); font-size: var(--t-micro); letter-spacing: 0.2em; text-transform: uppercase; color: var(--dim); margin-bottom: 22px; }
 /* 34px, not 24: the active stop's label is a filled pill that starts 11px
    left of its own text, and the dot it sits beside throws a 10px glow. at
    24 the pill's cap landed inside that glow and the two read as one blob.
    the indent moves for every stop, not just the active one, so the labels
    stay in a single column. */
-.expl-rail-stop { position: relative; padding: 0 0 30px 34px; font-family: var(--mono); font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--dim); transition: color 0.3s var(--ease); }
+.expl-rail-stop { position: relative; padding: 0 0 30px 34px; font-family: var(--mono); font-size: var(--t-meta); letter-spacing: 0.08em; text-transform: uppercase; color: var(--dim); transition: color 0.3s var(--ease); }
 .expl-rail-stop:last-child { padding-bottom: 0; }
 .expl-rail-stop i { position: absolute; left: 0; top: 2px; width: 9px; height: 9px; border-radius: 50%; background: var(--raise2); border: 1.5px solid var(--line2); transition: background 0.3s var(--ease), border-color 0.3s var(--ease), box-shadow 0.3s var(--ease); }
 .expl-rail-stop:not(:last-child)::after { content: ''; position: absolute; left: 4px; top: 13px; width: 1px; height: calc(100% - 15px); background: var(--line2); }
@@ -6463,7 +6547,7 @@ b.adm-was { font-family: var(--body); font-weight: 600; color: var(--rose); }
 .expl-ask p { font-size: var(--t-body); color: var(--mute); font-style: italic; }
 /* the challenge beat's own pull-quote - a red rule, not a card, so it reads
    as the one line a user actually said rather than another design artefact. */
-.expl-quote { margin: 16px 0 0; border-left: 3px solid var(--rose); padding-left: 20px; font-family: var(--disp); font-weight: 600; font-size: clamp(18px, 2.2vw, 24px); line-height: 1.3; letter-spacing: -0.01em; color: var(--text); max-width: 46ch; }
+.expl-quote { margin: 16px 0 0; border-left: 3px solid var(--rose); padding-left: 20px; font-family: var(--disp); font-weight: 600; font-size: var(--t-lede); line-height: 1.3; letter-spacing: -0.01em; color: var(--text); max-width: 46ch; }
 /* the mockup-led beats: a visual carrying the weight on one side, and only
    the copy the visual can't say itself on the other - a headline, three
    short labels, one line. no paragraphs, deliberately: these beats read on
@@ -6485,16 +6569,16 @@ b.adm-was { font-family: var(--body); font-weight: 600; color: var(--rose); }
 .expl-copy { min-width: 0; }
 /* the headline is clamped smaller here than .expl-h's own full-width size -
    at half the row it would otherwise wrap to four or five lines. */
-.expl-split .expl-h { font-size: clamp(26px, 2.7vw, 38px); }
-.expl-cap { margin-top: 12px; font-size: 12px; line-height: 1.45; color: var(--dim); max-width: 46ch; }
-.expl-note { margin-top: 20px; font-size: 13px; line-height: 1.55; color: var(--dim); max-width: 36ch; }
+.expl-split .expl-h { font-size: var(--t-sub); }
+.expl-cap { margin-top: 12px; font-size: var(--t-body-xs); line-height: 1.45; color: var(--dim); max-width: 46ch; }
+.expl-note { margin-top: 20px; font-size: var(--t-body-sm); line-height: 1.55; color: var(--dim); max-width: 36ch; }
 /* the raw questions, before they were a flow - laid out loose and slightly
    off-axis so the beat reads as a pile of things people said, not as an
    ordered list we'd already tidied. rotation via nth-child rather than
    per-item positions: it keeps the scatter responsive (it reflows on a
    narrow panel) where absolute placement wouldn't. */
 .expl-scatter { display: flex; flex-wrap: wrap; align-content: center; gap: 26px 30px; min-height: 240px; padding: 8px 0; }
-.expl-scatter span { font-family: var(--disp); font-weight: 600; font-size: 17px; letter-spacing: -0.01em; color: var(--mute); white-space: nowrap; }
+.expl-scatter span { font-family: var(--disp); font-weight: 600; font-size: var(--t-card); letter-spacing: -0.01em; color: var(--mute); white-space: nowrap; }
 .expl-scatter span:nth-child(3n+1) { transform: rotate(-3.5deg); }
 .expl-scatter span:nth-child(3n+2) { transform: rotate(2.5deg); }
 .expl-scatter span:nth-child(3n) { transform: rotate(-1.5deg); }
@@ -6502,27 +6586,27 @@ b.adm-was { font-family: var(--body); font-weight: 600; color: var(--rose); }
    tokens (var() inside the SVG's fills), so it stays on-palette without a
    second set of hard-coded colours to keep in sync. */
 .expl-wire { display: block; width: 100%; height: auto; }
-.expl-wire-t { font-family: var(--mono); font-size: 11px; letter-spacing: 0.04em; fill: var(--mute); }
-.expl-wire-n { font-family: var(--mono); font-size: 10px; font-weight: 700; fill: #0A0D1A; text-anchor: middle; }
+.expl-wire-t { font-family: var(--mono); font-size: var(--t-eyebrow); letter-spacing: 0.04em; fill: var(--mute); }
+.expl-wire-n { font-family: var(--mono); font-size: var(--t-micro); font-weight: 700; fill: #0A0D1A; text-anchor: middle; }
 /* the wireframe's numbered legend, in HTML rather than inside the SVG so a
    longer label reflows instead of running past the viewBox edge. */
 .expl-legend { list-style: none; margin: 14px 0 0; padding: 0; display: flex; flex-direction: column; gap: 8px; }
-.expl-legend li { display: flex; align-items: center; gap: 10px; font-size: 12.5px; line-height: 1.4; color: var(--mute); }
-.expl-legend span { flex: 0 0 18px; height: 18px; border-radius: 50%; background: #E8A33D; color: #0A0D1A; font-family: var(--mono); font-size: 10px; font-weight: 700; display: flex; align-items: center; justify-content: center; }
+.expl-legend li { display: flex; align-items: center; gap: 10px; font-size: var(--t-body-xs); line-height: 1.4; color: var(--mute); }
+.expl-legend span { flex: 0 0 18px; height: 18px; border-radius: 50%; background: #E8A33D; color: #0A0D1A; font-family: var(--mono); font-size: var(--t-micro); font-weight: 700; display: flex; align-items: center; justify-content: center; }
 /* the three principles behind the grouping - pills, one per line, short
    enough to take in at a glance. */
 .expl-pills { list-style: none; margin: 22px 0 0; padding: 0; display: flex; flex-direction: column; align-items: flex-start; gap: 10px; }
-.expl-pill { font-family: var(--disp); font-weight: 600; font-size: 15.5px; letter-spacing: -0.01em; color: var(--text); background: var(--raise2); border: 1px solid var(--line2); border-radius: 999px; padding: 9px 20px; }
+.expl-pill { font-family: var(--disp); font-weight: 600; font-size: var(--t-card-sm); letter-spacing: -0.01em; color: var(--text); background: var(--raise2); border: 1px solid var(--line2); border-radius: 999px; padding: 9px 20px; }
 /* the three teams each question had to survive - one column per team, since
    the point is that they answered in parallel, not in sequence. this beat
    has no screenshot on purpose: it's the part of the process that never had
    a screen. */
 .expl-cols { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 20px; margin-top: 26px; }
 .expl-col { border: 1px solid var(--line2); border-radius: var(--r-md); background: var(--ink2); padding: 20px 20px 22px; }
-.expl-col-who { display: block; font-family: var(--mono); font-size: 10.5px; letter-spacing: 0.16em; text-transform: uppercase; color: #E8A33D; margin-bottom: 12px; }
-.expl-col-q { font-family: var(--disp); font-weight: 700; font-size: 16px; letter-spacing: -0.01em; line-height: 1.3; color: var(--text); margin: 0 0 14px; }
+.expl-col-who { display: block; font-family: var(--mono); font-size: var(--t-meta); letter-spacing: 0.16em; text-transform: uppercase; color: #E8A33D; margin-bottom: 12px; }
+.expl-col-q { font-family: var(--disp); font-weight: 700; font-size: var(--t-card); letter-spacing: -0.01em; line-height: 1.3; color: var(--text); margin: 0 0 14px; }
 .expl-col ul { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 7px; }
-.expl-col li { position: relative; padding-left: 15px; font-size: 13px; line-height: 1.4; color: var(--mute); }
+.expl-col li { position: relative; padding-left: 15px; font-size: var(--t-body-sm); line-height: 1.4; color: var(--mute); }
 .expl-col li::before { content: ''; position: absolute; left: 0; top: 0.5em; width: 5px; height: 5px; border-radius: 50%; background: #3696B1; }
 .expl-note-wide { max-width: 68ch; }
 /* the paper stage - three sketches pinned up side by side, each nudged off
@@ -6538,7 +6622,7 @@ b.adm-was { font-family: var(--body); font-weight: 600; color: var(--rose); }
 .expl-sketch .expl-sketch-note { stroke: #E8A33D; opacity: 0.8; }
 .expl-sketch-win svg { border-color: rgba(54, 150, 177, 0.5); }
 .expl-sketch-win svg path, .expl-sketch-win svg circle { stroke: #3696B1; opacity: 0.9; }
-.expl-sketch figcaption { margin-top: 9px; font-size: 11.5px; line-height: 1.4; color: var(--dim); }
+.expl-sketch figcaption { margin-top: 9px; font-size: var(--t-body-xs); line-height: 1.4; color: var(--dim); }
 .expl-sketch:nth-child(1) { transform: rotate(-1.2deg); }
 .expl-sketch:nth-child(2) { transform: rotate(0.8deg); }
 .expl-sketch:nth-child(3) { transform: rotate(-0.5deg); }
@@ -6553,7 +6637,7 @@ b.adm-was { font-family: var(--body); font-weight: 600; color: var(--rose); }
    height rather than pushing the copy past the bottom of the stage. */
 .expl-anat .expl-spot { width: min(100%, 94vh); }
 .expl-anat-copy { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 40px; align-items: start; }
-.expl-anat .expl-h { font-size: clamp(23px, 2.2vw, 31px); }
+.expl-anat .expl-h { font-size: var(--t-sub); }
 .expl-anat .expl-note { margin-top: 3px; max-width: 54ch; }
 .expl-spot { position: relative; overflow: hidden; border-radius: var(--r-md); border: 1px solid var(--line2); }
 .expl-spot img { display: block; width: 100%; }
@@ -6565,7 +6649,7 @@ b.adm-was { font-family: var(--body); font-weight: 600; color: var(--rose); }
   outline-offset: 1px;
   transition: left 0.6s var(--ease), top 0.6s var(--ease), width 0.6s var(--ease), height 0.6s var(--ease);
 }
-.expl-count { display: inline-block; font-family: var(--mono); font-size: 10.5px; letter-spacing: 0.12em; color: var(--dim); background: var(--raise2); border: 1px solid var(--line2); border-radius: 999px; padding: 4px 11px; margin-bottom: 14px; }
+.expl-count { display: inline-block; font-family: var(--mono); font-size: var(--t-meta); letter-spacing: 0.12em; color: var(--dim); background: var(--raise2); border: 1px solid var(--line2); border-radius: 999px; padding: 4px 11px; margin-bottom: 14px; }
 /* the asked/learned lists - plain bullets, not cards, matching the
    reference's own restraint (a <ul>, nothing heavier). */
 .expl-bullets { list-style: none; margin: 16px 0 0; padding: 0; display: flex; flex-direction: column; gap: 9px; max-width: 56ch; }
@@ -6624,16 +6708,107 @@ b.adm-was { font-family: var(--body); font-weight: 600; color: var(--rose); }
    hover-only tooltip: seven of them at once, always visible, would overlap
    at this scale - the explicit five-name list right below carries the
    information that has to be readable without hovering anything. */
-.eff-map { position: relative; height: 240px; margin: 20px 0 4px; border: 1px solid var(--line); border-radius: var(--r-md); background: var(--raise); }
-.eff-axis-y, .eff-axis-x { position: absolute; font-family: var(--mono); font-size: 9.5px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--dim); }
-.eff-axis-y { top: 10px; left: 10px; }
+/* ---- Approach + Information architecture (.apr- / .ia-) --------------
+   both run as pinned scenes with one idea per beat, centred - the same
+   shape Problem and Solution use. a reader should take a screen in within a
+   second and keep going, so nothing here is more than a line or two. Desk
+   research is the deliberate exception: that section is the research, so it
+   is the one place density is the point. */
+.apr-oscn, .ia-oscn { height: calc(var(--beats, 5) * 90vh); }
+/* prefersReducedMotion stacks every beat instead of parking on the last */
+.apr-static { display: flex; flex-direction: column; align-items: center; text-align: center; gap: var(--sp-block); margin-top: var(--sp-block); }
+/* .ovl-panel is the scrolling ancestor, so sticky's top:5vh is measured
+   from the PANEL's top edge - and the panel itself starts a fixed ~71px
+   down the viewport, a number that does NOT scale with vh. with the shared
+   74vh height the content therefore drifted further below centre the taller
+   the window got (9px at 1000px tall, 55px at 1576px).
+   solving P + T + H/2 = 50vh for H, with P = 71px and T = 5vh, gives
+   H = 90vh - 142px - which centres exactly at any height. */
+.apr-stage, .ia-stage { text-align: center; align-items: center; gap: 0; height: calc(90vh - 142px); }
+.apr-eyebrow { display: block; font-family: var(--mono); font-size: var(--t-meta); letter-spacing: 0.22em; text-transform: uppercase; color: var(--dim); margin-bottom: 20px; }
+/* the brief, framed - a hairline box around one sentence, which is the
+   whole beat. */
+.apr-briefwrap { max-width: 42ch; }
+.apr-brief { margin: 0; border: 1px solid var(--line2); border-radius: var(--r-lg); padding: 42px 38px; font-family: var(--disp); font-weight: 600; font-size: var(--t-sub); line-height: 1.35; letter-spacing: -0.015em; color: var(--text); }
+.apr-brief em { font-style: normal; }
+/* the statement beats - one sentence, set at chapter rank so it reads as
+   the only thing on screen. */
+.apr-big { font-family: var(--disp); font-weight: 800; font-size: var(--t-lead); letter-spacing: -0.03em; line-height: 1.2; margin: 0; max-width: 24ch; }
+.apr-big em { font-style: normal; }
+.apr-cap { margin: 16px 0 0; font-family: var(--mono); font-size: var(--t-micro); letter-spacing: 0.14em; text-transform: uppercase; color: var(--dim); }
+/* three inputs as three numbers, not three paragraphs */
+.apr-inputs { display: flex; justify-content: center; gap: 56px; flex-wrap: wrap; }
+.apr-input b { display: block; font-family: var(--disp); font-weight: 800; font-size: var(--t-stat-sm); letter-spacing: -0.02em; }
+.apr-input span { display: block; margin-top: 6px; font-family: var(--mono); font-size: var(--t-meta); letter-spacing: 0.16em; text-transform: uppercase; color: var(--dim); }
+/* the closing index of stages - stacked pills, generous, one per line */
+.apr-willsee { margin: 0 0 22px; font-family: var(--disp); font-size: var(--t-sub); font-weight: 600; letter-spacing: -0.015em; color: var(--text); }
+.apr-stages { display: flex; flex-direction: column; align-items: center; gap: 10px; }
+.apr-stages button {
+  font-family: inherit; font-size: var(--t-body-sm); color: var(--text);
+  border: 1px solid var(--line2); border-radius: 99px; padding: 11px 30px;
+  background: var(--raise2); cursor: pointer; min-width: 260px;
+  transition: border-color 0.2s var(--ease), color 0.2s var(--ease), transform 0.2s var(--ease);
+}
+.apr-stages button:hover, .apr-stages button:focus-visible { border-color: #3696B1; color: #3696B1; transform: translateY(-2px); outline: none; }
+
+.ia-tree { border: 1px solid var(--line2); border-radius: var(--r-lg); background: var(--ink2); padding: 20px; }
+.ia-shell-row { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; margin-bottom: 18px; padding-bottom: 18px; border-bottom: 1px solid var(--line2); }
+.ia-nav { font-family: var(--mono); font-size: var(--t-body-xs); color: var(--text); background: var(--raise2); border: 1px solid var(--line2); border-radius: var(--r-sm); padding: 7px 14px; }
+.ia-cat-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px; }
+.ia-group { border: 1px solid var(--line2); border-radius: var(--r-md); background: var(--raise); padding: 14px; text-align: left; }
+.ia-group b { display: block; font-family: var(--disp); font-weight: 700; font-size: var(--t-body-sm); color: var(--text); margin-bottom: 10px; }
+.ia-group ul { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 6px; }
+.ia-group li { position: relative; padding-left: 14px; font-size: var(--t-body-xs); color: var(--mute); line-height: 1.4; }
+.ia-group li::before { content: ''; position: absolute; left: 0; top: 0.55em; width: 4px; height: 4px; border-radius: 50%; background: #3696B1; }
+/* .ia-stage centres its children with align-items:center, which makes a
+   flex child shrink to its content - so the map's own width:100% had
+   nothing to resolve against and it collapsed to the width of its dots.
+   the wrapper is what needs the width. */
+.ia-effort { width: 100%; max-width: 860px; }
+.ia-stage .eff-map { width: 100%; }
+@media (max-width: 860px) {
+  .apr-inputs { gap: 26px; }
+  .ia-cat-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+/* the effort map's dot labels are absolutely positioned and nowrap, so near
+   the right edge they extend the map's scroll width by ~28px. clipped only
+   at touch widths - there is no hover there to reveal them anyway, and on a
+   pointer device clipping a label the reader is actively hovering would be
+   the worse trade. */
+@media (max-width: 700px) { .eff-map { overflow: hidden; } }
+@media (max-width: 860px) {
+  .apr-inputs { grid-template-columns: 1fr; }
+  .ia-cat-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+.eff-map { position: relative; height: 320px; margin: 20px 0 4px; border: 1px solid var(--line); border-radius: var(--r-md); background: var(--raise); }
+.eff-axis-y, .eff-axis-x { position: absolute; font-family: var(--mono); font-size: var(--t-micro); letter-spacing: 0.14em; text-transform: uppercase; color: var(--dim); }
+.eff-axis-y { top: 10px; left: 12px; }
 .eff-axis-x { bottom: 10px; right: 12px; }
-.eff-dot { position: absolute; transform: translate(-50%, 50%); }
+.eff-dot { position: absolute; transform: translate(-50%, 50%); cursor: default; }
+.eff-dot:focus-visible { outline: none; }
 .eff-dot i { display: block; width: 9px; height: 9px; border-radius: 50%; background: var(--raise2); border: 1.5px solid var(--line2); transition: transform 0.25s var(--ease); }
-.eff-dot.first i { background: var(--text); border-color: var(--text); }
-.eff-dot span { position: absolute; bottom: 16px; left: 50%; transform: translateX(-50%); white-space: nowrap; font-family: var(--mono); font-size: 10px; color: var(--text); background: var(--raise2); border: 1px solid var(--line2); border-radius: var(--r-xs); padding: 3px 8px; opacity: 0; pointer-events: none; transition: opacity 0.2s; }
-.eff-dot:hover i { transform: scale(1.3); }
-.eff-dot:hover span { opacity: 1; }
+.eff-dot.first i { background: var(--up); border-color: var(--up); box-shadow: 0 0 10px rgba(125, 249, 166, 0.3); }
+/* the module name is on permanently now - a scatter of unlabelled dots asks
+   the reader to hover before it means anything, which on a case study is a
+   question nobody stops to answer. the hover card carries the two numbers
+   that would otherwise crowd it. */
+.eff-name { position: absolute; left: 16px; top: 50%; transform: translateY(-50%); white-space: nowrap; font-family: var(--mono); font-size: var(--t-micro); font-weight: 400; letter-spacing: 0.06em; color: var(--mute); transition: color 0.2s var(--ease); }
+.eff-dot.flip .eff-name { left: auto; right: 16px; }
+.eff-dot.first .eff-name { color: var(--text); }
+.eff-pop {
+  position: absolute; left: 16px; bottom: 18px; width: 210px; text-align: left;
+  background: var(--ink2); border: 1px solid var(--line2); border-radius: var(--r-md);
+  padding: 11px 13px; opacity: 0; pointer-events: none; z-index: 2;
+  transform: translateY(4px); transition: opacity 0.2s var(--ease), transform 0.2s var(--ease);
+}
+.eff-dot.flip .eff-pop { left: auto; right: 16px; }
+/* a dot near the top of the map has no room above it for its card */
+.eff-dot.vflip .eff-pop { bottom: auto; top: 18px; }
+.eff-pop-w { display: block; font-family: var(--mono); font-size: var(--t-micro); letter-spacing: 0.1em; text-transform: uppercase; color: #E8A33D; margin-bottom: 6px; }
+.eff-pop-v { display: block; font-size: var(--t-body-xs); line-height: 1.4; color: var(--text); }
+.eff-dot:hover i, .eff-dot:focus-visible i { transform: scale(1.35); }
+.eff-dot:hover .eff-name, .eff-dot:focus-visible .eff-name { color: var(--text); }
+.eff-dot:hover .eff-pop, .eff-dot:focus-visible .eff-pop { opacity: 1; transform: none; }
 .eff-first { margin-top: 22px; }
 .eff-first-lead { font-family: var(--mono); font-size: 11px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--dim); margin-bottom: 12px; }
 .eff-first-grid { display: flex; flex-wrap: wrap; gap: 8px; }
@@ -6701,162 +6876,254 @@ b.adm-was { font-family: var(--body); font-weight: 600; color: var(--rose); }
 }
 
 /* ---- the Design system section (.ds-) ---------------------------------
-   the palette is Polarin's, sampled off the product screenshots, and the
-   specimens are live DOM rather than crops: every one reads the tokens
-   declared once on .ds-canvas. lighting a token dims everything not built
-   from it, which is the section's actual argument, shown rather than
-   claimed. all of the motion here is content - a step indicator walking and
-   a price following its term are behaviours of the system, not decoration -
-   so prefersReducedMotion holds them still rather than removing them. */
+   four tiles, each a moment of the system moving rather than a panel of
+   facts about it: colour resolving to one lit token, the type ramp stepping
+   down, live components holding their states, and the four-step shape
+   staying put while the product on top of it changes. one slow clock drives
+   all four on different divisors, so the grid never pulses in unison.
+   the motion is the content here - prefersReducedMotion holds every tile on
+   a legible frame rather than removing them. */
 .ds { margin-top: var(--sp-block); }
-.ds-h { font-family: var(--disp); font-weight: 800; font-size: clamp(30px, 4vw, 46px); letter-spacing: -0.03em; line-height: 1.12; margin: 0 0 12px; }
+.ds-h { font-family: var(--disp); font-weight: 800; font-size: var(--t-section); letter-spacing: -0.03em; line-height: 1.12; margin: 0 0 10px; }
 .ds-h em { font-style: normal; }
-.ds-lede { font-size: var(--t-body); line-height: 1.55; color: var(--mute); max-width: 60ch; margin: 0; }
-
-/* the palette as one band. the lit token grows to take the room its claim
-   deserves and reveals its role; the rest hold a narrow stripe. */
-.ds-spectrum { display: flex; gap: 6px; margin-top: 30px; height: 132px; }
-.ds-sp {
-  flex: 1 1 0; min-width: 0; position: relative; overflow: hidden; cursor: pointer;
-  border: 0; border-radius: var(--r-md); padding: 13px; text-align: left;
-  font: inherit; display: flex; flex-direction: column; justify-content: flex-end;
-  transition: flex-grow 0.75s var(--ease), box-shadow 0.4s var(--ease);
+.ds-lede { font-size: var(--t-body); line-height: 1.5; color: var(--mute); max-width: 52ch; margin: 0; }
+.ds-reel { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 18px; margin-top: 30px; }
+/* the cinematic card: near-black, one soft light source, a hairline. --glow
+   is set per tile so the colour tile is lit by whichever token is live. */
+.ds-tile {
+  position: relative; overflow: hidden; isolation: isolate;
+  min-height: 290px; padding: 22px;
+  display: flex; flex-direction: column;
+  border: 1px solid var(--line2); border-radius: var(--r-lg);
+  background: #06070F;
 }
-.ds-sp.on { flex-grow: 3.4; box-shadow: 0 10px 30px rgba(0, 0, 0, 0.45); }
-.ds-sp-light { box-shadow: inset 0 0 0 1px rgba(0, 51, 80, 0.14); }
-.ds-sp-light.on { box-shadow: inset 0 0 0 1px rgba(0, 51, 80, 0.14), 0 10px 30px rgba(0, 0, 0, 0.45); }
-.ds-sp-hex { position: absolute; top: 12px; left: 13px; font-family: var(--mono); font-size: 10.5px; letter-spacing: 0.06em; opacity: 0; transition: opacity 0.4s var(--ease); }
-.ds-sp.on .ds-sp-hex { opacity: 0.8; }
-.ds-sp-name { font-family: var(--disp); font-weight: 700; font-size: 14px; letter-spacing: -0.01em; white-space: nowrap; }
-.ds-sp-role { font-size: 11.5px; line-height: 1.3; opacity: 0; max-height: 0; transition: opacity 0.45s var(--ease), max-height 0.45s var(--ease); }
-.ds-sp.on .ds-sp-role { opacity: 0.85; max-height: 40px; }
-.ds-hint { margin: 10px 0 0; font-family: var(--mono); font-size: 10.5px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--dim); }
-
-.ds-row { display: grid; grid-template-columns: minmax(0, 1.55fr) minmax(0, 0.75fr); gap: 22px; margin-top: 26px; align-items: start; }
-.ds-block { border: 1px solid var(--line2); border-radius: var(--r-lg); background: var(--ink2); padding: 20px; }
-.ds-tag { display: block; font-family: var(--mono); font-size: 10.5px; letter-spacing: 0.2em; text-transform: uppercase; color: var(--dim); margin-bottom: 14px; }
-.ds-type { display: flex; flex-direction: column; gap: 13px; }
-.ds-type-row { display: flex; flex-direction: column; gap: 3px; }
-.ds-type-meta { font-family: var(--mono); font-size: 10px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--dim); }
-.ds-type-sample { font-family: var(--disp); letter-spacing: -0.02em; color: var(--text); line-height: 1.2; }
-.ds-type-mono { font-family: var(--mono); font-size: 13px; letter-spacing: 0.04em; color: var(--mute); }
-.ds-tag-2 { margin-top: 22px; padding-top: 18px; border-top: 1px solid var(--line2); }
-.ds-geo { display: flex; gap: 14px; flex-wrap: wrap; }
-.ds-geo-r { display: flex; flex-direction: column; gap: 5px; align-items: flex-start; }
-.ds-geo-r i { width: 30px; height: 30px; border: 1.5px solid #3696B1; background: rgba(54, 150, 177, 0.12); }
-.ds-geo-r b { font-family: var(--mono); font-size: 11px; color: var(--text); font-weight: 400; }
-.ds-geo-r em { font-style: normal; font-size: 10px; color: var(--dim); }
-.ds-space { display: flex; flex-direction: column; gap: 6px; margin-top: 16px; }
-.ds-space-r { display: flex; align-items: center; gap: 9px; }
-.ds-space-r i { height: 7px; border-radius: 2px; background: linear-gradient(90deg, #3696B1, rgba(54, 150, 177, 0.25)); }
-.ds-space-r b { font-family: var(--mono); font-size: 10.5px; font-weight: 400; color: var(--dim); }
-
-/* the product's own surface, dropped into a dark page on purpose. the nine
-   tokens below are the whole system - every specimen reads them, and
-   nothing inside hard-codes a colour of its own. */
-.ds-canvas {
-  --pol-teal: #00828F;
-  --pol-deep: #003A56;
-  --pol-ink: #003350;
-  --pol-blue: #0386FF;
-  --pol-live: #19AD52;
-  --pol-live-bg: #D4FDE7;
-  --pol-tint: #EDFBFD;
-  --pol-line: #E3E8EF;
-  --pol-mute: #5B7186;
-  background: #F7F9FC;
-  border-radius: var(--r-md);
-  padding: 16px;
-  display: grid;
-  grid-template-columns: repeat(6, minmax(0, 1fr));
-  gap: 12px;
-  color: var(--pol-ink);
+.ds-tile::before {
+  content: ''; position: absolute; z-index: -1; inset: -40% -10% auto -10%; height: 150%;
+  background: radial-gradient(60% 50% at 50% 0%, var(--glow, #3696B1) 0%, transparent 70%);
+  opacity: 0.22; transition: background 0.8s var(--ease);
 }
-.ds-cell { grid-column: span 2; background: #FFFFFF; border: 1px solid var(--pol-line); border-radius: 10px; padding: 13px; transition: box-shadow 0.45s var(--ease); }
-.ds-cell-3 { grid-column: span 3; }
-.ds-cell-6 { grid-column: span 6; }
-.ds-cell-t { display: block; font-family: var(--mono); font-size: 9.5px; letter-spacing: 0.16em; text-transform: uppercase; color: var(--pol-mute); margin-bottom: 11px; }
-.ds-cell-b { display: flex; flex-wrap: wrap; align-items: center; gap: 9px; }
-.ds-cell-col { flex-direction: column; align-items: stretch; gap: 7px; }
+.ds-tile-t { font-family: var(--mono); font-size: var(--t-micro); letter-spacing: 0.24em; text-transform: uppercase; color: var(--dim); }
+/* the readout under each tile - what the frame currently shows */
+.ds-tile-read { margin-top: auto; padding-top: 14px; animation: dsswap 0.45s var(--ease); }
+.ds-tile-read b { display: block; font-family: var(--disp); font-weight: 700; font-size: var(--t-card-sm); letter-spacing: -0.01em; color: var(--text); }
+.ds-tile-read span { display: block; margin-top: 3px; font-family: var(--mono); font-size: var(--t-micro); letter-spacing: 0.06em; color: var(--dim); }
+@keyframes dsswap { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: none; } }
 
-/* token -> specimen wiring. [data-tok] are the leaves and dim when they are
-   not made of the lit token; [data-surf] are the containers, which only
-   ever gain a ring - dimming a container would take its own children down
-   with it and the canvas would just go dark. */
-.ds-canvas [data-tok] { transition: opacity 0.45s var(--ease), box-shadow 0.45s var(--ease); }
-.ds-canvas[data-focus] [data-tok] { opacity: 0.28; }
-.ds-canvas[data-focus="teal"] [data-tok~="teal"],
-.ds-canvas[data-focus="deep"] [data-tok~="deep"],
-.ds-canvas[data-focus="ink"] [data-tok~="ink"],
-.ds-canvas[data-focus="blue"] [data-tok~="blue"],
-.ds-canvas[data-focus="live"] [data-tok~="live"],
-.ds-canvas[data-focus="line"] [data-tok~="line"] { opacity: 1; }
-.ds-canvas[data-focus="surface"] [data-tok], .ds-canvas[data-focus="page"] [data-tok] { opacity: 0.5; }
-.ds-canvas[data-focus="surface"] [data-surf~="surface"],
-.ds-canvas[data-focus="line"] [data-surf~="line"] { box-shadow: 0 0 0 2px var(--pol-teal); }
-.ds-canvas[data-focus="page"] { box-shadow: inset 0 0 0 2px var(--pol-teal); }
+/* 1 - colour: bands that widen when lit, clickable to pin */
+.ds-stack { display: flex; gap: 5px; margin-top: 20px; height: 118px; }
+.ds-band { flex: 1 1 0; min-width: 0; border: 0; border-radius: var(--r-sm); padding: 0; cursor: pointer; opacity: 0.4; transition: flex-grow 0.7s var(--ease), opacity 0.5s var(--ease); }
+.ds-band.on { flex-grow: 3.2; opacity: 1; }
 
-.ds-btn { font-family: inherit; font-size: 12.5px; font-weight: 600; border-radius: 7px; padding: 8px 14px; cursor: default; border: 1px solid transparent; }
-.ds-btn-p { background: var(--pol-teal); color: #FFFFFF; }
-.ds-btn-s { background: #FFFFFF; color: var(--pol-ink); border-color: var(--pol-line); }
-.ds-link { font-size: 12.5px; font-weight: 600; color: var(--pol-blue); }
-.ds-badge { display: inline-flex; align-items: center; gap: 5px; font-size: 10.5px; font-weight: 700; border-radius: 999px; padding: 3px 10px; }
-.ds-badge-live { background: var(--pol-live-bg); color: var(--pol-live); }
-.ds-badge-down { background: #FEE4E2; color: #C4320A; }
-.ds-badge-design { background: #E8EDF5; color: var(--pol-mute); }
+/* 2 - type: the ramp, one step lit at a time */
+.ds-ramp { display: flex; flex-direction: column; gap: 8px; margin-top: 20px; }
+.ds-ramp-l { font-family: var(--disp); letter-spacing: -0.02em; line-height: 1.15; color: var(--dim); opacity: 0.25; transition: opacity 0.5s var(--ease), color 0.5s var(--ease); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.ds-ramp-l.past { opacity: 0.45; }
+.ds-ramp-l.on { opacity: 1; color: var(--text); }
+
+/* 3 - components, on the product's own light surface */
+.ds-comp { margin-top: 20px; background: #F7F9FC; border-radius: var(--r-md); padding: 16px; display: flex; flex-direction: column; gap: 12px; color: #003350; }
+.ds-comp-row { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+.ds-btn { font-family: inherit; font-size: var(--t-body-xs); font-weight: 600; border-radius: 7px; padding: 8px 14px; border: 1px solid transparent; cursor: default; }
+.ds-btn-p { background: #00828F; color: #FFFFFF; }
+.ds-badge { display: inline-flex; align-items: center; gap: 5px; font-size: var(--t-micro); font-weight: 700; border-radius: 999px; padding: 4px 10px; background: #D4FDE7; color: #19AD52; }
 .ds-dot { width: 5px; height: 5px; border-radius: 50%; background: currentColor; animation: dspulse 1.9s ease-in-out infinite; }
 @keyframes dspulse { 0%, 100% { opacity: 1; transform: scale(1); } 50% { opacity: 0.35; transform: scale(0.72); } }
-.ds-chip { font-size: 11.5px; border-radius: 999px; padding: 5px 12px; border: 1px solid var(--pol-line); background: #FFFFFF; color: var(--pol-ink); }
-.ds-chip b { font-weight: 700; margin-left: 5px; color: var(--pol-mute); }
-.ds-chip-on { background: var(--pol-teal); border-color: var(--pol-teal); color: #FFFFFF; }
+.ds-chip { font-size: var(--t-micro); border-radius: 999px; padding: 5px 12px; border: 1px solid #E3E8EF; background: #FFFFFF; }
+.ds-chip b { font-weight: 700; margin-left: 5px; color: #5B7186; }
+.ds-chip-on { background: #00828F; border-color: #00828F; color: #FFFFFF; }
 .ds-chip-on b { color: #FFFFFF; opacity: 0.85; }
-.ds-hero { background: linear-gradient(100deg, #007C96, var(--pol-deep)); border-radius: 8px; padding: 13px 15px; display: flex; align-items: baseline; justify-content: space-between; gap: 10px; }
-.ds-hero-l { font-family: var(--mono); font-size: 9px; letter-spacing: 0.16em; color: rgba(255, 255, 255, 0.72); }
-.ds-hero-v { font-size: 17px; font-weight: 800; letter-spacing: -0.02em; color: #FFFFFF; }
-.ds-lbl { font-size: 12px; font-weight: 700; }
-.ds-input { font-family: inherit; font-size: 12.5px; color: var(--pol-ink); background: #FFFFFF; border: 1px solid var(--pol-line); border-radius: 7px; padding: 8px 11px; width: 100%; }
-.ds-help { font-size: 11px; color: var(--pol-mute); text-align: right; }
-.ds-help b { color: var(--pol-blue); }
-.ds-steps { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; align-items: center; gap: 7px; }
-.ds-steps li { display: flex; align-items: center; gap: 5px; font-size: 11px; color: var(--pol-mute); transition: color 0.4s var(--ease); }
-.ds-steps li i { width: 17px; height: 17px; border-radius: 50%; background: #E8EDF5; color: var(--pol-mute); font-size: 9.5px; font-style: normal; font-weight: 700; display: flex; align-items: center; justify-content: center; transition: background 0.4s var(--ease), color 0.4s var(--ease), transform 0.4s var(--ease); }
-.ds-steps li.done i, .ds-steps li.on i { background: var(--pol-teal); color: #FFFFFF; }
-.ds-steps li.on { color: var(--pol-ink); font-weight: 700; }
-.ds-steps li.on i { transform: scale(1.16); box-shadow: 0 0 0 3px rgba(0, 130, 143, 0.18); }
-.ds-card { border: 1px solid var(--pol-teal); background: var(--pol-tint); border-radius: 8px; padding: 11px; }
-.ds-card-h { display: flex; align-items: center; justify-content: space-between; gap: 8px; font-size: 12px; }
-.ds-topo { display: flex; align-items: center; gap: 7px; margin-top: 10px; }
-.ds-node { font-size: 10px; background: #FFFFFF; border: 1px solid var(--pol-line); border-radius: 6px; padding: 5px 8px; }
-/* the wire carries a moving dash - a live circuit is the one thing on this
-   card that is actually doing something */
-.ds-wire { flex: 1; height: 1px; position: relative; background-image: linear-gradient(90deg, var(--pol-teal) 0 6px, transparent 6px 12px); background-size: 12px 1px; animation: dswire 0.9s linear infinite; }
-@keyframes dswire { to { background-position: 12px 0; } }
-.ds-wire em { position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%); white-space: nowrap; font-style: normal; font-size: 9.5px; background: #B6F0F5; color: var(--pol-ink); border-radius: 999px; padding: 3px 8px; }
-.ds-money { display: flex; align-items: center; justify-content: space-between; gap: 16px; flex-wrap: wrap; }
-.ds-term { display: flex; flex-direction: column; background: var(--pol-tint); border: 1px solid var(--pol-teal); border-radius: 8px; padding: 7px 14px; animation: dsswap 0.5s var(--ease); }
-.ds-term b { font-size: 12.5px; }
-.ds-term em { font-style: normal; font-size: 10px; color: var(--pol-mute); }
-.ds-price { display: flex; align-items: center; gap: 9px; flex-wrap: wrap; }
-.ds-price-v { font-size: 21px; font-weight: 800; letter-spacing: -0.02em; animation: dsswap 0.5s var(--ease); }
-.ds-off { font-size: 10.5px; font-weight: 700; background: var(--pol-live-bg); color: var(--pol-live); border-radius: 999px; padding: 3px 9px; }
-.ds-price-was { font-size: 12px; color: var(--pol-mute); text-decoration: line-through; }
-@keyframes dsswap { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: none; } }
-.ds-foot { margin: 22px 0 0; font-size: 13.5px; line-height: 1.55; color: var(--dim); max-width: 66ch; }
+.ds-money { display: flex; align-items: baseline; gap: 9px; }
+.ds-price-v { font-size: var(--t-stat-sm); font-weight: 800; letter-spacing: -0.02em; animation: dsswap 0.45s var(--ease); }
+.ds-off { font-size: var(--t-micro); font-weight: 700; background: #D4FDE7; color: #19AD52; border-radius: 999px; padding: 3px 9px; }
 
-@media (max-width: 900px) {
-  .ds-row { grid-template-columns: 1fr; gap: 18px; }
-  .ds-canvas { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-  .ds-cell, .ds-cell-3, .ds-cell-6 { grid-column: span 2; }
-  /* the band cannot hold nine readable labels on a phone - it becomes a
-     stack of stripes, still lighting its token, just not narrating it */
-  .ds-spectrum { flex-wrap: wrap; height: auto; }
-  .ds-sp { flex: 1 1 30%; min-height: 74px; }
-  .ds-sp.on { flex-grow: 1; }
+/* 4 - the shape: product changes on top, skeleton does not */
+.ds-shape { margin-top: 20px; display: flex; flex-direction: column; gap: 14px; }
+.ds-shape-p { font-family: var(--disp); font-weight: 800; font-size: var(--t-card); letter-spacing: -0.02em; color: var(--text); animation: dsswap 0.45s var(--ease); }
+.ds-steps { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; align-items: center; gap: 7px; }
+.ds-steps li { display: flex; align-items: center; gap: 5px; font-family: var(--mono); font-size: var(--t-micro); color: var(--dim); transition: color 0.4s var(--ease); }
+.ds-steps li i { width: 16px; height: 16px; border-radius: 50%; background: var(--raise2); color: var(--dim); font-size: 9px; font-style: normal; font-weight: 700; display: flex; align-items: center; justify-content: center; transition: background 0.4s var(--ease), color 0.4s var(--ease), transform 0.4s var(--ease); }
+.ds-steps li.done i, .ds-steps li.on i { background: #3696B1; color: #06070F; }
+.ds-steps li.on { color: var(--text); }
+.ds-steps li.on i { transform: scale(1.18); box-shadow: 0 0 0 3px rgba(54, 150, 177, 0.2); }
+.ds-shape-f { font-family: var(--mono); font-size: var(--t-micro); letter-spacing: 0.06em; color: #3696B1; animation: dsswap 0.45s var(--ease); }
+
+.ds-foot { margin: 24px 0 0; font-size: var(--t-body-sm); line-height: 1.5; color: var(--dim); max-width: 60ch; }
+.ds-foot em { font-style: normal; }
+
+@media (max-width: 860px) {
+  .ds-reel { grid-template-columns: 1fr; }
 }
 @media (prefers-reduced-motion: reduce) {
-  .ds-dot, .ds-wire { animation: none; }
-  .ds-term, .ds-price-v { animation: none; }
-  .ds-sp, .ds-sp-role, .ds-sp-hex, .ds-canvas [data-tok] { transition: none; }
+  .ds-dot { animation: none; }
+  .ds-tile-read, .ds-price-v, .ds-shape-p, .ds-shape-f { animation: none; }
+  .ds-band, .ds-ramp-l, .ds-tile::before { transition: none; }
+}
+
+/* ---- Approach + Information architecture (.apr- / .ia-) --------------
+   both run as pinned scenes with one idea per beat, centred - the same
+   shape Problem and Solution use. a reader should take a screen in within a
+   second and keep going, so nothing here is more than a line or two. Desk
+   research is the deliberate exception: that section is the research, so it
+   is the one place density is the point. */
+.apr-oscn, .ia-oscn { height: calc(var(--beats, 5) * 90vh); }
+/* prefersReducedMotion stacks every beat instead of parking on the last */
+.apr-static { display: flex; flex-direction: column; align-items: center; text-align: center; gap: var(--sp-block); margin-top: var(--sp-block); }
+/* .ovl-panel is the scrolling ancestor, so sticky's top:5vh is measured
+   from the PANEL's top edge - and the panel itself starts a fixed ~71px
+   down the viewport, a number that does NOT scale with vh. with the shared
+   74vh height the content therefore drifted further below centre the taller
+   the window got (9px at 1000px tall, 55px at 1576px).
+   solving P + T + H/2 = 50vh for H, with P = 71px and T = 5vh, gives
+   H = 90vh - 142px - which centres exactly at any height. */
+.apr-stage, .ia-stage { text-align: center; align-items: center; gap: 0; height: calc(90vh - 142px); }
+.apr-eyebrow { display: block; font-family: var(--mono); font-size: var(--t-meta); letter-spacing: 0.22em; text-transform: uppercase; color: var(--dim); margin-bottom: 20px; }
+/* the brief, framed - a hairline box around one sentence, which is the
+   whole beat. */
+.apr-briefwrap { max-width: 42ch; }
+.apr-brief { margin: 0; border: 1px solid var(--line2); border-radius: var(--r-lg); padding: 42px 38px; font-family: var(--disp); font-weight: 600; font-size: var(--t-sub); line-height: 1.35; letter-spacing: -0.015em; color: var(--text); }
+.apr-brief em { font-style: normal; }
+/* the statement beats - one sentence, set at chapter rank so it reads as
+   the only thing on screen. */
+.apr-big { font-family: var(--disp); font-weight: 800; font-size: var(--t-lead); letter-spacing: -0.03em; line-height: 1.2; margin: 0; max-width: 24ch; }
+.apr-big em { font-style: normal; }
+.apr-cap { margin: 16px 0 0; font-family: var(--mono); font-size: var(--t-micro); letter-spacing: 0.14em; text-transform: uppercase; color: var(--dim); }
+/* three inputs as three numbers, not three paragraphs */
+.apr-inputs { display: flex; justify-content: center; gap: 56px; flex-wrap: wrap; }
+.apr-input b { display: block; font-family: var(--disp); font-weight: 800; font-size: var(--t-stat-sm); letter-spacing: -0.02em; }
+.apr-input span { display: block; margin-top: 6px; font-family: var(--mono); font-size: var(--t-meta); letter-spacing: 0.16em; text-transform: uppercase; color: var(--dim); }
+/* the closing index of stages - stacked pills, generous, one per line */
+.apr-willsee { margin: 0 0 22px; font-family: var(--disp); font-size: var(--t-sub); font-weight: 600; letter-spacing: -0.015em; color: var(--text); }
+.apr-stages { display: flex; flex-direction: column; align-items: center; gap: 10px; }
+.apr-stages button {
+  font-family: inherit; font-size: var(--t-body-sm); color: var(--text);
+  border: 1px solid var(--line2); border-radius: 99px; padding: 11px 30px;
+  background: var(--raise2); cursor: pointer; min-width: 260px;
+  transition: border-color 0.2s var(--ease), color 0.2s var(--ease), transform 0.2s var(--ease);
+}
+.apr-stages button:hover, .apr-stages button:focus-visible { border-color: #3696B1; color: #3696B1; transform: translateY(-2px); outline: none; }
+
+.ia-tree { border: 1px solid var(--line2); border-radius: var(--r-lg); background: var(--ink2); padding: 20px; }
+.ia-shell-row { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; margin-bottom: 18px; padding-bottom: 18px; border-bottom: 1px solid var(--line2); }
+.ia-nav { font-family: var(--mono); font-size: var(--t-body-xs); color: var(--text); background: var(--raise2); border: 1px solid var(--line2); border-radius: var(--r-sm); padding: 7px 14px; }
+.ia-cat-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px; }
+.ia-group { border: 1px solid var(--line2); border-radius: var(--r-md); background: var(--raise); padding: 14px; text-align: left; }
+.ia-group b { display: block; font-family: var(--disp); font-weight: 700; font-size: var(--t-body-sm); color: var(--text); margin-bottom: 10px; }
+.ia-group ul { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 6px; }
+.ia-group li { position: relative; padding-left: 14px; font-size: var(--t-body-xs); color: var(--mute); line-height: 1.4; }
+.ia-group li::before { content: ''; position: absolute; left: 0; top: 0.55em; width: 4px; height: 4px; border-radius: 50%; background: #3696B1; }
+/* .ia-stage centres its children with align-items:center, which makes a
+   flex child shrink to its content - so the map's own width:100% had
+   nothing to resolve against and it collapsed to the width of its dots.
+   the wrapper is what needs the width. */
+.ia-effort { width: 100%; max-width: 860px; }
+.ia-stage .eff-map { width: 100%; }
+@media (max-width: 860px) {
+  .apr-inputs { gap: 26px; }
+  .ia-cat-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+/* the effort map's dot labels are absolutely positioned and nowrap, so near
+   the right edge they extend the map's scroll width by ~28px. clipped only
+   at touch widths - there is no hover there to reveal them anyway, and on a
+   pointer device clipping a label the reader is actively hovering would be
+   the worse trade. */
+@media (max-width: 700px) { .eff-map { overflow: hidden; } }
+@media (max-width: 860px) {
+  .apr-inputs { grid-template-columns: 1fr; }
+  .ia-cat-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+.eff-map { position: relative; height: 320px; margin: 20px 0 4px; border: 1px solid var(--line); border-radius: var(--r-md); background: var(--raise); }
+.eff-axis-y, .eff-axis-x { position: absolute; font-family: var(--mono); font-size: var(--t-micro); letter-spacing: 0.14em; text-transform: uppercase; color: var(--dim); }
+.eff-axis-y { top: 10px; left: 12px; }
+.eff-axis-x { bottom: 10px; right: 12px; }
+.eff-dot { position: absolute; transform: translate(-50%, 50%); cursor: default; }
+.eff-dot:focus-visible { outline: none; }
+.eff-dot i { display: block; width: 9px; height: 9px; border-radius: 50%; background: var(--raise2); border: 1.5px solid var(--line2); transition: transform 0.25s var(--ease); }
+.eff-dot.first i { background: var(--up); border-color: var(--up); box-shadow: 0 0 10px rgba(125, 249, 166, 0.3); }
+/* the module name is on permanently now - a scatter of unlabelled dots asks
+   the reader to hover before it means anything, which on a case study is a
+   question nobody stops to answer. the hover card carries the two numbers
+   that would otherwise crowd it. */
+.eff-name { position: absolute; left: 16px; top: 50%; transform: translateY(-50%); white-space: nowrap; font-family: var(--mono); font-size: var(--t-micro); font-weight: 400; letter-spacing: 0.06em; color: var(--mute); transition: color 0.2s var(--ease); }
+.eff-dot.flip .eff-name { left: auto; right: 16px; }
+.eff-dot.first .eff-name { color: var(--text); }
+.eff-pop {
+  position: absolute; left: 16px; bottom: 18px; width: 210px; text-align: left;
+  background: var(--ink2); border: 1px solid var(--line2); border-radius: var(--r-md);
+  padding: 11px 13px; opacity: 0; pointer-events: none; z-index: 2;
+  transform: translateY(4px); transition: opacity 0.2s var(--ease), transform 0.2s var(--ease);
+}
+.eff-dot.flip .eff-pop { left: auto; right: 16px; }
+/* a dot near the top of the map has no room above it for its card */
+.eff-dot.vflip .eff-pop { bottom: auto; top: 18px; }
+.eff-pop-w { display: block; font-family: var(--mono); font-size: var(--t-micro); letter-spacing: 0.1em; text-transform: uppercase; color: #E8A33D; margin-bottom: 6px; }
+.eff-pop-v { display: block; font-size: var(--t-body-xs); line-height: 1.4; color: var(--text); }
+.eff-dot:hover i, .eff-dot:focus-visible i { transform: scale(1.35); }
+.eff-dot:hover .eff-name, .eff-dot:focus-visible .eff-name { color: var(--text); }
+.eff-dot:hover .eff-pop, .eff-dot:focus-visible .eff-pop { opacity: 1; transform: none; }
+.eff-first { margin-top: 22px; }
+.eff-first-lead { font-family: var(--mono); font-size: 11px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--dim); margin-bottom: 12px; }
+.eff-first-grid { display: flex; flex-wrap: wrap; gap: 8px; }
+.eff-first-grid span { font-size: var(--t-body-xs); color: var(--text); border: 1px solid var(--line2); border-radius: 99px; padding: 6px 14px; background: var(--raise2); }
+/* the Approach section's five preview chips are real <button>s, not <span>s -
+   each names a stage that's already its own section further down (desk
+   research -> Research, information architecture -> IA & flows, and so on),
+   so clicking one jumps straight there via the same jumpToSection() the top
+   route bar uses, instead of only being a plain label repeating what's
+   already in the index. */
+.eff-first-grid button {
+  font-family: inherit;
+  font-size: var(--t-body-xs);
+  color: var(--text);
+  border: 1px solid var(--line2);
+  border-radius: 99px;
+  padding: 6px 14px;
+  background: var(--raise2);
+  cursor: pointer;
+  transition: border-color 0.2s var(--ease), color 0.2s var(--ease), transform 0.2s var(--ease);
+}
+.eff-first-grid button:hover, .eff-first-grid button:focus-visible {
+  border-color: #3696B1;
+  color: #3696B1;
+  transform: translateY(-2px);
+  outline: none;
+}
+
+/* ---- reveal-on-scroll, cps- prefixed ----
+   same recipe as .ivs-rv/.ivs-stagger (Invoice's own copy of the same
+   pattern) - restated here rather than shared, per this codebase's one
+   local-hook-per-case-study convention (see useBlockReveal in
+   CustomerPortalCaseStudy.jsx). covers the plain static content only: step
+   tags, headings, paragraphs, and card grids across the nine sections below
+   the hook/bet scenes. the hero and the five pinned scroll-scenes
+   (AlexJourney, TheBetScene, AuditScene, SysScene, ScreensScene) already
+   reveal themselves via their own obeat progression and never carry [data-rv]. */
+/* bigger travel (48px), a starting blur, and a full second of transition -
+   36px/no-blur still read as a quick dissolve rather than something
+   physically arriving. the blur is the part that actually sells "moving
+   into focus": a flat opacity+position fade looks similar to a dissolve at
+   a glance, but a element sharpening as it settles reads unmistakably as
+   motion even out of the corner of your eye. */
+.cps-rv {
+  opacity: 0;
+  filter: blur(6px);
+  transform: translateY(48px) scale(0.96);
+  transition: opacity 0.9s var(--ease) var(--d, 0ms), filter 0.9s var(--ease) var(--d, 0ms), transform 1s var(--ease) var(--d, 0ms);
+}
+.cps-rv.on { opacity: 1; filter: blur(0); transform: none; }
+
+.cps-stagger > * {
+  opacity: 0;
+  filter: blur(5px);
+  transform: translateY(40px) scale(0.96);
+  transition:
+    opacity 0.8s var(--ease) calc(var(--d, 0ms) + var(--sd, 0ms)),
+    filter 0.8s var(--ease) calc(var(--d, 0ms) + var(--sd, 0ms)),
+    transform 0.95s var(--ease) calc(var(--d, 0ms) + var(--sd, 0ms));
+}
+.cps-stagger.on > * { opacity: 1; filter: blur(0); transform: none; }
+
+@media (prefers-reduced-motion: reduce) {
+  .cps-rv, .cps-stagger > * { opacity: 1; filter: none; transform: none; }
 }
 
 /* ---- customer portal's top route line ----
