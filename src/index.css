@@ -8176,3 +8176,38 @@ body.static .scene { height: auto !important; }
   background: color-mix(in srgb, var(--chip-c) 22%, var(--card-fill));
   border-color: color-mix(in srgb, var(--chip-c) 55%, var(--line2));
 }
+
+/* ---- the Invoice case study's narrative scenes (.ivs-) -----------------
+   pinned beats, one idea per screen, the same shape the Customer Portal
+   chapters use. the height formula is the same one derived there: .ovl-panel
+   is the scrolling ancestor, so sticky's top:5vh is measured from the
+   panel's edge and the panel starts a fixed ~71px down - 90vh - 142px is
+   what centres the content on the real viewport at any window height. */
+.ivs-oscn { height: calc(var(--beats, 6) * 90vh); }
+.ivs-stage { height: calc(90vh - 142px); text-align: center; align-items: center; justify-content: center; gap: 0; }
+.ivs-eyebrow { display: block; font-family: var(--mono); font-size: var(--t-meta); letter-spacing: 0.22em; text-transform: uppercase; color: var(--dim); margin-bottom: 22px; }
+/* the statement beats - one sentence, nothing else on screen */
+.ivs-big { font-family: var(--disp); font-weight: 800; font-size: var(--t-lead); letter-spacing: -0.03em; line-height: 1.2; margin: 0; max-width: 26ch; }
+.ivs-big em { font-style: normal; }
+.ivs-quotes { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 18px; max-width: 860px; width: 100%; }
+.ivs-quotes .inv-quote { text-align: left; }
+/* the seven requirements: titles only here - the bodies were a paragraph
+   each, which is a wall on a beat meant to be read in a second. */
+.ivs-reqs { width: 100%; max-width: 940px; }
+.ivs-reqs .inv-problems { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px; }
+.ivs-reqs .inv-problem { text-align: left; }
+.ivs-reqs .inv-problem p { display: none; }
+.ivs-pages { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; max-width: 940px; width: 100%; }
+.ivs-pages .inv-page-card { text-align: left; }
+.ivs-verdictwrap { max-width: 30ch; }
+.ivs-learn { width: 100%; max-width: 940px; }
+.ivs-learn .inv-learn { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px; }
+.ivs-learn .inv-learn-card { text-align: left; }
+/* prefersReducedMotion stacks every beat in flow rather than parking on the
+   last one, which would have shown a reader the closing card and none of
+   the story that reached it. */
+.ivs-static { display: flex; flex-direction: column; align-items: center; text-align: center; gap: var(--sp-block); margin-top: var(--sp-block); }
+@media (max-width: 860px) {
+  .ivs-quotes, .ivs-pages, .ivs-learn .inv-learn { grid-template-columns: 1fr; }
+  .ivs-reqs .inv-problems { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}

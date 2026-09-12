@@ -160,6 +160,129 @@ function prefersReducedMotion() {
     && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 }
 
+/* the pinned-scene reader, same shape as Customer Portal's. the note above
+   about never pinning a section in this modal predates that case study -
+   it now runs its whole narrative on pinned beats, and reads better for it,
+   so the rule it describes no longer holds. what is still true is the part
+   that mattered: scroll speed is never scrubbed, only WHICH beat is on. */
+function useScrollBeat(ref, beats) {
+  const [beat, setBeat] = useState(prefersReducedMotion() ? beats - 1 : 0);
+
+  useEffect(() => {
+    const panel = document.querySelector('.ovl-panel');
+    const el = ref.current;
+    if (!panel || !el) return undefined;
+    let raf = null;
+    const update = () => {
+      const stage = el.firstElementChild;
+      if (!stage) return;
+      const top = el.getBoundingClientRect().top - panel.getBoundingClientRect().top + panel.scrollTop;
+      const span = el.offsetHeight - stage.offsetHeight;
+      if (span <= 0) return;
+      const p = Math.min(1, Math.max(0, (panel.scrollTop - top) / span));
+      setBeat(Math.min(beats - 1, Math.floor(p * beats)));
+    };
+    const onScroll = () => {
+      if (raf) return;
+      raf = requestAnimationFrame(() => { raf = null; update(); });
+    };
+    panel.addEventListener('scroll', onScroll);
+    update();
+    return () => panel.removeEventListener('scroll', onScroll);
+  }, [ref, beats]);
+
+  return beat;
+}
+
+/* the case study's narrative, one idea per beat. the density is deliberate
+   in exactly two places - the seven requirements and the three learnings -
+   because those ARE the content there; every other beat is a sentence. */
+function InvoiceStoryScene() {
+  const ref = useRef(null);
+  const beat = useScrollBeat(ref, 6);
+  const reduced = prefersReducedMotion();
+
+  const beats = [
+    <h3 className="ivs-big" key="two">
+      Two teams kept flagging the same bill.<br /><em className="ivs-was">For opposite reasons.</em>
+    </h3>,
+    <div className="ivs-quotes" key="quotes">
+      <div className="inv-quote">
+        <span className="who">Finance team</span>
+        <p>&quot;I have to open three tabs and cross-check every line before I can approve payment.&quot;</p>
+      </div>
+      <div className="inv-quote">
+        <span className="who">Customer</span>
+        <p>&quot;My bill went up and I have no idea why - did I get charged twice?&quot;</p>
+      </div>
+    </div>,
+    <h3 className="ivs-big" key="diag">
+      The problem was never the numbers.<br />One page was answering <em className="ivs-was">two questions at once</em>.
+    </h3>,
+    <div className="ivs-reqs" key="reqs">
+      <span className="ivs-eyebrow">Every scenario the bill had to survive</span>
+      <div className="inv-problems">
+        {REQUIREMENTS.map((r) => (
+          <div className="inv-problem" key={r.n}>
+            <span className="ip-n">{r.n}</span>
+            <h4>{r.title}</h4>
+          </div>
+        ))}
+      </div>
+    </div>,
+    <h3 className="ivs-big" key="three">
+      Three pages.<br /><em className="ivs-em">One job each.</em>
+    </h3>,
+    <div className="ivs-pages" key="pages">
+      {PAGES.map((pg) => (
+        <div className="inv-page-card" key={pg.tag}>
+          <b className="pn">{pg.tag}</b>
+          <h4>{pg.title}</h4>
+        </div>
+      ))}
+    </div>,
+  ];
+
+  if (reduced) return <div className="ivs-static">{beats}</div>;
+
+  return (
+    <div className="oscn ivs-oscn" ref={ref} style={{ '--beats': beats.length }}>
+      <div className="oscn-stage ivs-stage" key={beat}>{beats[beat]}</div>
+    </div>
+  );
+}
+
+function InvoiceCloseScene() {
+  const ref = useRef(null);
+  const beat = useScrollBeat(ref, 3);
+  const reduced = prefersReducedMotion();
+
+  const beats = [
+    <h3 className="ivs-big" key="ship">
+      A design doesn&apos;t ship itself.<br /><em className="ivs-em">The BRM team put it on every bill.</em>
+    </h3>,
+    <div className="inv-result ivs-verdictwrap" key="verdict">
+      One format that <span className="ivs-verdict">finance trusts and customers understand</span>.
+    </div>,
+    <div className="ivs-learn" key="learn">
+      <span className="ivs-eyebrow">What it taught</span>
+      <div className="inv-learn">
+        <div className="inv-learn-card"><h4>One page can&apos;t serve two readers.</h4></div>
+        <div className="inv-learn-card"><h4>Duplicate numbers read as contradictions.</h4></div>
+        <div className="inv-learn-card"><h4>Scalability isn&apos;t optional.</h4></div>
+      </div>
+    </div>,
+  ];
+
+  if (reduced) return <div className="ivs-static">{beats}</div>;
+
+  return (
+    <div className="oscn ivs-oscn" ref={ref} style={{ '--beats': beats.length }}>
+      <div className="oscn-stage ivs-stage" key={beat}>{beats[beat]}</div>
+    </div>
+  );
+}
+
 function useBlockReveal(ref) {
   useEffect(() => {
     const root = ref.current;
@@ -302,71 +425,8 @@ export default function InvoiceCaseStudy({ onPrev, onNext, idx, total }) {
         <CompareSlider beforeSrc="/invoice/existing.png" afterSrc="/invoice/new.png" beforeLabel="Existing" afterLabel="New" />
       </div>
 
-      <div className="inv-section">
-        <div className="inv-step-tag ivs-rv" data-rv><i></i>Step 1 · The problem<i></i></div>
-        <h3 className="plain ivs-rv" data-rv style={{ '--d': '90ms' }}>Where it started</h3>
-        {/* WORD REVEAL 1 of 3 - the problem statement. the whole case study turns
-            on its last clause, which is why the clause is also the page's one
-            --rose mark: rose is the removed side of a diff everywhere else on
-            the site, and this names the defect the redesign removed. */}
-        <p className="body ivs-words" data-words>Two teams kept flagging the same bill - for opposite reasons. Finance said they couldn't tell if a number was right without calling someone. Customers said they didn't know what they were being charged for until they called support. Same invoice, two very different complaints - which meant the real problem wasn't the numbers. It was that one page was trying to answer <span className="ivs-was">two completely different questions at once</span>.</p>
-      </div>
+      <InvoiceStoryScene />
 
-      <div className="inv-section">
-        <div className="inv-step-tag ivs-rv" data-rv><i></i>Step 2 · Listening first<i></i></div>
-        <h3 className="plain ivs-rv" data-rv style={{ '--d': '90ms' }}>Talking to the people who read it</h3>
-        <p className="body ivs-rv" data-rv style={{ '--d': '160ms' }}>Before sketching anything, I sat with both sides - pulled real invoices, walked through actual disputes, and wrote down every scenario a bill needed to survive.</p>
-        <div className="inv-quotes ivs-stagger" data-rv style={{ '--d': '240ms' }}>
-          <div className="inv-quote" style={{ '--sd': '0ms' }}>
-            <span className="who">Finance team</span>
-            <p>"I have to open three tabs and cross-check every line before I can approve payment."</p>
-          </div>
-          <div className="inv-quote" style={{ '--sd': '110ms' }}>
-            <span className="who">Customer</span>
-            <p>"My bill went up and I have no idea why - did I get charged twice?"</p>
-          </div>
-        </div>
-      </div>
-
-      <div className="inv-section">
-        <div className="inv-step-tag ivs-rv" data-rv><i></i>Step 3 · Writing it down<i></i></div>
-        <h3 className="plain ivs-rv" data-rv style={{ '--d': '90ms' }}>Turning conversations into <span>requirements</span></h3>
-        <p className="body ivs-rv" data-rv style={{ '--d': '160ms' }}>Every conversation became a rule the new invoice had to follow - not just for the common cases, but for <b className="ivs-em">every scenario Polarin actually sells</b>.</p>
-        <div className="inv-problems ivs-stagger" data-rv style={{ '--d': '240ms' }}>
-          {REQUIREMENTS.map((r, i) => (
-            <div className="inv-problem" key={r.n} style={{ '--sd': `${i * 70}ms` }}>
-              <span className="ip-n">{r.n}</span>
-              <h4>{r.title}</h4>
-              <p>{r.body}</p>
-            </div>
-          ))}
-        </div>
-      </div>
-
-      <div className="inv-section">
-        <div className="inv-step-tag ivs-rv" data-rv><i></i>Step 4 · Designing it<i></i></div>
-        {/* the page's ONE accent, on the <span>: see THE INVOICE STORY PASS in
-            index.css for why this one phrase gets the gradient and nothing else
-            on the page does. */}
-        <h3 className="ch-title t-lead ivs-rv" data-rv style={{ '--d': '90ms' }}>Three pages. <span>One job each.</span></h3>
-        {/* WORD REVEAL 2 of 3 - the decision. */}
-        <p className="body ivs-words" data-words>One page can't answer "what do I owe," "what am I paying for," and "why did it change" at the same time - so it stopped trying to.</p>
-        <div className="inv-pages ivs-stagger" data-rv style={{ '--d': '240ms' }}>
-          {PAGES.map((p, i) => (
-            <div className="inv-page-card" key={p.tag} style={{ '--sd': `${i * 110}ms` }}>
-              <b className="pn">{p.tag}</b>
-              <h4>{p.title}</h4>
-              <p>{p.body}</p>
-              <div>{p.tags.map((t) => <span className="chip" key={t}>{t}</span>)}</div>
-            </div>
-          ))}
-        </div>
-      </div>
-
-      {/* no ivs-rv anywhere on .inv-explore or its ancestors: a transform on an
-          ancestor of a position: sticky element kills the sticky, and this
-          section's tab bar is .inv-tabs-sticky. the eyebrow, the heading and the
-          three shots are SIBLINGS of that bar, so they reveal freely. */}
       <div className="inv-section inv-explore">
         <p className="eyebrow ivs-rv" data-rv>The new invoice</p>
         <h3 className="ch-title t-sub ivs-rv" data-rv style={{ '--d': '90ms' }}>Explore the <span>three pages.</span></h3>
@@ -428,36 +488,7 @@ export default function InvoiceCaseStudy({ onPrev, onNext, idx, total }) {
         </div>
       </div>
 
-      <div className="inv-section">
-        <div className="inv-step-tag ivs-rv" data-rv><i></i>Step 5 · Getting it live<i></i></div>
-        <h3 className="plain ivs-rv" data-rv style={{ '--d': '90ms' }}>A design doesn't ship itself</h3>
-        <div className="inv-brm ivs-rv" data-rv style={{ '--d': '160ms' }}>
-          <span className="icon">🤝</span>
-          <p>A new format doesn't matter until it's actually on the bill. I worked with the <b>BRM (Business Relationship Management) team</b> - who own how invoices actually get generated - walking them through every rule so the new template could go live for every customer, not just the ones in my mockups.</p>
-        </div>
-      </div>
-
-      <div className="inv-section">
-        <div className="inv-step-tag ivs-rv" data-rv><i></i>Final result<i></i></div>
-        <h3 className="plain ivs-rv" data-rv style={{ '--d': '90ms' }}>What changed</h3>
-        {/* WORD REVEAL 3 of 3 - the payoff, in the box that already carries --up.
-            the lime marks the verdict inside it and nothing else. */}
-        <div className="inv-result ivs-words" data-words>One invoice format that <span className="ivs-verdict">finance trusts and customers understand</span> - built to handle every contract Polarin sells, from a one-month trial to a five-year deal.</div>
-        <div className="inv-learn ivs-stagger" data-rv style={{ '--d': '160ms' }}>
-          <div className="inv-learn-card" style={{ '--sd': '0ms' }}>
-            <h4>One page can't serve two readers.</h4>
-            <p>Once we accepted that finance and ops have completely different jobs, splitting the invoice into three pages became obvious, not clever.</p>
-          </div>
-          <div className="inv-learn-card" style={{ '--sd': '110ms' }}>
-            <h4>Duplicate numbers read as contradictions.</h4>
-            <p>The summary and the detail table used to show the same number differently. Finance filed tickets asking which was correct - removing it wasn't a design choice, it was conflict resolution.</p>
-          </div>
-          <div className="inv-learn-card" style={{ '--sd': '220ms' }}>
-            <h4>Scalability isn't optional.</h4>
-            <p>The old format assumed one simple product. The new one handles every term, every currency, every payment style - from the same system.</p>
-          </div>
-        </div>
-      </div>
+      <InvoiceCloseScene />
 
       <div className="ovl-nav">
         <button type="button" onClick={onPrev}>← Prev</button>
