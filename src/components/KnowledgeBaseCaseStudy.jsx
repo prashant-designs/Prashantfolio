@@ -132,6 +132,17 @@ const KB_OPTIONS = [
   { n: 'Docusaurus', a: 'yes', b: 'files, not data', c: 'git PRs', v: 're-creates the dev dependency' },
 ];
 
+/* how it was sequenced. the week ranges are from my own project notes; the
+   ordering is the argument - structure first, authors second, and the
+   portable-docs work only once there was content worth handing to anything.
+   the fourth marker is the one that has not happened yet. */
+const KB_PHASES = [
+  { p: 'Phase 1', w: 'weeks 1-5', t: 'Model and prove', n: 'content model cut from fourteen types to nine, IA validated by tree testing, highest-traffic pages migrated and hand-checked' },
+  { p: 'Phase 2', w: 'weeks 6-11', t: 'Hand it over', n: 'editor experience built in Strapi with owner and verify-by as required fields, experts trained, old wiki set read-only with 1:1 redirects' },
+  { p: 'Phase 3', w: 'weeks 12-16', t: 'Make it portable', n: 'portal built with Claude Code, a markdown twin generated for every page, and the Copy page control shipped' },
+  { p: 'Next', w: 'designed', t: 'Notes from Jira', n: 'release notes generated from the tickets in a shipped version, approved by a human before they publish', soon: true },
+];
+
 /* publish is one button; these are the things it sets off. */
 const KB_PUBLISH = [
   { d: 'Min 0', t: 'Draft', n: 'the expert writes in structured fields, with a live preview' },
@@ -168,7 +179,7 @@ const KB_WHY = [
    was careful about is kept - beats 4 onward are explicitly the proposal. */
 function KbStoryScene() {
   const ref = useRef(null);
-  const beat = useScrollBeat(ref, 13);
+  const beat = useScrollBeat(ref, 15);
   const reduced = prefersReducedMotion();
 
   const beats = [
@@ -277,6 +288,20 @@ function KbStoryScene() {
           </div>
         ))}
       </div>
+    </div>,
+    <div className="kbs-wide" key="phases">
+      <span className="kbs-eyebrow">Sequencing was the decision</span>
+      <div className="kbs-tl">
+        {KB_PHASES.map((ph) => (
+          <div className={`kbs-tl-s${ph.soon ? ' soon' : ''}`} key={ph.p}>
+            <span className="kbs-tl-dot" aria-hidden="true" />
+            <span className="kbs-tl-p">{ph.p} · {ph.w}</span>
+            <b>{ph.t}</b>
+            <p>{ph.n}</p>
+          </div>
+        ))}
+      </div>
+      <p className="kbs-note">structure first, authors second. making the docs portable only mattered once there was content worth handing to anything.</p>
     </div>,
     <div className="kbs-notes" key="notes">
       <span className="kbs-eyebrow">Designed next · release notes from Jira</span>

@@ -8280,3 +8280,25 @@ body.static .scene { height: auto !important; }
 @media (max-width: 900px) {
   .kbs-lim, .kbs-lim-4, .kbs-stats { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 }
+
+/* the project timeline. a connecting rule runs behind the markers rather
+   than bordered cells, so it reads as one line of time rather than four
+   boxes - and the last marker is hollow with a dashed run into it, because
+   that phase is designed and not shipped. */
+.kbs-tl { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 18px; position: relative; text-align: left; }
+.kbs-tl-s { position: relative; padding-top: 26px; }
+/* the rule: drawn from each marker to the next, so it never overshoots the
+   last one the way a single full-width line behind the grid would. */
+.kbs-tl-s::before { content: ''; position: absolute; top: 5px; left: 12px; right: -18px; height: 1px; background: #3696B1; opacity: 0.5; }
+.kbs-tl-s:last-child::before { display: none; }
+.kbs-tl-s.soon::before { background: none; border-top: 1px dashed var(--line2); opacity: 1; }
+.kbs-tl-dot { position: absolute; top: 0; left: 0; width: 11px; height: 11px; border-radius: 50%; background: #3696B1; border: 1.5px solid #3696B1; }
+.kbs-tl-s.soon .kbs-tl-dot { background: transparent; border-color: var(--line2); }
+.kbs-tl-p { display: block; font-family: var(--mono); font-size: var(--t-micro); letter-spacing: 0.14em; text-transform: uppercase; color: var(--dim); }
+.kbs-tl-s b { display: block; margin-top: 7px; font-family: var(--disp); font-weight: 800; font-size: var(--t-card-sm); letter-spacing: -0.02em; color: var(--text); }
+.kbs-tl-s.soon b { color: var(--mute); }
+.kbs-tl-s p { margin: 7px 0 0; font-size: var(--t-body-xs); line-height: 1.45; color: var(--mute); }
+@media (max-width: 900px) {
+  .kbs-tl { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 22px; }
+  .kbs-tl-s:nth-child(2n)::before { display: none; }
+}
