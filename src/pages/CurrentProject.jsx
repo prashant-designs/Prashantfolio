@@ -1,6 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
 import InvoiceCaseStudy from '../components/InvoiceCaseStudy';
-import AdminPortalCaseStudy from '../components/AdminPortalCaseStudy';
 import CustomerPortalCaseStudy from '../components/CustomerPortalCaseStudy';
 import DeveloperPortalCaseStudy from '../components/DeveloperPortalCaseStudy';
 import KnowledgeBaseCaseStudy from '../components/KnowledgeBaseCaseStudy';
@@ -15,7 +14,11 @@ const STATS = [
   { to: 5, prefix: '', suffix: '+', label: 'surfaces · one owner' },
 ];
 
-const SURFACES = ['Customer Portal', 'Admin Portal', 'Invoice Design', 'Developer Portal', 'Knowledge Base', 'GenAI Initiative'];
+// Admin Portal is temporarily hidden: its card, its index row and its
+// overlay branch are all out, so it cannot be reached by click OR by the
+// overlay's prev/next either. restoring it means putting it back in these
+// four places and moving the group boundary below back to 3.
+const SURFACES = ['Customer Portal', 'Invoice Design', 'Developer Portal', 'Knowledge Base', 'GenAI Initiative'];
 
 /* the closing index - every case study on the page as one plain arrow-link
    list, which is the onething.design device the brief points at (italic-ish
@@ -27,7 +30,6 @@ const SURFACES = ['Customer Portal', 'Admin Portal', 'Invoice Design', 'Develope
    hue and the same number - see the note above the timeline's card grids. */
 const INDEX = [
   { cat: 1, name: 'Customer Portal', label: 'Customer Portal', note: 'the self-serve front door' },
-  { cat: 2, name: 'Admin Portal', label: 'Admin Portal', note: 'the internal ops console' },
   { cat: 3, name: 'Invoice Design', label: 'Invoice Design', note: 'transparency for high-ticket billing' },
   { cat: 4, name: 'Knowledge Base', label: 'Knowledge Base', note: 'documentation out of the engineering queue' },
   { cat: 5, name: 'Developer Portal', label: 'Developer Sandbox', note: 'a live API test environment' },
@@ -296,10 +298,11 @@ export default function CurrentProject() {
   // prev/next stay within their own group - the 3 "zero to one" case studies
   // (Customer/Admin/Invoice) cycle among themselves, not into the 3 later ones
   // (Developer Portal/Knowledge Base/GenAI), and vice versa.
-  const groupStart = (i) => (i < 3 ? 0 : 3);
-  const groupLen = () => 3;
-  const prevStudy = () => setStudyIdx((i) => groupStart(i) + ((i - groupStart(i) + groupLen() - 1) % groupLen()));
-  const nextStudy = () => setStudyIdx((i) => groupStart(i) + ((i - groupStart(i) + 1) % groupLen()));
+  const ZERO_TO_ONE = 2;
+  const groupStart = (i) => (i < ZERO_TO_ONE ? 0 : ZERO_TO_ONE);
+  const groupLen = (i) => (i < ZERO_TO_ONE ? ZERO_TO_ONE : SURFACES.length - ZERO_TO_ONE);
+  const prevStudy = () => setStudyIdx((i) => groupStart(i) + ((i - groupStart(i) + groupLen(i) - 1) % groupLen(i)));
+  const nextStudy = () => setStudyIdx((i) => groupStart(i) + ((i - groupStart(i) + 1) % groupLen(i)));
 
   // a keyboard-openable card: Enter and Space both act like a click, which is
   // what a role="button" element owes a keyboard user.
@@ -506,27 +509,6 @@ export default function CurrentProject() {
                   <div className="tl-cs-foot"><span className="tl-cs-impact">3× <small>self-serve adoption</small></span><span className="tl-cs-link">Deep dive →</span></div>
                 </article>
 
-                <article className="tl-cs-card" role="button" tabIndex={0} onClick={() => openStudy('Admin Portal')} onKeyDown={cardKeys('Admin Portal')}>
-                  <span className="tl-cs-icon" data-cat="2" aria-hidden="true">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
-                      <g>
-                        <animateTransform attributeName="transform" type="rotate" from="0 12 12" to="360 12 12" dur="7s" repeatCount="indefinite" />
-                        <circle cx="12" cy="12" r="3.4" />
-                        <path d="M12 3v2.4M12 18.6V21M21 12h-2.4M5.4 12H3M18.1 5.9l-1.7 1.7M7.6 16.5l-1.7 1.7M18.1 18.1l-1.7-1.7M7.6 7.5L5.9 5.9" />
-                      </g>
-                    </svg>
-                  </span>
-                  <h4>Admin Portal</h4>
-                  {/* reconciled with the case study's rewrite: "user management" was a
-                      module name the study no longer has. its nine capabilities are
-                      grouped as Deliver / Serve / Control, and the beat this teaser
-                      should carry is the lifecycle it covers, which is the study's own
-                      opening line. */}
-                  <div className="tl-cs-row"><span>about</span><p>the internal ops console - order to activation, KYC, inventory, billing</p></div>
-                  <div className="tl-cs-row"><span>role</span><p>understood internal users, defined & designed the flows - then built and deployed them</p></div>
-                  <div className="tl-cs-foot"><span className="tl-cs-impact">faster <small>order → delivery cycle</small></span><span className="tl-cs-link">Deep dive →</span></div>
-                </article>
-
                 <article className="tl-cs-card" role="button" tabIndex={0} onClick={() => openStudy('Invoice Design')} onKeyDown={cardKeys('Invoice Design')}>
                   <span className="tl-cs-icon" data-cat="3" aria-hidden="true">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round">
@@ -667,17 +649,15 @@ export default function CurrentProject() {
         <button className="ovl-close" onClick={closeStudy} aria-label="Close">×</button>
         <div className="ovl-panel" ref={ovlPanelRef}>
           {SURFACES[studyIdx] === 'Customer Portal' ? (
-            <CustomerPortalCaseStudy onPrev={prevStudy} onNext={nextStudy} idx={studyIdx - groupStart(studyIdx)} total={groupLen()} />
-          ) : SURFACES[studyIdx] === 'Admin Portal' ? (
-            <AdminPortalCaseStudy onPrev={prevStudy} onNext={nextStudy} idx={studyIdx - groupStart(studyIdx)} total={groupLen()} />
+            <CustomerPortalCaseStudy onPrev={prevStudy} onNext={nextStudy} idx={studyIdx - groupStart(studyIdx)} total={groupLen(studyIdx)} />
           ) : SURFACES[studyIdx] === 'Invoice Design' ? (
-            <InvoiceCaseStudy onPrev={prevStudy} onNext={nextStudy} idx={studyIdx - groupStart(studyIdx)} total={groupLen()} />
+            <InvoiceCaseStudy onPrev={prevStudy} onNext={nextStudy} idx={studyIdx - groupStart(studyIdx)} total={groupLen(studyIdx)} />
           ) : SURFACES[studyIdx] === 'Developer Portal' ? (
-            <DeveloperPortalCaseStudy onPrev={prevStudy} onNext={nextStudy} idx={studyIdx - groupStart(studyIdx)} total={groupLen()} />
+            <DeveloperPortalCaseStudy onPrev={prevStudy} onNext={nextStudy} idx={studyIdx - groupStart(studyIdx)} total={groupLen(studyIdx)} />
           ) : SURFACES[studyIdx] === 'Knowledge Base' ? (
-            <KnowledgeBaseCaseStudy onPrev={prevStudy} onNext={nextStudy} idx={studyIdx - groupStart(studyIdx)} total={groupLen()} />
+            <KnowledgeBaseCaseStudy onPrev={prevStudy} onNext={nextStudy} idx={studyIdx - groupStart(studyIdx)} total={groupLen(studyIdx)} />
           ) : (
-            <GenAICaseStudy onPrev={prevStudy} onNext={nextStudy} idx={studyIdx - groupStart(studyIdx)} total={groupLen()} />
+            <GenAICaseStudy onPrev={prevStudy} onNext={nextStudy} idx={studyIdx - groupStart(studyIdx)} total={groupLen(studyIdx)} />
           )}
         </div>
       </div>
