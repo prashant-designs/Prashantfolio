@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
+import CaseRoute from '../CaseRoute';
 import CompareSlider from './CompareSlider';
 
 const ZOOM = 2.4;
@@ -381,10 +382,14 @@ function useWordReveal(ref) {
   }, [ref]);
 }
 
+const IVS_ROUTE = ['Before / after', 'The problem', 'The three pages', 'Getting it live'];
+
 export default function InvoiceCaseStudy({ onPrev, onNext, idx, total }) {
   const [activeSection, setActiveSection] = useState(1);
   const sectionRefs = useRef({});
   const wrap = useRef(null);
+  const secs = useRef([]);
+  const at = (i) => (el) => { secs.current[i] = el; };
   useBlockReveal(wrap);
   useWordReveal(wrap);
 
@@ -411,6 +416,7 @@ export default function InvoiceCaseStudy({ onPrev, onNext, idx, total }) {
 
   return (
     <div className="inv-wrap ivs" ref={wrap}>
+      <CaseRoute refs={secs} labels={IVS_ROUTE} />
       <div className="inv-hero">
         <p className="eyebrow">Polarin · Billing</p>
         <h2>Designing the invoice for complex NaaS billing</h2>
@@ -421,13 +427,13 @@ export default function InvoiceCaseStudy({ onPrev, onNext, idx, total }) {
         </div>
       </div>
 
-      <div className="inv-section ivs-rv" data-rv>
+      <div className="inv-section ivs-rv" data-rv ref={at(0)}>
         <CompareSlider beforeSrc="/invoice/existing.png" afterSrc="/invoice/new.png" beforeLabel="Existing" afterLabel="New" />
       </div>
 
-      <InvoiceStoryScene />
+      <div ref={at(1)}><InvoiceStoryScene /></div>
 
-      <div className="inv-section inv-explore">
+      <div className="inv-section inv-explore" ref={at(2)}>
         <p className="eyebrow ivs-rv" data-rv>The new invoice</p>
         <h3 className="ch-title t-sub ivs-rv" data-rv style={{ '--d': '90ms' }}>Explore the <span>three pages.</span></h3>
         <div className="inv-tabs inv-tabs-sticky">
@@ -488,7 +494,7 @@ export default function InvoiceCaseStudy({ onPrev, onNext, idx, total }) {
         </div>
       </div>
 
-      <InvoiceCloseScene />
+      <div ref={at(3)}><InvoiceCloseScene /></div>
 
       <div className="ovl-nav">
         <button type="button" onClick={onPrev}>← Prev</button>

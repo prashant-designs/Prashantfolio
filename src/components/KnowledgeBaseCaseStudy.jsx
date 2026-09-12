@@ -173,6 +173,109 @@ const KB_WHY = [
 ];
 
 
+/* the section bar the Customer Portal has, over this case study's single
+   pinned scene: its beats are grouped into chapters so the bar reads as
+   seven stops rather than fifteen ticks of noise. it is display-only, so it
+   reads the scene out of the DOM and does its own scroll maths rather than
+   forcing the scene to lift its beat state.
+   the width clamp is the same one the Customer Portal needed: .ovl-close
+   sits OUTSIDE the panel, so stopping short of it alone lets the bar and
+   its label run past the panel's rounded corner. */
+const KB_CHAPTERS = [
+  { label: 'Problem', at: 0 },
+  { label: 'Discovery', at: 4 },
+  { label: 'Decision', at: 6 },
+  { label: 'Build', at: 8 },
+  { label: 'Portable', at: 9 },
+  { label: 'Rollout', at: 12 },
+  { label: 'Close', at: 14 },
+];
+
+function KbRoute({ total }) {
+  const [pos, setPos] = useState(null);
+  const [beat, setBeat] = useState(0);
+
+  useEffect(() => {
+    if (prefersReducedMotion()) return undefined;
+    const panel = document.querySelector('.ovl-panel');
+    if (!panel) return undefined;
+    let raf = null;
+
+    const place = () => {
+      const r = panel.getBoundingClientRect();
+      const closeBtn = document.querySelector('.ovl-close');
+      const closeLeft = closeBtn ? closeBtn.getBoundingClientRect().left : r.right - 28;
+      const rightLimit = Math.min(closeLeft - 14, r.right - 28);
+      setPos({ top: r.top, left: r.left + 28, width: Math.max(120, rightLimit - (r.left + 28)) });
+    };
+    const update = () => {
+      const el = document.querySelector('.kbs-oscn');
+      const stage = el && el.firstElementChild;
+      if (!stage) return;
+      const r = panel.getBoundingClientRect();
+      const top = el.getBoundingClientRect().top - r.top + panel.scrollTop;
+      const span = el.offsetHeight - stage.offsetHeight;
+      if (span <= 0) return;
+      const pr = Math.min(1, Math.max(0, (panel.scrollTop - top) / span));
+      setBeat(Math.min(total - 1, Math.floor(pr * total)));
+    };
+    const onScroll = () => {
+      if (raf) return;
+      raf = requestAnimationFrame(() => { raf = null; place(); update(); });
+    };
+    panel.addEventListener('scroll', onScroll, { passive: true });
+    const ro = new ResizeObserver(() => { place(); update(); });
+    ro.observe(panel);
+    place();
+    update();
+    return () => {
+      ro.disconnect();
+      panel.removeEventListener('scroll', onScroll);
+      if (raf) cancelAnimationFrame(raf);
+    };
+  }, [total]);
+
+  // instant, never smooth - the scene spans fifteen viewport heights, so an
+  // eased jump would drag the reader through every beat in between.
+  const jumpTo = (b) => {
+    const panel = document.querySelector('.ovl-panel');
+    const el = document.querySelector('.kbs-oscn');
+    const stage = el && el.firstElementChild;
+    if (!panel || !stage) return;
+    const top = el.getBoundingClientRect().top - panel.getBoundingClientRect().top + panel.scrollTop;
+    const span = el.offsetHeight - stage.offsetHeight;
+    panel.scrollTop = top + ((b + 0.5) / total) * span;
+  };
+
+  if (!pos) return null;
+  const active = KB_CHAPTERS.reduce((acc, c, i) => (beat >= c.at ? i : acc), 0);
+  const progress = total > 1 ? (beat / (total - 1)) * 100 : 0;
+
+  return (
+    <div className="cp-route-wrap" style={{ top: pos.top, left: pos.left, width: pos.width }}>
+      <div className="route-line" aria-label="Jump to section">
+        <div className="route-fill" style={{ width: `${progress}%` }}></div>
+        <div className="route-packet" style={{ left: `${progress}%` }}>
+          <span className="route-now" style={{ transform: `translateX(-${progress}%)` }}>
+            <i>{String(active + 1).padStart(2, '0')}</i>{KB_CHAPTERS[active].label}
+          </span>
+        </div>
+        {KB_CHAPTERS.map((c, i) => (
+          <button
+            key={c.label}
+            type="button"
+            className={`route-tick ${i === active ? 'on' : ''}`}
+            data-cp-ch={c.label}
+            aria-label={`Jump to ${c.label}`}
+            style={{ left: `${(c.at / (total - 1)) * 100}%` }}
+            onClick={() => jumpTo(c.at)}
+          />
+        ))}
+      </div>
+    </div>
+  );
+}
+
 /* the whole case study as one pinned run of beats, written for a reader who
    has never operated a CMS: no tool names in the narrative, no retrieval
    vocabulary, one idea per screen. the built/designed split the old version
@@ -382,6 +485,7 @@ export default function KnowledgeBaseCaseStudy({ onPrev, onNext, idx, total }) {
 
   return (
     <div className="inv-wrap" ref={wrap}>
+      <KbRoute total={15} />
       <div className="inv-hero">
         <p className="eyebrow">Polarin · Knowledge Base</p>
         <h2>The knowledge base needed an engineer to change a sentence.</h2>

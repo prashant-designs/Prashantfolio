@@ -1,4 +1,5 @@
-import { useState } from 'react';
+import { useRef, useState } from 'react';
+import CaseRoute from '../CaseRoute';
 
 const PIPELINE = ['requirements', 'PRD', 'pricing + volumetrics', 'DX design', 'frontend build', 'deploy'];
 
@@ -25,7 +26,11 @@ const LEDGER = [
   { q: 'Key rotation - how long do old keys live?', a: 'overlap window', d: 'old key stays valid through a fixed overlap after rotation, so a live Grafana board never goes dark mid-swap. revoke is instant when a key is compromised.' },
 ];
 
+const DEV_ROUTE = ['The pipeline', 'What I found', 'The calls I made', 'The heart of it', 'Pricing & volumetrics', 'How it got finalised', 'Then I built it', 'Final result'];
+
 export default function DeveloperPortalCaseStudy({ onPrev, onNext, idx, total }) {
+  const secs = useRef([]);
+  const at = (i) => (el) => { secs.current[i] = el; };
   const [env, setEnv] = useState('uat');
   const [res, setRes] = useState(null);
   const [circuits, setCircuits] = useState(10);
@@ -42,6 +47,7 @@ export default function DeveloperPortalCaseStudy({ onPrev, onNext, idx, total })
 
   return (
     <div className="inv-wrap">
+      <CaseRoute refs={secs} labels={DEV_ROUTE} />
       <div className="inv-hero">
         <p className="eyebrow">Polarin · Developer Portal</p>
         <h2>A network that provisions like an API call.</h2>
@@ -52,7 +58,7 @@ export default function DeveloperPortalCaseStudy({ onPrev, onNext, idx, total })
         </div>
       </div>
 
-      <div className="inv-section">
+      <div className="inv-section" ref={at(0)}>
         <div className="dv-pipe">
           {PIPELINE.map((p, i) => (
             <span key={p} className={`dvp ${i === PIPELINE.length - 1 ? 'last' : ''}`}>
@@ -62,7 +68,7 @@ export default function DeveloperPortalCaseStudy({ onPrev, onNext, idx, total })
         </div>
       </div>
 
-      <div className="inv-section">
+      <div className="inv-section" ref={at(1)}>
         <div className="inv-step-tag"><i></i>What I found</div>
         <h3 className="dv-h">Requirement collection</h3>
         <p className="dv-p">I shadowed support tickets, sat with CX, sales and engineering, and anchored everything on the two customers who matter: network-ops teams pulling metrics into Grafana or Datadog, and enterprise IT automating orders and changes. The current state, as a developer experiences it:</p>
@@ -77,7 +83,7 @@ export default function DeveloperPortalCaseStudy({ onPrev, onNext, idx, total })
         </div>
       </div>
 
-      <div className="inv-section">
+      <div className="inv-section" ref={at(2)}>
         <div className="inv-step-tag"><i></i>The calls I made</div>
         <h3 className="dv-h">The PRD</h3>
         <div className="ivx-principles dv4">
@@ -87,7 +93,7 @@ export default function DeveloperPortalCaseStudy({ onPrev, onNext, idx, total })
         </div>
       </div>
 
-      <div className="inv-section">
+      <div className="inv-section" ref={at(3)}>
         <div className="inv-step-tag"><i></i>The heart of it</div>
         <h3 className="dv-h">Try the two environments</h3>
         <div className="dv-console" data-env={env}>
@@ -113,7 +119,7 @@ export default function DeveloperPortalCaseStudy({ onPrev, onNext, idx, total })
         <p className="dv-p dim">the mock layer behind UAT was the riskiest engineering ask in the PRD - and the reason a developer can go from activation email to first successful API call in <b style={{ color: 'var(--text)' }}>under 30 minutes.</b></p>
       </div>
 
-      <div className="inv-section">
+      <div className="inv-section" ref={at(4)}>
         <div className="inv-step-tag"><i></i>Pricing & volumetrics</div>
         <h3 className="dv-h">The framework</h3>
         <p className="dv-p">One principle: <b style={{ color: 'var(--text)' }}>never charge the call that earns us money.</b> Ordering, changes, billing, admin - all free; Lightstorm earns from the services, not the calls. Only monitoring is metered, and only above a daily pool that scales with the customer&apos;s network:</p>
@@ -136,7 +142,7 @@ export default function DeveloperPortalCaseStudy({ onPrev, onNext, idx, total })
         </div>
       </div>
 
-      <div className="inv-section">
+      <div className="inv-section" ref={at(5)}>
         <div className="inv-step-tag"><i></i>How it got finalised</div>
         <h3 className="dv-h">The decision ledger</h3>
         <p className="dv-p">A PRD is a stack of arguments settled one by one. The ones that shaped this portal - hover each for the call and the why:</p>
@@ -150,7 +156,7 @@ export default function DeveloperPortalCaseStudy({ onPrev, onNext, idx, total })
         </div>
       </div>
 
-      <div className="inv-section">
+      <div className="inv-section" ref={at(6)}>
         <div className="inv-step-tag"><i></i>Then I built it</div>
         <h3 className="dv-h">DX design → frontend → deploy</h3>
         <p className="dv-p">Designed the developer experience end to end - a 5-step getting-started, executable Swagger against UAT, one-click Postman, module docs with real use cases - then built the frontend myself and shipped it.</p>
@@ -173,7 +179,7 @@ export default function DeveloperPortalCaseStudy({ onPrev, onNext, idx, total })
         </div>
       </div>
 
-      <div className="inv-section">
+      <div className="inv-section" ref={at(7)}>
         <div className="inv-step-tag"><i></i>Final result</div>
         <h3 className="plain">What changed</h3>
         <div className="inv-result">Revenue in testing with first users - opening segments running in-house NMS tools, and making every integration sticky the moment it&apos;s live.</div>

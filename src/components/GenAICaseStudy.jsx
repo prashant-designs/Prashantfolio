@@ -1,3 +1,4 @@
+import CaseRoute from '../CaseRoute';
 import { useEffect, useRef } from 'react';
 
 /* ---- tiny line-icon set (no emoji, matches the site's stroke weight) ---- */
@@ -101,12 +102,17 @@ function useReveal(ref) {
   }, [ref]);
 }
 
+const GENAI_ROUTE = ['The flagship', 'Two more, same bar', 'Who did what', 'Defining done', 'Drawing the line', 'How it ends'];
+
 export default function GenAICaseStudy({ onPrev, onNext, idx, total }) {
   const wrap = useRef(null);
+  const secs = useRef([]);
+  const at = (i) => (el) => { secs.current[i] = el; };
   useReveal(wrap);
 
   return (
     <div className="inv-wrap" ref={wrap}>
+      <CaseRoute refs={secs} labels={GENAI_ROUTE} />
       <div className="inv-hero">
         <p className="eyebrow">Polarin · GenAI Initiative</p>
         <h2>I didn&apos;t build the model. I decided what it had to be right about.</h2>
@@ -119,7 +125,7 @@ export default function GenAICaseStudy({ onPrev, onNext, idx, total }) {
       </div>
 
       {/* ---------- the flagship, as a before / after ---------- */}
-      <div className="inv-section">
+      <div className="inv-section" ref={at(0)}>
         <div className="inv-step-tag"><i></i>The flagship</div>
         <h3 className="plain">Buy Journey AI</h3>
         <p className="gac-lead">buying a network link starts with a conversation</p>
@@ -178,7 +184,7 @@ export default function GenAICaseStudy({ onPrev, onNext, idx, total }) {
       </div>
 
       {/* ---------- the other two ---------- */}
-      <div className="inv-section">
+      <div className="inv-section" ref={at(1)}>
         <div className="inv-step-tag"><i></i>Two more, same bar</div>
         <h3 className="plain">Not the only one</h3>
         <div className="gac-uc gac-rv" data-rv>
@@ -196,7 +202,7 @@ export default function GenAICaseStudy({ onPrev, onNext, idx, total }) {
       </div>
 
       {/* ---------- the device: two lanes of work ---------- */}
-      <div className="inv-section">
+      <div className="inv-section" ref={at(2)}>
         <div className="inv-step-tag"><i></i>Who did what</div>
         <h3 className="plain">Two different jobs, running side by side</h3>
         <div className="gac-lanes gac-rv" data-rv>
@@ -217,7 +223,7 @@ export default function GenAICaseStudy({ onPrev, onNext, idx, total }) {
       </div>
 
       {/* ---------- acceptance criteria, de-jargoned ---------- */}
-      <div className="inv-section">
+      <div className="inv-section" ref={at(3)}>
         <div className="inv-step-tag"><i></i>Defining done</div>
         <h3 className="plain">What does &quot;working&quot; mean, when it never answers the same way twice?</h3>
         <p className="gac-lead">the words this usually gets written in - and what I was actually asking</p>
@@ -236,7 +242,7 @@ export default function GenAICaseStudy({ onPrev, onNext, idx, total }) {
       </div>
 
       {/* ---------- the fence: what was deliberately left out ---------- */}
-      <div className="inv-section">
+      <div className="inv-section" ref={at(4)}>
         <div className="inv-step-tag"><i></i>Drawing the line</div>
         <h3 className="plain">Small on purpose</h3>
         <div className="gac-fence gac-rv" data-rv>
@@ -257,7 +263,7 @@ export default function GenAICaseStudy({ onPrev, onNext, idx, total }) {
       </div>
 
       {/* ---------- the ending: a three-way call, still open ---------- */}
-      <div className="inv-section">
+      <div className="inv-section" ref={at(5)}>
         <div className="inv-step-tag"><i></i>How it ends</div>
         <h3 className="plain">Not a yes or a no</h3>
         <div className="gac-verdict gac-rv" data-rv>
