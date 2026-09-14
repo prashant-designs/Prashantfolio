@@ -8754,3 +8754,104 @@ body.static .scene { height: auto !important; }
 @media (min-width: 1300px) {
   .ds-frame { width: calc(100% + 240px); margin-left: -120px; }
 }
+
+/* ---- the GenAI case study's narrative (.gax-) --------------------------
+   pinned beats, one idea per screen, the same height formula and centring
+   the other case studies use. */
+.gax-oscn { height: calc(var(--beats, 10) * 90vh); }
+.gax-stage { height: calc(90vh - 142px); text-align: center; align-items: center; justify-content: center; gap: 0; }
+.gax-eyebrow { display: block; font-family: var(--mono); font-size: var(--t-meta); letter-spacing: 0.22em; text-transform: uppercase; color: var(--dim); margin-bottom: 20px; }
+.gax-big { font-family: var(--disp); font-weight: 800; font-size: var(--t-lead); letter-spacing: -0.03em; line-height: 1.2; margin: 0; max-width: 26ch; }
+.gax-big em { font-style: normal; }
+.gax-note { margin: 18px auto 0; font-size: var(--t-body-sm); line-height: 1.5; color: var(--dim); max-width: 62ch; }
+.gax-wide { width: 100%; max-width: 920px; }
+/* the customer's own words, set as the thing everything else answers */
+.gax-quote { font-family: var(--disp); font-weight: 800; font-size: var(--t-lead); letter-spacing: -0.03em; line-height: 1.25; margin: 0; color: var(--text); }
+.gax-grid3 { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px; }
+.gax-card { border: 1px solid var(--line2); border-radius: var(--r-md); background: var(--ink2); padding: 18px; text-align: left; }
+.gax-card.hard { border-color: rgba(255, 107, 138, 0.35); }
+.gax-n { display: block; font-family: var(--mono); font-size: var(--t-micro); letter-spacing: 0.18em; color: #E8A33D; margin-bottom: 10px; }
+.gax-card b { display: block; font-family: var(--disp); font-weight: 700; font-size: var(--t-body-sm); color: var(--text); line-height: 1.3; }
+.gax-card p { margin: 7px 0 0; font-size: var(--t-body-xs); line-height: 1.45; color: var(--mute); }
+.gax-chips { display: flex; flex-wrap: wrap; gap: 9px; justify-content: center; }
+.gax-chip { font-family: var(--mono); font-size: var(--t-body-xs); color: var(--text); background: var(--raise2); border: 1px solid var(--line2); border-radius: 999px; padding: 8px 16px; }
+/* the clarification beat: the contrast IS the point, so the two sit side by
+   side rather than one being described in prose */
+.gax-vs { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; }
+.gax-vs-c { border: 1px solid var(--line2); border-radius: var(--r-md); background: var(--ink2); padding: 20px; text-align: left; }
+.gax-vs-c span { display: block; font-family: var(--mono); font-size: var(--t-micro); letter-spacing: 0.16em; text-transform: uppercase; color: var(--dim); margin-bottom: 10px; }
+.gax-vs-c p { margin: 0; font-size: var(--t-body); line-height: 1.4; color: var(--text); }
+.gax-vs-c.bad { border-color: rgba(255, 107, 138, 0.3); }
+.gax-vs-c.bad p { color: var(--rose); }
+.gax-vs-c.good { border-color: rgba(125, 249, 166, 0.3); }
+.gax-vs-c.good p { color: var(--up); }
+.gax-never { display: flex; flex-direction: column; gap: 10px; align-items: center; }
+.gax-never span { display: inline-flex; align-items: center; gap: 12px; font-family: var(--disp); font-weight: 700; font-size: var(--t-card); color: var(--text); border: 1px solid var(--line2); border-radius: 999px; padding: 11px 26px; }
+.gax-never i { font-style: normal; color: var(--rose); }
+.gax-pipe { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; justify-content: center; gap: 10px; }
+.gax-pipe li { display: inline-flex; align-items: center; gap: 8px; font-family: var(--mono); font-size: var(--t-body-xs); color: var(--mute); border: 1px solid var(--line2); border-radius: 999px; padding: 8px 14px; }
+.gax-pipe i { width: 18px; height: 18px; border-radius: 50%; background: #3696B1; color: #06070F; font-style: normal; font-size: 10px; font-weight: 700; display: grid; place-items: center; }
+/* the discovery questionnaire, as the artifact it actually was */
+.gax-sheet { border: 1px solid var(--line2); border-radius: var(--r-lg); background: var(--ink2); padding: 22px 26px; text-align: left; }
+.gax-sheet-q { font-family: var(--disp); font-weight: 700; font-size: var(--t-card); color: var(--text); margin: 0 0 16px; }
+.gax-row { display: grid; grid-template-columns: 148px 1fr; gap: 18px; align-items: baseline; padding: 11px 0; border-top: 1px solid var(--line); }
+.gax-row span { font-family: var(--mono); font-size: var(--t-micro); letter-spacing: 0.14em; text-transform: uppercase; color: var(--dim); }
+.gax-row b { font-weight: 500; font-size: var(--t-body-sm); line-height: 1.4; color: var(--text); }
+
+/* six sources, each with the one question it settles */
+.gax-src { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; }
+.gax-src-c { border: 1px solid var(--line2); border-radius: var(--r-md); background: var(--ink2); padding: 16px 18px; text-align: left; }
+.gax-src-c b { display: block; font-family: var(--disp); font-weight: 700; font-size: var(--t-body-sm); color: var(--text); }
+.gax-src-c p { margin: 6px 0 0; font-family: var(--mono); font-size: var(--t-body-xs); line-height: 1.45; color: #3696B1; }
+
+/* the policy barrier: what gets through, and what does not */
+/* capped so four pills wrap 2+2 rather than a lopsided 3+1 */
+.gax-gate { display: flex; flex-wrap: wrap; gap: 11px; justify-content: center; max-width: 720px; margin: 0 auto; }
+.gax-gate-c { display: inline-flex; align-items: center; gap: 12px; font-family: var(--disp); font-weight: 600; font-size: var(--t-body-sm); color: var(--text); border: 1px solid var(--line2); border-radius: 999px; padding: 10px 14px 10px 20px; }
+.gax-gate-c i { font-style: normal; font-family: var(--mono); font-size: var(--t-micro); letter-spacing: 0.12em; text-transform: uppercase; border-radius: 999px; padding: 4px 10px; }
+.gax-gate-c.blocked { border-color: rgba(255, 107, 138, 0.35); }
+.gax-gate-c.blocked i { color: var(--rose); background: rgba(255, 107, 138, 0.12); }
+.gax-gate-c.allowed i { color: var(--up); background: rgba(125, 249, 166, 0.1); }
+.gax-gate-c.escalate i { color: #E8A33D; background: rgba(232, 163, 61, 0.12); }
+
+/* the pipeline, with the decision made at each step */
+.gax-pipe2 { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; }
+.gax-pipe-c { border: 1px solid var(--line2); border-radius: var(--r-md); background: var(--ink2); padding: 16px 18px; text-align: left; }
+.gax-pipe-c i { font-style: normal; font-family: var(--mono); font-size: var(--t-micro); letter-spacing: 0.18em; color: #3696B1; }
+.gax-pipe-c b { display: block; margin-top: 8px; font-family: var(--disp); font-weight: 700; font-size: var(--t-body-sm); color: var(--text); }
+.gax-pipe-c p { margin: 5px 0 0; font-size: var(--t-body-xs); line-height: 1.45; color: var(--mute); }
+
+/* question shape -> block structure */
+.gax-tpl { display: flex; flex-direction: column; gap: 10px; }
+.gax-tpl-r { display: grid; grid-template-columns: 1fr 28px 1fr; align-items: center; gap: 10px; border: 1px solid var(--line2); border-radius: var(--r-md); background: var(--ink2); padding: 14px 20px; }
+.gax-tpl-r span { text-align: right; font-size: var(--t-body-sm); color: var(--mute); }
+.gax-tpl-r i { font-style: normal; text-align: center; color: var(--dim); }
+.gax-tpl-r b { font-family: var(--disp); font-weight: 700; font-size: var(--t-body-sm); color: var(--text); }
+
+/* one rendered answer, as the contract produces it */
+.gax-answer { border: 1px solid var(--line2); border-radius: var(--r-lg); background: var(--ink2); padding: 22px 26px; text-align: left; }
+.gax-answer-h { display: flex; justify-content: space-between; align-items: center; font-family: var(--mono); font-size: var(--t-micro); letter-spacing: 0.16em; text-transform: uppercase; color: var(--dim); }
+.gax-answer-h i { font-style: normal; color: var(--rose); }
+.gax-answer > b { display: block; margin: 14px 0 16px; font-family: var(--disp); font-weight: 700; font-size: var(--t-card); color: var(--text); }
+.gax-answer-b { display: grid; grid-template-columns: 210px 1fr; gap: 24px; align-items: center; }
+.gax-stat strong { display: block; font-family: var(--disp); font-weight: 800; font-size: var(--t-stat); letter-spacing: -0.03em; color: var(--rose); }
+.gax-stat span { display: block; margin-top: 4px; font-family: var(--mono); font-size: var(--t-body-xs); color: var(--dim); }
+.gax-answer-b p { margin: 0; font-size: var(--t-body-sm); line-height: 1.5; color: var(--mute); }
+.gax-answer-a { margin-top: 18px; display: flex; justify-content: space-between; align-items: center; border: 1px solid var(--line2); border-radius: var(--r-md); padding: 13px 18px; font-size: var(--t-body-sm); color: var(--text); }
+.gax-answer-a i { font-style: normal; color: var(--dim); }
+.gax-answer-s { margin: 14px 0 0; font-family: var(--mono); font-size: var(--t-body-xs); color: var(--dim); }
+
+/* the four states a static mockup never covers */
+.gax-states { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
+.gax-state-c { border: 1px solid var(--line2); border-radius: var(--r-md); background: var(--ink2); padding: 16px 18px; text-align: left; }
+.gax-state-c b { display: block; font-family: var(--disp); font-weight: 700; font-size: var(--t-body-sm); color: var(--text); }
+.gax-state-c p { margin: 6px 0 0; font-size: var(--t-body-xs); line-height: 1.45; color: var(--mute); }
+
+/* prefersReducedMotion stacks every beat rather than parking on the last */
+.gax-static { display: flex; flex-direction: column; align-items: center; text-align: center; gap: var(--sp-block); margin-top: var(--sp-block); }
+@media (max-width: 860px) {
+  .gax-grid3, .gax-vs, .gax-src, .gax-pipe2, .gax-states { grid-template-columns: 1fr; }
+  .gax-answer-b, .gax-row { grid-template-columns: 1fr; gap: 10px; }
+  .gax-tpl-r { grid-template-columns: 1fr; gap: 4px; }
+  .gax-tpl-r span, .gax-tpl-r i { text-align: left; }
+}

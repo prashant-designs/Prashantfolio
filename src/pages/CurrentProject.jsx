@@ -33,7 +33,7 @@ const INDEX = [
   { cat: 3, name: 'Invoice Design', label: 'Invoice Design', note: 'transparency for high-ticket billing' },
   { cat: 4, name: 'Knowledge Base', label: 'Knowledge Base', note: 'documentation out of the engineering queue' },
   { cat: 5, name: 'Developer Portal', label: 'Developer Sandbox', note: 'a live API test environment' },
-  { cat: 6, name: 'GenAI Initiative', label: 'GenAI Initiative', note: 'the pre-sales recommendation engine' },
+  { cat: 6, name: 'GenAI Initiative', label: 'GenAI Initiative', note: 'an assistant that answers with evidence' },
 ];
 
 // the exact vocabulary the immersion covered - nothing added
@@ -582,10 +582,10 @@ export default function CurrentProject() {
                       </circle>
                     </svg>
                   </span>
-                  <h4>Recommend the route before the customer asks</h4>
-                  <div className="tl-cs-row"><span>about</span><p>a pre-sales recommendation engine - hands back the routes worth buying before a person has to work them out</p></div>
-                  <div className="tl-cs-row"><span>role</span><p>scoped the three use cases with a specialist AI delivery team · decided what the model had to be right about, not the build itself</p></div>
-                  <div className="tl-cs-foot"><span className="tl-cs-impact">feasibility <small>verdict, evidence-backed</small></span><span className="tl-cs-link">Deep dive →</span></div>
+                  <h4>Answer the question behind the question</h4>
+                  <div className="tl-cs-row"><span>about</span><p>an assistant that turns &quot;the Bengaluru one is slow again&quot; into a conclusion, the evidence for it, and a next step</p></div>
+                  <div className="tl-cs-row"><span>role</span><p>product definition · AI behaviour &amp; guardrails · response design · frontend spec · built by a specialist AI delivery team</p></div>
+                  <div className="tl-cs-foot"><span className="tl-cs-impact">feasibility <small>verdict still open</small></span><span className="tl-cs-link">Deep dive →</span></div>
                 </article>
               </div>
             </Step>

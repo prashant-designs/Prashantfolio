@@ -1,79 +1,108 @@
 import CaseRoute from '../CaseRoute';
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 
-/* ---- tiny line-icon set (no emoji, matches the site's stroke weight) ---- */
-const ICONS = {
-  person: <><circle cx="12" cy="8" r="3.4" /><path d="M5.5 20c0-3.5 2.9-6 6.5-6s6.5 2.5 6.5 6" /></>,
-  chat: <path d="M4 5.5h16v10H9.5l-5.5 4z" />,
-  calc: <><rect x="5" y="3.5" width="14" height="17" rx="2.5" /><path d="M8.5 8h7M8.5 12h2M13 12h2.5M8.5 16h2M13 16h2.5" /></>,
-  clock: <><circle cx="12" cy="12" r="8" /><path d="M12 7.5V12l3 2" /></>,
-  spark: <path d="M12 3.2l1.9 5.4 5.4 1.9-5.4 1.9L12 17.8l-1.9-5.4L4.7 10.5l5.4-1.9z" />,
-  list: <><rect x="4" y="4.5" width="16" height="15" rx="2.5" /><path d="M8 9.5h8M8 13h8M8 16.5h4.5" /></>,
-  check: <path d="M4.5 12.5l4.5 4.5L19.5 6.5" />,
-  gauge: <><path d="M4 16.5a8 8 0 1 1 16 0" /><path d="M12 16.5l4.2-4.7" /><path d="M4 16.5h3M17 16.5h3" /></>,
-  ticket: <><path d="M4.5 6.5h15v4a2 2 0 0 0 0 4v3h-15v-3a2 2 0 0 0 0-4z" /><path d="M9.5 10h6M9.5 14h4" /></>,
-};
+/* ---- the material ------------------------------------------------------
+   Polarin Bot: a customer-facing assistant for people who manage business
+   network connections. What follows is the product definition work - the
+   decisions that had to be made before an AI team could build anything. */
 
-function Ico({ name }) {
-  return (
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-      {ICONS[name]}
-    </svg>
-  );
-}
-
-/* today, a person works the answer out by hand */
-const MANUAL = [
-  { i: 'person', t: 'the customer says what they need', c: ['from here', 'to there', 'how fast', 'how reliable', 'how much capacity'] },
-  { i: 'chat', t: 'a sales person takes it away' },
-  { i: 'calc', t: 'route, service level and price - worked out by hand' },
-  { i: 'clock', t: 'the answer comes back later' },
+/* what the initiative had to be worth. no outcome numbers are claimed here
+   because the trial has not reported any - these are the objectives it was
+   scoped against, which is a different and more honest thing. */
+const BOT_OBJECTIVES = [
+  { t: 'Answer without a round-trip', p: 'the customer stops waiting on support for something the data already knows' },
+  { t: 'Hand support evidence, not a complaint', p: 'service, event times and readings travel with the request' },
+  { t: 'One answer format the team reuses', p: 'a block library - not a new screen for every question' },
 ];
 
-/* the two use cases that sat behind the flagship */
-const USE_CASES = [
-  {
-    i: 'gauge',
-    t: 'the dashboard, in plain English',
-    from: 'a screen full of network numbers',
-    to: 'a line underneath saying what that number means for the business, and why it should matter to you today',
-  },
-  {
-    i: 'ticket',
-    t: 'the first reply, already written',
-    from: 'a customer attaches a screenshot to a support ticket',
-    to: 'the system checks it against the live network and drafts the reply before a human has opened the ticket',
-  },
+/* the destination, defined before any feature list */
+const BOT_SHAPE = [
+  { n: '01', k: 'Understand', t: 'What needs attention?', p: 'a conclusion, already interpreted' },
+  { n: '02', k: 'Trust', t: 'Why should I believe it?', p: 'evidence, targets and sources' },
+  { n: '03', k: 'Act', t: 'What can I do next?', p: 'a relevant action, ready to review' },
 ];
 
-/* the two-lane device: my decisions vs what the delivery team built */
-const LANES = [
-  { me: 'which problem was worth pointing AI at', them: 'the model that produces the answers' },
-  { me: 'the three use cases, and where each one stops', them: 'the plumbing that feeds it the right information' },
-  { me: 'what counts as a good answer', them: 'the wiring into live network and commercial data' },
-  { me: 'the ways we would try to break it, written down first', them: 'the environment it runs in' },
-  { me: 'what stays off-limits while it is only a trial', them: 'the record it keeps of every single run' },
-  { me: 'how we decide go, change, or stop', them: 'the build we test against' },
+/* the discovery artifact: one questionnaire row per real customer question.
+   teams filled these in, and the answers became requirements. */
+const BOT_ASK = '"What is happening with my ticket?"';
+const BOT_ROWS = [
+  { k: 'What they need', v: 'Progress and reassurance.' },
+  { k: 'Good answer', v: 'Stage · last action · owner · expected resolution.' },
+  { k: 'Source owner', v: 'Network operations / support.' },
+  { k: 'If vague', v: 'Resolve the ticket or the affected service.' },
 ];
 
-/* the acceptance criteria - the term on the left, what it actually means on the right */
-const TRANSLATED = [
-  { j: 'retrieval relevance', q: 'is this actually a good answer?', a: 'people who know the subject score it on a scale - because a good answer is a judgement call, not a tick box' },
-  { j: 'hallucination test', q: 'does it admit when it does not know?', a: 'we asked it things it could not possibly know, on purpose, to see if it made something up' },
-  { j: 'workflow completion', q: 'does it finish the job?', a: 'all the way to the end - not almost-done and handed back to a person halfway' },
-  { j: 'prompt injection', q: 'what happens when someone tries to trick it?', a: 'we tried first - asking it things outside its job, telling it to ignore its own instructions' },
-  { j: 'POC-grade latency', q: 'is it quick enough to work with?', a: 'quick enough for one person testing it - deliberately not a promise about launch day' },
-  { j: 'traceability', q: 'can we see exactly what it did?', a: 'what it was asked, what it looked up, what it did, what it said - all recorded, and spot-checked by hand' },
+/* six permitted sources - each one settles a different question, and each
+   one had a named owner before engineering started. */
+const BOT_SOURCES = [
+  { t: 'Service inventory', p: 'which service is this?' },
+  { t: 'Metrics & reports', p: 'what actually happened?' },
+  { t: 'Service targets', p: 'was it inside the promise?' },
+  { t: 'Tickets', p: 'is it already being handled?' },
+  { t: 'Alerts & maintenance', p: 'is this a known event?' },
+  { t: 'Knowledge base', p: 'can the customer safely resolve it?' },
 ];
 
-const INSIDE = ['a small group of internal testers', 'test data only', 'one clearly bounded job per use case'];
-const OUTSIDE = ['real customers', 'anything sensitive', 'launch-grade access control', 'a promise about speed at scale'];
-
-const VERDICTS = [
-  { k: 'a', t: 'it works', p: 'take it forward as it stands' },
-  { k: 'b', t: 'it works, with changes', p: 'the idea holds - the build needs work' },
-  { k: 'c', t: 'it does not work', p: 'say so early, and stop spending' },
+/* the boundary is the product decision, not a disclaimer. an assistant that
+   can touch the network is a different risk class entirely. */
+const BOT_GATE = [
+  { t: 'Change bandwidth', s: 'blocked' },
+  { t: 'Promise a credit', s: 'blocked' },
+  { t: 'Read my metrics', s: 'allowed' },
+  { t: 'Ask for a person', s: 'escalate' },
 ];
+
+/* the same facts, told at three depths */
+const BOT_TONES = [
+  { k: 'Business user', p: 'the outcome in plain words, no jargon' },
+  { k: 'Network engineer', p: '28 connection drops. 99.21% availability against a 99.70% target.' },
+  { k: 'During an outage', p: 'shorter - current status first, detail on request' },
+];
+
+/* what happens between the question and the answer */
+const BOT_PIPE = [
+  { n: '01', t: 'Question', p: 'what is really being asked' },
+  { n: '02', t: 'Scope', p: 'which services, which period' },
+  { n: '03', t: 'Evidence', p: 'permitted sources only' },
+  { n: '04', t: 'Draft', p: 'conclusion first, then the reasoning' },
+  { n: '05', t: 'Layout', p: 'pick a saved block structure' },
+  { n: '06', t: 'Output', p: 'render it with a next step' },
+];
+
+/* the job of the answer decides the shape of the answer */
+const BOT_TEMPLATES = [
+  { q: 'Compare services', v: 'Comparison table' },
+  { q: 'Change over time', v: 'Trend card' },
+  { q: 'Ticket status', v: 'Ticket card' },
+  { q: 'Share an analysis', v: 'Report card' },
+];
+
+/* the fixed order every response is assembled in */
+const BOT_CONTRACT = ['Conclusion', 'Evidence', 'Interpretation', 'Action', 'Sources'];
+
+/* when a next step is useful, and when it is pushy */
+const BOT_NEXT = [
+  { k: 'Suggest', p: 'the data points somewhere, but nothing is broken' },
+  { k: 'Show an action', p: 'a detected problem has a fix or a ticket behind it' },
+  { k: 'Offer an upgrade', p: 'only when the constraint is genuinely capacity', hard: true },
+];
+
+/* the states between the screens - the part a static mockup never covers */
+const BOT_STATES = [
+  { k: 'Gathering data', p: 'say what it is fetching' },
+  { k: 'Missing data', p: 'name what is missing, not a generic error' },
+  { k: 'Source unavailable', p: 'answer with what is there, and say what is not' },
+  { k: 'Reopened answer', p: 'restore the saved blocks, show the read timestamp' },
+];
+
+/* how it was tested - the third row is the one that matters */
+const BOT_TESTS = [
+  { k: 'Everyday', p: 'performance answers, tickets, reports, follow-ups' },
+  { k: 'Edge', p: 'vague requests, partial data, conflicting signals' },
+  { k: 'Adversarial', p: 'hidden instructions, unsafe actions, data-access probes', hard: true },
+];
+
+const GENAI_ROUTE = ['Define', 'Discover', 'Data', 'Guardrails', 'Behaviour', 'Response', 'Next step', 'Evaluate'];
 
 /* reveal-on-scroll for [data-rv] children, scoped to the overlay panel */
 function useReveal(ref) {
@@ -102,7 +131,262 @@ function useReveal(ref) {
   }, [ref]);
 }
 
-const GENAI_ROUTE = ['The flagship', 'Two more, same bar', 'Who did what', 'Defining done', 'Drawing the line', 'How it ends'];
+function prefersReducedMotion() {
+  return typeof window !== 'undefined'
+    && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+}
+
+/* pinned-beat reader, same contract as the other case studies' */
+function useScrollBeat(ref, beats) {
+  const [beat, setBeat] = useState(prefersReducedMotion() ? beats - 1 : 0);
+  useEffect(() => {
+    const panel = document.querySelector('.ovl-panel');
+    const el = ref.current;
+    if (!panel || !el) return undefined;
+    let raf = null;
+    const update = () => {
+      const stage = el.firstElementChild;
+      if (!stage) return;
+      const top = el.getBoundingClientRect().top - panel.getBoundingClientRect().top + panel.scrollTop;
+      const span = el.offsetHeight - stage.offsetHeight;
+      if (span <= 0) return;
+      const pr = Math.min(1, Math.max(0, (panel.scrollTop - top) / span));
+      setBeat(Math.min(beats - 1, Math.floor(pr * beats)));
+    };
+    const onScroll = () => { if (raf) return; raf = requestAnimationFrame(() => { raf = null; update(); }); };
+    panel.addEventListener('scroll', onScroll, { passive: true });
+    update();
+    return () => panel.removeEventListener('scroll', onScroll);
+  }, [ref, beats]);
+  return beat;
+}
+
+/* one chapter of the story: a run of pinned beats, one idea per screen.
+   under reduced motion the whole run stacks and nothing is hidden. */
+function Chapter({ beats }) {
+  const ref = useRef(null);
+  const beat = useScrollBeat(ref, beats.length);
+
+  if (prefersReducedMotion()) return <div className="gax-static">{beats}</div>;
+
+  return (
+    <div className="oscn gax-oscn" ref={ref} style={{ '--beats': beats.length }}>
+      <div className="oscn-stage gax-stage" key={beat}>{beats[beat]}</div>
+    </div>
+  );
+}
+
+/* ---- the eight chapters ------------------------------------------------ */
+
+const DEFINE = [
+  <div className="gax-msg" key="ask">
+    <span className="gax-eyebrow">A real message, on a real Tuesday</span>
+    <p className="gax-quote">&quot;The Bengaluru one is slow again.&quot;</p>
+  </div>,
+  <h3 className="gax-big" key="gap">
+    Six words from a customer.<br /><em className="cp-rose">Six systems to answer them.</em>
+  </h3>,
+  <h3 className="gax-big" key="dest">
+    I defined the destination<br /><em className="cp-signal">before the feature list.</em>
+  </h3>,
+  <div className="gax-wide" key="three">
+    <span className="gax-eyebrow">Ask once. Understand. Trust. Act.</span>
+    <div className="gax-grid3">
+      {BOT_SHAPE.map((x) => (
+        <div className="gax-card" key={x.n}>
+          <span className="gax-n">{x.k}</span>
+          <b>{x.t}</b>
+          <p>{x.p}</p>
+        </div>
+      ))}
+    </div>
+  </div>,
+  <div className="gax-wide" key="obj">
+    <span className="gax-eyebrow">What it had to be worth</span>
+    <div className="gax-grid3">
+      {BOT_OBJECTIVES.map((x) => (
+        <div className="gax-card" key={x.t}>
+          <b>{x.t}</b>
+          <p>{x.p}</p>
+        </div>
+      ))}
+    </div>
+  </div>,
+];
+
+const DISCOVER = [
+  <h3 className="gax-big" key="words">
+    I asked for the words.<br /><em className="cp-up">Then looked for the need.</em>
+  </h3>,
+  <div className="gax-wide" key="sheet">
+    <span className="gax-eyebrow">One questionnaire row per real question</span>
+    <div className="gax-sheet">
+      <p className="gax-sheet-q">{BOT_ASK}</p>
+      {BOT_ROWS.map((r) => (
+        <div className="gax-row" key={r.k}><span>{r.k}</span><b>{r.v}</b></div>
+      ))}
+    </div>
+  </div>,
+  <h3 className="gax-big" key="req">
+    Customer words became<br /><em className="cp-signal">answer requirements</em> - not a<br />list of chatbot topics.
+  </h3>,
+  <h3 className="gax-big" key="perfect">
+    Customers should not need<br /><em className="cp-up">the perfect question.</em>
+  </h3>,
+  <div className="gax-wide" key="ambig">
+    <span className="gax-eyebrow">When &quot;Bengaluru&quot; matches two services</span>
+    <div className="gax-vs">
+      <div className="gax-vs-c bad"><span>The usual answer</span><p>&quot;Please clarify.&quot;</p></div>
+      <div className="gax-vs-c good"><span>Ours</span><p>&quot;Two services match. DC1 or DC2?&quot;</p></div>
+    </div>
+    <p className="gax-note">place, symptom and the word &quot;again&quot; are all read as signals - so a clarification offers the likely choices instead of an empty prompt.</p>
+  </div>,
+];
+
+const DATA = [
+  <h3 className="gax-big" key="truth">
+    I mapped each answer<br /><em className="cp-signal">to a source of truth.</em>
+  </h3>,
+  <div className="gax-wide" key="src">
+    <span className="gax-eyebrow">Six permitted sources, each settling one question</span>
+    <div className="gax-src">
+      {BOT_SOURCES.map((x) => (
+        <div className="gax-src-c" key={x.t}><b>{x.t}</b><p>{x.p}</p></div>
+      ))}
+    </div>
+  </div>,
+  <h3 className="gax-big" key="own">
+    Every field had an owner<br />before engineering started.<br />
+    <em className="cp-amber">The gaps showed up on a page,<br />not in a demo.</em>
+  </h3>,
+];
+
+const GUARDRAILS = [
+  <h3 className="gax-big" key="never">
+    I defined what the bot<br /><em className="cp-rose">must never cross.</em>
+  </h3>,
+  <div className="gax-wide" key="gate">
+    <span className="gax-eyebrow">Four requests, one policy barrier</span>
+    <div className="gax-gate">
+      {BOT_GATE.map((x) => (
+        <span className={`gax-gate-c ${x.s}`} key={x.t}>{x.t}<i>{x.s}</i></span>
+      ))}
+    </div>
+    <p className="gax-note">permitted data only, explicit confirmation for anything that acts, and no financial or network changes - enforced in the integration layer, not in a prompt.</p>
+  </div>,
+  <h3 className="gax-big" key="esc">
+    Ask for a person and it<br /><em className="cp-up">escalates immediately</em> - carrying<br />the conversation and the diagnostics.
+  </h3>,
+];
+
+const BEHAVIOUR = [
+  <h3 className="gax-big" key="good">
+    I defined what<br />&quot;<em className="cp-signal">a good answer</em>&quot; sounds like.
+  </h3>,
+  <div className="gax-wide" key="tone">
+    <span className="gax-eyebrow">Same evidence, three depths</span>
+    <div className="gax-grid3">
+      {BOT_TONES.map((x) => (
+        <div className="gax-card" key={x.k}><b>{x.k}</b><p>{x.p}</p></div>
+      ))}
+    </div>
+    <p className="gax-note">calibrated with worked conversations rather than adjectives - the team could test against them.</p>
+  </div>,
+  <div className="gax-wide" key="pipe">
+    <span className="gax-eyebrow">The journey inside every answer</span>
+    <div className="gax-pipe2">
+      {BOT_PIPE.map((x) => (
+        <div className="gax-pipe-c" key={x.n}><i>{x.n}</i><b>{x.t}</b><p>{x.p}</p></div>
+      ))}
+    </div>
+  </div>,
+];
+
+const RESPONSE = [
+  <h3 className="gax-big" key="layout">
+    I matched the layout<br /><em className="cp-signal">to the job of the answer.</em>
+  </h3>,
+  <div className="gax-wide" key="tpl">
+    <span className="gax-eyebrow">A defined block library, not a screen per question</span>
+    <div className="gax-tpl">
+      {BOT_TEMPLATES.map((x) => (
+        <div className="gax-tpl-r" key={x.q}><span>{x.q}</span><i aria-hidden="true">→</i><b>{x.v}</b></div>
+      ))}
+    </div>
+  </div>,
+  <div className="gax-wide" key="contract">
+    <span className="gax-eyebrow">Every block has a reason to exist</span>
+    <ol className="gax-pipe">
+      {BOT_CONTRACT.map((x, i) => <li key={x}><i>{i + 1}</i>{x}</li>)}
+    </ol>
+    <p className="gax-note">one fixed order, so the customer can scan the answer or go deeper without leaving it.</p>
+  </div>,
+  <div className="gax-wide" key="spec">
+    <span className="gax-eyebrow">The contract, rendered</span>
+    <div className="gax-answer">
+      <div className="gax-answer-h">
+        <span>Performance answer</span><i>illustrative data</i>
+      </div>
+      <b>One Bengaluru port needs attention.</b>
+      <div className="gax-answer-b">
+        <div className="gax-stat"><strong>99.21%</strong><span>availability · target 99.70%</span></div>
+        <p>28 of the month&apos;s 31 connection drops occurred here. The events travel with the support request.</p>
+      </div>
+      <div className="gax-answer-a">Review an issue with evidence attached <i aria-hidden="true">→</i></div>
+      <p className="gax-answer-s">Sources: live metrics · port reports · alerts</p>
+    </div>
+  </div>,
+];
+
+const NEXTSTEP = [
+  <h3 className="gax-big" key="when">
+    I defined when to suggest.<br /><em className="cp-amber">And when to hold back.</em>
+  </h3>,
+  <div className="gax-wide" key="next">
+    <span className="gax-eyebrow">The context chooses the path</span>
+    <div className="gax-grid3">
+      {BOT_NEXT.map((x) => (
+        <div className={`gax-card${x.hard ? ' hard' : ''}`} key={x.k}><b>{x.k}</b><p>{x.p}</p></div>
+      ))}
+    </div>
+    <p className="gax-note">and one rule that stops the obvious failure: check for an existing ticket before offering to create another.</p>
+  </div>,
+  <h3 className="gax-big" key="mem">
+    &quot;What about Mumbai?&quot;<br /><em className="cp-up">Service, metric and period<br />carry forward.</em>
+  </h3>,
+  <div className="gax-wide" key="states">
+    <span className="gax-eyebrow">I specified the states between the screens</span>
+    <div className="gax-states">
+      {BOT_STATES.map((x) => (
+        <div className="gax-state-c" key={x.k}><b>{x.k}</b><p>{x.p}</p></div>
+      ))}
+    </div>
+  </div>,
+];
+
+const EVALUATE = [
+  <h3 className="gax-big" key="fb">
+    Ask for feedback<br /><em className="cp-signal">where the value is felt</em> - after<br />an answer, after a finished task.
+  </h3>,
+  <h3 className="gax-big" key="test">
+    I made &quot;good enough&quot;<br /><em className="cp-up">something we could test.</em>
+  </h3>,
+  <div className="gax-wide" key="tests">
+    <span className="gax-eyebrow">A working set of 30-40 conversations</span>
+    <div className="gax-grid3">
+      {BOT_TESTS.map((x) => (
+        <div className={`gax-card${x.hard ? ' hard' : ''}`} key={x.k}><b>{x.k}</b><p>{x.p}</p></div>
+      ))}
+    </div>
+    <p className="gax-note">fixed set, nominated reviewers, traceable runs, and a second test after every change.</p>
+  </div>,
+  <h3 className="gax-big" key="close">
+    No production launch yet, and<br />no business metrics claimed.<br />
+    <em className="cp-amber">The verdict is still open - and<br />saying so is part of the work.</em>
+  </h3>,
+];
+
+const CHAPTERS = [DEFINE, DISCOVER, DATA, GUARDRAILS, BEHAVIOUR, RESPONSE, NEXTSTEP, EVALUATE];
 
 export default function GenAICaseStudy({ onPrev, onNext, idx, total }) {
   const wrap = useRef(null);
@@ -116,170 +400,17 @@ export default function GenAICaseStudy({ onPrev, onNext, idx, total }) {
       <div className="inv-hero">
         <p className="eyebrow">Polarin · GenAI Initiative</p>
         <h2>I didn&apos;t build the model. I decided what it had to be right about.</h2>
-        <p>In 2026 I scoped Polarin&apos;s first GenAI initiative - three customer-facing use cases, built with a specialist AI delivery team.</p>
+        <p>A customer-facing assistant for people who manage business network connections - scoped, defined and specified before a specialist AI team wrote any of it.</p>
         <div className="inv-meta gac-meta">
-          <div><span>My input</span><b>the use cases · what &quot;good&quot; means · the go / no-go</b></div>
+          <div><span>My input</span><b>product definition · AI behaviour · response design · frontend spec</b></div>
           <div><span>Built by</span><b>a specialist AI delivery team</b></div>
-          <div><span>Status</span><b>a live trial - verdict still open</b></div>
+          <div><span>Status</span><b>a trial - verdict still open</b></div>
         </div>
       </div>
 
-      {/* ---------- the flagship, as a before / after ---------- */}
-      <div className="inv-section" ref={at(0)}>
-        <div className="inv-step-tag"><i></i>The flagship</div>
-        <h3 className="plain">Buy Journey AI</h3>
-        <p className="gac-lead">buying a network link starts with a conversation</p>
-
-        <div className="gac-ba gac-rv" data-rv>
-          <div className="gac-pane now">
-            <div className="gac-pane-h"><b>today</b> · a person works it out</div>
-            {MANUAL.map((s) => (
-              <div className="gac-step" key={s.t}>
-                <i><Ico name={s.i} /></i>
-                <div>
-                  <b>{s.t}</b>
-                  {s.c ? (
-                    <div className="gac-chips">{s.c.map((c) => <span key={c}>{c}</span>)}</div>
-                  ) : null}
-                </div>
-              </div>
-            ))}
-          </div>
-
-          <div className="gac-pane ai">
-            <div className="gac-pane-h"><b>the use case I scoped</b> · the platform answers</div>
-            <div className="gac-step">
-              <i><Ico name="person" /></i>
-              <div><b>the customer says the same thing</b></div>
-            </div>
-            <div className="gac-step">
-              <i><Ico name="spark" /></i>
-              <div><b>no waiting for a person to work it out</b></div>
-            </div>
-            <div className="gac-step">
-              <i><Ico name="list" /></i>
-              <div>
-                <b>it hands back the routes worth buying</b>
-                <div className="gac-rec">
-                  <span className="gac-rec-tag">illustration</span>
-                  <div className="gac-opt best"><b>best fit</b><em><i style={{ width: '92%' }}></i></em></div>
-                  <div className="gac-opt"><b>cheaper, slower</b><em><i style={{ width: '68%' }}></i></em></div>
-                  <div className="gac-opt"><b>backup route</b><em><i style={{ width: '44%' }}></i></em></div>
-                </div>
-              </div>
-            </div>
-            <div className="gac-step">
-              <i><Ico name="check" /></i>
-              <div><b>service level, price and the alternatives - in the same breath</b></div>
-            </div>
-          </div>
-        </div>
-
-        <div className="gac-fuel gac-rv" data-rv>
-          <span>what was actually booked before</span>
-          <em>+</em>
-          <span>real commercial history</span>
-        </div>
-        <p className="dv-p dim">so it leans towards what customers actually buy - not everything that is technically possible.</p>
-      </div>
-
-      {/* ---------- the other two ---------- */}
-      <div className="inv-section" ref={at(1)}>
-        <div className="inv-step-tag"><i></i>Two more, same bar</div>
-        <h3 className="plain">Not the only one</h3>
-        <div className="gac-uc gac-rv" data-rv>
-          {USE_CASES.map((u) => (
-            <div className="gac-card" key={u.t}>
-              <i><Ico name={u.i} /></i>
-              <b>{u.t}</b>
-              <div className="gac-swap">
-                <p><span>today</span>{u.from}</p>
-                <p className="to"><span>instead</span>{u.to}</p>
-              </div>
-            </div>
-          ))}
-        </div>
-      </div>
-
-      {/* ---------- the device: two lanes of work ---------- */}
-      <div className="inv-section" ref={at(2)}>
-        <div className="inv-step-tag"><i></i>Who did what</div>
-        <h3 className="plain">Two different jobs, running side by side</h3>
-        <div className="gac-lanes gac-rv" data-rv>
-          <div className="gac-lane-h">
-            <span className="mine">what I decided</span>
-            <em>vs</em>
-            <span className="theirs">what the delivery team built</span>
-          </div>
-          {LANES.map((l) => (
-            <div className="gac-row" key={l.me}>
-              <div className="gac-cell mine">{l.me}</div>
-              <div className="gac-spine" aria-hidden="true"></div>
-              <div className="gac-cell theirs">{l.them}</div>
-            </div>
-          ))}
-        </div>
-        <p className="dv-p dim">a product manager&apos;s contribution to an AI feature isn&apos;t the model. it&apos;s what it&apos;s for, what good looks like, and whether it has earned anyone&apos;s trust yet.</p>
-      </div>
-
-      {/* ---------- acceptance criteria, de-jargoned ---------- */}
-      <div className="inv-section" ref={at(3)}>
-        <div className="inv-step-tag"><i></i>Defining done</div>
-        <h3 className="plain">What does &quot;working&quot; mean, when it never answers the same way twice?</h3>
-        <p className="gac-lead">the words this usually gets written in - and what I was actually asking</p>
-        <div className="gac-tr gac-rv" data-rv>
-          {TRANSLATED.map((t, i) => (
-            <div className="gac-trr" key={t.j}>
-              <span className="gac-jarg" style={{ animationDelay: `${120 + i * 90}ms` }}>{t.j}</span>
-              <em className="gac-arrow" aria-hidden="true">→</em>
-              <div>
-                <b className="gac-q">{t.q}</b>
-                <p className="gac-a">{t.a}</p>
-              </div>
-            </div>
-          ))}
-        </div>
-      </div>
-
-      {/* ---------- the fence: what was deliberately left out ---------- */}
-      <div className="inv-section" ref={at(4)}>
-        <div className="inv-step-tag"><i></i>Drawing the line</div>
-        <h3 className="plain">Small on purpose</h3>
-        <div className="gac-fence gac-rv" data-rv>
-          <div className="gac-in">
-            <span className="gac-in-tag">inside the trial</span>
-            <div className="gac-fl">
-              {INSIDE.map((x) => <span key={x}><i>✓</i>{x}</span>)}
-            </div>
-          </div>
-          <div className="gac-out">
-            <span className="gac-out-tag">deliberately outside it</span>
-            <div className="gac-fl">
-              {OUTSIDE.map((x) => <span key={x}><i>✕</i>{x}</span>)}
-            </div>
-          </div>
-        </div>
-        <p className="dv-p dim">a trial&apos;s safety rails are not a finished product&apos;s safety rails. saying that out loud early is how trust stays honest later.</p>
-      </div>
-
-      {/* ---------- the ending: a three-way call, still open ---------- */}
-      <div className="inv-section" ref={at(5)}>
-        <div className="inv-step-tag"><i></i>How it ends</div>
-        <h3 className="plain">Not a yes or a no</h3>
-        <div className="gac-verdict gac-rv" data-rv>
-          {VERDICTS.map((v) => (
-            <div className={`gac-v ${v.k}`} key={v.t}>
-              <i></i>
-              <b>{v.t}</b>
-              <p>{v.p}</p>
-            </div>
-          ))}
-        </div>
-        <div className="gac-open gac-rv" data-rv>
-          <span>where it stands</span>
-          still being tested - no verdict yet. the point was never the demo. it&apos;s that the call gets made on the evidence above.
-        </div>
-      </div>
+      {CHAPTERS.map((beats, i) => (
+        <div ref={at(i)} key={GENAI_ROUTE[i]}><Chapter beats={beats} /></div>
+      ))}
 
       <div className="ovl-nav">
         <button type="button" onClick={onPrev}>← Prev</button>
