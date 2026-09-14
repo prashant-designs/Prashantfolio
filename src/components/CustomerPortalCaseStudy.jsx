@@ -602,57 +602,6 @@ const EFFORT_MAP = [
   { m: 'Health monitoring', effort: 82, impact: 80, first: false, weeks: '12 wks', value: "evidence for the customer's own SLA review" },
 ];
 
-// the real Polarin palette, sampled off the product screenshots rather than
-// recalled - the placeholder set this replaced had invented names and a dark
-// surface, and Polarin is a light product built on teal. `key` is what ties
-// a token to the specimens built out of it, further down.
-const DS_COLORS = [
-  { key: 'teal', hex: '#00828F', name: 'Teal 600', role: 'primary action, active state', ink: '#FFFFFF' },
-  { key: 'deep', hex: '#003A56', name: 'Deep 900', role: 'hero surfaces', ink: '#FFFFFF' },
-  { key: 'ink', hex: '#003350', name: 'Ink', role: 'body text, values', ink: '#FFFFFF' },
-  { key: 'blue', hex: '#0386FF', name: 'Blue 500', role: 'links, inline answers', ink: '#FFFFFF' },
-  { key: 'live', hex: '#19AD52', name: 'Live 600', role: 'healthy, online, saving', ink: '#FFFFFF' },
-  { key: 'page', hex: '#F7F9FC', name: 'Page', role: 'the ground everything sits on', ink: '#003350', light: true },
-  { key: 'surface', hex: '#FFFFFF', name: 'Surface', role: 'cards, inputs', ink: '#003350', light: true },
-  { key: 'line', hex: '#E3E8EF', name: 'Hairline', role: 'borders, dividers', ink: '#003350', light: true },
-];
-
-const DS_TYPE = [
-  { px: 26, w: 650, label: 'Page title', sample: 'Create Data Center Interconnect' },
-  { px: 17, w: 650, label: 'Section', sample: 'Subscription Term' },
-  { px: 14, w: 400, label: 'Body', sample: 'Choose the term that best fits your needs' },
-  { px: 12, w: 400, label: 'Caption', sample: 'Available Rate Limit: 6.9 Gbps' },
-];
-
-const DS_STEPS = ['Port Selection', 'Configure', 'Add Ons', 'Checkout'];
-// the two real term/price pairs off the Configure screen - the specimen
-// swaps between them so the price is seen recalculating rather than sitting
-// there as a number, which is the only part of it that's actually a system
-// behaviour rather than a layout.
-const DS_TERMS = [
-  { term: 'PAYG', sub: 'Pay as you go', price: '₹10,032.00', off: null, was: null },
-  { term: '24 Months', sub: 'Better savings', price: '₹9,028.80', off: '10% off', was: '₹10,032.00' },
-];
-
-// one slow clock drives the whole section: which token is lit, how far the
-// step indicator has walked, and which term the price is showing. they run
-// on different divisors so the canvas never looks like a single thing
-// blinking in unison. paused whenever the section is off screen, and never
-// started at all under prefersReducedMotion - the components below are the
-// content here, so they still render, just holding still.
-function useDsClock(ref) {
-  const [t, setT] = useState(0);
-  useEffect(() => {
-    if (prefersReducedMotion || !ref.current) return undefined;
-    let id = null;
-    const start = () => { if (id === null) id = setInterval(() => setT((n) => n + 1), 1900); };
-    const stop = () => { if (id !== null) { clearInterval(id); id = null; } };
-    const io = new IntersectionObserver(([e]) => (e.isIntersecting ? start() : stop()), { threshold: 0.15 });
-    io.observe(ref.current);
-    return () => { stop(); io.disconnect(); };
-  }, [ref]);
-  return t;
-}
 
 // the components, rendered as live DOM rather than shown as cropped
 // screenshots. every specimen is built out of the tokens declared once on
@@ -811,117 +760,54 @@ function IAScene() {
   );
 }
 
-// the products the same four-step skeleton carries - only the Configure
-// step's fields differ between them, which is the whole argument.
-const DS_PRODUCTS = [
-  { name: 'DCI Layer 2', field: 'MACSec · rate limit' },
-  { name: 'Port', field: 'bandwidth · LAG' },
-  { name: 'Virtual Router', field: 'ASN · peering' },
-  { name: 'Internet Exchange', field: 'peer · prefix limit' },
-];
-
-// the section as four cinematic tiles rather than a spec sheet: each one is
-// a moment of the system moving, on a shared slow clock, so the reader sees
-// the system behave rather than reads a list of what it contains.
+// ---- the Polarin design system showcase (exact replica) ----
 function DesignSystemScene() {
-  const ref = useRef(null);
-  const t = useDsClock(ref);
-  const [pick, setPick] = useState(null);
-  const auto = DS_COLORS[t % DS_COLORS.length];
-  const tok = pick ? DS_COLORS.find((c) => c.key === pick) : auto;
-  const typeStep = prefersReducedMotion ? DS_TYPE.length - 1 : t % DS_TYPE.length;
-  const step = prefersReducedMotion ? 1 : t % DS_STEPS.length;
-  const prod = DS_PRODUCTS[prefersReducedMotion ? 0 : Math.floor(t / 2) % DS_PRODUCTS.length];
-  const term = DS_TERMS[prefersReducedMotion ? 1 : Math.floor(t / 3) % DS_TERMS.length];
+  const [frameHeight, setFrameHeight] = useState(1800);
+
+  useEffect(() => {
+    const onMsg = (e) => {
+      if (e.data && e.data.type === 'ds-resize' && typeof e.data.height === 'number') {
+        setFrameHeight(Math.max(1200, e.data.height));
+      }
+    };
+    window.addEventListener('message', onMsg);
+    return () => window.removeEventListener('message', onMsg);
+  }, []);
 
   return (
-    <div className="ds" ref={ref}>
+    <div className="ds">
       <div className="ds-head cps-rv" data-rv>
         <h3 className="ds-h">One system. Every <em className="cp-signal">product</em>.</h3>
-        <p className="ds-lede">A growing product line and one designer. That only works if a new product is an assembly job.</p>
+        {/* each sentence is its own inline-block, so the line can only break
+            BETWEEN the two sentences - never after "That", which is where
+            balancing the raw string put it. both sit on one line when they
+            fit; each still wraps internally if it has to. */}
+        <p className="ds-lede">
+          <span>A growing product line and one designer.</span>{' '}
+          <span>That only works if a new product is an assembly job.</span>
+        </p>
       </div>
 
-      <div className="ds-reel cps-rv" data-rv style={{ '--d': '60ms' }}>
-        {/* 1 - colour. the lit token drives the swatch stack and names itself. */}
-        <div className="ds-tile ds-tile-col" style={{ '--glow': tok.hex }}>
-          <span className="ds-tile-t">Colour</span>
-          <div className="ds-stack">
-            {DS_COLORS.map((c) => (
-              <button
-                type="button"
-                key={c.key}
-                className={`ds-band${tok.key === c.key ? ' on' : ''}`}
-                style={{ background: c.hex }}
-                onClick={() => setPick(pick === c.key ? null : c.key)}
-                aria-label={c.name}
-              />
-            ))}
-          </div>
-          <div className="ds-tile-read" key={tok.key}>
-            <b>{tok.name}</b>
-            <span>{tok.hex} · {tok.role}</span>
-          </div>
-        </div>
-
-        {/* 2 - type. the ramp reveals a step at a time, largest first. */}
-        <div className="ds-tile ds-tile-type">
-          <span className="ds-tile-t">Type</span>
-          <div className="ds-ramp">
-            {DS_TYPE.map((ty, i) => (
-              <span
-                key={ty.label}
-                className={`ds-ramp-l${i === typeStep ? ' on' : ''}${i < typeStep ? ' past' : ''}`}
-                style={{ fontSize: `${ty.px}px`, fontWeight: ty.w }}
-              >
-                {ty.sample}
-              </span>
-            ))}
-          </div>
-          <div className="ds-tile-read" key={DS_TYPE[typeStep].label}>
-            <b>{DS_TYPE[typeStep].label}</b>
-            <span>{DS_TYPE[typeStep].px}px · {DS_TYPE[typeStep].w}</span>
-          </div>
-        </div>
-
-        {/* 3 - components, actually running. */}
-        <div className="ds-tile ds-tile-comp">
-          <span className="ds-tile-t">Components</span>
-          <div className="ds-comp">
-            <div className="ds-comp-row">
-              <button type="button" className="ds-btn ds-btn-p">Upgrade</button>
-              <span className="ds-badge ds-badge-live"><i className="ds-dot" />Live</span>
-            </div>
-            <div className="ds-comp-row">
-              <span className="ds-chip">All <b>17</b></span>
-              <span className="ds-chip ds-chip-on">Live <b>6</b></span>
-            </div>
-            <div className="ds-money">
-              <span className="ds-price-v" key={term.price}>{term.price}</span>
-              {term.off && <span className="ds-off">{term.off}</span>}
-            </div>
-          </div>
-          <div className="ds-tile-read"><b>Built once</b><span>states, not screenshots</span></div>
-        </div>
-
-        {/* 4 - the shape that does not change, and the one step that does. */}
-        <div className="ds-tile ds-tile-shape">
-          <span className="ds-tile-t">One shape</span>
-          <div className="ds-shape">
-            <span className="ds-shape-p" key={prod.name}>{prod.name}</span>
-            <ol className="ds-steps">
-              {DS_STEPS.map((sname, i) => (
-                <li key={sname} className={i === step ? 'on' : i < step ? 'done' : ''}>
-                  <i>{i < step ? '✓' : i + 1}</i>{sname}
-                </li>
-              ))}
-            </ol>
-            <span className="ds-shape-f" key={prod.field}>Configure: {prod.field}</span>
-          </div>
-          <div className="ds-tile-read"><b>Only step 2 changes</b><span>a new product is one step&apos;s fields</span></div>
-        </div>
+      {/* no frame: the showcase renders on a transparent ground so its cards
+          sit directly on this section's background rather than inside a
+          second panel. it also breaks the reading column, like the other
+          wide blocks in this case study, so the cards get their real size. */}
+      <div className="ds-frame">
+        <iframe
+          title="Polarin Design System"
+          src="/design-system/index.html"
+          style={{
+            width: '100%',
+            height: `${frameHeight}px`,
+            border: 'none',
+            display: 'block',
+            background: 'transparent',
+          }}
+          sandbox="allow-scripts allow-same-origin allow-forms"
+        />
       </div>
 
-      <p className="ds-foot cps-rv" data-rv style={{ '--d': '180ms' }}>
+      <p className="ds-foot cps-rv" data-rv style={{ '--d': '240ms' }}>
         four years of solo output, because a new product doesn&apos;t get a new design - it gets <em className="cp-up">one step&apos;s worth of fields</em>.
       </p>
     </div>

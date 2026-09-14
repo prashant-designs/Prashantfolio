@@ -1,0 +1,39 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Figma Make App</title>
+    
+    <meta name="description" content="Showcase your design system with an interactive style guide and component library, enabling users to explore colors, text, and animations effortlessly.">
+    <meta name="robots" content="noindex, nofollow">
+    <meta property="og:title" content="Figma Make App">
+    <meta property="og:description" content="Showcase your design system with an interactive style guide and component library, enabling users to explore colors, text, and animations effortlessly.">
+    <script type="module" crossorigin src="./assets/index-Dmtia4WV.js"></script>
+    <link rel="stylesheet" crossorigin href="./assets/index-EiMGSHtT.css">
+  </head>
+  <body>
+    
+    <div id="root"></div>
+    <!-- This page is framed by the portfolio's Design system section, which
+         cannot know its height in advance. Reporting it up lets the frame
+         size itself to the content instead of scrolling inside a fixed box.
+         Lives in the SOURCE template on purpose: a build overwrites the
+         generated index.html, so a copy patched into the output would be
+         silently lost on the next rebuild. -->
+    <script>
+      function reportHeight() {
+        var root = document.getElementById('root');
+        var h = root ? root.scrollHeight : document.body.scrollHeight;
+        if (h) window.parent.postMessage({ type: 'ds-resize', height: h }, '*');
+      }
+      window.addEventListener('load', reportHeight);
+      window.addEventListener('resize', reportHeight);
+      setTimeout(reportHeight, 300);
+      setTimeout(reportHeight, 1000);
+      if (window.ResizeObserver) new ResizeObserver(reportHeight).observe(document.documentElement);
+    </script>
+    
+  </body>
+</html>

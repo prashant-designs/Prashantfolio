@@ -31,3 +31,9 @@ dist-ssr
 public/*.mov
 public/* - [Ss]ervices.png
 public/dci-form-inputs.png
+
+# the design-system showcase is a separate Vite/React project that happens to
+# live here. it is a SOURCE reference for the Design system section, not a
+# site asset - and anything under public/ is served verbatim, so committing
+# it would publish 9MB of someone else's build config at a guessable URL.
+public/Design System Showcase Page/

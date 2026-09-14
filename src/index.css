@@ -5809,14 +5809,18 @@ b.adm-was { font-family: var(--body); font-weight: 600; color: var(--rose); }
 .inv-section h3.plain,
 .dv-h,
 .dv-p,
-.inv-highlight {
+.inv-highlight,
+.ds-head,
+.ds-foot {
   text-align: center;
 }
 .inv-hero h2,
 .inv-hero p,
 .inv-section h3.plain,
 .dv-p,
-.inv-highlight {
+.inv-highlight,
+.ds-lede,
+.ds-foot {
   margin-left: auto;
   margin-right: auto;
 }
@@ -6009,7 +6013,13 @@ b.adm-was { font-family: var(--body); font-weight: 600; color: var(--rose); }
    flex-shrink:0 on the children stays relevant for the same reason it was
    added: .aud's own overflow:hidden would otherwise crop four of its six
    rows to a sliver if anything ever squeezed it. */
+/* centred like every other scene stage in this case study (Approach, IA and
+   the chapter rails all centre their content). the blocks inside - the audit
+   table and the gap cards - keep their own left-aligned text, which is what
+   a table and a card owe a reader; it is the BLOCK that centres. */
 .aud-stage {
+  justify-items: center;
+  text-align: center;
   display: grid;
   /* exact viewport centring - see the derivation on .apr-stage/.ia-stage.
      height:auto left this hanging just below the panel top with everything
@@ -6051,7 +6061,7 @@ b.adm-was { font-family: var(--body); font-weight: 600; color: var(--rose); }
 .aud-stage-stack .aud-act { grid-area: auto; transition: none; }
 .aud-stage-stack .aud-act-out { opacity: 1; transform: none; visibility: visible; pointer-events: auto; }
 .aud-lead { font-family: var(--mono); font-size: 11px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--dim); margin-bottom: 14px; }
-.aud-stage .aud { margin-top: 0; }
+.aud-stage .aud { margin-top: 0; text-align: left; }
 .aud-stage .aud-r { transform: translateX(-16px); }
 .aud-stage .aud-r.on { transform: none; }
 .aud-stage .aud-p.on { box-shadow: inset 0 0 30px var(--line); }
@@ -6876,87 +6886,519 @@ b.adm-was { font-family: var(--body); font-weight: 600; color: var(--rose); }
 }
 
 /* ---- the Design system section (.ds-) ---------------------------------
-   four tiles, each a moment of the system moving rather than a panel of
-   facts about it: colour resolving to one lit token, the type ramp stepping
-   down, live components holding their states, and the four-step shape
-   staying put while the product on top of it changes. one slow clock drives
-   all four on different divisors, so the grid never pulses in unison.
-   the motion is the content here - prefersReducedMotion holds every tile on
-   a legible frame rather than removing them. */
+   the section embeds the real design-system showcase (built into
+   public/design-system and framed here), so there is no local copy of its
+   cards to style - an earlier pass hand-ported them and that is all gone.
+   what is left is the section's own heading, lede and closing line. */
 .ds { margin-top: var(--sp-block); }
 .ds-h { font-family: var(--disp); font-weight: 800; font-size: var(--t-section); letter-spacing: -0.03em; line-height: 1.12; margin: 0 0 10px; }
 .ds-h em { font-style: normal; }
-.ds-lede { font-size: var(--t-body); line-height: 1.5; color: var(--mute); max-width: 52ch; margin: 0; }
-.ds-reel { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 18px; margin-top: 30px; }
-/* the cinematic card: near-black, one soft light source, a hairline. --glow
-   is set per tile so the colour tile is lit by whichever token is live. */
-.ds-tile {
-  position: relative; overflow: hidden; isolation: isolate;
-  min-height: 290px; padding: 22px;
-  display: flex; flex-direction: column;
-  border: 1px solid var(--line2); border-radius: var(--r-lg);
-  background: #06070F;
-}
-.ds-tile::before {
-  content: ''; position: absolute; z-index: -1; inset: -40% -10% auto -10%; height: 150%;
-  background: radial-gradient(60% 50% at 50% 0%, var(--glow, #3696B1) 0%, transparent 70%);
-  opacity: 0.22; transition: background 0.8s var(--ease);
-}
-.ds-tile-t { font-family: var(--mono); font-size: var(--t-micro); letter-spacing: 0.24em; text-transform: uppercase; color: var(--dim); }
-/* the readout under each tile - what the frame currently shows */
-.ds-tile-read { margin-top: auto; padding-top: 14px; animation: dsswap 0.45s var(--ease); }
-.ds-tile-read b { display: block; font-family: var(--disp); font-weight: 700; font-size: var(--t-card-sm); letter-spacing: -0.01em; color: var(--text); }
-.ds-tile-read span { display: block; margin-top: 3px; font-family: var(--mono); font-size: var(--t-micro); letter-spacing: 0.06em; color: var(--dim); }
-@keyframes dsswap { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: none; } }
-
-/* 1 - colour: bands that widen when lit, clickable to pin */
-.ds-stack { display: flex; gap: 5px; margin-top: 20px; height: 118px; }
-.ds-band { flex: 1 1 0; min-width: 0; border: 0; border-radius: var(--r-sm); padding: 0; cursor: pointer; opacity: 0.4; transition: flex-grow 0.7s var(--ease), opacity 0.5s var(--ease); }
-.ds-band.on { flex-grow: 3.2; opacity: 1; }
-
-/* 2 - type: the ramp, one step lit at a time */
-.ds-ramp { display: flex; flex-direction: column; gap: 8px; margin-top: 20px; }
-.ds-ramp-l { font-family: var(--disp); letter-spacing: -0.02em; line-height: 1.15; color: var(--dim); opacity: 0.25; transition: opacity 0.5s var(--ease), color 0.5s var(--ease); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-.ds-ramp-l.past { opacity: 0.45; }
-.ds-ramp-l.on { opacity: 1; color: var(--text); }
-
-/* 3 - components, on the product's own light surface */
-.ds-comp { margin-top: 20px; background: #F7F9FC; border-radius: var(--r-md); padding: 16px; display: flex; flex-direction: column; gap: 12px; color: #003350; }
-.ds-comp-row { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
-.ds-btn { font-family: inherit; font-size: var(--t-body-xs); font-weight: 600; border-radius: 7px; padding: 8px 14px; border: 1px solid transparent; cursor: default; }
-.ds-btn-p { background: #00828F; color: #FFFFFF; }
-.ds-badge { display: inline-flex; align-items: center; gap: 5px; font-size: var(--t-micro); font-weight: 700; border-radius: 999px; padding: 4px 10px; background: #D4FDE7; color: #19AD52; }
-.ds-dot { width: 5px; height: 5px; border-radius: 50%; background: currentColor; animation: dspulse 1.9s ease-in-out infinite; }
-@keyframes dspulse { 0%, 100% { opacity: 1; transform: scale(1); } 50% { opacity: 0.35; transform: scale(0.72); } }
-.ds-chip { font-size: var(--t-micro); border-radius: 999px; padding: 5px 12px; border: 1px solid #E3E8EF; background: #FFFFFF; }
-.ds-chip b { font-weight: 700; margin-left: 5px; color: #5B7186; }
-.ds-chip-on { background: #00828F; border-color: #00828F; color: #FFFFFF; }
-.ds-chip-on b { color: #FFFFFF; opacity: 0.85; }
-.ds-money { display: flex; align-items: baseline; gap: 9px; }
-.ds-price-v { font-size: var(--t-stat-sm); font-weight: 800; letter-spacing: -0.02em; animation: dsswap 0.45s var(--ease); }
-.ds-off { font-size: var(--t-micro); font-weight: 700; background: #D4FDE7; color: #19AD52; border-radius: 999px; padding: 3px 9px; }
-
-/* 4 - the shape: product changes on top, skeleton does not */
-.ds-shape { margin-top: 20px; display: flex; flex-direction: column; gap: 14px; }
-.ds-shape-p { font-family: var(--disp); font-weight: 800; font-size: var(--t-card); letter-spacing: -0.02em; color: var(--text); animation: dsswap 0.45s var(--ease); }
-.ds-steps { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; align-items: center; gap: 7px; }
-.ds-steps li { display: flex; align-items: center; gap: 5px; font-family: var(--mono); font-size: var(--t-micro); color: var(--dim); transition: color 0.4s var(--ease); }
-.ds-steps li i { width: 16px; height: 16px; border-radius: 50%; background: var(--raise2); color: var(--dim); font-size: 9px; font-style: normal; font-weight: 700; display: flex; align-items: center; justify-content: center; transition: background 0.4s var(--ease), color 0.4s var(--ease), transform 0.4s var(--ease); }
-.ds-steps li.done i, .ds-steps li.on i { background: #3696B1; color: #06070F; }
-.ds-steps li.on { color: var(--text); }
-.ds-steps li.on i { transform: scale(1.18); box-shadow: 0 0 0 3px rgba(54, 150, 177, 0.2); }
-.ds-shape-f { font-family: var(--mono); font-size: var(--t-micro); letter-spacing: 0.06em; color: #3696B1; animation: dsswap 0.45s var(--ease); }
-
-.ds-foot { margin: 24px 0 0; font-size: var(--t-body-sm); line-height: 1.5; color: var(--dim); max-width: 60ch; }
+.ds-lede { font-size: var(--t-body); line-height: 1.5; color: var(--mute); max-width: 56ch; margin: 0 auto; }
+/* balancing the whole string broke it after "That", splitting one sentence
+   across two lines. the break belongs at the sentence boundary instead. */
+.ds-lede span { display: inline-block; }
+.ds-foot { margin: 26px auto 0; font-size: var(--t-body-sm); line-height: 1.5; color: var(--dim); max-width: 60ch; text-wrap: balance; }
 .ds-foot em { font-style: normal; }
 
-@media (max-width: 860px) {
-  .ds-reel { grid-template-columns: 1fr; }
+/* ---- Approach + Information architecture (.apr- / .ia-) --------------
+   both run as pinned scenes with one idea per beat, centred - the same
+   shape Problem and Solution use. a reader should take a screen in within a
+   second and keep going, so nothing here is more than a line or two. Desk
+   research is the deliberate exception: that section is the research, so it
+   is the one place density is the point. */
+.apr-oscn, .ia-oscn { height: calc(var(--beats, 5) * 90vh); }
+/* prefersReducedMotion stacks every beat instead of parking on the last */
+.apr-static { display: flex; flex-direction: column; align-items: center; text-align: center; gap: var(--sp-block); margin-top: var(--sp-block); }
+/* .ovl-panel is the scrolling ancestor, so sticky's top:5vh is measured
+   from the PANEL's top edge - and the panel itself starts a fixed ~71px
+   down the viewport, a number that does NOT scale with vh. with the shared
+   74vh height the content therefore drifted further below centre the taller
+   the window got (9px at 1000px tall, 55px at 1576px).
+   solving P + T + H/2 = 50vh for H, with P = 71px and T = 5vh, gives
+   H = 90vh - 142px - which centres exactly at any height. */
+.apr-stage, .ia-stage { text-align: center; align-items: center; gap: 0; height: calc(90vh - 142px); }
+.apr-eyebrow { display: block; font-family: var(--mono); font-size: var(--t-meta); letter-spacing: 0.22em; text-transform: uppercase; color: var(--dim); margin-bottom: 20px; }
+/* the brief, framed - a hairline box around one sentence, which is the
+   whole beat. */
+.apr-briefwrap { max-width: 42ch; }
+.apr-brief { margin: 0; border: 1px solid var(--line2); border-radius: var(--r-lg); padding: 42px 38px; font-family: var(--disp); font-weight: 600; font-size: var(--t-sub); line-height: 1.35; letter-spacing: -0.015em; color: var(--text); }
+.apr-brief em { font-style: normal; }
+/* the statement beats - one sentence, set at chapter rank so it reads as
+   the only thing on screen. */
+.apr-big { font-family: var(--disp); font-weight: 800; font-size: var(--t-lead); letter-spacing: -0.03em; line-height: 1.2; margin: 0; max-width: 24ch; }
+.apr-big em { font-style: normal; }
+.apr-cap { margin: 16px 0 0; font-family: var(--mono); font-size: var(--t-micro); letter-spacing: 0.14em; text-transform: uppercase; color: var(--dim); }
+/* three inputs as three numbers, not three paragraphs */
+.apr-inputs { display: flex; justify-content: center; gap: 56px; flex-wrap: wrap; }
+.apr-input b { display: block; font-family: var(--disp); font-weight: 800; font-size: var(--t-stat-sm); letter-spacing: -0.02em; }
+.apr-input span { display: block; margin-top: 6px; font-family: var(--mono); font-size: var(--t-meta); letter-spacing: 0.16em; text-transform: uppercase; color: var(--dim); }
+/* the closing index of stages - stacked pills, generous, one per line */
+.apr-willsee { margin: 0 0 22px; font-family: var(--disp); font-size: var(--t-sub); font-weight: 600; letter-spacing: -0.015em; color: var(--text); }
+.apr-stages { display: flex; flex-direction: column; align-items: center; gap: 10px; }
+.apr-stages button {
+  font-family: inherit; font-size: var(--t-body-sm); color: var(--text);
+  border: 1px solid var(--line2); border-radius: 99px; padding: 11px 30px;
+  background: var(--raise2); cursor: pointer; min-width: 260px;
+  transition: border-color 0.2s var(--ease), color 0.2s var(--ease), transform 0.2s var(--ease);
 }
+.apr-stages button:hover, .apr-stages button:focus-visible { border-color: #3696B1; color: #3696B1; transform: translateY(-2px); outline: none; }
+
+.ia-tree { border: 1px solid var(--line2); border-radius: var(--r-lg); background: var(--ink2); padding: 20px; }
+.ia-shell-row { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; margin-bottom: 18px; padding-bottom: 18px; border-bottom: 1px solid var(--line2); }
+.ia-nav { font-family: var(--mono); font-size: var(--t-body-xs); color: var(--text); background: var(--raise2); border: 1px solid var(--line2); border-radius: var(--r-sm); padding: 7px 14px; }
+.ia-cat-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px; }
+.ia-group { border: 1px solid var(--line2); border-radius: var(--r-md); background: var(--raise); padding: 14px; text-align: left; }
+.ia-group b { display: block; font-family: var(--disp); font-weight: 700; font-size: var(--t-body-sm); color: var(--text); margin-bottom: 10px; }
+.ia-group ul { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 6px; }
+.ia-group li { position: relative; padding-left: 14px; font-size: var(--t-body-xs); color: var(--mute); line-height: 1.4; }
+.ia-group li::before { content: ''; position: absolute; left: 0; top: 0.55em; width: 4px; height: 4px; border-radius: 50%; background: #3696B1; }
+/* .ia-stage centres its children with align-items:center, which makes a
+   flex child shrink to its content - so the map's own width:100% had
+   nothing to resolve against and it collapsed to the width of its dots.
+   the wrapper is what needs the width. */
+.ia-effort { width: 100%; max-width: 860px; }
+.ia-stage .eff-map { width: 100%; }
+@media (max-width: 860px) {
+  .apr-inputs { gap: 26px; }
+  .ia-cat-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+/* the effort map's dot labels are absolutely positioned and nowrap, so near
+   the right edge they extend the map's scroll width by ~28px. clipped only
+   at touch widths - there is no hover there to reveal them anyway, and on a
+   pointer device clipping a label the reader is actively hovering would be
+   the worse trade. */
+@media (max-width: 700px) { .eff-map { overflow: hidden; } }
+@media (max-width: 860px) {
+  .apr-inputs { grid-template-columns: 1fr; }
+  .ia-cat-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+.eff-map { position: relative; height: 320px; margin: 20px 0 4px; border: 1px solid var(--line); border-radius: var(--r-md); background: var(--raise); }
+.eff-axis-y, .eff-axis-x { position: absolute; font-family: var(--mono); font-size: var(--t-micro); letter-spacing: 0.14em; text-transform: uppercase; color: var(--dim); }
+.eff-axis-y { top: 10px; left: 12px; }
+.eff-axis-x { bottom: 10px; right: 12px; }
+.eff-dot { position: absolute; transform: translate(-50%, 50%); cursor: default; }
+.eff-dot:focus-visible { outline: none; }
+.eff-dot i { display: block; width: 9px; height: 9px; border-radius: 50%; background: var(--raise2); border: 1.5px solid var(--line2); transition: transform 0.25s var(--ease); }
+.eff-dot.first i { background: var(--up); border-color: var(--up); box-shadow: 0 0 10px rgba(125, 249, 166, 0.3); }
+/* the module name is on permanently now - a scatter of unlabelled dots asks
+   the reader to hover before it means anything, which on a case study is a
+   question nobody stops to answer. the hover card carries the two numbers
+   that would otherwise crowd it. */
+.eff-name { position: absolute; left: 16px; top: 50%; transform: translateY(-50%); white-space: nowrap; font-family: var(--mono); font-size: var(--t-micro); font-weight: 400; letter-spacing: 0.06em; color: var(--mute); transition: color 0.2s var(--ease); }
+.eff-dot.flip .eff-name { left: auto; right: 16px; }
+.eff-dot.first .eff-name { color: var(--text); }
+.eff-pop {
+  position: absolute; left: 16px; bottom: 18px; width: 210px; text-align: left;
+  background: var(--ink2); border: 1px solid var(--line2); border-radius: var(--r-md);
+  padding: 11px 13px; opacity: 0; pointer-events: none; z-index: 2;
+  transform: translateY(4px); transition: opacity 0.2s var(--ease), transform 0.2s var(--ease);
+}
+.eff-dot.flip .eff-pop { left: auto; right: 16px; }
+/* a dot near the top of the map has no room above it for its card */
+.eff-dot.vflip .eff-pop { bottom: auto; top: 18px; }
+.eff-pop-w { display: block; font-family: var(--mono); font-size: var(--t-micro); letter-spacing: 0.1em; text-transform: uppercase; color: #E8A33D; margin-bottom: 6px; }
+.eff-pop-v { display: block; font-size: var(--t-body-xs); line-height: 1.4; color: var(--text); }
+.eff-dot:hover i, .eff-dot:focus-visible i { transform: scale(1.35); }
+.eff-dot:hover .eff-name, .eff-dot:focus-visible .eff-name { color: var(--text); }
+.eff-dot:hover .eff-pop, .eff-dot:focus-visible .eff-pop { opacity: 1; transform: none; }
+.eff-first { margin-top: 22px; }
+.eff-first-lead { font-family: var(--mono); font-size: 11px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--dim); margin-bottom: 12px; }
+.eff-first-grid { display: flex; flex-wrap: wrap; gap: 8px; }
+.eff-first-grid span { font-size: var(--t-body-xs); color: var(--text); border: 1px solid var(--line2); border-radius: 99px; padding: 6px 14px; background: var(--raise2); }
+/* the Approach section's five preview chips are real <button>s, not <span>s -
+   each names a stage that's already its own section further down (desk
+   research -> Research, information architecture -> IA & flows, and so on),
+   so clicking one jumps straight there via the same jumpToSection() the top
+   route bar uses, instead of only being a plain label repeating what's
+   already in the index. */
+.eff-first-grid button {
+  font-family: inherit;
+  font-size: var(--t-body-xs);
+  color: var(--text);
+  border: 1px solid var(--line2);
+  border-radius: 99px;
+  padding: 6px 14px;
+  background: var(--raise2);
+  cursor: pointer;
+  transition: border-color 0.2s var(--ease), color 0.2s var(--ease), transform 0.2s var(--ease);
+}
+.eff-first-grid button:hover, .eff-first-grid button:focus-visible {
+  border-color: #3696B1;
+  color: #3696B1;
+  transform: translateY(-2px);
+  outline: none;
+}
+
+/* ---- reveal-on-scroll, cps- prefixed ----
+   same recipe as .ivs-rv/.ivs-stagger (Invoice's own copy of the same
+   pattern) - restated here rather than shared, per this codebase's one
+   local-hook-per-case-study convention (see useBlockReveal in
+   CustomerPortalCaseStudy.jsx). covers the plain static content only: step
+   tags, headings, paragraphs, and card grids across the nine sections below
+   the hook/bet scenes. the hero and the five pinned scroll-scenes
+   (AlexJourney, TheBetScene, AuditScene, SysScene, ScreensScene) already
+   reveal themselves via their own obeat progression and never carry [data-rv]. */
+/* bigger travel (48px), a starting blur, and a full second of transition -
+   36px/no-blur still read as a quick dissolve rather than something
+   physically arriving. the blur is the part that actually sells "moving
+   into focus": a flat opacity+position fade looks similar to a dissolve at
+   a glance, but a element sharpening as it settles reads unmistakably as
+   motion even out of the corner of your eye. */
+.cps-rv {
+  opacity: 0;
+  filter: blur(6px);
+  transform: translateY(48px) scale(0.96);
+  transition: opacity 0.9s var(--ease) var(--d, 0ms), filter 0.9s var(--ease) var(--d, 0ms), transform 1s var(--ease) var(--d, 0ms);
+}
+.cps-rv.on { opacity: 1; filter: blur(0); transform: none; }
+
+.cps-stagger > * {
+  opacity: 0;
+  filter: blur(5px);
+  transform: translateY(40px) scale(0.96);
+  transition:
+    opacity 0.8s var(--ease) calc(var(--d, 0ms) + var(--sd, 0ms)),
+    filter 0.8s var(--ease) calc(var(--d, 0ms) + var(--sd, 0ms)),
+    transform 0.95s var(--ease) calc(var(--d, 0ms) + var(--sd, 0ms));
+}
+.cps-stagger.on > * { opacity: 1; filter: blur(0); transform: none; }
+
 @media (prefers-reduced-motion: reduce) {
-  .ds-dot { animation: none; }
-  .ds-tile-read, .ds-price-v, .ds-shape-p, .ds-shape-f { animation: none; }
-  .ds-band, .ds-ramp-l, .ds-tile::before { transition: none; }
+  .cps-rv, .cps-stagger > * { opacity: 1; filter: none; transform: none; }
+}
+
+/* ---- Approach + Information architecture (.apr- / .ia-) --------------
+   both run as pinned scenes with one idea per beat, centred - the same
+   shape Problem and Solution use. a reader should take a screen in within a
+   second and keep going, so nothing here is more than a line or two. Desk
+   research is the deliberate exception: that section is the research, so it
+   is the one place density is the point. */
+.apr-oscn, .ia-oscn { height: calc(var(--beats, 5) * 90vh); }
+/* prefersReducedMotion stacks every beat instead of parking on the last */
+.apr-static { display: flex; flex-direction: column; align-items: center; text-align: center; gap: var(--sp-block); margin-top: var(--sp-block); }
+/* .ovl-panel is the scrolling ancestor, so sticky's top:5vh is measured
+   from the PANEL's top edge - and the panel itself starts a fixed ~71px
+   down the viewport, a number that does NOT scale with vh. with the shared
+   74vh height the content therefore drifted further below centre the taller
+   the window got (9px at 1000px tall, 55px at 1576px).
+   solving P + T + H/2 = 50vh for H, with P = 71px and T = 5vh, gives
+   H = 90vh - 142px - which centres exactly at any height. */
+.apr-stage, .ia-stage { text-align: center; align-items: center; gap: 0; height: calc(90vh - 142px); }
+.apr-eyebrow { display: block; font-family: var(--mono); font-size: var(--t-meta); letter-spacing: 0.22em; text-transform: uppercase; color: var(--dim); margin-bottom: 20px; }
+/* the brief, framed - a hairline box around one sentence, which is the
+   whole beat. */
+.apr-briefwrap { max-width: 42ch; }
+.apr-brief { margin: 0; border: 1px solid var(--line2); border-radius: var(--r-lg); padding: 42px 38px; font-family: var(--disp); font-weight: 600; font-size: var(--t-sub); line-height: 1.35; letter-spacing: -0.015em; color: var(--text); }
+.apr-brief em { font-style: normal; }
+/* the statement beats - one sentence, set at chapter rank so it reads as
+   the only thing on screen. */
+.apr-big { font-family: var(--disp); font-weight: 800; font-size: var(--t-lead); letter-spacing: -0.03em; line-height: 1.2; margin: 0; max-width: 24ch; }
+.apr-big em { font-style: normal; }
+.apr-cap { margin: 16px 0 0; font-family: var(--mono); font-size: var(--t-micro); letter-spacing: 0.14em; text-transform: uppercase; color: var(--dim); }
+/* three inputs as three numbers, not three paragraphs */
+.apr-inputs { display: flex; justify-content: center; gap: 56px; flex-wrap: wrap; }
+.apr-input b { display: block; font-family: var(--disp); font-weight: 800; font-size: var(--t-stat-sm); letter-spacing: -0.02em; }
+.apr-input span { display: block; margin-top: 6px; font-family: var(--mono); font-size: var(--t-meta); letter-spacing: 0.16em; text-transform: uppercase; color: var(--dim); }
+/* the closing index of stages - stacked pills, generous, one per line */
+.apr-willsee { margin: 0 0 22px; font-family: var(--disp); font-size: var(--t-sub); font-weight: 600; letter-spacing: -0.015em; color: var(--text); }
+.apr-stages { display: flex; flex-direction: column; align-items: center; gap: 10px; }
+.apr-stages button {
+  font-family: inherit; font-size: var(--t-body-sm); color: var(--text);
+  border: 1px solid var(--line2); border-radius: 99px; padding: 11px 30px;
+  background: var(--raise2); cursor: pointer; min-width: 260px;
+  transition: border-color 0.2s var(--ease), color 0.2s var(--ease), transform 0.2s var(--ease);
+}
+.apr-stages button:hover, .apr-stages button:focus-visible { border-color: #3696B1; color: #3696B1; transform: translateY(-2px); outline: none; }
+
+.ia-tree { border: 1px solid var(--line2); border-radius: var(--r-lg); background: var(--ink2); padding: 20px; }
+.ia-shell-row { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; margin-bottom: 18px; padding-bottom: 18px; border-bottom: 1px solid var(--line2); }
+.ia-nav { font-family: var(--mono); font-size: var(--t-body-xs); color: var(--text); background: var(--raise2); border: 1px solid var(--line2); border-radius: var(--r-sm); padding: 7px 14px; }
+.ia-cat-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px; }
+.ia-group { border: 1px solid var(--line2); border-radius: var(--r-md); background: var(--raise); padding: 14px; text-align: left; }
+.ia-group b { display: block; font-family: var(--disp); font-weight: 700; font-size: var(--t-body-sm); color: var(--text); margin-bottom: 10px; }
+.ia-group ul { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 6px; }
+.ia-group li { position: relative; padding-left: 14px; font-size: var(--t-body-xs); color: var(--mute); line-height: 1.4; }
+.ia-group li::before { content: ''; position: absolute; left: 0; top: 0.55em; width: 4px; height: 4px; border-radius: 50%; background: #3696B1; }
+/* .ia-stage centres its children with align-items:center, which makes a
+   flex child shrink to its content - so the map's own width:100% had
+   nothing to resolve against and it collapsed to the width of its dots.
+   the wrapper is what needs the width. */
+.ia-effort { width: 100%; max-width: 860px; }
+.ia-stage .eff-map { width: 100%; }
+@media (max-width: 860px) {
+  .apr-inputs { gap: 26px; }
+  .ia-cat-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+/* the effort map's dot labels are absolutely positioned and nowrap, so near
+   the right edge they extend the map's scroll width by ~28px. clipped only
+   at touch widths - there is no hover there to reveal them anyway, and on a
+   pointer device clipping a label the reader is actively hovering would be
+   the worse trade. */
+@media (max-width: 700px) { .eff-map { overflow: hidden; } }
+@media (max-width: 860px) {
+  .apr-inputs { grid-template-columns: 1fr; }
+  .ia-cat-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+.eff-map { position: relative; height: 320px; margin: 20px 0 4px; border: 1px solid var(--line); border-radius: var(--r-md); background: var(--raise); }
+.eff-axis-y, .eff-axis-x { position: absolute; font-family: var(--mono); font-size: var(--t-micro); letter-spacing: 0.14em; text-transform: uppercase; color: var(--dim); }
+.eff-axis-y { top: 10px; left: 12px; }
+.eff-axis-x { bottom: 10px; right: 12px; }
+.eff-dot { position: absolute; transform: translate(-50%, 50%); cursor: default; }
+.eff-dot:focus-visible { outline: none; }
+.eff-dot i { display: block; width: 9px; height: 9px; border-radius: 50%; background: var(--raise2); border: 1.5px solid var(--line2); transition: transform 0.25s var(--ease); }
+.eff-dot.first i { background: var(--up); border-color: var(--up); box-shadow: 0 0 10px rgba(125, 249, 166, 0.3); }
+/* the module name is on permanently now - a scatter of unlabelled dots asks
+   the reader to hover before it means anything, which on a case study is a
+   question nobody stops to answer. the hover card carries the two numbers
+   that would otherwise crowd it. */
+.eff-name { position: absolute; left: 16px; top: 50%; transform: translateY(-50%); white-space: nowrap; font-family: var(--mono); font-size: var(--t-micro); font-weight: 400; letter-spacing: 0.06em; color: var(--mute); transition: color 0.2s var(--ease); }
+.eff-dot.flip .eff-name { left: auto; right: 16px; }
+.eff-dot.first .eff-name { color: var(--text); }
+.eff-pop {
+  position: absolute; left: 16px; bottom: 18px; width: 210px; text-align: left;
+  background: var(--ink2); border: 1px solid var(--line2); border-radius: var(--r-md);
+  padding: 11px 13px; opacity: 0; pointer-events: none; z-index: 2;
+  transform: translateY(4px); transition: opacity 0.2s var(--ease), transform 0.2s var(--ease);
+}
+.eff-dot.flip .eff-pop { left: auto; right: 16px; }
+/* a dot near the top of the map has no room above it for its card */
+.eff-dot.vflip .eff-pop { bottom: auto; top: 18px; }
+.eff-pop-w { display: block; font-family: var(--mono); font-size: var(--t-micro); letter-spacing: 0.1em; text-transform: uppercase; color: #E8A33D; margin-bottom: 6px; }
+.eff-pop-v { display: block; font-size: var(--t-body-xs); line-height: 1.4; color: var(--text); }
+.eff-dot:hover i, .eff-dot:focus-visible i { transform: scale(1.35); }
+.eff-dot:hover .eff-name, .eff-dot:focus-visible .eff-name { color: var(--text); }
+.eff-dot:hover .eff-pop, .eff-dot:focus-visible .eff-pop { opacity: 1; transform: none; }
+.eff-first { margin-top: 22px; }
+.eff-first-lead { font-family: var(--mono); font-size: 11px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--dim); margin-bottom: 12px; }
+.eff-first-grid { display: flex; flex-wrap: wrap; gap: 8px; }
+.eff-first-grid span { font-size: var(--t-body-xs); color: var(--text); border: 1px solid var(--line2); border-radius: 99px; padding: 6px 14px; background: var(--raise2); }
+/* the Approach section's five preview chips are real <button>s, not <span>s -
+   each names a stage that's already its own section further down (desk
+   research -> Research, information architecture -> IA & flows, and so on),
+   so clicking one jumps straight there via the same jumpToSection() the top
+   route bar uses, instead of only being a plain label repeating what's
+   already in the index. */
+.eff-first-grid button {
+  font-family: inherit;
+  font-size: var(--t-body-xs);
+  color: var(--text);
+  border: 1px solid var(--line2);
+  border-radius: 99px;
+  padding: 6px 14px;
+  background: var(--raise2);
+  cursor: pointer;
+  transition: border-color 0.2s var(--ease), color 0.2s var(--ease), transform 0.2s var(--ease);
+}
+.eff-first-grid button:hover, .eff-first-grid button:focus-visible {
+  border-color: #3696B1;
+  color: #3696B1;
+  transform: translateY(-2px);
+  outline: none;
+}
+
+/* ---- reveal-on-scroll, cps- prefixed ----
+   same recipe as .ivs-rv/.ivs-stagger (Invoice's own copy of the same
+   pattern) - restated here rather than shared, per this codebase's one
+   local-hook-per-case-study convention (see useBlockReveal in
+   CustomerPortalCaseStudy.jsx). covers the plain static content only: step
+   tags, headings, paragraphs, and card grids across the nine sections below
+   the hook/bet scenes. the hero and the five pinned scroll-scenes
+   (AlexJourney, TheBetScene, AuditScene, SysScene, ScreensScene) already
+   reveal themselves via their own obeat progression and never carry [data-rv]. */
+/* bigger travel (48px), a starting blur, and a full second of transition -
+   36px/no-blur still read as a quick dissolve rather than something
+   physically arriving. the blur is the part that actually sells "moving
+   into focus": a flat opacity+position fade looks similar to a dissolve at
+   a glance, but a element sharpening as it settles reads unmistakably as
+   motion even out of the corner of your eye. */
+.cps-rv {
+  opacity: 0;
+  filter: blur(6px);
+  transform: translateY(48px) scale(0.96);
+  transition: opacity 0.9s var(--ease) var(--d, 0ms), filter 0.9s var(--ease) var(--d, 0ms), transform 1s var(--ease) var(--d, 0ms);
+}
+.cps-rv.on { opacity: 1; filter: blur(0); transform: none; }
+
+.cps-stagger > * {
+  opacity: 0;
+  filter: blur(5px);
+  transform: translateY(40px) scale(0.96);
+  transition:
+    opacity 0.8s var(--ease) calc(var(--d, 0ms) + var(--sd, 0ms)),
+    filter 0.8s var(--ease) calc(var(--d, 0ms) + var(--sd, 0ms)),
+    transform 0.95s var(--ease) calc(var(--d, 0ms) + var(--sd, 0ms));
+}
+.cps-stagger.on > * { opacity: 1; filter: blur(0); transform: none; }
+
+@media (prefers-reduced-motion: reduce) {
+  .cps-rv, .cps-stagger > * { opacity: 1; filter: none; transform: none; }
+}
+
+/* ---- Approach + Information architecture (.apr- / .ia-) --------------
+   both run as pinned scenes with one idea per beat, centred - the same
+   shape Problem and Solution use. a reader should take a screen in within a
+   second and keep going, so nothing here is more than a line or two. Desk
+   research is the deliberate exception: that section is the research, so it
+   is the one place density is the point. */
+.apr-oscn, .ia-oscn { height: calc(var(--beats, 5) * 90vh); }
+/* prefersReducedMotion stacks every beat instead of parking on the last */
+.apr-static { display: flex; flex-direction: column; align-items: center; text-align: center; gap: var(--sp-block); margin-top: var(--sp-block); }
+/* .ovl-panel is the scrolling ancestor, so sticky's top:5vh is measured
+   from the PANEL's top edge - and the panel itself starts a fixed ~71px
+   down the viewport, a number that does NOT scale with vh. with the shared
+   74vh height the content therefore drifted further below centre the taller
+   the window got (9px at 1000px tall, 55px at 1576px).
+   solving P + T + H/2 = 50vh for H, with P = 71px and T = 5vh, gives
+   H = 90vh - 142px - which centres exactly at any height. */
+.apr-stage, .ia-stage { text-align: center; align-items: center; gap: 0; height: calc(90vh - 142px); }
+.apr-eyebrow { display: block; font-family: var(--mono); font-size: var(--t-meta); letter-spacing: 0.22em; text-transform: uppercase; color: var(--dim); margin-bottom: 20px; }
+/* the brief, framed - a hairline box around one sentence, which is the
+   whole beat. */
+.apr-briefwrap { max-width: 42ch; }
+.apr-brief { margin: 0; border: 1px solid var(--line2); border-radius: var(--r-lg); padding: 42px 38px; font-family: var(--disp); font-weight: 600; font-size: var(--t-sub); line-height: 1.35; letter-spacing: -0.015em; color: var(--text); }
+.apr-brief em { font-style: normal; }
+/* the statement beats - one sentence, set at chapter rank so it reads as
+   the only thing on screen. */
+.apr-big { font-family: var(--disp); font-weight: 800; font-size: var(--t-lead); letter-spacing: -0.03em; line-height: 1.2; margin: 0; max-width: 24ch; }
+.apr-big em { font-style: normal; }
+.apr-cap { margin: 16px 0 0; font-family: var(--mono); font-size: var(--t-micro); letter-spacing: 0.14em; text-transform: uppercase; color: var(--dim); }
+/* three inputs as three numbers, not three paragraphs */
+.apr-inputs { display: flex; justify-content: center; gap: 56px; flex-wrap: wrap; }
+.apr-input b { display: block; font-family: var(--disp); font-weight: 800; font-size: var(--t-stat-sm); letter-spacing: -0.02em; }
+.apr-input span { display: block; margin-top: 6px; font-family: var(--mono); font-size: var(--t-meta); letter-spacing: 0.16em; text-transform: uppercase; color: var(--dim); }
+/* the closing index of stages - stacked pills, generous, one per line */
+.apr-willsee { margin: 0 0 22px; font-family: var(--disp); font-size: var(--t-sub); font-weight: 600; letter-spacing: -0.015em; color: var(--text); }
+.apr-stages { display: flex; flex-direction: column; align-items: center; gap: 10px; }
+.apr-stages button {
+  font-family: inherit; font-size: var(--t-body-sm); color: var(--text);
+  border: 1px solid var(--line2); border-radius: 99px; padding: 11px 30px;
+  background: var(--raise2); cursor: pointer; min-width: 260px;
+  transition: border-color 0.2s var(--ease), color 0.2s var(--ease), transform 0.2s var(--ease);
+}
+.apr-stages button:hover, .apr-stages button:focus-visible { border-color: #3696B1; color: #3696B1; transform: translateY(-2px); outline: none; }
+
+.ia-tree { border: 1px solid var(--line2); border-radius: var(--r-lg); background: var(--ink2); padding: 20px; }
+.ia-shell-row { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; margin-bottom: 18px; padding-bottom: 18px; border-bottom: 1px solid var(--line2); }
+.ia-nav { font-family: var(--mono); font-size: var(--t-body-xs); color: var(--text); background: var(--raise2); border: 1px solid var(--line2); border-radius: var(--r-sm); padding: 7px 14px; }
+.ia-cat-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px; }
+.ia-group { border: 1px solid var(--line2); border-radius: var(--r-md); background: var(--raise); padding: 14px; text-align: left; }
+.ia-group b { display: block; font-family: var(--disp); font-weight: 700; font-size: var(--t-body-sm); color: var(--text); margin-bottom: 10px; }
+.ia-group ul { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 6px; }
+.ia-group li { position: relative; padding-left: 14px; font-size: var(--t-body-xs); color: var(--mute); line-height: 1.4; }
+.ia-group li::before { content: ''; position: absolute; left: 0; top: 0.55em; width: 4px; height: 4px; border-radius: 50%; background: #3696B1; }
+/* .ia-stage centres its children with align-items:center, which makes a
+   flex child shrink to its content - so the map's own width:100% had
+   nothing to resolve against and it collapsed to the width of its dots.
+   the wrapper is what needs the width. */
+.ia-effort { width: 100%; max-width: 860px; }
+.ia-stage .eff-map { width: 100%; }
+@media (max-width: 860px) {
+  .apr-inputs { gap: 26px; }
+  .ia-cat-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+/* the effort map's dot labels are absolutely positioned and nowrap, so near
+   the right edge they extend the map's scroll width by ~28px. clipped only
+   at touch widths - there is no hover there to reveal them anyway, and on a
+   pointer device clipping a label the reader is actively hovering would be
+   the worse trade. */
+@media (max-width: 700px) { .eff-map { overflow: hidden; } }
+@media (max-width: 860px) {
+  .apr-inputs { grid-template-columns: 1fr; }
+  .ia-cat-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+.eff-map { position: relative; height: 320px; margin: 20px 0 4px; border: 1px solid var(--line); border-radius: var(--r-md); background: var(--raise); }
+.eff-axis-y, .eff-axis-x { position: absolute; font-family: var(--mono); font-size: var(--t-micro); letter-spacing: 0.14em; text-transform: uppercase; color: var(--dim); }
+.eff-axis-y { top: 10px; left: 12px; }
+.eff-axis-x { bottom: 10px; right: 12px; }
+.eff-dot { position: absolute; transform: translate(-50%, 50%); cursor: default; }
+.eff-dot:focus-visible { outline: none; }
+.eff-dot i { display: block; width: 9px; height: 9px; border-radius: 50%; background: var(--raise2); border: 1.5px solid var(--line2); transition: transform 0.25s var(--ease); }
+.eff-dot.first i { background: var(--up); border-color: var(--up); box-shadow: 0 0 10px rgba(125, 249, 166, 0.3); }
+/* the module name is on permanently now - a scatter of unlabelled dots asks
+   the reader to hover before it means anything, which on a case study is a
+   question nobody stops to answer. the hover card carries the two numbers
+   that would otherwise crowd it. */
+.eff-name { position: absolute; left: 16px; top: 50%; transform: translateY(-50%); white-space: nowrap; font-family: var(--mono); font-size: var(--t-micro); font-weight: 400; letter-spacing: 0.06em; color: var(--mute); transition: color 0.2s var(--ease); }
+.eff-dot.flip .eff-name { left: auto; right: 16px; }
+.eff-dot.first .eff-name { color: var(--text); }
+.eff-pop {
+  position: absolute; left: 16px; bottom: 18px; width: 210px; text-align: left;
+  background: var(--ink2); border: 1px solid var(--line2); border-radius: var(--r-md);
+  padding: 11px 13px; opacity: 0; pointer-events: none; z-index: 2;
+  transform: translateY(4px); transition: opacity 0.2s var(--ease), transform 0.2s var(--ease);
+}
+.eff-dot.flip .eff-pop { left: auto; right: 16px; }
+/* a dot near the top of the map has no room above it for its card */
+.eff-dot.vflip .eff-pop { bottom: auto; top: 18px; }
+.eff-pop-w { display: block; font-family: var(--mono); font-size: var(--t-micro); letter-spacing: 0.1em; text-transform: uppercase; color: #E8A33D; margin-bottom: 6px; }
+.eff-pop-v { display: block; font-size: var(--t-body-xs); line-height: 1.4; color: var(--text); }
+.eff-dot:hover i, .eff-dot:focus-visible i { transform: scale(1.35); }
+.eff-dot:hover .eff-name, .eff-dot:focus-visible .eff-name { color: var(--text); }
+.eff-dot:hover .eff-pop, .eff-dot:focus-visible .eff-pop { opacity: 1; transform: none; }
+.eff-first { margin-top: 22px; }
+.eff-first-lead { font-family: var(--mono); font-size: 11px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--dim); margin-bottom: 12px; }
+.eff-first-grid { display: flex; flex-wrap: wrap; gap: 8px; }
+.eff-first-grid span { font-size: var(--t-body-xs); color: var(--text); border: 1px solid var(--line2); border-radius: 99px; padding: 6px 14px; background: var(--raise2); }
+/* the Approach section's five preview chips are real <button>s, not <span>s -
+   each names a stage that's already its own section further down (desk
+   research -> Research, information architecture -> IA & flows, and so on),
+   so clicking one jumps straight there via the same jumpToSection() the top
+   route bar uses, instead of only being a plain label repeating what's
+   already in the index. */
+.eff-first-grid button {
+  font-family: inherit;
+  font-size: var(--t-body-xs);
+  color: var(--text);
+  border: 1px solid var(--line2);
+  border-radius: 99px;
+  padding: 6px 14px;
+  background: var(--raise2);
+  cursor: pointer;
+  transition: border-color 0.2s var(--ease), color 0.2s var(--ease), transform 0.2s var(--ease);
+}
+.eff-first-grid button:hover, .eff-first-grid button:focus-visible {
+  border-color: #3696B1;
+  color: #3696B1;
+  transform: translateY(-2px);
+  outline: none;
+}
+
+/* ---- reveal-on-scroll, cps- prefixed ----
+   same recipe as .ivs-rv/.ivs-stagger (Invoice's own copy of the same
+   pattern) - restated here rather than shared, per this codebase's one
+   local-hook-per-case-study convention (see useBlockReveal in
+   CustomerPortalCaseStudy.jsx). covers the plain static content only: step
+   tags, headings, paragraphs, and card grids across the nine sections below
+   the hook/bet scenes. the hero and the five pinned scroll-scenes
+   (AlexJourney, TheBetScene, AuditScene, SysScene, ScreensScene) already
+   reveal themselves via their own obeat progression and never carry [data-rv]. */
+/* bigger travel (48px), a starting blur, and a full second of transition -
+   36px/no-blur still read as a quick dissolve rather than something
+   physically arriving. the blur is the part that actually sells "moving
+   into focus": a flat opacity+position fade looks similar to a dissolve at
+   a glance, but a element sharpening as it settles reads unmistakably as
+   motion even out of the corner of your eye. */
+.cps-rv {
+  opacity: 0;
+  filter: blur(6px);
+  transform: translateY(48px) scale(0.96);
+  transition: opacity 0.9s var(--ease) var(--d, 0ms), filter 0.9s var(--ease) var(--d, 0ms), transform 1s var(--ease) var(--d, 0ms);
+}
+.cps-rv.on { opacity: 1; filter: blur(0); transform: none; }
+
+.cps-stagger > * {
+  opacity: 0;
+  filter: blur(5px);
+  transform: translateY(40px) scale(0.96);
+  transition:
+    opacity 0.8s var(--ease) calc(var(--d, 0ms) + var(--sd, 0ms)),
+    filter 0.8s var(--ease) calc(var(--d, 0ms) + var(--sd, 0ms)),
+    transform 0.95s var(--ease) calc(var(--d, 0ms) + var(--sd, 0ms));
+}
+.cps-stagger.on > * { opacity: 1; filter: blur(0); transform: none; }
+
+@media (prefers-reduced-motion: reduce) {
+  .cps-rv, .cps-stagger > * { opacity: 1; filter: none; transform: none; }
 }
 
 /* ---- Approach + Information architecture (.apr- / .ia-) --------------
@@ -8301,4 +8743,14 @@ body.static .scene { height: auto !important; }
 @media (max-width: 900px) {
   .kbs-tl { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 22px; }
   .kbs-tl-s:nth-child(2n)::before { display: none; }
+}
+
+/* the embedded design-system showcase. no border, radius or shadow - the
+   page inside renders on a transparent ground, so the cards should read as
+   sitting on this section rather than inside a second panel. it breaks the
+   1080px reading column at the same 1300px threshold the other wide blocks
+   use, below which .ovl-panel has no room to give. */
+.ds-frame { width: 100%; margin: 28px 0; }
+@media (min-width: 1300px) {
+  .ds-frame { width: calc(100% + 240px); margin-left: -120px; }
 }
