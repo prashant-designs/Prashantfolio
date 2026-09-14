@@ -8811,6 +8811,16 @@ body.static .scene { height: auto !important; }
 .gax-tpl-r i { font-style: normal; text-align: center; color: var(--dim); }
 .gax-tpl-r b { font-family: var(--disp); font-weight: 700; font-size: var(--t-body-sm); color: var(--text); }
 
+/* the ambient point field sits behind the whole study. sticky + a negative
+   margin equal to its own height keeps it parked in the viewport for the
+   length of the wrap while taking no layout space of its own - the panel
+   is the scroll container, so sticky resolves against that. it never takes
+   pointer events, because the evidence rows underneath are clickable. */
+.gax-wrap { position: relative; }
+.gax-fx { position: sticky; top: 0; z-index: 0; display: block; width: 100%; height: 100vh; margin-bottom: -100vh; pointer-events: none; opacity: 0.8; }
+.gax-wrap > *:not(.gax-fx) { position: relative; z-index: 1; }
+@media (prefers-reduced-motion: reduce) { .gax-fx { display: none; } }
+
 /* a shared 3D tilt for the paper-like props, so an artifact reads as an
    object on a desk rather than another box in the layout. dropped whole
    under reduced motion, where a skewed plane is just harder to read. */

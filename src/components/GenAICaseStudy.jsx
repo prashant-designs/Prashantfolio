@@ -133,6 +133,181 @@ function prefersReducedMotion() {
     && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 }
 
+/* ---- the ambient field ------------------------------------------------
+   A procedural point cloud behind the whole study: it rotates on its own,
+   leans toward the cursor, brightens where the cursor passes, and changes
+   form as the reader moves between chapters - sphere, wave, disc. It is
+   decoration, so it is drawn on a canvas that never takes pointer events
+   and is switched off entirely under reduced motion.
+
+   Every dot is one stamp of a pre-rendered glow sprite. Drawing a real
+   shadowBlur per point is what makes a field this size crawl; stamping a
+   32px gradient costs almost nothing and looks the same. */
+function useCosmos(canvasRef, wrapRef) {
+  useEffect(() => {
+    const cv = canvasRef.current;
+    const wrap = wrapRef.current;
+    if (!cv || !wrap || prefersReducedMotion()) return undefined;
+    const ctx = cv.getContext('2d');
+    if (!ctx) return undefined;
+
+    const sprite = (rgb) => {
+      const s = document.createElement('canvas');
+      s.width = 32; s.height = 32;
+      const g = s.getContext('2d');
+      const rad = g.createRadialGradient(16, 16, 0, 16, 16, 16);
+      rad.addColorStop(0, `rgba(${rgb},1)`);
+      rad.addColorStop(0.3, `rgba(${rgb},0.4)`);
+      rad.addColorStop(1, `rgba(${rgb},0)`);
+      g.fillStyle = rad;
+      g.fillRect(0, 0, 32, 32);
+      return s;
+    };
+    const TEAL = sprite('54,150,177');
+    const ROSE = sprite('255,107,138');
+
+    // a fibonacci sphere: even coverage without clumping at the poles
+    const COUNT = window.innerWidth < 860 ? 240 : 560;
+    const pts = Array.from({ length: COUNT }, (_, i) => {
+      const y = 1 - (2 * (i + 0.5)) / COUNT;
+      const r = Math.sqrt(Math.max(0, 1 - y * y));
+      const th = i * 2.399963;
+      return { x: r * Math.cos(th), y, z: r * Math.sin(th), th };
+    });
+
+    let w = 0; let h = 0; let raf = null; let last = 0; let t = 0; let morph = 0;
+    const ptr = { lean: 0, tilt: 0, cx: -9999, cy: -9999 };
+
+    const size = () => {
+      const r = cv.getBoundingClientRect();
+      w = r.width; h = r.height;
+      const dpr = Math.min(window.devicePixelRatio || 1, 1.6);
+      cv.width = Math.round(w * dpr);
+      cv.height = Math.round(h * dpr);
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    };
+
+    // how far through the case study the reader is, 0..1 - the panel is the
+    // scroll container, the window never moves while a study is open
+    const progress = () => {
+      const panel = document.querySelector('.ovl-panel');
+      if (!panel) return 0;
+      const top = wrap.getBoundingClientRect().top - panel.getBoundingClientRect().top + panel.scrollTop;
+      const span = Math.max(1, wrap.offsetHeight - panel.clientHeight);
+      return Math.min(1, Math.max(0, (panel.scrollTop - top) / span));
+    };
+
+    let client = { x: -9999, y: -9999 };
+    const onMove = (e) => {
+      if (e.pointerType === 'touch') return;
+      client = { x: e.clientX, y: e.clientY };
+      ptr.lean = (e.clientX / window.innerWidth - 0.5) * 0.5;
+      ptr.tilt = (e.clientY / window.innerHeight - 0.5) * 0.3;
+    };
+    window.addEventListener('pointermove', onMove, { passive: true });
+    const ro = new ResizeObserver(size);
+    ro.observe(cv);
+    size();
+
+    const frame = (ts) => {
+      raf = requestAnimationFrame(frame);
+      // 30fps is plenty for a field this diffuse, and halves the cost
+      if (document.hidden || ts - last < 33) return;
+      const dt = Math.min(0.05, (ts - last) / 1000 || 0.016);
+      last = ts;
+      if (!w || !h) { size(); return; }
+      // the study stays mounted while the overlay is shut - don't burn
+      // frames painting something nobody can see
+      if (!cv.offsetParent) return;
+      t += dt;
+
+      const rect = cv.getBoundingClientRect();
+      ptr.cx = client.x - rect.left;
+      ptr.cy = client.y - rect.top;
+
+      // the form follows the chapter: each one eases into the next rather
+      // than cutting, so the field reads as one object being turned
+      morph += ((progress() * 7) - morph) * 0.05;
+      const mode = morph % 3;
+      const wave = mode < 1 ? mode : (mode < 2 ? 2 - mode : 0);
+      const disc = mode > 2 ? Math.sin((mode - 2) * Math.PI) : 0;
+
+      ctx.clearRect(0, 0, w, h);
+      const cx = w * 0.5;
+      const cy = h * 0.5;
+      const radius = Math.min(w * 0.32, h * 0.42);
+      const ang = t * 0.1 + ptr.lean;
+      const co = Math.cos(ang);
+      const si = Math.sin(ang);
+      const ct = Math.cos(ptr.tilt);
+      const st = Math.sin(ptr.tilt);
+
+      const draw = [];
+      for (let i = 0; i < pts.length; i++) {
+        const q = pts[i];
+        const breathe = Math.sin(q.th * 0.8 + t * 0.7) * 0.09;
+        const x = q.x * (1 + breathe);
+        const y = q.y * (1 - wave * 0.5) + Math.sin(q.x * 5 + t) * wave * 0.2;
+        const z = q.z * (1 - disc * 0.65);
+        const rx = x * co + z * si;
+        const rz = -x * si + z * co;
+        const ry = y * ct - rz * st;
+        const sc = 2.9 / (2.9 - rz * 0.5);
+        draw.push({ x: cx + rx * radius * sc, y: cy + ry * radius * sc, z: rz });
+      }
+      draw.sort((a, b) => a.z - b.z);
+
+      // a faint ground glow, so the field sits in the page rather than on it
+      const halo = ctx.createRadialGradient(cx, cy, 0, cx, cy, radius * 1.7);
+      halo.addColorStop(0, 'rgba(54,150,177,0.055)');
+      halo.addColorStop(0.55, 'rgba(255,107,138,0.028)');
+      halo.addColorStop(1, 'rgba(0,0,0,0)');
+      ctx.fillStyle = halo;
+      ctx.fillRect(cx - radius * 2, cy - radius * 2, radius * 4, radius * 4);
+
+      // the cursor's reach is deliberately tight. a wide, strong bloom stops
+      // reading as individual dots and turns into a smudge behind the text -
+      // and this layer has to stay under body copy without fighting it.
+      const REACH = 105 * 105;
+      for (let i = 0; i < draw.length; i++) {
+        const d = draw[i];
+        const dx = d.x - ptr.cx;
+        const dy = d.y - ptr.cy;
+        const near = Math.max(0, 1 - (dx * dx + dy * dy) / REACH);
+        const depth = (d.z + 1) * 0.5;
+        const r = (1 + depth * 1.25) * (1 + near * 1.9);
+        ctx.globalAlpha = Math.min(0.9, (0.11 + depth * 0.2) * (0.7 + near * 1.6));
+        // teal is the field; rose is reserved for the few dots nearest the
+        // cursor and the very front of the sphere, so it stays an accent
+        ctx.drawImage(near > 0.62 || d.z > 0.78 ? ROSE : TEAL, d.x - r * 2.4, d.y - r * 2.4, r * 4.8, r * 4.8);
+
+        // thread a few near neighbours together - enough to read as a
+        // lattice, not so many that it turns into a mesh
+        if (i % 5 === 0 && i + 1 < draw.length) {
+          const n = draw[i + 1];
+          const len = Math.hypot(d.x - n.x, d.y - n.y);
+          if (len < radius * 0.22) {
+            ctx.globalAlpha = (0.04 + depth * 0.05) * (1 + near * 2);
+            ctx.strokeStyle = '#6E8FC8';
+            ctx.beginPath();
+            ctx.moveTo(d.x, d.y);
+            ctx.lineTo(n.x, n.y);
+            ctx.stroke();
+          }
+        }
+      }
+      ctx.globalAlpha = 1;
+    };
+    raf = requestAnimationFrame(frame);
+
+    return () => {
+      if (raf) cancelAnimationFrame(raf);
+      ro.disconnect();
+      window.removeEventListener('pointermove', onMove);
+    };
+  }, [canvasRef, wrapRef]);
+}
+
 /* pinned-beat reader, same contract as the other case studies' */
 function useScrollBeat(ref, beats) {
   const [beat, setBeat] = useState(prefersReducedMotion() ? beats - 1 : 0);
@@ -421,12 +596,15 @@ const CHAPTERS = [PROBLEM, DISCOVERY, SCOPE_CH, SOURCES_CH, ANSWER_CH, WORKSPACE
 
 export default function GenAICaseStudy({ onPrev, onNext, idx, total }) {
   const wrap = useRef(null);
+  const fx = useRef(null);
   const secs = useRef([]);
   const at = (i) => (el) => { secs.current[i] = el; };
   useReveal(wrap);
+  useCosmos(fx, wrap);
 
   return (
-    <div className="inv-wrap" ref={wrap}>
+    <div className="inv-wrap gax-wrap" ref={wrap}>
+      <canvas className="gax-fx" ref={fx} aria-hidden="true" />
       <CaseRoute refs={secs} labels={GENAI_ROUTE} />
       <div className="inv-hero">
         <p className="eyebrow">Polarin · GenAI Initiative</p>
