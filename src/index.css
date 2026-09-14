@@ -8804,23 +8804,6 @@ body.static .scene { height: auto !important; }
 .gax-src-c b { display: block; font-family: var(--disp); font-weight: 700; font-size: var(--t-body-sm); color: var(--text); }
 .gax-src-c p { margin: 6px 0 0; font-family: var(--mono); font-size: var(--t-body-xs); line-height: 1.45; color: #3696B1; }
 
-/* the policy barrier: what gets through, and what does not */
-/* capped so four pills wrap 2+2 rather than a lopsided 3+1 */
-.gax-gate { display: flex; flex-wrap: wrap; gap: 11px; justify-content: center; max-width: 720px; margin: 0 auto; }
-.gax-gate-c { display: inline-flex; align-items: center; gap: 12px; font-family: var(--disp); font-weight: 600; font-size: var(--t-body-sm); color: var(--text); border: 1px solid var(--line2); border-radius: 999px; padding: 10px 14px 10px 20px; }
-.gax-gate-c i { font-style: normal; font-family: var(--mono); font-size: var(--t-micro); letter-spacing: 0.12em; text-transform: uppercase; border-radius: 999px; padding: 4px 10px; }
-.gax-gate-c.blocked { border-color: rgba(255, 107, 138, 0.35); }
-.gax-gate-c.blocked i { color: var(--rose); background: rgba(255, 107, 138, 0.12); }
-.gax-gate-c.allowed i { color: var(--up); background: rgba(125, 249, 166, 0.1); }
-.gax-gate-c.escalate i { color: #E8A33D; background: rgba(232, 163, 61, 0.12); }
-
-/* the pipeline, with the decision made at each step */
-.gax-pipe2 { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; }
-.gax-pipe-c { border: 1px solid var(--line2); border-radius: var(--r-md); background: var(--ink2); padding: 16px 18px; text-align: left; }
-.gax-pipe-c i { font-style: normal; font-family: var(--mono); font-size: var(--t-micro); letter-spacing: 0.18em; color: #3696B1; }
-.gax-pipe-c b { display: block; margin-top: 8px; font-family: var(--disp); font-weight: 700; font-size: var(--t-body-sm); color: var(--text); }
-.gax-pipe-c p { margin: 5px 0 0; font-size: var(--t-body-xs); line-height: 1.45; color: var(--mute); }
-
 /* question shape -> block structure */
 .gax-tpl { display: flex; flex-direction: column; gap: 10px; }
 .gax-tpl-r { display: grid; grid-template-columns: 1fr 28px 1fr; align-items: center; gap: 10px; border: 1px solid var(--line2); border-radius: var(--r-md); background: var(--ink2); padding: 14px 20px; }
@@ -8828,30 +8811,165 @@ body.static .scene { height: auto !important; }
 .gax-tpl-r i { font-style: normal; text-align: center; color: var(--dim); }
 .gax-tpl-r b { font-family: var(--disp); font-weight: 700; font-size: var(--t-body-sm); color: var(--text); }
 
-/* one rendered answer, as the contract produces it */
-.gax-answer { border: 1px solid var(--line2); border-radius: var(--r-lg); background: var(--ink2); padding: 22px 26px; text-align: left; }
-.gax-answer-h { display: flex; justify-content: space-between; align-items: center; font-family: var(--mono); font-size: var(--t-micro); letter-spacing: 0.16em; text-transform: uppercase; color: var(--dim); }
-.gax-answer-h i { font-style: normal; color: var(--rose); }
-.gax-answer > b { display: block; margin: 14px 0 16px; font-family: var(--disp); font-weight: 700; font-size: var(--t-card); color: var(--text); }
-.gax-answer-b { display: grid; grid-template-columns: 210px 1fr; gap: 24px; align-items: center; }
-.gax-stat strong { display: block; font-family: var(--disp); font-weight: 800; font-size: var(--t-stat); letter-spacing: -0.03em; color: var(--rose); }
-.gax-stat span { display: block; margin-top: 4px; font-family: var(--mono); font-size: var(--t-body-xs); color: var(--dim); }
-.gax-answer-b p { margin: 0; font-size: var(--t-body-sm); line-height: 1.5; color: var(--mute); }
-.gax-answer-a { margin-top: 18px; display: flex; justify-content: space-between; align-items: center; border: 1px solid var(--line2); border-radius: var(--r-md); padding: 13px 18px; font-size: var(--t-body-sm); color: var(--text); }
-.gax-answer-a i { font-style: normal; color: var(--dim); }
-.gax-answer-s { margin: 14px 0 0; font-family: var(--mono); font-size: var(--t-body-xs); color: var(--dim); }
+/* a shared 3D tilt for the paper-like props, so an artifact reads as an
+   object on a desk rather than another box in the layout. dropped whole
+   under reduced motion, where a skewed plane is just harder to read. */
+.gax-tilt { transform: perspective(1300px) rotateY(-9deg) rotateX(4deg); transform-style: preserve-3d; }
+@media (prefers-reduced-motion: reduce) { .gax-tilt { transform: none; } }
 
-/* the four states a static mockup never covers */
-.gax-states { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
-.gax-state-c { border: 1px solid var(--line2); border-radius: var(--r-md); background: var(--ink2); padding: 16px 18px; text-align: left; }
-.gax-state-c b { display: block; font-family: var(--disp); font-weight: 700; font-size: var(--t-body-sm); color: var(--text); }
-.gax-state-c p { margin: 6px 0 0; font-size: var(--t-body-xs); line-height: 1.45; color: var(--mute); }
+/* the three questions, as cards on a desk */
+.gax-cloud { position: relative; height: 340px; max-width: 640px; margin: 0 auto; perspective: 1200px; }
+.gax-qcard { position: absolute; left: 0; right: 0; padding: 20px 24px; border: 1px solid var(--line2); border-radius: var(--r-md); background: var(--ink2); box-shadow: 0 20px 50px rgba(0, 0, 0, 0.35); text-align: left; font-family: var(--disp); font-weight: 700; font-size: var(--t-card); color: var(--text); }
+.gax-qcard small { display: block; margin-bottom: 9px; font-family: var(--mono); font-weight: 400; font-size: var(--t-micro); letter-spacing: 0.16em; text-transform: uppercase; color: var(--dim); }
+.gax-qcard:nth-child(1) { top: 0; right: 40px; left: 10px; transform: rotateY(-10deg) rotateZ(-4deg); }
+.gax-qcard:nth-child(2) { top: 116px; left: 52px; right: 0; transform: translateZ(40px) rotateY(-7deg) rotateZ(3deg); border-color: rgba(54, 150, 177, 0.4); }
+.gax-qcard:nth-child(3) { top: 232px; right: 22px; left: 0; transform: rotateY(-10deg) rotateZ(-2deg); }
+@media (prefers-reduced-motion: reduce) {
+  .gax-cloud { height: auto; display: flex; flex-direction: column; gap: 12px; }
+  .gax-qcard { position: static; transform: none !important; }
+}
+
+/* the journey before, against the journey intended */
+.gax-ba { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; }
+.gax-ba-p { border: 1px solid var(--line2); border-radius: var(--r-lg); background: var(--ink2); padding: 24px; text-align: left; display: flex; flex-direction: column; }
+.gax-ba-p.on { border-color: rgba(125, 249, 166, 0.28); }
+.gax-ba-l { font-family: var(--mono); font-size: var(--t-micro); letter-spacing: 0.16em; text-transform: uppercase; color: var(--dim); }
+.gax-ba-p > p { margin: auto 0 0; padding-top: 18px; font-size: var(--t-body-sm); font-weight: 500; }
+/* the five steps the customer used to walk, tipped like scattered notes */
+.gax-route { display: flex; flex-wrap: wrap; gap: 8px; margin: 20px 0; }
+.gax-route span { border: 1px solid var(--line); border-radius: var(--r-sm); background: var(--raise2); padding: 9px 12px; font-size: var(--t-body-xs); color: var(--mute); }
+.gax-route span:nth-child(odd) { transform: rotate(-1.5deg); }
+.gax-route span:nth-child(even) { transform: rotate(1.5deg); }
+.gax-ba-q { margin: 22px 0 14px; font-family: var(--disp); font-weight: 700; font-size: var(--t-card); color: var(--text); }
+.gax-ba-r { font-size: var(--t-body-sm); color: var(--mute); }
+
+/* the discovery sheet */
+.gax-sheet-h { display: flex; justify-content: space-between; align-items: center; font-family: var(--mono); font-size: var(--t-micro); letter-spacing: 0.16em; text-transform: uppercase; color: var(--dim); margin-bottom: 16px; }
+.gax-sheet-h i { font-style: normal; color: var(--rose); }
+.gax-takeaway { margin-top: 18px; border: 1px solid rgba(255, 107, 138, 0.22); border-radius: var(--r-sm); background: rgba(255, 107, 138, 0.05); padding: 12px 15px; font-size: var(--t-body-xs); color: #F6A7B3; }
+
+/* one number, said plainly, with the caveat that makes it honest */
+.gax-fact { display: grid; grid-template-columns: auto 1fr; gap: 26px; align-items: center; border: 1px solid var(--line2); border-radius: var(--r-lg); background: var(--ink2); padding: 26px 30px; text-align: left; }
+.gax-fact b { font-family: var(--disp); font-weight: 800; font-size: var(--t-stat); letter-spacing: -0.03em; color: var(--text); }
+.gax-fact p { margin: 0; font-size: var(--t-body-sm); line-height: 1.55; color: var(--mute); }
+.gax-fact em { font-style: normal; }
+
+/* two jobs, one assistant */
+.gax-scope { display: grid; gap: 14px; }
+.gax-scope-c { display: flex; gap: 20px; align-items: center; border: 1px solid var(--line2); border-radius: var(--r-lg); background: var(--ink2); padding: 22px 26px; text-align: left; }
+.gax-scope-c i { flex: none; width: 44px; height: 44px; display: grid; place-items: center; border-radius: var(--r-md); font-style: normal; font-size: 22px; border: 1px solid rgba(54, 150, 177, 0.4); background: rgba(54, 150, 177, 0.08); color: #4FB4D0; }
+.gax-scope-c:nth-child(2) i { border-color: rgba(232, 163, 61, 0.4); background: rgba(232, 163, 61, 0.08); color: #E8A33D; }
+.gax-scope-c b { display: block; font-family: var(--disp); font-weight: 700; font-size: var(--t-card); color: var(--text); }
+.gax-scope-c p { margin: 6px 0 0; font-size: var(--t-body-sm); color: var(--mute); }
+.gax-scope-note { display: flex; justify-content: center; align-items: center; gap: 14px; margin-top: 16px; font-family: var(--mono); font-size: var(--t-micro); letter-spacing: 0.16em; text-transform: uppercase; color: var(--dim); }
+.gax-scope-note i { font-style: normal; color: #3696B1; }
+
+/* the confirmation gate: it may recommend, the customer decides */
+.gax-confirm { border: 1px solid var(--line2); border-radius: var(--r-lg); background: var(--ink2); padding: 26px 30px; text-align: left; max-width: 620px; margin: 0 auto; }
+.gax-confirm-h { display: flex; justify-content: space-between; align-items: center; gap: 16px; font-family: var(--mono); font-size: var(--t-micro); letter-spacing: 0.14em; text-transform: uppercase; color: var(--dim); }
+.gax-confirm-h i { font-style: normal; color: var(--rose); }
+.gax-confirm-q { margin: 22px 0; font-family: var(--disp); font-weight: 700; font-size: var(--t-card); line-height: 1.35; color: var(--text); }
+.gax-confirm-e { margin: 0; padding-top: 18px; border-top: 1px solid var(--line); font-size: var(--t-body-sm); line-height: 1.55; color: var(--mute); }
+.gax-confirm-b { margin-top: 20px; display: flex; justify-content: space-between; align-items: center; border: 1px solid rgba(255, 107, 138, 0.45); border-radius: var(--r-md); background: rgba(255, 107, 138, 0.08); padding: 14px 18px; font-size: var(--t-body-sm); color: #FFC0C9; }
+.gax-confirm-b i { font-style: normal; }
+
+/* the answer as four stacked blocks - each offset, so the order reads as
+   a descent rather than a list */
+.gax-stack { display: flex; flex-direction: column; gap: 12px; max-width: 620px; margin: 0 auto; }
+.gax-sblock { border: 1px solid var(--line2); border-radius: var(--r-md); background: var(--ink2); padding: 18px 22px; text-align: left; }
+.gax-sblock:nth-child(1) { margin-right: 44px; }
+.gax-sblock:nth-child(2) { margin-left: 16px; margin-right: 26px; }
+.gax-sblock:nth-child(3) { margin-left: 32px; margin-right: 10px; }
+.gax-sblock:nth-child(4) { margin-left: 48px; }
+.gax-sblock small { display: block; margin-bottom: 10px; font-family: var(--mono); font-size: var(--t-micro); letter-spacing: 0.14em; text-transform: uppercase; color: var(--dim); }
+.gax-sblock b { font-family: var(--disp); font-weight: 700; font-size: var(--t-card); color: var(--text); }
+.gax-sblock.act { border-color: rgba(255, 107, 138, 0.38); }
+.gax-sblock.act b { color: #FF9BAD; }
+.gax-sb-metric { display: flex; gap: 18px; align-items: baseline; flex-wrap: wrap; }
+.gax-sb-metric strong { font-family: var(--disp); font-weight: 800; font-size: var(--t-stat); letter-spacing: -0.03em; color: var(--rose); }
+.gax-sb-metric span { font-family: var(--mono); font-size: var(--t-body-xs); color: var(--dim); }
+@media (prefers-reduced-motion: reduce) { .gax-sblock { margin-left: 0 !important; margin-right: 0 !important; } }
+
+/* the workspace: history, the answer, and the context it used */
+.gax-ws-wrap { max-width: 720px; margin: 0 auto; perspective: 1300px; }
+.gax-ws { border: 1px solid var(--line2); border-radius: var(--r-lg); background: var(--ink2); overflow: hidden; text-align: left; transform: rotateY(-8deg) rotateX(4deg); }
+@media (prefers-reduced-motion: reduce) { .gax-ws { transform: none; } }
+.gax-ws-top { height: 44px; display: flex; align-items: center; justify-content: space-between; padding: 0 18px; border-bottom: 1px solid var(--line); font-family: var(--mono); font-size: var(--t-micro); color: var(--dim); }
+.gax-ws-top b { display: inline-flex; align-items: center; gap: 6px; font-family: var(--disp); font-size: var(--t-body-sm); letter-spacing: -0.04em; color: var(--text); }
+.gax-ws-top b i { width: 6px; height: 6px; border-radius: 50%; background: var(--rose); }
+.gax-ws-body { display: grid; grid-template-columns: 132px 1fr 122px; min-height: 280px; }
+.gax-ws-rail { padding: 16px 12px; border-right: 1px solid var(--line); font-size: var(--t-micro); color: var(--dim); }
+.gax-ws-rail b { display: block; margin-bottom: 14px; font-weight: 400; color: #FF9BAD; }
+.gax-ws-rail p { margin: 0 0 9px; }
+.gax-ws-main { padding: 18px 16px; }
+.gax-ws-q { display: inline-block; border-radius: var(--r-sm); background: var(--raise2); padding: 8px 11px; font-size: var(--t-micro); color: var(--mute); }
+.gax-ws-main h4 { margin: 14px 0; font-family: var(--disp); font-weight: 700; font-size: var(--t-body); line-height: 1.35; color: var(--text); }
+.gax-ws-main h4 em { font-style: normal; color: var(--rose); }
+.gax-ws-kpis { display: grid; grid-template-columns: repeat(3, 1fr); gap: 7px; }
+.gax-ws-kpis div { border: 1px solid var(--line); border-radius: var(--r-sm); padding: 10px 8px; font-family: var(--disp); font-weight: 700; font-size: var(--t-body-sm); color: var(--text); }
+.gax-ws-kpis small { display: block; margin-bottom: 6px; font-family: var(--mono); font-weight: 400; font-size: 9px; letter-spacing: 0.06em; text-transform: uppercase; color: var(--dim); }
+.gax-ws-kpis .att { border-color: rgba(255, 107, 138, 0.35); background: rgba(255, 107, 138, 0.06); color: #FF9BAD; }
+.gax-ws-bars { display: grid; gap: 9px; margin-top: 16px; }
+.gax-ws-bars div { height: 3px; border-radius: 2px; background: var(--line2); }
+.gax-ws-bars i { display: block; height: 3px; width: var(--w); border-radius: 2px; background: #3696B1; }
+.gax-ws-bars i.bad { background: var(--rose); }
+.gax-ws-ctx { border-left: 1px solid var(--line); padding: 16px 12px; font-size: var(--t-micro); color: var(--mute); }
+.gax-ws-ctx b { display: block; margin-bottom: 12px; font-weight: 400; color: var(--text); }
+.gax-ws-ctx p { margin: 0 0 11px; line-height: 1.45; }
+.gax-ws-ctx span { display: block; color: var(--dim); }
+.gax-ws-labels { display: flex; justify-content: space-between; gap: 14px; margin-top: 26px; font-family: var(--mono); font-size: var(--t-micro); letter-spacing: 0.14em; text-transform: uppercase; color: var(--dim); }
+
+/* the evidence list - a row states the verdict, opening it gives the reason */
+.gax-ports { text-align: left; max-width: 680px; margin: 0 auto; }
+.gax-port { border-bottom: 1px solid var(--line); }
+.gax-port > button { width: 100%; display: grid; grid-template-columns: 1.1fr 0.85fr 1fr 62px 18px; align-items: center; gap: 14px; background: none; border: 0; padding: 14px 6px; text-align: left; cursor: pointer; transition: background 0.2s; }
+.gax-port > button:hover { background: rgba(255, 255, 255, 0.03); }
+.gax-port b { font-family: var(--disp); font-weight: 700; font-size: var(--t-body-sm); color: var(--text); }
+.gax-port-s { font-family: var(--mono); font-size: var(--t-body-xs); }
+.gax-port.bad .gax-port-s { color: var(--rose); }
+.gax-port.watch .gax-port-s { color: #E8A33D; }
+.gax-port.good .gax-port-s { color: var(--up); }
+.gax-port-bar { height: 4px; border-radius: 2px; background: var(--line2); overflow: hidden; }
+.gax-port-bar i { display: block; height: 100%; width: var(--w); background: #3696B1; }
+.gax-port.bad .gax-port-bar i { background: var(--rose); }
+.gax-port.watch .gax-port-bar i { background: #E8A33D; }
+.gax-port.good .gax-port-bar i { background: var(--up); }
+.gax-port-v { font-family: var(--mono); font-size: var(--t-body-sm); color: var(--text); text-align: right; }
+.gax-port-x { font-style: normal; text-align: right; color: var(--dim); }
+.gax-port > p { margin: 0; padding: 0 6px 16px; font-size: var(--t-body-xs); line-height: 1.55; color: var(--mute); }
+
+/* the interface states, and the streaming cue above them */
+.gax-stream { display: flex; justify-content: center; gap: 6px; margin-bottom: 20px; }
+.gax-stream i { display: block; height: 3px; width: 32px; border-radius: 2px; background: #3696B1; animation: gaxStream 2s ease-in-out infinite; }
+.gax-stream i:nth-child(2) { animation-delay: 0.2s; }
+.gax-stream i:nth-child(3) { animation-delay: 0.4s; }
+@keyframes gaxStream { 0%, 100% { opacity: 0.2; transform: scaleX(0.6); } 50% { opacity: 1; transform: scaleX(1); } }
+.gax-states { max-width: 620px; margin: 0 auto; text-align: left; }
+.gax-state-r { display: flex; justify-content: space-between; align-items: center; gap: 20px; border-top: 1px solid var(--line); padding: 16px 4px; }
+.gax-state-r b { font-family: var(--disp); font-weight: 700; font-size: var(--t-body-sm); color: var(--text); }
+.gax-state-r span { font-family: var(--mono); font-size: var(--t-body-xs); color: #3696B1; }
+
+/* the acceptance criteria, written before the POC ran */
+.gax-crit { max-width: 680px; margin: 0 auto; text-align: left; border-top: 1px solid var(--line); }
+.gax-crit-r { display: flex; justify-content: space-between; align-items: center; gap: 26px; border-bottom: 1px solid var(--line); padding: 18px 4px; }
+.gax-crit-r strong { font-family: var(--disp); font-weight: 700; font-size: var(--t-card); color: var(--text); }
+.gax-crit-r span { font-family: var(--mono); font-size: var(--t-body-xs); color: var(--dim); text-align: right; }
 
 /* prefersReducedMotion stacks every beat rather than parking on the last */
 .gax-static { display: flex; flex-direction: column; align-items: center; text-align: center; gap: var(--sp-block); margin-top: var(--sp-block); }
 @media (max-width: 860px) {
-  .gax-grid3, .gax-vs, .gax-src, .gax-pipe2, .gax-states { grid-template-columns: 1fr; }
-  .gax-answer-b, .gax-row { grid-template-columns: 1fr; gap: 10px; }
+  .gax-grid3, .gax-vs, .gax-src, .gax-ba { grid-template-columns: 1fr; }
+  .gax-row, .gax-fact { grid-template-columns: 1fr; gap: 10px; }
   .gax-tpl-r { grid-template-columns: 1fr; gap: 4px; }
   .gax-tpl-r span, .gax-tpl-r i { text-align: left; }
+  .gax-tilt, .gax-ws { transform: none; }
+  .gax-cloud { height: auto; display: flex; flex-direction: column; gap: 12px; }
+  .gax-qcard { position: static; transform: none !important; }
+  .gax-sblock { margin-left: 0 !important; margin-right: 0 !important; }
+  .gax-ws-body { grid-template-columns: 1fr; }
+  .gax-ws-rail, .gax-ws-ctx { display: none; }
+  .gax-port > button { grid-template-columns: 1fr auto; gap: 6px 12px; }
+  .gax-port-bar { display: none; }
+  .gax-crit-r { flex-direction: column; align-items: flex-start; gap: 6px; }
+  .gax-crit-r span { text-align: left; }
 }

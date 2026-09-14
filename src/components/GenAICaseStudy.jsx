@@ -1,40 +1,48 @@
 import CaseRoute from '../CaseRoute';
 import { useEffect, useRef, useState } from 'react';
 
-/* ---- the material ------------------------------------------------------
-   Polarin Bot: a customer-facing assistant for people who manage business
-   network connections. What follows is the product definition work - the
-   decisions that had to be made before an AI team could build anything. */
+/* ---- Polarin Bot ------------------------------------------------------
+   An assistant for people who manage business network connections. The
+   work here is product definition: what a good answer is, where the data
+   comes from, what the thing may never do, and how you would know it
+   worked - settled before a specialist AI team built the POC.
 
-/* what the initiative had to be worth. no outcome numbers are claimed here
-   because the trial has not reported any - these are the objectives it was
-   scoped against, which is a different and more honest thing. */
-const BOT_OBJECTIVES = [
-  { t: 'Answer without a round-trip', p: 'the customer stops waiting on support for something the data already knows' },
-  { t: 'Hand support evidence, not a complaint', p: 'service, event times and readings travel with the request' },
-  { t: 'One answer format the team reuses', p: 'a block library - not a new screen for every question' },
+   Every beat below leads with the artifact. The prose is caption-length
+   on purpose; the prop is the argument. */
+
+/* the three questions the product exists to answer, in customers' words */
+const Q_CLOUD = [
+  { k: 'Performance', q: 'How is my network doing?' },
+  { k: 'Support', q: 'What is happening with my ticket?' },
+  { k: 'Visibility', q: 'Can I see everything in one view?' },
 ];
 
-/* the destination, defined before any feature list */
-const BOT_SHAPE = [
-  { n: '01', k: 'Understand', t: 'What needs attention?', p: 'a conclusion, already interpreted' },
-  { n: '02', k: 'Trust', t: 'Why should I believe it?', p: 'evidence, targets and sources' },
-  { n: '03', k: 'Act', t: 'What can I do next?', p: 'a relevant action, ready to review' },
-];
+/* the journey before: five steps, and the customer joins them up */
+const OLD_WAY = ['Open a service', 'Find the metrics', 'Check the dates', 'Compare the charts', 'Ask support'];
 
-/* the discovery artifact: one questionnaire row per real customer question.
-   teams filled these in, and the answers became requirements. */
-const BOT_ASK = '"What is happening with my ticket?"';
-const BOT_ROWS = [
-  { k: 'What they need', v: 'Progress and reassurance.' },
-  { k: 'Good answer', v: 'Stage · last action · owner · expected resolution.' },
-  { k: 'Source owner', v: 'Network operations / support.' },
-  { k: 'If vague', v: 'Resolve the ticket or the affected service.' },
-];
+/* the discovery artifact - one row per real question, filled in by the
+   teams who field them */
+const SHEET = {
+  q: 'What is happening with my ticket?',
+  rows: [
+    { k: 'Underlying need', v: 'Clarity on progress.' },
+    { k: 'Useful answer', v: 'Status · last action · owner · expected resolution.' },
+    { k: 'Source owner', v: 'Network operations / support.' },
+    { k: 'If ambiguous', v: 'Ask for the ticket or the affected service.' },
+  ],
+  takeaway: 'Define a good answer before defining a feature.',
+};
 
-/* six permitted sources - each one settles a different question, and each
-   one had a named owner before engineering started. */
-const BOT_SOURCES = [
+/* scope: one assistant, two journeys, and a conversation can cross between */
+const SCOPE = [
+  { i: '↗', t: 'Understand performance', p: 'What is healthy? What needs attention?' },
+  { i: '↳', t: 'Get support', p: 'What is wrong? What happens next?' },
+];
+const EXCLUDE = ['No billing changes', 'No network changes', 'No pricing promises'];
+
+/* six permitted sources - each settles a different question, each had a
+   named owner before engineering started */
+const SOURCES = [
   { t: 'Service inventory', p: 'which service is this?' },
   { t: 'Metrics & reports', p: 'what actually happened?' },
   { t: 'Service targets', p: 'was it inside the promise?' },
@@ -43,66 +51,55 @@ const BOT_SOURCES = [
   { t: 'Knowledge base', p: 'can the customer safely resolve it?' },
 ];
 
-/* the boundary is the product decision, not a disclaimer. an assistant that
-   can touch the network is a different risk class entirely. */
-const BOT_GATE = [
-  { t: 'Change bandwidth', s: 'blocked' },
-  { t: 'Promise a credit', s: 'blocked' },
-  { t: 'Read my metrics', s: 'allowed' },
-  { t: 'Ask for a person', s: 'escalate' },
+/* the answer, as four stacked blocks - the order is the product */
+const STACK = [
+  { k: 'What should I know?', v: 'One port needs your attention.' },
+  { k: 'What is the evidence?', v: '99.21%', sub: 'availability · target 99.70%', metric: true },
+  { k: 'What does that mean?', v: 'The connection fell below its target.' },
+  { k: 'What do I do next?', v: 'Review a ticket with evidence attached →', act: true },
 ];
 
-/* the same facts, told at three depths */
-const BOT_TONES = [
-  { k: 'Business user', p: 'the outcome in plain words, no jargon' },
-  { k: 'Network engineer', p: '28 connection drops. 99.21% availability against a 99.70% target.' },
-  { k: 'During an outage', p: 'shorter - current status first, detail on request' },
-];
-
-/* what happens between the question and the answer */
-const BOT_PIPE = [
-  { n: '01', t: 'Question', p: 'what is really being asked' },
-  { n: '02', t: 'Scope', p: 'which services, which period' },
-  { n: '03', t: 'Evidence', p: 'permitted sources only' },
-  { n: '04', t: 'Draft', p: 'conclusion first, then the reasoning' },
-  { n: '05', t: 'Layout', p: 'pick a saved block structure' },
-  { n: '06', t: 'Output', p: 'render it with a next step' },
-];
-
-/* the job of the answer decides the shape of the answer */
-const BOT_TEMPLATES = [
+/* question shape decides block structure */
+const TEMPLATES = [
   { q: 'Compare services', v: 'Comparison table' },
   { q: 'Change over time', v: 'Trend card' },
   { q: 'Ticket status', v: 'Ticket card' },
   { q: 'Share an analysis', v: 'Report card' },
 ];
 
-/* the fixed order every response is assembled in */
-const BOT_CONTRACT = ['Conclusion', 'Evidence', 'Interpretation', 'Action', 'Sources'];
-
-/* when a next step is useful, and when it is pushy */
-const BOT_NEXT = [
-  { k: 'Suggest', p: 'the data points somewhere, but nothing is broken' },
-  { k: 'Show an action', p: 'a detected problem has a fix or a ticket behind it' },
-  { k: 'Offer an upgrade', p: 'only when the constraint is genuinely capacity', hard: true },
+/* the six example ports, three shown - click a row for the meaning */
+const PORTS = [
+  { t: 'Bengaluru DC1', s: 'Below target', v: '99.21%', tone: 'bad', w: 65,
+    d: '28 of the 31 connection drops occurred here, clustered in two windows. Next step: review a support ticket with these events attached.' },
+  { t: 'Mumbai DC2', s: 'Watch closely', v: '99.72%', tone: 'watch', w: 85,
+    d: 'Above the 99.70% target, but only by a small margin, and trending down since June. Keep watching this service.' },
+  { t: 'Chennai DC1', s: 'Healthy', v: '99.99%', tone: 'good', w: 98,
+    d: 'Above target with room to spare. No availability action is suggested for this service.' },
 ];
 
-/* the states between the screens - the part a static mockup never covers */
-const BOT_STATES = [
-  { k: 'Gathering data', p: 'say what it is fetching' },
-  { k: 'Missing data', p: 'name what is missing, not a generic error' },
-  { k: 'Source unavailable', p: 'answer with what is there, and say what is not' },
-  { k: 'Reopened answer', p: 'restore the saved blocks, show the read timestamp' },
+/* what the interface does between the screens */
+const STATES = [
+  { t: 'Answer appears', s: 'progressive response' },
+  { t: 'Evidence opens', s: 'in-place detail' },
+  { t: 'Data is missing', s: 'named, not a generic error' },
+  { t: 'Customer confirms', s: 'a definite next step' },
 ];
 
-/* how it was tested - the third row is the one that matters */
-const BOT_TESTS = [
-  { k: 'Everyday', p: 'performance answers, tickets, reports, follow-ups' },
-  { k: 'Edge', p: 'vague requests, partial data, conflicting signals' },
-  { k: 'Adversarial', p: 'hidden instructions, unsafe actions, data-access probes', hard: true },
+/* the three judgment calls, each about trust */
+const DECISIONS = [
+  { n: '01', t: 'A workspace with room to think', p: 'comparisons, history and context needed a full page, not a chat bubble' },
+  { n: '02', t: 'No evidence, no invented answer', p: 'if the data cannot be retrieved, say so and offer a route forward' },
+  { n: '03', t: 'A handoff without starting over', p: 'the person taking over receives the conversation and the diagnostics' },
 ];
 
-const GENAI_ROUTE = ['Define', 'Discover', 'Data', 'Guardrails', 'Behaviour', 'Response', 'Next step', 'Evaluate'];
+/* acceptance criteria - how the POC would be judged, written before it ran */
+const CRITERIA = [
+  { q: 'Can every number be trusted?', s: 'traceable to its source' },
+  { q: 'Is the ticket ready for support?', s: 'essential evidence included' },
+  { q: 'Does the handoff preserve the story?', s: 'no repeated explanation' },
+];
+
+const GENAI_ROUTE = ['Problem', 'Discovery', 'Scope', 'Sources', 'The answer', 'Workspace', 'Interface', 'Proof'];
 
 /* reveal-on-scroll for [data-rv] children, scoped to the overlay panel */
 function useReveal(ref) {
@@ -161,8 +158,75 @@ function useScrollBeat(ref, beats) {
   return beat;
 }
 
-/* one chapter of the story: a run of pinned beats, one idea per screen.
-   under reduced motion the whole run stacks and nothing is hidden. */
+/* ---- the interactive props -------------------------------------------- */
+
+/* the evidence list: a row states the verdict, opening it gives the reason.
+   the one genuinely explorable thing in the study - the same gesture the
+   real answer offers a customer. */
+function Ports() {
+  const [open, setOpen] = useState(0);
+  return (
+    <div className="gax-ports">
+      {PORTS.map((p, i) => (
+        <div className={`gax-port ${p.tone}${open === i ? ' open' : ''}`} key={p.t}>
+          <button type="button" aria-expanded={open === i} onClick={() => setOpen(open === i ? -1 : i)}>
+            <b>{p.t}</b>
+            <span className="gax-port-s">{p.s}</span>
+            <span className="gax-port-bar"><i style={{ '--w': `${p.w}%` }} /></span>
+            <span className="gax-port-v">{p.v}</span>
+            <i className="gax-port-x" aria-hidden="true">{open === i ? '−' : '+'}</i>
+          </button>
+          {open === i && <p>{p.d}</p>}
+        </div>
+      ))}
+    </div>
+  );
+}
+
+/* the workspace: history on the left, the answer in the middle, the
+   context it used on the right. the argument is the three columns. */
+function Workspace() {
+  return (
+    <div className="gax-ws-wrap">
+      <div className="gax-ws">
+        <div className="gax-ws-top"><b>polarin<i /></b><span>AI Assistant</span></div>
+        <div className="gax-ws-body">
+          <div className="gax-ws-rail">
+            <b>＋ New conversation</b>
+            <p>Monthly performance</p>
+            <p>Bengaluru port issue</p>
+            <p>Availability summary</p>
+            <p>Saved reports</p>
+          </div>
+          <div className="gax-ws-main">
+            <span className="gax-ws-q">How did my ports perform last month?</span>
+            <h4>Five ports met their thresholds.<br /><em>One needs your attention.</em></h4>
+            <div className="gax-ws-kpis">
+              <div><small>Availability</small>99.94%</div>
+              <div><small>Connection drops</small>31</div>
+              <div className="att"><small>Needs attention</small>1 of 6</div>
+            </div>
+            <div className="gax-ws-bars">
+              <div><i style={{ '--w': '65%' }} className="bad" /></div>
+              <div><i style={{ '--w': '85%' }} /></div>
+              <div><i style={{ '--w': '98%' }} /></div>
+            </div>
+          </div>
+          <div className="gax-ws-ctx">
+            <b>In this conversation</b>
+            <p><span>Services</span>6 live ports</p>
+            <p><span>Period</span>Last 30 days</p>
+            <p><span>Sources</span>Metrics · Reports · Alerts</p>
+          </div>
+        </div>
+      </div>
+      <div className="gax-ws-labels"><span>01 / History</span><span>02 / Answer</span><span>03 / Context</span></div>
+    </div>
+  );
+}
+
+/* one chapter: a run of pinned beats, one idea per screen. under reduced
+   motion the whole run stacks and nothing is hidden. */
 function Chapter({ beats }) {
   const ref = useRef(null);
   const beat = useScrollBeat(ref, beats.length);
@@ -176,217 +240,184 @@ function Chapter({ beats }) {
   );
 }
 
-/* ---- the eight chapters ------------------------------------------------ */
+/* ---- the eight chapters ----------------------------------------------- */
 
-const DEFINE = [
-  <div className="gax-msg" key="ask">
-    <span className="gax-eyebrow">A real message, on a real Tuesday</span>
-    <p className="gax-quote">&quot;The Bengaluru one is slow again.&quot;</p>
+const PROBLEM = [
+  <div className="gax-wide" key="cloud">
+    <span className="gax-eyebrow">What customers actually ask</span>
+    <div className="gax-cloud">
+      {Q_CLOUD.map((x) => (
+        <div className="gax-qcard" key={x.k}><small>{x.k}</small>{x.q}</div>
+      ))}
+    </div>
+  </div>,
+  <div className="gax-wide" key="ba">
+    <div className="gax-ba">
+      <div className="gax-ba-p">
+        <span className="gax-ba-l">The existing journey</span>
+        <div className="gax-route">{OLD_WAY.map((x) => <span key={x}>{x}</span>)}</div>
+        <p className="cp-rose">The customer connects the dots.</p>
+      </div>
+      <div className="gax-ba-p on">
+        <span className="gax-ba-l">The intended one</span>
+        <div className="gax-ba-q">&quot;How is my network doing?&quot;</div>
+        <div className="gax-ba-r">An answer. The evidence. A next step.</div>
+        <p className="cp-up">The product connects the dots.</p>
+      </div>
+    </div>
   </div>,
   <h3 className="gax-big" key="gap">
-    Six words from a customer.<br /><em className="cp-rose">Six systems to answer them.</em>
+    The data was there.<br /><em className="cp-rose">The answer wasn&apos;t.</em>
   </h3>,
-  <h3 className="gax-big" key="dest">
-    I defined the destination<br /><em className="cp-signal">before the feature list.</em>
-  </h3>,
-  <div className="gax-wide" key="three">
-    <span className="gax-eyebrow">Ask once. Understand. Trust. Act.</span>
-    <div className="gax-grid3">
-      {BOT_SHAPE.map((x) => (
-        <div className="gax-card" key={x.n}>
-          <span className="gax-n">{x.k}</span>
-          <b>{x.t}</b>
-          <p>{x.p}</p>
-        </div>
-      ))}
-    </div>
-  </div>,
-  <div className="gax-wide" key="obj">
-    <span className="gax-eyebrow">What it had to be worth</span>
-    <div className="gax-grid3">
-      {BOT_OBJECTIVES.map((x) => (
-        <div className="gax-card" key={x.t}>
-          <b>{x.t}</b>
-          <p>{x.p}</p>
-        </div>
-      ))}
-    </div>
-  </div>,
 ];
 
-const DISCOVER = [
-  <h3 className="gax-big" key="words">
-    I asked for the words.<br /><em className="cp-up">Then looked for the need.</em>
-  </h3>,
+const DISCOVERY = [
   <div className="gax-wide" key="sheet">
-    <span className="gax-eyebrow">One questionnaire row per real question</span>
-    <div className="gax-sheet">
-      <p className="gax-sheet-q">{BOT_ASK}</p>
-      {BOT_ROWS.map((r) => (
+    <span className="gax-eyebrow">Discovery artifact · one row per real question</span>
+    <div className="gax-sheet gax-tilt">
+      <div className="gax-sheet-h"><span>Questionnaire</span><i>example entry</i></div>
+      <p className="gax-sheet-q">&quot;{SHEET.q}&quot;</p>
+      {SHEET.rows.map((r) => (
         <div className="gax-row" key={r.k}><span>{r.k}</span><b>{r.v}</b></div>
       ))}
+      <div className="gax-takeaway">{SHEET.takeaway}</div>
     </div>
   </div>,
-  <h3 className="gax-big" key="req">
-    Customer words became<br /><em className="cp-signal">answer requirements</em> - not a<br />list of chatbot topics.
-  </h3>,
-  <h3 className="gax-big" key="perfect">
-    Customers should not need<br /><em className="cp-up">the perfect question.</em>
-  </h3>,
   <div className="gax-wide" key="ambig">
     <span className="gax-eyebrow">When &quot;Bengaluru&quot; matches two services</span>
     <div className="gax-vs">
       <div className="gax-vs-c bad"><span>The usual answer</span><p>&quot;Please clarify.&quot;</p></div>
-      <div className="gax-vs-c good"><span>Ours</span><p>&quot;Two services match. DC1 or DC2?&quot;</p></div>
+      <div className="gax-vs-c good"><span>Ours</span><p>&quot;Two match. DC1 or DC2?&quot;</p></div>
     </div>
-    <p className="gax-note">place, symptom and the word &quot;again&quot; are all read as signals - so a clarification offers the likely choices instead of an empty prompt.</p>
+    <p className="gax-note">place, symptom and the word &quot;again&quot; all read as signals - so a clarification offers the likely choices rather than an empty prompt.</p>
+  </div>,
+  <div className="gax-wide" key="honest">
+    <span className="gax-eyebrow">What the discovery was, and was not</span>
+    <div className="gax-fact">
+      <b>50 rows</b>
+      <p>in the customer-questions workbook - <em className="cp-amber">pre-filled prompts, not 50 interviews.</em> Worth saying, because the difference changes how much the sheet can be leaned on.</p>
+    </div>
   </div>,
 ];
 
-const DATA = [
-  <h3 className="gax-big" key="truth">
-    I mapped each answer<br /><em className="cp-signal">to a source of truth.</em>
-  </h3>,
+const SCOPE_CH = [
+  <div className="gax-wide" key="scope">
+    <span className="gax-eyebrow">One assistant, two jobs</span>
+    <div className="gax-scope gax-tilt">
+      {SCOPE.map((x) => (
+        <div className="gax-scope-c" key={x.t}>
+          <i aria-hidden="true">{x.i}</i>
+          <div><b>{x.t}</b><p>{x.p}</p></div>
+        </div>
+      ))}
+    </div>
+    <div className="gax-scope-note"><span>Performance question</span><i aria-hidden="true">⇄</i><span>Support journey</span></div>
+  </div>,
+  <div className="gax-wide" key="confirm">
+    <span className="gax-eyebrow">It can explain and recommend. It cannot act.</span>
+    <div className="gax-confirm gax-tilt">
+      <div className="gax-confirm-h"><span>Recommended next step</span><i>confirmation required</i></div>
+      <p className="gax-confirm-q">Raise a support ticket<br />for the Bengaluru port?</p>
+      <p className="gax-confirm-e">Service identified. Diagnostics and timestamps attached.</p>
+      <div className="gax-confirm-b">Customer confirms <i aria-hidden="true">→</i></div>
+    </div>
+  </div>,
+  <div className="gax-wide" key="never">
+    <span className="gax-eyebrow">Outside the boundary, permanently</span>
+    <div className="gax-never">
+      {EXCLUDE.map((x) => <span key={x}><i aria-hidden="true">✕</i>{x}</span>)}
+    </div>
+    <p className="gax-note">enforced in the integration layer rather than asked of the model - an assistant that can touch the network is a different risk class entirely.</p>
+  </div>,
+];
+
+const SOURCES_CH = [
   <div className="gax-wide" key="src">
     <span className="gax-eyebrow">Six permitted sources, each settling one question</span>
     <div className="gax-src">
-      {BOT_SOURCES.map((x) => (
+      {SOURCES.map((x) => (
         <div className="gax-src-c" key={x.t}><b>{x.t}</b><p>{x.p}</p></div>
       ))}
     </div>
   </div>,
   <h3 className="gax-big" key="own">
-    Every field had an owner<br />before engineering started.<br />
-    <em className="cp-amber">The gaps showed up on a page,<br />not in a demo.</em>
+    Every field had an owner<br />before the build began.<br />
+    <em className="cp-amber">The gaps surfaced on a page,<br />not in a demo.</em>
   </h3>,
 ];
 
-const GUARDRAILS = [
-  <h3 className="gax-big" key="never">
-    I defined what the bot<br /><em className="cp-rose">must never cross.</em>
-  </h3>,
-  <div className="gax-wide" key="gate">
-    <span className="gax-eyebrow">Four requests, one policy barrier</span>
-    <div className="gax-gate">
-      {BOT_GATE.map((x) => (
-        <span className={`gax-gate-c ${x.s}`} key={x.t}>{x.t}<i>{x.s}</i></span>
-      ))}
-    </div>
-    <p className="gax-note">permitted data only, explicit confirmation for anything that acts, and no financial or network changes - enforced in the integration layer, not in a prompt.</p>
-  </div>,
-  <h3 className="gax-big" key="esc">
-    Ask for a person and it<br /><em className="cp-up">escalates immediately</em> - carrying<br />the conversation and the diagnostics.
-  </h3>,
-];
-
-const BEHAVIOUR = [
-  <h3 className="gax-big" key="good">
-    I defined what<br />&quot;<em className="cp-signal">a good answer</em>&quot; sounds like.
-  </h3>,
-  <div className="gax-wide" key="tone">
-    <span className="gax-eyebrow">Same evidence, three depths</span>
-    <div className="gax-grid3">
-      {BOT_TONES.map((x) => (
-        <div className="gax-card" key={x.k}><b>{x.k}</b><p>{x.p}</p></div>
-      ))}
-    </div>
-    <p className="gax-note">calibrated with worked conversations rather than adjectives - the team could test against them.</p>
-  </div>,
-  <div className="gax-wide" key="pipe">
-    <span className="gax-eyebrow">The journey inside every answer</span>
-    <div className="gax-pipe2">
-      {BOT_PIPE.map((x) => (
-        <div className="gax-pipe-c" key={x.n}><i>{x.n}</i><b>{x.t}</b><p>{x.p}</p></div>
+const ANSWER_CH = [
+  <div className="gax-wide" key="stack">
+    <span className="gax-eyebrow">One answer, four blocks - the order is the product</span>
+    <div className="gax-stack gax-tilt">
+      {STACK.map((x) => (
+        <div className={`gax-sblock${x.act ? ' act' : ''}`} key={x.k}>
+          <small>{x.k}</small>
+          {x.metric
+            ? <div className="gax-sb-metric"><strong>{x.v}</strong><span>{x.sub}</span></div>
+            : <b>{x.v}</b>}
+        </div>
       ))}
     </div>
   </div>,
-];
-
-const RESPONSE = [
-  <h3 className="gax-big" key="layout">
-    I matched the layout<br /><em className="cp-signal">to the job of the answer.</em>
-  </h3>,
   <div className="gax-wide" key="tpl">
-    <span className="gax-eyebrow">A defined block library, not a screen per question</span>
+    <span className="gax-eyebrow">The shape of the question picks the blocks</span>
     <div className="gax-tpl">
-      {BOT_TEMPLATES.map((x) => (
+      {TEMPLATES.map((x) => (
         <div className="gax-tpl-r" key={x.q}><span>{x.q}</span><i aria-hidden="true">→</i><b>{x.v}</b></div>
       ))}
     </div>
-  </div>,
-  <div className="gax-wide" key="contract">
-    <span className="gax-eyebrow">Every block has a reason to exist</span>
-    <ol className="gax-pipe">
-      {BOT_CONTRACT.map((x, i) => <li key={x}><i>{i + 1}</i>{x}</li>)}
-    </ol>
-    <p className="gax-note">one fixed order, so the customer can scan the answer or go deeper without leaving it.</p>
-  </div>,
-  <div className="gax-wide" key="spec">
-    <span className="gax-eyebrow">The contract, rendered</span>
-    <div className="gax-answer">
-      <div className="gax-answer-h">
-        <span>Performance answer</span><i>illustrative data</i>
-      </div>
-      <b>One Bengaluru port needs attention.</b>
-      <div className="gax-answer-b">
-        <div className="gax-stat"><strong>99.21%</strong><span>availability · target 99.70%</span></div>
-        <p>28 of the month&apos;s 31 connection drops occurred here. The events travel with the support request.</p>
-      </div>
-      <div className="gax-answer-a">Review an issue with evidence attached <i aria-hidden="true">→</i></div>
-      <p className="gax-answer-s">Sources: live metrics · port reports · alerts</p>
-    </div>
+    <p className="gax-note">a defined block library, so a new question reuses structure instead of earning a new screen.</p>
   </div>,
 ];
 
-const NEXTSTEP = [
-  <h3 className="gax-big" key="when">
-    I defined when to suggest.<br /><em className="cp-amber">And when to hold back.</em>
-  </h3>,
-  <div className="gax-wide" key="next">
-    <span className="gax-eyebrow">The context chooses the path</span>
-    <div className="gax-grid3">
-      {BOT_NEXT.map((x) => (
-        <div className={`gax-card${x.hard ? ' hard' : ''}`} key={x.k}><b>{x.k}</b><p>{x.p}</p></div>
+const WORKSPACE_CH = [
+  <div className="gax-wide" key="ws"><Workspace /></div>,
+  <div className="gax-wide" key="ports">
+    <span className="gax-eyebrow">Open a service to see the reason behind the number</span>
+    <Ports />
+    <p className="gax-note">3 of 6 example ports. illustrative data from the POC specification.</p>
+  </div>,
+];
+
+const INTERFACE_CH = [
+  <div className="gax-wide" key="states">
+    <span className="gax-eyebrow">The states between the screens</span>
+    <div className="gax-stream" aria-hidden="true"><i /><i /><i /></div>
+    <div className="gax-states">
+      {STATES.map((x) => (
+        <div className="gax-state-r" key={x.t}><b>{x.t}</b><span>{x.s}</span></div>
       ))}
     </div>
-    <p className="gax-note">and one rule that stops the obvious failure: check for an existing ticket before offering to create another.</p>
   </div>,
   <h3 className="gax-big" key="mem">
     &quot;What about Mumbai?&quot;<br /><em className="cp-up">Service, metric and period<br />carry forward.</em>
   </h3>,
-  <div className="gax-wide" key="states">
-    <span className="gax-eyebrow">I specified the states between the screens</span>
-    <div className="gax-states">
-      {BOT_STATES.map((x) => (
-        <div className="gax-state-c" key={x.k}><b>{x.k}</b><p>{x.p}</p></div>
+];
+
+const PROOF = [
+  <div className="gax-wide" key="dec">
+    <span className="gax-eyebrow">The judgment calls were all about trust</span>
+    <div className="gax-grid3">
+      {DECISIONS.map((x) => (
+        <div className="gax-card" key={x.n}><span className="gax-n">{x.n}</span><b>{x.t}</b><p>{x.p}</p></div>
       ))}
     </div>
   </div>,
-];
-
-const EVALUATE = [
-  <h3 className="gax-big" key="fb">
-    Ask for feedback<br /><em className="cp-signal">where the value is felt</em> - after<br />an answer, after a finished task.
-  </h3>,
-  <h3 className="gax-big" key="test">
-    I made &quot;good enough&quot;<br /><em className="cp-up">something we could test.</em>
-  </h3>,
-  <div className="gax-wide" key="tests">
-    <span className="gax-eyebrow">A working set of 30-40 conversations</span>
-    <div className="gax-grid3">
-      {BOT_TESTS.map((x) => (
-        <div className={`gax-card${x.hard ? ' hard' : ''}`} key={x.k}><b>{x.k}</b><p>{x.p}</p></div>
+  <div className="gax-wide" key="crit">
+    <span className="gax-eyebrow">How the POC would be judged - written before it ran</span>
+    <div className="gax-crit">
+      {CRITERIA.map((x) => (
+        <div className="gax-crit-r" key={x.q}><strong>{x.q}</strong><span>{x.s}</span></div>
       ))}
     </div>
-    <p className="gax-note">fixed set, nominated reviewers, traceable runs, and a second test after every change.</p>
   </div>,
   <h3 className="gax-big" key="close">
-    No production launch yet, and<br />no business metrics claimed.<br />
-    <em className="cp-amber">The verdict is still open - and<br />saying so is part of the work.</em>
+    A good demo is a start.<br /><em className="cp-amber">Evidence is the test</em> - and<br />that test has not reported yet.
   </h3>,
 ];
 
-const CHAPTERS = [DEFINE, DISCOVER, DATA, GUARDRAILS, BEHAVIOUR, RESPONSE, NEXTSTEP, EVALUATE];
+const CHAPTERS = [PROBLEM, DISCOVERY, SCOPE_CH, SOURCES_CH, ANSWER_CH, WORKSPACE_CH, INTERFACE_CH, PROOF];
 
 export default function GenAICaseStudy({ onPrev, onNext, idx, total }) {
   const wrap = useRef(null);
@@ -399,12 +430,12 @@ export default function GenAICaseStudy({ onPrev, onNext, idx, total }) {
       <CaseRoute refs={secs} labels={GENAI_ROUTE} />
       <div className="inv-hero">
         <p className="eyebrow">Polarin · GenAI Initiative</p>
-        <h2>I didn&apos;t build the model. I decided what it had to be right about.</h2>
-        <p>A customer-facing assistant for people who manage business network connections - scoped, defined and specified before a specialist AI team wrote any of it.</p>
+        <h2>Less searching. More knowing.</h2>
+        <p>An assistant for people who manage business network connections. The numbers already existed - what was missing was the answer.</p>
         <div className="inv-meta gac-meta">
-          <div><span>My input</span><b>product definition · AI behaviour · response design · frontend spec</b></div>
-          <div><span>Built by</span><b>a specialist AI delivery team</b></div>
-          <div><span>Status</span><b>a trial - verdict still open</b></div>
+          <div><span>Scope</span><b>product definition · AI behaviour · response design · frontend spec</b></div>
+          <div><span>Basis</span><b>a proof-of-concept specification, built with a specialist AI team</b></div>
+          <div><span>Status</span><b>reconstructions and illustrative data - no production result claimed</b></div>
         </div>
       </div>
 

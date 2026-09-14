@@ -582,8 +582,8 @@ export default function CurrentProject() {
                       </circle>
                     </svg>
                   </span>
-                  <h4>Answer the question behind the question</h4>
-                  <div className="tl-cs-row"><span>about</span><p>an assistant that turns &quot;the Bengaluru one is slow again&quot; into a conclusion, the evidence for it, and a next step</p></div>
+                  <h4>Less searching. More knowing.</h4>
+                  <div className="tl-cs-row"><span>about</span><p>an assistant that turns &quot;how is my network doing?&quot; into a conclusion, the evidence behind it, and a next step the customer confirms</p></div>
                   <div className="tl-cs-row"><span>role</span><p>product definition · AI behaviour &amp; guardrails · response design · frontend spec · built by a specialist AI delivery team</p></div>
                   <div className="tl-cs-foot"><span className="tl-cs-impact">feasibility <small>verdict still open</small></span><span className="tl-cs-link">Deep dive →</span></div>
                 </article>
