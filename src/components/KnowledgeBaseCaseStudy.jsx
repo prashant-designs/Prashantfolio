@@ -144,12 +144,17 @@ const KB_PHASES = [
 ];
 
 /* publish is one button; these are the things it sets off. */
+/* the five stages behind the one button. numbered rather than clock-stamped:
+   the stages are real, but how long a review takes depends on the reviewer,
+   and a per-stage minute reads as a measurement nobody took. the first three
+   belong to the author, the last two to the system - which is the thing the
+   old strip blurred by putting them on one clock. */
 const KB_PUBLISH = [
-  { d: 'Min 0', t: 'Draft', n: 'the expert writes in structured fields, with a live preview' },
-  { d: 'Min 5', t: 'Review', n: 'role-based approval - owner and verify-by date are required' },
-  { d: 'Min 6', t: 'Publish', n: 'webhook fires. no developer anywhere in the path' },
-  { d: 'Min 8', t: 'Build', n: 'incremental rebuild, cache invalidation, redirects' },
-  { d: 'Min 15', t: 'Live', n: 'and its markdown twin is live at the same moment' },
+  { d: '01', t: 'Draft', n: 'the expert writes in structured fields, with a live preview' },
+  { d: '02', t: 'Review', n: 'role-based approval - owner and verify-by date are required' },
+  { d: '03', t: 'Publish', n: 'a webhook fires, with no developer anywhere in the path' },
+  { d: '04', t: 'Build', n: 'incremental rebuild, cache invalidation, redirects' },
+  { d: '05', t: 'Live', n: 'the page and its markdown twin go live together' },
 ];
 
 
@@ -183,16 +188,16 @@ const KB_WHY = [
    its label run past the panel's rounded corner. */
 /* the scene's beat count. the route bar derives its chapter from this too,
    so adding a beat can never leave the bar reading the wrong chapter. */
-const KB_BEATS = 21;
+const KB_BEATS = 22;
 
 const KB_CHAPTERS = [
   { label: 'Problem', at: 0 },
   { label: 'Discovery', at: 4 },
   { label: 'Decision', at: 6 },
   { label: 'Build', at: 8 },
-  { label: 'Portable', at: 13 },
-  { label: 'Rollout', at: 18 },
-  { label: 'Close', at: 19 },
+  { label: 'Portable', at: 14 },
+  { label: 'Rollout', at: 19 },
+  { label: 'Close', at: 20 },
 ];
 
 function KbRoute({ total }) {
@@ -452,8 +457,11 @@ function KbStoryScene() {
         body: 'Every version splits into new features, improvements and bug fixes, each with a count. This is the structure the Jira phase writes into - the shape had to exist before anything could fill it.',
       }}
     />,
+    <h3 className="kbs-big" key="fifteen">
+      Nine days became<br /><em className="cp-up">fifteen minutes</em>.
+    </h3>,
     <div className="kbs-wide" key="publish">
-      <span className="kbs-eyebrow">Publish is one button</span>
+      <span className="kbs-eyebrow">What the one button sets off</span>
       <div className="kbs-rail kbs-rail-new">
         {KB_PUBLISH.map((x) => (
           <div className="kbs-rail-s" key={x.d}>
@@ -463,7 +471,7 @@ function KbStoryScene() {
           </div>
         ))}
       </div>
-      <p className="kbs-note">portal built with Claude Code against the Figma structure - nine days became fifteen minutes.</p>
+      <p className="kbs-note">the author owns the first three. the last two are the system&apos;s, and nobody waits on them - the portal was built with Claude Code against the Figma structure.</p>
     </div>,
     <h3 className="kbs-big" key="chatbot">
       Everyone said: <em className="cp-rose">add a chatbot</em>.<br />We didn&apos;t build one.
