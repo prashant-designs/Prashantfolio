@@ -8709,7 +8709,26 @@ body.static .scene { height: auto !important; }
    the frame is shrink-to-fit around it - a width-driven frame would either
    letterbox a wide screenshot or push the caption off the stage. The
    subtraction leaves room for the eyebrow above and the note below. */
-.kbm { display: flex; flex-direction: column; align-items: center; max-width: 1060px; }
+.kbm { display: flex; flex-direction: column; align-items: center; max-width: 1060px; margin: 0 auto; }
+/* a pinned scene's stage is a fixed height, so `beat` caps the image by
+   height and lets the frame shrink to it. an ordinary scrolling section has
+   no such ceiling, so `flow` caps by width instead and grows. */
+.kbm-flow .kbm-frame img, .kbm-flow .kbm-frame video { max-height: none; width: 100%; }
+.kbm-flow { max-width: 100%; }
+
+/* the Developer Portal's run of product media. it sits in a flowing
+   section rather than a pinned stage, so the shots simply stack with the
+   section's own rhythm between them. */
+.dv-media { display: flex; flex-direction: column; gap: 26px; margin-top: 26px; }
+/* the two environments side by side: the argument is that it is the SAME
+   page, so they have to be seen together rather than one after the other. */
+.dv-env { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; }
+.dv-env .kbm-note { padding: 12px 14px; }
+.dv-env .kbm-note-t b { font-family: var(--mono); font-weight: 500; font-size: var(--t-body-xs); letter-spacing: 0.14em; text-transform: uppercase; }
+.dv-env > div:first-child .kbm-note-t b { color: var(--up); }
+.dv-env > div:last-child .kbm-note-t b { color: var(--rose); }
+.dv-env-note { margin-top: -6px; }
+@media (max-width: 860px) { .dv-env { grid-template-columns: 1fr; } }
 .kbm-frame { margin: 0; width: fit-content; max-width: 100%; border: 1px solid var(--line2); border-radius: var(--r-lg); background: var(--ink2); overflow: hidden; box-shadow: 0 30px 70px rgba(0, 0, 0, 0.42); }
 /* the subtraction covers the eyebrow above and the annotation below, so a
    screenshot never pushes its own explanation off a fixed-height stage. */

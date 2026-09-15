@@ -32,7 +32,7 @@ const INDEX = [
   { cat: 1, name: 'Customer Portal', label: 'Customer Portal', note: 'the self-serve front door' },
   { cat: 3, name: 'Invoice Design', label: 'Invoice Design', note: 'transparency for high-ticket billing' },
   { cat: 4, name: 'Knowledge Base', label: 'Knowledge Base', note: 'documentation out of the engineering queue' },
-  { cat: 5, name: 'Developer Portal', label: 'Developer Sandbox', note: 'a live API test environment' },
+  { cat: 5, name: 'Developer Portal', label: 'Developer Portal', note: '236 endpoints, executable against a sandbox' },
   { cat: 6, name: 'GenAI Initiative', label: 'GenAI Initiative', note: 'an assistant that answers with evidence' },
 ];
 
@@ -533,7 +533,7 @@ export default function CurrentProject() {
                 once it lost the ring/badge that had made it "featured" (see
                 git history), it was just a fourth .tl-cs-card-shaped thing
                 sitting alone in its own step - so it comes back to the row it
-                started in, same as Knowledge Base and Developer sandbox. the
+                started in, same as Knowledge Base and Developer Portal. the
                 hero's "latest" pointer now scrolls to this step rather than a
                 step of its own. */}
             <Step n="04" when="2025 - now" kicker="Moving into product" title="Now: AI product manager" id="latest" stepRef={spotRef}>
@@ -567,8 +567,8 @@ export default function CurrentProject() {
                       </line>
                     </svg>
                   </span>
-                  <h4>Developer sandbox</h4>
-                  <div className="tl-cs-row"><span>about</span><p>a live API test environment against UAT - try before you buy</p></div>
+                  <h4>Developer Portal</h4>
+                  <div className="tl-cs-row"><span>about</span><p>236 endpoints a customer can read, try against a sandbox, and automate against - without calling support first</p></div>
                   <div className="tl-cs-row"><span>role</span><p>DX design, docs & frontend · PRD + pricing framework · volumetrics with engineering</p></div>
                   <div className="tl-cs-foot"><span className="tl-cs-impact">revenue <small>in testing</small></span><span className="tl-cs-link">Deep dive →</span></div>
                 </article>

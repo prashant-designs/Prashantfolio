@@ -1,5 +1,25 @@
 import { useRef, useState } from 'react';
 import CaseRoute from '../CaseRoute';
+import { Shot, Clip } from '../CaseMedia';
+
+/* the five glyphs the media annotations use. same language as the other
+   case studies' icon sets: 24x24, no fill, currentColor stroke at 1.6,
+   round caps and joins. */
+const DV_ICONS = {
+  book: <><path d="M4 5.2c2.6-1.2 5.4-1.2 8 0v13.6c-2.6-1.2-5.4-1.2-8 0z" /><path d="M20 5.2c-2.6-1.2-5.4-1.2-8 0v13.6c2.6-1.2 5.4-1.2 8 0z" /></>,
+  key: <><circle cx="8.4" cy="12" r="3.6" /><path d="M12 12h8" /><path d="M17.4 12v3.1" /><path d="M20 12v2.2" /></>,
+  lock: <><rect x="4.6" y="10.2" width="14.8" height="9.6" rx="2.4" /><path d="M8.2 10.2V7.6a3.8 3.8 0 0 1 7.6 0v2.6" /></>,
+  play: <><circle cx="12" cy="12" r="8.4" /><path d="M10.2 8.9l5 3.1-5 3.1z" /></>,
+  alert: <><path d="M12 4.4l8.2 14.2H3.8z" /><path d="M12 10v3.6" /><path d="M12 16.4h.01" /></>,
+};
+
+function DvIco({ name }) {
+  return (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+      {DV_ICONS[name]}
+    </svg>
+  );
+}
 
 const PIPELINE = ['requirements', 'PRD', 'pricing + volumetrics', 'DX design', 'frontend build', 'deploy'];
 
@@ -12,7 +32,7 @@ const FAILS = [
 
 const PRINCIPLES = [
   { t: 'a UAT twin', p: 'full sandbox - demo circuits, a mock write layer, nightly reset. responses field-identical to production; nothing real ever happens' },
-  { t: 'tasks, not endpoints', p: '210 APIs organised into 9 plain-english modules - ordering, MACD, monitoring, billing, support…' },
+  { t: 'tasks, not endpoints', p: '236 endpoints organised into plain-english modules - ordering, MACD, monitoring, billing, support…' },
   { t: 'self-serve keys', p: 'generate, rotate & revoke without a human - rotation overlap so live integrations never break' },
   { t: 'a 180-day promise', p: 'max 2 live versions, migration guides, deprecation notices - no surprise breakage, ever' },
 ];
@@ -56,7 +76,7 @@ export default function DeveloperPortalCaseStudy({ onPrev, onNext, idx, total })
         <p>Polarin had APIs - a bare Swagger page where every test call hit live production, so customers who wanted to automate still called support. I took the developer portal from the first customer conversation to a deployed frontend, one pair of hands at every stage.</p>
         <div className="inv-meta">
           <div><span>My role</span><b>Requirements → design → build → deploy</b></div>
-          <div><span>Output</span><b>210 APIs, live portal</b></div>
+          <div><span>Output</span><b>236 endpoints, live portal</b></div>
           <div><span>Status</span><b>In testing · revenue expected</b></div>
         </div>
         <span className="cp-scroll" aria-hidden="true"><i></i>scroll</span>
@@ -164,17 +184,71 @@ export default function DeveloperPortalCaseStudy({ onPrev, onNext, idx, total })
         <div className="inv-step-tag"><i></i>Then I built it</div>
         <h3 className="dv-h">DX design → frontend → deploy</h3>
         <p className="dv-p">Designed the developer experience end to end - a 5-step getting-started, executable Swagger against UAT, one-click Postman, module docs with real use cases - then built the frontend myself and shipped it.</p>
-        <div className="dv-shot" aria-hidden="true">
-          <span className="mg-tag">- portal walkthrough - placeholder</span>
-          <div className="shot-bar"><i></i><i></i><i></i><em></em></div>
-          <div className="shot-body">
-            <div className="shot-side"><i></i><i className="on"></i><i></i><i></i><i></i></div>
-            <div className="shot-main">
-              <div className="shot-code"><i style={{ '--w': '72%' }}></i><i style={{ '--w': '46%' }}></i><i style={{ '--w': '60%' }}></i><i style={{ '--w': '34%' }}></i></div>
-              <div className="shot-run"></div>
-              <div className="shot-res"><i style={{ '--w': '88%' }}></i><i style={{ '--w': '64%' }}></i></div>
-            </div>
+        <div className="dv-media">
+          <Shot
+            variant="flow"
+            src="/dp/dp-welcome.jpg"
+            alt="The Polarin developer portal landing page, with a search bar reading 236 endpoints and a three-step how-it-works"
+            icon={<DvIco name="book" />}
+            note={{
+              title: 'One front door, 236 endpoints behind it',
+              body: 'Get access, authenticate, call the APIs - the three steps of the PRD, made the first thing on the page. The search counts what it covers, because the old Swagger page never told you how much there was.',
+            }}
+          />
+          <Shot
+            variant="flow"
+            src="/dp/dp-access.jpg"
+            alt="The Getting Access page: five numbered steps ending in a note that the first API call takes under thirty minutes"
+            icon={<DvIco name="key" />}
+            note={{
+              title: 'The 30-minute promise, written as five steps',
+              body: 'Register, KYC, activation, email, then UAT. The claim in the PRD was a developer going from activation to first successful call in under half an hour; this is that claim turned into a page someone can follow.',
+            }}
+          />
+          <Shot
+            variant="flow"
+            src="/dp/dp-auth.jpg"
+            alt="The authentication guide explaining access tokens and refresh tokens side by side, with a step-by-step walkthrough"
+            icon={<DvIco name="lock" />}
+            note={{
+              title: 'Auth explained before it is demanded',
+              body: 'Short-lived access token, long-lived refresh token, and the full lifecycle including the 401 retry - the question support answered most often, answered once on a page instead.',
+            }}
+          />
+          <Clip
+            variant="flow"
+            src="/dp/dp-try.mp4"
+            icon={<DvIco name="play" />}
+            note={{
+              title: 'Every endpoint is executable, against the sandbox',
+              body: 'Fill the parameters, send, and read the real response - here a 400 with the error code and the field that caused it. The mock layer behind UAT was the riskiest ask in the PRD, and this is what it bought.',
+            }}
+          />
+          <div className="dv-env">
+            <Shot
+              variant="flow"
+              src="/dp/dp-uat.jpg"
+              alt="An endpoint page in the UAT environment, with a green UAT badge and a uat-api base URL"
+              note={{ title: 'UAT', body: 'nothing real happens' }}
+            />
+            <Shot
+              variant="flow"
+              src="/dp/dp-prod.jpg"
+              alt="The same endpoint page switched to production, with a red badge and the production base URL"
+              note={{ title: 'Production', body: 'live and billable' }}
+            />
           </div>
+          <p className="dv-p dim dv-env-note">One switch rewrites every base URL, every curl example and the badge in the corner - so a developer can never copy a sandbox call and fire it at production by accident.</p>
+          <Shot
+            variant="flow"
+            src="/dp/dp-alerts.jpg"
+            alt="The API alerts page showing a critical suspended-endpoint notice and a deprecation warning, each with a required action"
+            icon={<DvIco name="alert" />}
+            note={{
+              title: 'Breaking changes arrive before they break you',
+              body: 'Suspensions and deprecations get their own surface, each with the affected module, the action required and a deadline. This is the 180-day promise from the PRD, given somewhere to live.',
+            }}
+          />
         </div>
         <div className="inv-meta">
           <div><span>Time to first call</span><b>≤ 30 min</b></div>
