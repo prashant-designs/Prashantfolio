@@ -144,17 +144,29 @@ const KB_PHASES = [
 ];
 
 /* publish is one button; these are the things it sets off. */
-/* the five stages behind the one button. numbered rather than clock-stamped:
-   the stages are real, but how long a review takes depends on the reviewer,
-   and a per-stage minute reads as a measurement nobody took. the first three
-   belong to the author, the last two to the system - which is the thing the
-   old strip blurred by putting them on one clock. */
-const KB_PUBLISH = [
-  { d: '01', t: 'Draft', n: 'the expert writes in structured fields, with a live preview' },
-  { d: '02', t: 'Review', n: 'role-based approval - owner and verify-by date are required' },
-  { d: '03', t: 'Publish', n: 'a webhook fires, with no developer anywhere in the path' },
-  { d: '04', t: 'Build', n: 'incremental rebuild, cache invalidation, redirects' },
-  { d: '05', t: 'Live', n: 'the page and its markdown twin go live together' },
+/* what each tool was actually responsible for. the split is the point:
+   Strapi holds the parts, Claude Code built the thing that renders them,
+   and the markdown twin is what makes the result machine-readable. */
+const KB_STACK = [
+  { k: 'Strapi', t: 'The components', p: 'content types and the fields inside them - a page is assembled out of parts rather than typed into one box' },
+  { k: 'Claude Code', t: 'The platform', p: 'the portal itself - routing, search, every page template and the whole frontend, written against the Figma structure' },
+  { k: 'Markdown twin', t: 'The AI surface', p: 'each page saved again as a plain file beside itself, so an assistant reads exactly what the reader sees' },
+];
+
+/* the library an author picks from. this is the reason someone who has
+   never opened Figma can still produce a page that matches the rest. */
+const KB_COMPONENTS = [
+  'Step + screenshot', 'Tip callout', 'On this page', 'Related articles',
+  'Release version', 'Product card', 'Prev / next', 'Type chip',
+];
+
+/* the rules that keep a generated release note honest. the fourth is the
+   one that makes the other three safe to have. */
+const KB_JIRA = [
+  { n: '01', t: 'Only what shipped', p: 'tickets inside a released version. internal chores, reverts and spikes never reach the draft.' },
+  { n: '02', t: 'Rewritten, not copied', p: "the engineer's sentence becomes the customer's. the model drafts language; it does not decide what is worth saying." },
+  { n: '03', t: 'Sorted into the three groups', p: 'feature, improvement, fix - the shape the release-notes type already has, so a draft lands in a real structure.' },
+  { n: '04', t: 'A person approves it', p: 'the owner edits or rejects before anything publishes. nothing goes live unread.', ok: true },
 ];
 
 
@@ -188,16 +200,17 @@ const KB_WHY = [
    its label run past the panel's rounded corner. */
 /* the scene's beat count. the route bar derives its chapter from this too,
    so adding a beat can never leave the bar reading the wrong chapter. */
-const KB_BEATS = 22;
+const KB_BEATS = 24;
 
 const KB_CHAPTERS = [
   { label: 'Problem', at: 0 },
   { label: 'Discovery', at: 4 },
   { label: 'Decision', at: 6 },
   { label: 'Build', at: 8 },
-  { label: 'Portable', at: 14 },
-  { label: 'Rollout', at: 19 },
-  { label: 'Close', at: 20 },
+  { label: 'Portable', at: 15 },
+  { label: 'Rollout', at: 20 },
+  { label: 'Automation', at: 21 },
+  { label: 'Close', at: 23 },
 ];
 
 function KbRoute({ total }) {
@@ -460,18 +473,25 @@ function KbStoryScene() {
     <h3 className="kbs-big" key="fifteen">
       Nine days became<br /><em className="cp-up">fifteen minutes</em>.
     </h3>,
-    <div className="kbs-wide" key="publish">
-      <span className="kbs-eyebrow">What the one button sets off</span>
-      <div className="kbs-rail kbs-rail-new">
-        {KB_PUBLISH.map((x) => (
-          <div className="kbs-rail-s" key={x.d}>
-            <span className="kbs-rail-d">{x.d}</span>
+    <div className="kbs-wide" key="stack">
+      <span className="kbs-eyebrow">Three tools, three jobs</span>
+      <div className="kbs-lim kbs-lim-3">
+        {KB_STACK.map((x) => (
+          <div className="kbs-card" key={x.k}>
+            <span className="kbs-k">{x.k}</span>
             <b>{x.t}</b>
-            <p>{x.n}</p>
+            <p>{x.p}</p>
           </div>
         ))}
       </div>
-      <p className="kbs-note">the author owns the first three. the last two are the system&apos;s, and nobody waits on them - the portal was built with Claude Code against the Figma structure.</p>
+      <p className="kbs-note">no developer sits between an expert and a published page - the last one needed was the one who built the thing they publish into.</p>
+    </div>,
+    <div className="kbs-wide" key="components">
+      <span className="kbs-eyebrow">A page is assembled, not written</span>
+      <div className="kbs-chips">
+        {KB_COMPONENTS.map((c) => <span key={c}>{c}</span>)}
+      </div>
+      <p className="kbs-note">each one is a Strapi component with its own fields and its own rules. the expert picks blocks and fills them in, which is why a page written by someone who has never opened Figma still looks like the rest of the docs.</p>
     </div>,
     <h3 className="kbs-big" key="chatbot">
       Everyone said: <em className="cp-rose">add a chatbot</em>.<br />We didn&apos;t build one.
@@ -542,6 +562,19 @@ function KbStoryScene() {
         <p className="to"><span>a customer reads</span>Alerts for every service now sit on one screen - and here is where to find it.</p>
       </div>
       <p className="kbs-note">they already write down what they built. we ask one more question while they still remember.</p>
+    </div>,
+    <div className="kbs-wide" key="jira">
+      <span className="kbs-eyebrow">Four rules that keep a generated note honest</span>
+      <div className="kbs-lim kbs-lim-4">
+        {KB_JIRA.map((x) => (
+          <div className={`kbs-card${x.ok ? ' ok' : ''}`} key={x.n}>
+            <span className="kbs-k">{x.n}</span>
+            <b>{x.t}</b>
+            <p>{x.p}</p>
+          </div>
+        ))}
+      </div>
+      <p className="kbs-note">the release-notes type had to exist before any of this could land anywhere - which is why it was built in phase 1 and automated later, not the other way round.</p>
     </div>,
     <div className="inv-highlight kb-pull" key="pull">No AI can write an honest article out of an empty field.</div>,
   ];
