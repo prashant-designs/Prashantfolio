@@ -48,14 +48,18 @@ export default function DeveloperPortalCaseStudy({ onPrev, onNext, idx, total })
   return (
     <div className="inv-wrap">
       <CaseRoute refs={secs} labels={DEV_ROUTE} />
-      <div className="inv-hero">
-        <p className="eyebrow">Polarin · Developer Portal</p>
-        <h2>A network that provisions like an API call.</h2>
-        <p>Polarin had APIs - a bare Swagger page where every test call hit live production. Customers who wanted to automate still called support. I took the developer portal from first customer conversation to deployed frontend - one pair of hands, every stage.</p>
-        <div className="inv-meta">
-          <div><span>My role</span><b>Requirements → PRD → DX design → build → deploy</b></div>
-          <div><span>Output</span><b>210 APIs, live developer portal</b></div>
+      <div className="inv-hero cs-hero">
+        <div className="cp-logo-wrap">
+          <img className="cp-logo" src="/polarin-logo.png" alt="Polarin, by Lightstorm" />
         </div>
+        <h2>A network that provisions <span className="cp-signal">like an API call.</span></h2>
+        <p>Polarin had APIs - a bare Swagger page where every test call hit live production, so customers who wanted to automate still called support. I took the developer portal from the first customer conversation to a deployed frontend, one pair of hands at every stage.</p>
+        <div className="inv-meta">
+          <div><span>My role</span><b>Requirements → design → build → deploy</b></div>
+          <div><span>Output</span><b>210 APIs, live portal</b></div>
+          <div><span>Status</span><b>In testing · revenue expected</b></div>
+        </div>
+        <span className="cp-scroll" aria-hidden="true"><i></i>scroll</span>
       </div>
 
       <div className="inv-section" ref={at(0)}>

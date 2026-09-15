@@ -417,14 +417,18 @@ export default function InvoiceCaseStudy({ onPrev, onNext, idx, total }) {
   return (
     <div className="inv-wrap ivs" ref={wrap}>
       <CaseRoute refs={secs} labels={IVS_ROUTE} />
-      <div className="inv-hero">
-        <p className="eyebrow">Polarin · Billing</p>
-        <h2>Designing the invoice for complex NaaS billing</h2>
-        <p>One invoice. Multiple products. Mid-month upgrades. PAYG hours. GST variants. Three pages that had to serve a CFO and a network engineer at the same time.</p>
+      <div className="inv-hero cs-hero">
+        <div className="cp-logo-wrap">
+          <img className="cp-logo" src="/polarin-logo.png" alt="Polarin, by Lightstorm" />
+        </div>
+        <h2>One invoice, for a CFO and <span className="cp-amber">a network engineer at once.</span></h2>
+        <p>Multiple products, mid-month upgrades, pay-as-you-go hours and GST variants - all landing on three pages that had to be auditable by finance and legible to the person who ordered the ports.</p>
         <div className="inv-meta">
           <div><span>My role</span><b>Executive Experience Designer</b></div>
-          <div><span>Output</span><b>PDF invoice (with annexure)</b></div>
+          <div><span>Output</span><b>PDF invoice + annexure</b></div>
+          <div><span>Status</span><b>Live · transparent, scalable</b></div>
         </div>
+        <span className="cp-scroll" aria-hidden="true"><i></i>scroll</span>
       </div>
 
       <div className="inv-section ivs-rv" data-rv ref={at(0)}>

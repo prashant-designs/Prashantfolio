@@ -606,15 +606,18 @@ export default function GenAICaseStudy({ onPrev, onNext, idx, total }) {
     <div className="inv-wrap gax-wrap" ref={wrap}>
       <canvas className="gax-fx" ref={fx} aria-hidden="true" />
       <CaseRoute refs={secs} labels={GENAI_ROUTE} />
-      <div className="inv-hero">
-        <p className="eyebrow">Polarin · GenAI Initiative</p>
-        <h2>Less searching. More knowing.</h2>
-        <p>An assistant for people who manage business network connections. The numbers already existed - what was missing was the answer.</p>
-        <div className="inv-meta gac-meta">
-          <div><span>Scope</span><b>product definition · AI behaviour · response design · frontend spec</b></div>
-          <div><span>Basis</span><b>a proof-of-concept specification, built with a specialist AI team</b></div>
-          <div><span>Status</span><b>reconstructions and illustrative data - no production result claimed</b></div>
+      <div className="inv-hero cs-hero">
+        <div className="cp-logo-wrap">
+          <img className="cp-logo" src="/polarin-logo.png" alt="Polarin, by Lightstorm" />
         </div>
+        <h2>Less searching. <span className="cp-signal">More knowing.</span></h2>
+        <p>An assistant for people who manage business network connections. The numbers already existed - what was missing was the answer. Screens here are reconstructions from the proof-of-concept specification, and no production result is claimed.</p>
+        <div className="inv-meta">
+          <div><span>My role</span><b>Product definition → frontend spec</b></div>
+          <div><span>Built with</span><b>A specialist AI delivery team</b></div>
+          <div><span>Status</span><b>POC · verdict still open</b></div>
+        </div>
+        <span className="cp-scroll" aria-hidden="true"><i></i>scroll</span>
       </div>
 
       {CHAPTERS.map((beats, i) => (

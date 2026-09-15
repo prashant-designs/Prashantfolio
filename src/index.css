@@ -6131,7 +6131,7 @@ b.adm-was { font-family: var(--body); font-weight: 600; color: var(--rose); }
 }
 
 /* ---- Customer Portal's own texture: a faint grid behind the whole case
-   study, plus the hero fold's logo/globe ---- scoped to .cp-wrap / .cp-hero
+   study, plus the hero fold's logo/globe ---- scoped to .cp-wrap / .cs-hero
    (not the shared .inv-wrap / .inv-hero every case study uses) so none of
    this bleeds into the other five - a flat page reads fine as one of six,
    but this is the one the reader spends the longest in, so it gets its own
@@ -6188,9 +6188,9 @@ b.adm-was { font-family: var(--body); font-weight: 600; color: var(--rose); }
      AFTER ordinary static content in the same stacking context (position,
      not the z-index value itself, is what promotes paint order), so at 0
      this would sit on top of .inv-hero/.inv-section instead of behind them,
-     the same trap .cp-hero's own stacking had to be built around earlier.
+     the same trap .cs-hero's own stacking had to be built around earlier.
      negative pushes it behind them without needing every section to carry
-     its own z-index: 1 the way .cp-hero's direct children do. */
+     its own z-index: 1 the way .cs-hero's direct children do. */
   position: fixed;
   z-index: -1;
   pointer-events: none;
@@ -6233,7 +6233,7 @@ b.adm-was { font-family: var(--body); font-weight: 600; color: var(--rose); }
   .cp-grid-fixed { animation: none; }
 }
 /* the globe that used to sit behind the wordmark is gone, and so is the
-   stacking scaffolding it needed: .cp-hero no longer has to establish its
+   stacking scaffolding it needed: .cs-hero no longer has to establish its
    own context, and nothing in this fold is absolutely positioned any more,
    so the z-index: 1 that every text element carried to stay above the globe
    has nothing left to outrank. */
@@ -6244,21 +6244,21 @@ b.adm-was { font-family: var(--body); font-weight: 600; color: var(--rose); }
    .inv-section h3.plain - this headline wasn't one of them) - 20ch is what
    forced "Ordering connectivity, without picking up the phone." into three
    short lines instead of two, which read as cramped rather than confident.
-   .cp-hero.inv-hero (both classes the element actually carries) rather than
-   .cp-hero h2 alone, so this beats the shared rule on specificity and
+   .cs-hero.inv-hero (both classes the element actually carries) rather than
+   .cs-hero h2 alone, so this beats the shared rule on specificity and
    doesn't depend on which one happens to sit later in the file. same
    reasoning for the paragraph and meta row below - more vertical air
    between logo, headline, paragraph and stats, and a wider gap between the
    three meta columns, is the fix for "cluttered", not a smaller typeface. */
-.cp-hero.inv-hero h2 { max-width: 32ch; }
-.cp-hero.inv-hero p { margin-top: 26px; }
+.cs-hero.inv-hero h2 { max-width: 32ch; }
+.cs-hero.inv-hero p { margin-top: 26px; }
 /* the three facts read as a spec strip rather than three phrases floating
    in the middle of the fold - ruled top and bottom, split by hairlines, and
    capped well short of the overlay's full width, which is what stopped them
    drifting 1200px apart on a wide window. cells left-align inside their own
    column: a ruled strip reads as a table, and centring each cell inside its
    own division just made the rules look accidental. */
-.cp-hero .inv-meta {
+.cs-hero .inv-meta {
   margin: 44px auto 0;
   gap: 0;
   /* .inv-hero is a flex column, and auto inline margins on a flex item
@@ -6272,15 +6272,15 @@ b.adm-was { font-family: var(--body); font-weight: 600; color: var(--rose); }
   border-bottom: 1px solid var(--line2);
   padding: 18px 0;
 }
-.cp-hero .inv-meta > div { flex: 1 1 0; min-width: 0; padding: 0 20px; border-left: 1px solid var(--line2); text-align: left; }
+.cs-hero .inv-meta > div { flex: 1 1 0; min-width: 0; padding: 0 20px; border-left: 1px solid var(--line2); text-align: left; }
 /* the role cell carries the longest line of the three; an equal split
    wrapped it to two lines while the others sat on one, which read as a
    layout accident rather than a spec strip. */
-.cp-hero .inv-meta > div:first-child { border-left: 0; flex-grow: 1.45; }
+.cs-hero .inv-meta > div:first-child { border-left: 0; flex-grow: 1.45; }
 /* the devices cell carries an icon as well as its line, so it needs more
    than an equal third too - sized so all three sit on one line together. */
-.cp-hero .inv-meta > div:last-child { flex-grow: 1.3; }
-.cp-hero .inv-meta div b { font-size: 14px; line-height: 1.4; }
+.cs-hero .inv-meta > div:last-child { flex-grow: 1.3; }
+.cs-hero .inv-meta div b { font-size: 14px; line-height: 1.4; }
 /* a travelling line rather than a bouncing chevron: the fold is quiet and a
    chevron would have been the loudest thing in it. */
 .cp-scroll { display: flex; flex-direction: column; align-items: center; gap: 10px; margin-top: 42px; font-family: var(--mono); font-size: var(--t-micro); letter-spacing: 0.22em; text-transform: uppercase; color: var(--dim); }
@@ -6288,9 +6288,9 @@ b.adm-was { font-family: var(--body); font-weight: 600; color: var(--rose); }
 .cp-scroll i::after { content: ''; position: absolute; left: 0; top: 0; width: 1px; height: 14px; background: #3696B1; animation: cpscroll 2.2s var(--ease) infinite; }
 @keyframes cpscroll { 0% { transform: translateY(-14px); } 100% { transform: translateY(36px); } }
 @media (max-width: 720px) {
-  .cp-hero .inv-meta { flex-wrap: wrap; border: 0; padding: 0; gap: 0; }
-  .cp-hero .inv-meta > div { flex: 1 1 100%; padding: 13px 0; border-left: 0; border-top: 1px solid var(--line2); }
-  .cp-hero .inv-meta > div:first-child { border-top: 0; padding-top: 0; }
+  .cs-hero .inv-meta { flex-wrap: wrap; border: 0; padding: 0; gap: 0; }
+  .cs-hero .inv-meta > div { flex: 1 1 100%; padding: 13px 0; border-left: 0; border-top: 1px solid var(--line2); }
+  .cs-hero .inv-meta > div:first-child { border-top: 0; padding-top: 0; }
 }
 @media (prefers-reduced-motion: reduce) {
   .cp-scroll i::after { animation: none; top: 11px; }
@@ -7971,9 +7971,6 @@ b.kbx-hl { display: inline; margin: 0; font-family: var(--body); font-size: inhe
 /* ================= GENAI CASE STUDY (all scoped: gac-) ================= */
 .gac-rv { opacity: 0; transform: translateY(18px); transition: opacity 0.7s var(--ease), transform 0.8s var(--ease); }
 .gac-rv.on { opacity: 1; transform: none; }
-.gac-meta { gap: 34px 40px; }
-.gac-meta div { max-width: 30ch; }
-.gac-meta div b { line-height: 1.45; }
 .gac-lead { font-family: var(--mono); font-size: 11px; letter-spacing: 0.16em; text-transform: uppercase; color: var(--dim); margin-top: 14px; text-align: center; }
 
 /* the flagship, as two panes: worked out by hand vs answered by the platform */

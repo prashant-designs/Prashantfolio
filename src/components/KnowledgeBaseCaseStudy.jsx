@@ -577,7 +577,7 @@ export default function KnowledgeBaseCaseStudy({ onPrev, onNext, idx, total }) {
           floating in the middle of the screen. the strip gives each cell
           one column, so the values here are sized to fit one - the longer
           detail lives in the lede, which has the width for it. */}
-      <div className="inv-hero cp-hero">
+      <div className="inv-hero cs-hero">
         <div className="cp-logo-wrap">
           <img className="cp-logo" src="/polarin-logo.png" alt="Polarin, by Lightstorm" />
         </div>

@@ -1866,7 +1866,7 @@ export default function CustomerPortalCaseStudy({ onPrev, onNext, idx, total }) 
           </div>
         </div>
       )}
-      <div className="inv-hero cp-hero">
+      <div className="inv-hero cs-hero">
         <div className="cp-logo-wrap">
           <img className="cp-logo" src="/polarin-logo.png" alt="Polarin, by Lightstorm" />
         </div>
