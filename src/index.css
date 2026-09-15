@@ -8701,6 +8701,20 @@ body.static .scene { height: auto !important; }
    twice, because the whole argument is that the steps did not change, only
    who had to be in the room. */
 .kbs-wide { width: 100%; max-width: 980px; }
+
+/* ---- framed product media inside a beat (.kbm-) -----------------------
+   The stage is a fixed height, so the image is sized by height first and
+   the frame is shrink-to-fit around it - a width-driven frame would either
+   letterbox a wide screenshot or push the caption off the stage. The
+   subtraction leaves room for the eyebrow above and the note below. */
+.kbm { display: flex; flex-direction: column; align-items: center; max-width: 1060px; }
+.kbm-frame { margin: 0; width: fit-content; max-width: 100%; border: 1px solid var(--line2); border-radius: var(--r-lg); background: var(--ink2); overflow: hidden; box-shadow: 0 30px 70px rgba(0, 0, 0, 0.42); }
+.kbm-frame img, .kbm-frame video { display: block; width: auto; height: auto; max-width: 100%; max-height: calc(90vh - 330px); object-fit: contain; }
+.kbm-frame figcaption { border-top: 1px solid var(--line); padding: 11px 16px; font-family: var(--mono); font-size: var(--t-body-xs); letter-spacing: 0.02em; color: var(--dim); text-align: left; }
+@media (max-width: 860px) {
+  .kbm-frame img, .kbm-frame video { max-height: calc(90vh - 300px); }
+  .kbm-frame figcaption { padding: 9px 12px; }
+}
 .kbs-rail { display: flex; flex-wrap: wrap; border: 1px solid var(--line2); border-radius: var(--r-md); overflow: hidden; background: var(--ink2); }
 .kbs-rail-s { flex: 1 1 150px; padding: 16px; border-right: 1px solid var(--line2); text-align: left; }
 .kbs-rail-s:last-child { border-right: 0; }
@@ -8721,6 +8735,13 @@ body.static .scene { height: auto !important; }
 .kbs-tbl .aud-r { grid-template-columns: 1.3fr 1fr 1fr 1.4fr; }
 @media (max-width: 900px) {
   .kbs-lim, .kbs-lim-4, .kbs-stats { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+/* six cards over three rows is the tallest beat in the scene; on a phone
+   that ran 32px past a fixed-height stage, so the card recipe tightens
+   rather than the grid growing a third column it has no width for. */
+@media (max-width: 520px) {
+  .kbs-lim { gap: 9px; }
+  .kbs-lim .kbs-card { padding: 13px; }
 }
 
 /* the project timeline. a connecting rule runs behind the markers rather

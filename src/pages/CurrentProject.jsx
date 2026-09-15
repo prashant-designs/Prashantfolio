@@ -552,7 +552,7 @@ export default function CurrentProject() {
                     </svg>
                   </span>
                   <h4>Knowledge Base</h4>
-                  <div className="tl-cs-row"><span>about</span><p>an in-house docs portal on Strapi - content owners publish it, not engineers</p></div>
+                  <div className="tl-cs-row"><span>about</span><p>an in-house docs portal on Strapi - content owners publish it, not engineers, and every page also exists as markdown any LLM can read</p></div>
                   <div className="tl-cs-row"><span>role</span><p>designed it in Figma, built it with Claude Code · now designing the Jira → AI → approval pipeline</p></div>
                   <div className="tl-cs-foot"><span className="tl-cs-impact">phase 1 <small>live · automation next</small></span><span className="tl-cs-link">Deep dive →</span></div>
                 </article>

@@ -158,10 +158,10 @@ const KB_PUBLISH = [
    exists as a plain markdown file at its own URL, and a control on the page
    hands that URL to whichever assistant the reader already uses. */
 const KB_MD = [
-  { i: 'book', t: 'Docs page' },
+  { i: 'pen', t: 'Written in Strapi' },
+  { i: 'cms', t: 'Markdown stored beside it' },
   { i: 'notes', t: '/md/page.html' },
-  { i: 'pen', t: 'Copy page' },
-  { i: 'reader', t: 'their own assistant', n: 'live', last: true },
+  { i: 'reader', t: 'any assistant', n: 'live', last: true },
 ];
 
 /* why that beats the chatbot everyone asked for - three consequences, not
@@ -181,14 +181,18 @@ const KB_WHY = [
    the width clamp is the same one the Customer Portal needed: .ovl-close
    sits OUTSIDE the panel, so stopping short of it alone lets the bar and
    its label run past the panel's rounded corner. */
+/* the scene's beat count. the route bar derives its chapter from this too,
+   so adding a beat can never leave the bar reading the wrong chapter. */
+const KB_BEATS = 22;
+
 const KB_CHAPTERS = [
   { label: 'Problem', at: 0 },
   { label: 'Discovery', at: 4 },
   { label: 'Decision', at: 6 },
   { label: 'Build', at: 8 },
-  { label: 'Portable', at: 9 },
-  { label: 'Rollout', at: 12 },
-  { label: 'Close', at: 14 },
+  { label: 'Portable', at: 13 },
+  { label: 'Rollout', at: 18 },
+  { label: 'Close', at: 19 },
 ];
 
 function KbRoute({ total }) {
@@ -280,9 +284,44 @@ function KbRoute({ total }) {
    has never operated a CMS: no tool names in the narrative, no retrieval
    vocabulary, one idea per screen. the built/designed split the old version
    was careful about is kept - beats 4 onward are explicitly the proposal. */
+/* a product shot, framed. from the build chapter on, the argument is the
+   thing itself - so the screen gets the room and the words shrink to a
+   caption under it. the frame is sized to the image rather than the column
+   so a wide screenshot never letterboxes inside a border. */
+function Shot({ src, alt, eyebrow, cap, note }) {
+  return (
+    <div className="kbs-wide kbm">
+      {eyebrow ? <span className="kbs-eyebrow">{eyebrow}</span> : null}
+      <figure className="kbm-frame">
+        <img src={src} alt={alt} loading="lazy" />
+        {cap ? <figcaption>{cap}</figcaption> : null}
+      </figure>
+      {note ? <p className="kbs-note">{note}</p> : null}
+    </div>
+  );
+}
+
+/* the one beat that has to move: a still cannot show a question being
+   answered out of a page the model had never seen until it was handed the
+   link. muted + loop + playsInline so it behaves like a gif and autoplays
+   on iOS; it only mounts when its beat is reached, so the file is not
+   fetched until the reader gets there. */
+function Clip({ src, eyebrow, cap, note }) {
+  return (
+    <div className="kbs-wide kbm">
+      {eyebrow ? <span className="kbs-eyebrow">{eyebrow}</span> : null}
+      <figure className="kbm-frame">
+        <video src={src} autoPlay muted loop playsInline preload="metadata" />
+        {cap ? <figcaption>{cap}</figcaption> : null}
+      </figure>
+      {note ? <p className="kbs-note">{note}</p> : null}
+    </div>
+  );
+}
+
 function KbStoryScene() {
   const ref = useRef(null);
-  const beat = useScrollBeat(ref, 15);
+  const beat = useScrollBeat(ref, KB_BEATS);
   const reduced = prefersReducedMotion();
 
   const beats = [
@@ -353,6 +392,38 @@ function KbStoryScene() {
     <h3 className="kbs-big" key="model">
       The content model<br />was the <em className="cp-up">real design work</em>.
     </h3>,
+    <Shot
+      key="s-home"
+      src="/kb/kb-home.jpg"
+      alt="Polarin Docs home page, with a search bar and six Choose Your Path cards"
+      eyebrow="What shipped"
+      cap="Polarin Docs · the landing page routes by intent, not by product tree"
+      note="six paths, because discovery said people arrive with a job - not with a table of contents."
+    />,
+    <Shot
+      key="s-article"
+      src="/kb/kb-article.jpg"
+      alt="An article page titled What Is a Port, with read time, category chip, an on-this-page rail and a tip callout"
+      eyebrow="One page, four affordances"
+      cap="read time · type chip · on-this-page rail · tip callout"
+      note="the content model shows through: a page knows what type it is, so it can be filtered, cross-linked and reused."
+    />,
+    <Shot
+      key="s-ticket"
+      src="/kb/kb-ticket.jpg"
+      alt="A how-to article with numbered steps and an embedded screenshot of the ticket creation form"
+      eyebrow="How-tos carry the product with them"
+      cap="numbered steps, each with the actual screen beside it"
+      note="the old wiki could only hold prose. this one holds the interface the instruction is about."
+    />,
+    <Shot
+      key="s-release"
+      src="/kb/kb-release.jpg"
+      alt="The release notes page with year and month filters and version cards grouped into new features, improvements and bug fixes"
+      eyebrow="Release notes became a type, not a page"
+      cap="filterable by year and month · grouped into features, improvements, fixes"
+      note="this is the structure the Jira phase writes into - the shape had to exist before anything could fill it."
+    />,
     <div className="kbs-wide" key="publish">
       <span className="kbs-eyebrow">Publish is one button</span>
       <div className="kbs-rail kbs-rail-new">
@@ -369,6 +440,14 @@ function KbStoryScene() {
     <h3 className="kbs-big" key="chatbot">
       Everyone said: <em className="cp-rose">add a chatbot</em>.<br />We didn&apos;t build one.
     </h3>,
+    <Shot
+      key="s-menu"
+      src="/kb/kb-menu.jpg"
+      alt="The Copy page dropdown open, offering copy as markdown, view as markdown, download as PDF, and open in ChatGPT, Claude, Gemini or Perplexity"
+      eyebrow="Instead of a chatbot, one control"
+      cap="Copy page · every route out of the page, including four assistants by name"
+      note="we host no model and index nothing. the page just makes itself legible to whatever the reader already trusts."
+    />,
     <div className="kbs-md" key="how">
       <span className="kbs-eyebrow">Every page is also a plain markdown file</span>
       <Pipe stops={KB_MD} plain />
@@ -381,6 +460,13 @@ function KbStoryScene() {
       </div>
       <p className="kbs-note">paste it into Claude, ChatGPT, anything - the reader brings their own assistant, we just make the page legible to it.</p>
     </div>,
+    <Clip
+      key="s-llm"
+      src="/kb/kb-llm.mp4"
+      eyebrow="A page the model had never seen, answered in one turn"
+      cap="Open in Claude → it fetches the markdown twin → reads it → answers from it"
+      note="no training, no embedding, no sync job. the link is the context."
+    />,
     <div className="kbs-wide" key="why">
       <span className="kbs-eyebrow">Why that beats the chatbot</span>
       <div className="kbs-lim kbs-lim-3">
@@ -406,6 +492,14 @@ function KbStoryScene() {
       </div>
       <p className="kbs-note">structure first, authors second. making the docs portable only mattered once there was content worth handing to anything.</p>
     </div>,
+    <Shot
+      key="s-helpful"
+      src="/kb/kb-helpful.jpg"
+      alt="The foot of an article showing a was this helpful control, previous and next links, and related articles"
+      eyebrow="The instrument the old wiki never had"
+      cap="was this helpful · previous / next · related articles"
+      note="blind operation was limit 06. every page now reports whether it answered the question."
+    />,
     <div className="kbs-notes" key="notes">
       <span className="kbs-eyebrow">Designed next · release notes from Jira</span>
       <Pipe stops={NEXT} plain />
@@ -485,15 +579,15 @@ export default function KnowledgeBaseCaseStudy({ onPrev, onNext, idx, total }) {
 
   return (
     <div className="inv-wrap" ref={wrap}>
-      <KbRoute total={15} />
+      <KbRoute total={KB_BEATS} />
       <div className="inv-hero">
         <p className="eyebrow">Polarin · Knowledge Base</p>
         <h2>The knowledge base needed an engineer to change a sentence.</h2>
         <p>It lived in WikiJS. I rebuilt it on tools we already had.</p>
         <div className="inv-meta">
-          <div><span>My role</span><b>Structure, design, build</b></div>
-          <div><span>Output</span><b>In-house KB portal, content in Strapi</b></div>
-          <div><span>Status</span><b>Phase 1 live · automation designed</b></div>
+          <div><span>My role</span><b>structure, design, and the build itself - the portal written end to end in Claude Code</b></div>
+          <div><span>Output</span><b>docs portal on Strapi, where every page also exists as markdown any assistant can read</b></div>
+          <div><span>Status</span><b>Phase 1 live · release-note automation designed</b></div>
         </div>
       </div>
 
