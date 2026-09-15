@@ -183,7 +183,7 @@ const KB_WHY = [
    its label run past the panel's rounded corner. */
 /* the scene's beat count. the route bar derives its chapter from this too,
    so adding a beat can never leave the bar reading the wrong chapter. */
-const KB_BEATS = 22;
+const KB_BEATS = 21;
 
 const KB_CHAPTERS = [
   { label: 'Problem', at: 0 },
@@ -492,14 +492,6 @@ function KbStoryScene() {
       </div>
       <p className="kbs-note">structure first, authors second. making the docs portable only mattered once there was content worth handing to anything.</p>
     </div>,
-    <Shot
-      key="s-helpful"
-      src="/kb/kb-helpful.jpg"
-      alt="The foot of an article showing a was this helpful control, previous and next links, and related articles"
-      eyebrow="The instrument the old wiki never had"
-      cap="was this helpful · previous / next · related articles"
-      note="blind operation was limit 06. every page now reports whether it answered the question."
-    />,
     <div className="kbs-notes" key="notes">
       <span className="kbs-eyebrow">Designed next · release notes from Jira</span>
       <Pipe stops={NEXT} plain />
