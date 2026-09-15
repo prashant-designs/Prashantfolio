@@ -572,15 +572,23 @@ export default function KnowledgeBaseCaseStudy({ onPrev, onNext, idx, total }) {
   return (
     <div className="inv-wrap" ref={wrap}>
       <KbRoute total={KB_BEATS} />
-      <div className="inv-hero">
-        <p className="eyebrow">Polarin · Knowledge Base</p>
-        <h2>The knowledge base needed an engineer to change a sentence.</h2>
-        <p>It lived in WikiJS. I rebuilt it on tools we already had.</p>
-        <div className="inv-meta">
-          <div><span>My role</span><b>structure, design, and the build itself - the portal written end to end in Claude Code</b></div>
-          <div><span>Output</span><b>docs portal on Strapi, where every page also exists as markdown any assistant can read</b></div>
-          <div><span>Status</span><b>Phase 1 live · release-note automation designed</b></div>
+      {/* the Customer Portal's fold recipe: logo, headline, lede, then the
+          three facts as a ruled spec strip rather than three phrases
+          floating in the middle of the screen. the strip gives each cell
+          one column, so the values here are sized to fit one - the longer
+          detail lives in the lede, which has the width for it. */}
+      <div className="inv-hero cp-hero">
+        <div className="cp-logo-wrap">
+          <img className="cp-logo" src="/polarin-logo.png" alt="Polarin, by Lightstorm" />
         </div>
+        <h2>The knowledge base needed <span className="cp-rose">an engineer to change a sentence.</span></h2>
+        <p>It lived in WikiJS, where every correction queued behind a developer, a review and a deploy. I rebuilt it on Strapi, wrote the portal in Claude Code, and made every page as readable to an assistant as it is to a person.</p>
+        <div className="inv-meta">
+          <div><span>My role</span><b>Structure, design, and the build</b></div>
+          <div><span>Built with</span><b>Claude Code · Strapi · Vercel</b></div>
+          <div><span>Status</span><b>Phase 1 live · automation designed</b></div>
+        </div>
+        <span className="cp-scroll" aria-hidden="true"><i></i>scroll</span>
       </div>
 
       <KbStoryScene />
