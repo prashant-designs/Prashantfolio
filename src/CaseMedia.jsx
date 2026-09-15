@@ -28,7 +28,7 @@ function Frame({ variant, eyebrow, note, icon, children }) {
       <figure className="kbm-frame">
         {children}
         {note ? (
-          <figcaption className="kbm-note">
+          <figcaption className={`kbm-note${icon ? '' : ' kbm-note-plain'}`}>
             {icon ? <span className="kbm-note-i" aria-hidden="true">{icon}</span> : null}
             <span className="kbm-note-t">
               <b>{note.title}</b>

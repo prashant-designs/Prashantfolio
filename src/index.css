@@ -8719,16 +8719,34 @@ body.static .scene { height: auto !important; }
 /* the Developer Portal's run of product media. it sits in a flowing
    section rather than a pinned stage, so the shots simply stack with the
    section's own rhythm between them. */
-.dv-media { display: flex; flex-direction: column; gap: 26px; margin-top: 26px; }
+.dv-media { display: flex; flex-direction: column; gap: 40px; margin-top: 26px; }
 /* the two environments side by side: the argument is that it is the SAME
    page, so they have to be seen together rather than one after the other. */
-.dv-env { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; }
+.dv-env { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; align-items: start; }
+.dv-env .kbm-frame img { max-height: calc(90vh - 470px); }
 .dv-env .kbm-note { padding: 12px 14px; }
 .dv-env .kbm-note-t b { font-family: var(--mono); font-weight: 500; font-size: var(--t-body-xs); letter-spacing: 0.14em; text-transform: uppercase; }
 .dv-env > div:first-child .kbm-note-t b { color: var(--up); }
 .dv-env > div:last-child .kbm-note-t b { color: var(--rose); }
-.dv-env-note { margin-top: -6px; }
 @media (max-width: 860px) { .dv-env { grid-template-columns: 1fr; } }
+/* stacked, the pair plus its two captions ran 14px past a phone's stage.
+   the gap and the caption padding give that back rather than the images
+   shrinking, which would cost the legibility the shots exist for. */
+@media (max-width: 520px) {
+  .dv-env { gap: 10px; }
+  .dv-env .kbm-note { padding: 9px 12px; }
+}
+/* 360px-class phones have ~560px of stage to work with, which the four
+   PRD cards and the stacked environment pair both outgrow. tightened
+   rather than truncated - every card still says what it said. */
+@media (max-width: 400px) {
+  .ivx-principles.dv4 { gap: 8px; }
+  .ivx-principles.dv4 .ivp { padding: 11px 12px; }
+  .dv-env { gap: 8px; }
+  .dv-env .kbm-note { padding: 7px 10px; }
+  .dv-env .kbm-frame img { max-height: 19vh; }
+  .gax-stage .gax-note { margin-top: 12px; }
+}
 .kbm-frame { margin: 0; width: fit-content; max-width: 100%; border: 1px solid var(--line2); border-radius: var(--r-lg); background: var(--ink2); overflow: hidden; box-shadow: 0 30px 70px rgba(0, 0, 0, 0.42); }
 /* the subtraction covers the eyebrow above and the annotation below, so a
    screenshot never pushes its own explanation off a fixed-height stage. */
@@ -8738,6 +8756,9 @@ body.static .scene { height: auto !important; }
    that backs it - the Invoice case study's callout structure, rendered in
    this case study's palette rather than its pale-on-white one. */
 .kbm-note { display: grid; grid-template-columns: 34px 1fr; gap: 14px; align-items: start; border-top: 1px solid var(--line); padding: 15px 18px; text-align: left; }
+/* without an icon the text would otherwise land in the icon's 34px column
+   and wrap a word per line. */
+.kbm-note-plain { grid-template-columns: 1fr; }
 .kbm-note-i { width: 34px; height: 34px; display: grid; place-items: center; border-radius: var(--r-sm); border: 1px solid rgba(54, 150, 177, 0.32); background: rgba(54, 150, 177, 0.09); color: #4FB4D0; }
 .kbm-note-i svg { width: 18px; height: 18px; }
 .kbm-note-t b { display: block; font-family: var(--disp); font-weight: 700; font-size: var(--t-body-sm); line-height: 1.35; color: var(--text); }
