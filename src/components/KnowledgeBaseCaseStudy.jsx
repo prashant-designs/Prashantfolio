@@ -288,16 +288,33 @@ function KbRoute({ total }) {
    thing itself - so the screen gets the room and the words shrink to a
    caption under it. the frame is sized to the image rather than the column
    so a wide screenshot never letterboxes inside a border. */
-function Shot({ src, alt, eyebrow, cap, note }) {
+function Shot({ src, alt, eyebrow, note }) {
   return (
     <div className="kbs-wide kbm">
       {eyebrow ? <span className="kbs-eyebrow">{eyebrow}</span> : null}
       <figure className="kbm-frame">
         <img src={src} alt={alt} loading="lazy" />
-        {cap ? <figcaption>{cap}</figcaption> : null}
+        {note ? <Note {...note} /> : null}
       </figure>
-      {note ? <p className="kbs-note">{note}</p> : null}
     </div>
+  );
+}
+
+/* the explanation that rides under a screenshot. the Invoice case study
+   does this with a callout baked into its own artwork; these screens are
+   frames of a recording, so the annotation is built as markup instead -
+   which is sharper, reflows on a phone, and can be edited without going
+   back to Figma. dark rather than the Invoice's pale card, because that
+   card sits on a white invoice and this one sits on the case study. */
+function Note({ icon, title, body }) {
+  return (
+    <figcaption className="kbm-note">
+      <span className="kbm-note-i" aria-hidden="true"><Ico name={icon} /></span>
+      <span className="kbm-note-t">
+        <b>{title}</b>
+        <span>{body}</span>
+      </span>
+    </figcaption>
   );
 }
 
@@ -306,15 +323,14 @@ function Shot({ src, alt, eyebrow, cap, note }) {
    link. muted + loop + playsInline so it behaves like a gif and autoplays
    on iOS; it only mounts when its beat is reached, so the file is not
    fetched until the reader gets there. */
-function Clip({ src, eyebrow, cap, note }) {
+function Clip({ src, eyebrow, note }) {
   return (
     <div className="kbs-wide kbm">
       {eyebrow ? <span className="kbs-eyebrow">{eyebrow}</span> : null}
       <figure className="kbm-frame">
         <video src={src} autoPlay muted loop playsInline preload="metadata" />
-        {cap ? <figcaption>{cap}</figcaption> : null}
+        {note ? <Note {...note} /> : null}
       </figure>
-      {note ? <p className="kbs-note">{note}</p> : null}
     </div>
   );
 }
@@ -397,32 +413,44 @@ function KbStoryScene() {
       src="/kb/kb-home.jpg"
       alt="Polarin Docs home page, with a search bar and six Choose Your Path cards"
       eyebrow="What shipped"
-      cap="Polarin Docs · the landing page routes by intent, not by product tree"
-      note="six paths, because discovery said people arrive with a job - not with a table of contents."
+      note={{
+        icon: 'book',
+        title: 'Six paths, not a table of contents',
+        body: 'Discovery said people arrive with a job to do, not a product tree to browse. The landing page routes by intent - new to Polarin, configure a service, monitor it, find a location, handle billing, or get help.',
+      }}
     />,
     <Shot
       key="s-article"
       src="/kb/kb-article.jpg"
       alt="An article page titled What Is a Port, with read time, category chip, an on-this-page rail and a tip callout"
       eyebrow="One page, four affordances"
-      cap="read time · type chip · on-this-page rail · tip callout"
-      note="the content model shows through: a page knows what type it is, so it can be filtered, cross-linked and reused."
+      note={{
+        icon: 'notes',
+        title: 'The content model, showing through',
+        body: 'Read time, a type chip, an on-this-page rail and a tip callout - none of which the old flat wiki could express. Because a page knows what type it is, it can be filtered, cross-linked and reused rather than just read.',
+      }}
     />,
     <Shot
       key="s-ticket"
       src="/kb/kb-ticket.jpg"
       alt="A how-to article with numbered steps and an embedded screenshot of the ticket creation form"
       eyebrow="How-tos carry the product with them"
-      cap="numbered steps, each with the actual screen beside it"
-      note="the old wiki could only hold prose. this one holds the interface the instruction is about."
+      note={{
+        icon: 'ticket',
+        title: 'Numbered steps, each with its own screen',
+        body: 'The old wiki could hold prose and nothing else. This one holds the interface the instruction is about, so a reader can check what they are seeing against what they should be seeing.',
+      }}
     />,
     <Shot
       key="s-release"
       src="/kb/kb-release.jpg"
       alt="The release notes page with year and month filters and version cards grouped into new features, improvements and bug fixes"
       eyebrow="Release notes became a type, not a page"
-      cap="filterable by year and month · grouped into features, improvements, fixes"
-      note="this is the structure the Jira phase writes into - the shape had to exist before anything could fill it."
+      note={{
+        icon: 'check',
+        title: 'Filterable by year, month and class of change',
+        body: 'Every version splits into new features, improvements and bug fixes, each with a count. This is the structure the Jira phase writes into - the shape had to exist before anything could fill it.',
+      }}
     />,
     <div className="kbs-wide" key="publish">
       <span className="kbs-eyebrow">Publish is one button</span>
@@ -445,8 +473,11 @@ function KbStoryScene() {
       src="/kb/kb-menu.jpg"
       alt="The Copy page dropdown open, offering copy as markdown, view as markdown, download as PDF, and open in ChatGPT, Claude, Gemini or Perplexity"
       eyebrow="Instead of a chatbot, one control"
-      cap="Copy page · every route out of the page, including four assistants by name"
-      note="we host no model and index nothing. the page just makes itself legible to whatever the reader already trusts."
+      note={{
+        icon: 'reader',
+        title: 'Every route out of the page, in one menu',
+        body: 'Copy as markdown, view it as plain text, take a PDF, or open the page straight in ChatGPT, Claude, Gemini or Perplexity. We host no model and index nothing - the page makes itself legible to whatever the reader already trusts.',
+      }}
     />,
     <div className="kbs-md" key="how">
       <span className="kbs-eyebrow">Every page is also a plain markdown file</span>
@@ -464,8 +495,11 @@ function KbStoryScene() {
       key="s-llm"
       src="/kb/kb-llm.mp4"
       eyebrow="A page the model had never seen, answered in one turn"
-      cap="Open in Claude → it fetches the markdown twin → reads it → answers from it"
-      note="no training, no embedding, no sync job. the link is the context."
+      note={{
+        icon: 'cms',
+        title: 'Open in Claude → fetch → read → answer',
+        body: 'It pulls the markdown twin stored beside the page in Strapi, reads it, and answers a question out of it in a single turn. No training, no embedding, no sync job - the link is the context.',
+      }}
     />,
     <div className="kbs-wide" key="why">
       <span className="kbs-eyebrow">Why that beats the chatbot</span>
@@ -585,7 +619,7 @@ export default function KnowledgeBaseCaseStudy({ onPrev, onNext, idx, total }) {
         <p>It lived in WikiJS, where every correction queued behind a developer, a review and a deploy. I rebuilt it on Strapi, wrote the portal in Claude Code, and made every page as readable to an assistant as it is to a person.</p>
         <div className="inv-meta">
           <div><span>My role</span><b>Structure, design, and the build</b></div>
-          <div><span>Built with</span><b>Claude Code · Strapi · Vercel</b></div>
+          <div><span>Built with</span><b>Claude Code · Strapi</b></div>
           <div><span>Status</span><b>Phase 1 live · automation designed</b></div>
         </div>
         <span className="cp-scroll" aria-hidden="true"><i></i>scroll</span>

@@ -8706,11 +8706,22 @@ body.static .scene { height: auto !important; }
    subtraction leaves room for the eyebrow above and the note below. */
 .kbm { display: flex; flex-direction: column; align-items: center; max-width: 1060px; }
 .kbm-frame { margin: 0; width: fit-content; max-width: 100%; border: 1px solid var(--line2); border-radius: var(--r-lg); background: var(--ink2); overflow: hidden; box-shadow: 0 30px 70px rgba(0, 0, 0, 0.42); }
-.kbm-frame img, .kbm-frame video { display: block; width: auto; height: auto; max-width: 100%; max-height: calc(90vh - 330px); object-fit: contain; }
-.kbm-frame figcaption { border-top: 1px solid var(--line); padding: 11px 16px; font-family: var(--mono); font-size: var(--t-body-xs); letter-spacing: 0.02em; color: var(--dim); text-align: left; }
+/* the subtraction covers the eyebrow above and the annotation below, so a
+   screenshot never pushes its own explanation off a fixed-height stage. */
+.kbm-frame img, .kbm-frame video { display: block; width: auto; height: auto; max-width: 100%; max-height: calc(90vh - 400px); object-fit: contain; }
+
+/* the explanation under a screenshot: an icon, a claim, and the sentence
+   that backs it - the Invoice case study's callout structure, rendered in
+   this case study's palette rather than its pale-on-white one. */
+.kbm-note { display: grid; grid-template-columns: 34px 1fr; gap: 14px; align-items: start; border-top: 1px solid var(--line); padding: 15px 18px; text-align: left; }
+.kbm-note-i { width: 34px; height: 34px; display: grid; place-items: center; border-radius: var(--r-sm); border: 1px solid rgba(54, 150, 177, 0.32); background: rgba(54, 150, 177, 0.09); color: #4FB4D0; }
+.kbm-note-i svg { width: 18px; height: 18px; }
+.kbm-note-t b { display: block; font-family: var(--disp); font-weight: 700; font-size: var(--t-body-sm); line-height: 1.35; color: var(--text); }
+.kbm-note-t > span { display: block; margin-top: 5px; max-width: 76ch; font-size: var(--t-body-xs); line-height: 1.55; color: var(--mute); }
 @media (max-width: 860px) {
-  .kbm-frame img, .kbm-frame video { max-height: calc(90vh - 300px); }
-  .kbm-frame figcaption { padding: 9px 12px; }
+  .kbm-frame img, .kbm-frame video { max-height: calc(90vh - 380px); }
+  .kbm-note { grid-template-columns: 1fr; gap: 9px; padding: 13px 14px; }
+  .kbm-note-i { display: none; }
 }
 .kbs-rail { display: flex; flex-wrap: wrap; border: 1px solid var(--line2); border-radius: var(--r-md); overflow: hidden; background: var(--ink2); }
 .kbs-rail-s { flex: 1 1 150px; padding: 16px; border-right: 1px solid var(--line2); text-align: left; }
