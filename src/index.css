@@ -575,16 +575,16 @@
      ~2300px: at 1440, 1680 and 1920 every one of these still computes to
      exactly the px it always was, so no existing layout moves. they only
      grow where the screen is big enough to have caused the complaint. */
-  --t-card-sm: clamp(15.5px, 0.66vw, 21px);
+  --t-card-sm: clamp(16px, 0.66vw, 21px);
   --t-stat: clamp(30px, 3.6vw, 44px);
-  --t-stat-sm: clamp(22px, 0.95vw, 34px);
-  --t-lede: clamp(16px, 1.7vw, 20px);
-  --t-body: clamp(15px, 1.4vw, 17.5px);
-  --t-body-sm: clamp(13.5px, 0.58vw, 19px);
-  --t-body-xs: clamp(12.5px, 0.54vw, 17px);
-  --t-eyebrow: clamp(11.5px, 0.5vw, 16px);
-  --t-meta: clamp(10.5px, 0.46vw, 15px);
-  --t-micro: clamp(9.5px, 0.42vw, 14px);
+  --t-stat-sm: clamp(23px, 0.95vw, 34px);
+  --t-lede: clamp(17px, 1.7vw, 20px);
+  --t-body: clamp(16px, 1.4vw, 17.5px);
+  --t-body-sm: clamp(14.5px, 0.58vw, 19px);
+  --t-body-xs: clamp(13.5px, 0.54vw, 17px);
+  --t-eyebrow: clamp(12px, 0.5vw, 16px);
+  --t-meta: clamp(11px, 0.46vw, 15px);
+  --t-micro: clamp(10.5px, 0.42vw, 14px);
 
   /* ---------------- CARD + SPACE SCALE ----------------
      three card recipes, and the only numbers they are allowed to use. the
@@ -678,11 +678,21 @@
      (.dv-pipe at 18px on stop 05): the rule's own value is --sp-block, and the
      inline overrides it *down* precisely because that instance is inside the
      pinned .tl-stage. */
-  --sp-block: 26px;
-  --sp-fold: 34px;
-  --sp-head: 44px;
-  --sp-sec: 90px;
-  --sp-sec-lg: 110px;
+  /* RAISED for breathing room, as one move on the whole ladder rather than
+     per-component, so the rhythm the five rungs describe is preserved and
+     only its scale changes. the coarse rungs move most, because the
+     complaint was that the page felt dense section to section, not that a
+     heading sat too close to its own cards:
+       block 26 -> 30, fold 34 -> 40, head 44 -> 54 (+15 / +18 / +23%)
+       sec   90 -> 116, sec-lg 110 -> 144            (+29 / +31%)
+     safe against the pinned scroll scenes because those are tuned in their
+     own fixed values and do not read these - the only rules that do are the
+     two reduced-motion -static stacks, which are ordinary flow. */
+  --sp-block: 30px;
+  --sp-fold: 40px;
+  --sp-head: 54px;
+  --sp-sec: 116px;
+  --sp-sec-lg: 144px;
 
   /* TWO MORE STEPS, and they are a different KIND of step: the five above are
      the site's own rhythm, chosen against the type scale, and these two are the
@@ -699,6 +709,13 @@
      top margin. all three moves are inside 12px, which is why this could be
      done at all: had the nearest cell fraction been 60px this would have become
      a redesign of the fold's rhythm wearing an alignment argument. */
+  /* THE ONE PLACE THE RAISED TIERS ARE GIVEN BACK.
+     the type ladder above was raised so the page breathes. a pinned scroll
+     stage is a fixed-height box with overflow: hidden, so it has no room to
+     give: on a phone, or on a short laptop, the same increase crops the
+     beat instead of airing it. inside a stage, and only there, the small
+     tiers return to the minimums they had before the raise - which is
+     exactly the amount that did not fit, no more. */
   --sp-cell-half: calc(var(--grid-cell) / 2);
   --sp-cell-quarter: calc(var(--grid-cell) / 4);
 
@@ -819,7 +836,7 @@ body {
   background: var(--ink);
   color: var(--text);
   font-family: var(--body);
-  line-height: 1.6;
+  line-height: 1.65;
   overflow-x: hidden;
   margin: 0;
   min-height: 100vh;
@@ -9162,4 +9179,66 @@ body.static .scene { height: auto !important; }
   .gax-port-bar { display: none; }
   .gax-crit-r { flex-direction: column; align-items: flex-start; gap: 6px; }
   .gax-crit-r span { text-align: left; }
+}
+
+/* Two beats were cropping on a phone before this pass and still were after
+   the tier reset: the Customer Portal's exploration beat (808px of content
+   in a 625px stage, 387px of it the stacked pill list) and the Invoice's
+   requirements beat (a 594px card grid under its own heading). Both are
+   fixed-height stages, so the content has to give. Tightened, not cut -
+   every pill and every card still says what it said. */
+@media (max-width: 560px) {
+  .expl-pills { margin-top: 14px; gap: 7px; }
+  .expl-pill { font-size: var(--t-body-xs); padding: 7px 14px; }
+  .expl-h { font-size: var(--t-sub); }
+  .expl-note { margin-top: 13px; font-size: var(--t-body-xs); line-height: 1.5; }
+  .expl-cols { gap: 10px; margin-top: 16px; }
+  .expl-col { padding: 13px 14px 14px; }
+  .expl-col-q { font-size: var(--t-card-sm); margin-bottom: 9px; }
+  .expl-col ul { gap: 5px; }
+  .expl-col li { font-size: var(--t-body-xs); line-height: 1.35; }
+  .inv-problems { gap: 10px; margin-top: 18px; }
+  .inv-problem { padding: 12px 14px; }
+  .inv-problem h4 { font-size: var(--t-card-sm); margin-top: 6px; }
+  .inv-problem p { font-size: var(--t-body-xs); margin-top: 5px; }
+}
+
+/* a short laptop gives the exploration stage ~632px, which Chapter 2 ran
+   past. min-width guards it off phones, where the block above already
+   tightens these further - without the guard this one sits later in the
+   file and relaxes them straight back. */
+@media (max-height: 900px) and (min-width: 561px) {
+  .expl-pills { margin-top: 14px; gap: 7px; }
+  .expl-pill { padding: 7px 17px; font-size: var(--t-body-sm); }
+  .expl-note { margin-top: 14px; }
+  .expl-cols { gap: 14px; margin-top: 18px; }
+  .expl-col { padding: 15px 16px 16px; }
+  .expl-col-q { margin-bottom: 10px; }
+  .expl-col ul { gap: 6px; }
+  /* these two beats are image-driven rather than text-driven: 594px of
+     drawing in a 636px stage. the picture is what has to give, and a vh cap
+     is the only lever that tracks the stage, since the stage is itself a
+     fraction of the viewport height. */
+  .expl-viz img { max-height: 56vh; width: auto; margin: 0 auto; }
+  .expl-wire { max-height: 54vh; }
+  .expl-anat .expl-spot { width: min(100%, 76vh); }
+}
+/* a 13" laptop leaves even less, so the drawings step down once more. */
+@media (max-height: 840px) and (min-width: 561px) {
+  .expl-viz img { max-height: 50vh; }
+  .expl-wire { max-height: 48vh; }
+  .expl-anat .expl-spot { width: min(100%, 68vh); }
+}
+
+/* see THE ONE PLACE THE RAISED TIERS ARE GIVEN BACK, in the type scale. */
+@media (max-width: 560px), (max-height: 900px) {
+  .oscn-stage, .tl-stage, .cjx-stage, .aud-stage {
+    --t-body: clamp(15px, 1.4vw, 17.5px);
+    --t-body-sm: clamp(13.5px, 0.58vw, 19px);
+    --t-body-xs: clamp(12.5px, 0.54vw, 17px);
+    --t-card-sm: clamp(15.5px, 0.66vw, 21px);
+    --t-lede: clamp(16px, 1.7vw, 20px);
+    --t-meta: clamp(10.5px, 0.46vw, 15px);
+    --t-micro: clamp(9.5px, 0.42vw, 14px);
+  }
 }
