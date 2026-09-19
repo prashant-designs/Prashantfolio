@@ -887,6 +887,31 @@ const EXPLORE_VALIDATION = [
   },
 ];
 
+// A slot for a real photograph of the paper, with the drawing behind it.
+//
+// The asset is PROBED rather than rendered-and-caught: an <img> pointed at a
+// file that is not there paints a broken-image icon for a frame before the
+// fallback swaps it out, and on a case study beat that flash is worse than
+// the drawing it is trying to improve on. So the image is loaded off-screen
+// first and only swapped in once it has actually decoded.
+//
+// No sketch photographs exist in the project yet, so every one of these
+// currently shows its <svg>. Drop a file at the path each one names and that
+// beat starts showing the real thing - no code change.
+function Paper({ src, alt, children }) {
+  const [real, setReal] = useState(false);
+  useEffect(() => {
+    if (!src) return undefined;
+    let live = true;
+    const probe = new Image();
+    probe.onload = () => { if (live) setReal(true); };
+    probe.src = src;
+    return () => { live = false; };
+  }, [src]);
+  if (!real) return children;
+  return <img className="expl-paper" src={src} alt={alt} />;
+}
+
 // paper first. three of the versions the four steps went through before any
 // of it became a screen - drawn as sketches rather than shown as clean
 // wireframes, because the point of this beat is that the shape was argued
@@ -895,34 +920,40 @@ function ExplSketches() {
   return (
     <div className="expl-sketches">
       <figure className="expl-sketch">
-        <svg viewBox="0 0 150 170" role="img" aria-label="First sketch: every field in one long form">
-          <path d="M9 8 L141 10 L140 161 L10 159 Z" />
-          <path d="M20 26 L96 27M20 40 L128 41M20 54 L128 55M20 68 L128 69M20 82 L128 83M20 96 L128 97M20 110 L128 111M20 124 L128 125M20 138 L104 139" />
-          <path className="expl-sketch-x" d="M26 22 L126 146M126 22 L26 146" />
-        </svg>
+        <Paper src="/explore/sketch-1.jpg" alt="Sketch: every field on one long form, crossed out">
+          <svg viewBox="0 0 150 170" role="img" aria-label="First sketch: every field in one long form">
+            <path d="M9 8 L141 10 L140 161 L10 159 Z" />
+            <path d="M20 26 L96 27M20 40 L128 41M20 54 L128 55M20 68 L128 69M20 82 L128 83M20 96 L128 97M20 110 L128 111M20 124 L128 125M20 138 L104 139" />
+            <path className="expl-sketch-x" d="M26 22 L126 146M126 22 L26 146" />
+          </svg>
+        </Paper>
         <figcaption>v1 — one long form. too much at once.</figcaption>
       </figure>
       <figure className="expl-sketch">
-        <svg viewBox="0 0 150 170" role="img" aria-label="Second sketch: fields split across tabs">
-          <path d="M9 9 L141 8 L141 160 L9 161 Z" />
-          <path d="M10 34 L140 33" />
-          <path d="M22 20 L48 21M62 20 L88 21M102 20 L128 21" />
-          <path d="M22 50 L128 51M22 66 L128 67M22 82 L96 83" />
-          <path d="M22 104 L128 105M22 120 L128 121M22 136 L96 137" />
-          <path className="expl-sketch-note" d="M96 148 L134 149" />
-        </svg>
+        <Paper src="/explore/sketch-2.jpg" alt="Sketch: the same fields split across tabs">
+          <svg viewBox="0 0 150 170" role="img" aria-label="Second sketch: fields split across tabs">
+            <path d="M9 9 L141 8 L141 160 L9 161 Z" />
+            <path d="M10 34 L140 33" />
+            <path d="M22 20 L48 21M62 20 L88 21M102 20 L128 21" />
+            <path d="M22 50 L128 51M22 66 L128 67M22 82 L96 83" />
+            <path d="M22 104 L128 105M22 120 L128 121M22 136 L96 137" />
+            <path className="expl-sketch-note" d="M96 148 L134 149" />
+          </svg>
+        </Paper>
         <figcaption>v2 — tabs. people missed the ones they hadn&apos;t opened.</figcaption>
       </figure>
       <figure className="expl-sketch expl-sketch-win">
-        <svg viewBox="0 0 150 170" role="img" aria-label="Third sketch: a four-step flow with a running price panel">
-          <path d="M9 8 L141 9 L140 160 L10 161 Z" />
-          <circle cx="28" cy="26" r="6" /><circle cx="58" cy="27" r="6" /><circle cx="88" cy="26" r="6" /><circle cx="118" cy="27" r="6" />
-          <path d="M34 26 L52 27M64 27 L82 26M94 26 L112 27" />
-          <path d="M22 48 L92 49M22 64 L92 65M22 80 L92 81M22 96 L74 97" />
-          <path d="M102 44 L132 45 L131 122 L101 121 Z" />
-          <path d="M108 58 L126 59M108 70 L124 71M108 84 L126 85" />
-          <path d="M22 130 L58 131M96 130 L132 131" />
-        </svg>
+        <Paper src="/explore/sketch-3.jpg" alt="Sketch: a four-step flow with a running price panel">
+          <svg viewBox="0 0 150 170" role="img" aria-label="Third sketch: a four-step flow with a running price panel">
+            <path d="M9 8 L141 9 L140 160 L10 161 Z" />
+            <circle cx="28" cy="26" r="6" /><circle cx="58" cy="27" r="6" /><circle cx="88" cy="26" r="6" /><circle cx="118" cy="27" r="6" />
+            <path d="M34 26 L52 27M64 27 L82 26M94 26 L112 27" />
+            <path d="M22 48 L92 49M22 64 L92 65M22 80 L92 81M22 96 L74 97" />
+            <path d="M102 44 L132 45 L131 122 L101 121 Z" />
+            <path d="M108 58 L126 59M108 70 L124 71M108 84 L126 85" />
+            <path d="M22 130 L58 131M96 130 L132 131" />
+          </svg>
+        </Paper>
         <figcaption>v3 — four steps, price always on screen. this one held up.</figcaption>
       </figure>
     </div>
@@ -1011,6 +1042,7 @@ const EXPLORE_GROUPS = [
 function ExplFlowViz() {
   const rowY = (i) => 56 + i * 40;
   return (
+    <Paper src="/explore/wireframe-order.jpg" alt="Whiteboard: the order form bracketed into three steps">
     <svg className="expl-wire" viewBox="0 0 460 300" role="img" aria-label="Wireframe of the order form: six fields bracketed into three steps - location and inventory, term and price, billing and payment">
       <rect x="10" y="10" width="250" height="282" rx="10" fill="var(--ink2)" stroke="var(--line2)" />
       <line x1="10" y1="38" x2="260" y2="38" stroke="var(--line2)" />
@@ -1040,6 +1072,7 @@ function ExplFlowViz() {
         );
       })}
     </svg>
+    </Paper>
   );
 }
 
@@ -1520,6 +1553,7 @@ const SERVICES_SHAPE_LEGEND = [
 function ServicesShapeViz() {
   return (
     <>
+      <Paper src="/explore/wireframe-services.jpg" alt="Whiteboard: the services page as a rail, a list and one service in detail">
       <svg className="expl-wire" viewBox="0 0 312 300" role="img" aria-label="Wireframe of the services page: a product rail, a filterable service list, and one service in detail behind four tabs">
       <rect x="10" y="10" width="290" height="280" rx="10" fill="var(--ink2)" stroke="var(--line2)" />
       <line x1="10" y1="42" x2="300" y2="42" stroke="var(--line2)" />
@@ -1556,6 +1590,7 @@ function ServicesShapeViz() {
         </g>
       ))}
       </svg>
+      </Paper>
       <ol className="expl-legend">
         {SERVICES_SHAPE_LEGEND.map((t, k) => (
           <li key={t}><span>{k + 1}</span>{t}</li>

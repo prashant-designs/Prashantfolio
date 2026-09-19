@@ -6613,6 +6613,11 @@ b.adm-was { font-family: var(--body); font-weight: 600; color: var(--rose); }
    tokens (var() inside the SVG's fills), so it stays on-palette without a
    second set of hard-coded colours to keep in sync. */
 .expl-wire { display: block; width: 100%; height: auto; }
+/* a real photograph of the paper, dropped into the slot the drawing holds.
+   sized like the drawing it replaces so the beat's height does not move,
+   and the same rounded frame the rest of the case study's media uses. */
+.expl-paper { display: block; width: 100%; height: auto; border: 1px solid var(--line2); border-radius: var(--r-md); }
+.expl-sketch .expl-paper { aspect-ratio: 150 / 170; object-fit: cover; }
 .expl-wire-t { font-family: var(--mono); font-size: var(--t-eyebrow); letter-spacing: 0.04em; fill: var(--mute); }
 .expl-wire-n { font-family: var(--mono); font-size: var(--t-micro); font-weight: 700; fill: #0A0D1A; text-anchor: middle; }
 /* the wireframe's numbered legend, in HTML rather than inside the SVG so a
