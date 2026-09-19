@@ -4,21 +4,12 @@ import useHeroPointer from '../useHeroPointer';
 
 const CROSSING = [
   {
-    yr: '2022',
-    role: 'Executive UI/UX Designer',
+    yr: '2022 - 2025',
+    role: 'Executive → Senior Executive UI/UX Designer',
     qPre: 'Does it ',
-    qEm: 'look',
-    qPost: ' right?',
-    body: 'First designer in the building. Every customer-portal module taken 0 → 1 - structure, core flows, screens - from a truly blank canvas.',
-    word: 'PIXELS',
-  },
-  {
-    yr: '2025',
-    role: 'Senior Executive UI/UX Designer',
-    qPre: 'Does it ',
-    qEm: 'scale',
-    qPost: ' right?',
-    body: 'Built the Polarin design system - tokens, components, patterns - that every product surface still runs on. Screens became a language.',
+    qEm: 'hold up',
+    qPost: '?',
+    body: 'First designer in the building. Every customer-portal module 0 → 1, then the design system every surface still runs on.',
     word: 'SYSTEMS',
   },
   {
@@ -26,9 +17,18 @@ const CROSSING = [
     role: 'Associate Product Manager',
     qPre: 'Is it the ',
     qEm: 'right thing',
-    qPost: ' at all?',
-    body: 'Full product ownership: the developer & customer portal roadmap end to end - priorities shaped by support data, usage analytics, and customer interviews.',
-    word: 'OUTCOMES',
+    qPost: ' to build?',
+    body: 'Roadmap ownership across both portals. Priorities argued from support data, usage analytics and customer interviews.',
+    word: 'ROADMAPS',
+  },
+  {
+    yr: 'Now',
+    role: 'Product · forward-deployed',
+    qPre: 'Can I take it ',
+    qEm: 'all the way',
+    qPost: '?',
+    body: 'Requirements with the customer, design, and the deployment itself - one person from the ask to the thing running.',
+    word: 'DEPLOYED',
   },
 ];
 
@@ -96,21 +96,50 @@ function TheCrossing() {
           </div>
         ))}
       </div>
-      {/* the three artifacts are the real products now rather than
-          wireframes of them - a chapter that claims "I shipped this" is
-          better served by the thing than by a drawing of the thing. */}
+      {/* stage one has real products to show, so it shows them - the portal
+          and the design system, cross-fading, because that stage covers
+          both. stages two and three are ways of working rather than
+          screens, so a screenshot would be a stand-in for an argument it
+          cannot make; they get a drawing that animates the argument
+          instead. both stop moving under prefers-reduced-motion. */}
       <div className="cross-right" aria-hidden="true">
         <div className={`artifact ${active === 0 ? 'on' : ''}`}>
-          <div className="art-bar"><i style={{ background: 'var(--bar-5)' }}></i>customer portal · every module 0 → 1</div>
-          <img className="art-img" src="/journey/jr-portal.jpg" alt="" loading="lazy" />
+          <div className="art-bar"><i style={{ background: '#3696B1' }}></i>customer portal · design system</div>
+          <div className="art-swap">
+            <img src="/journey/jr-portal.jpg" alt="" loading="lazy" />
+            <img src="/journey/jr-ds.jpg" alt="" loading="lazy" />
+          </div>
         </div>
+
         <div className={`artifact ${active === 1 ? 'on' : ''}`}>
-          <div className="art-bar"><i style={{ background: 'var(--rose)' }}></i>polarin design system · tokens · components</div>
-          <img className="art-img" src="/journey/jr-ds.jpg" alt="" loading="lazy" />
+          <div className="art-bar"><i style={{ background: 'var(--rose)' }}></i>roadmap · argued, not assumed</div>
+          <div className="art-fx">
+            <div className="fx-signals">
+              <span>support data</span><span>usage analytics</span><span>interviews</span>
+            </div>
+            <div className="fx-road">
+              {['Now', 'Next', 'Later'].map((lane) => (
+                <div className="fx-lane" key={lane}>
+                  <span className="fx-lane-l">{lane}</span>
+                  <i></i><i></i>
+                </div>
+              ))}
+              <div className="fx-rise"></div>
+            </div>
+          </div>
         </div>
+
         <div className={`artifact ${active === 2 ? 'on' : ''}`}>
-          <div className="art-bar"><i style={{ background: 'var(--up)' }}></i>developer portal · owned end to end</div>
-          <img className="art-img" src="/journey/jr-product.jpg" alt="" loading="lazy" />
+          <div className="art-bar"><i style={{ background: 'var(--up)' }}></i>ask → design → deployed</div>
+          <div className="art-fx">
+            <div className="fx-loop">
+              {['Ask', 'Design', 'Deploy'].map((n) => (
+                <span className="fx-node" key={n}>{n}</span>
+              ))}
+              <span className="fx-dot"></span>
+            </div>
+            <p className="fx-cap">no handoff in the middle</p>
+          </div>
         </div>
       </div>
     </div>

@@ -8266,6 +8266,49 @@ body.static .scene { height: auto !important; }
    fit would make all three unreadable grey rectangles. */
 .art-img { flex: 1; min-height: 0; width: 100%; object-fit: cover; object-position: top left; display: block; }
 
+/* stage one covers two years and two things, so its artifact shows both -
+   the portal and the design system, held long enough to read before the
+   other takes over. */
+.art-swap { position: relative; flex: 1; min-height: 0; }
+.art-swap img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: top left; animation: artSwap 11s infinite; }
+.art-swap img:last-child { animation-delay: 5.5s; opacity: 0; }
+@keyframes artSwap { 0%, 3% { opacity: 0; } 8%, 46% { opacity: 1; } 52%, 100% { opacity: 0; } }
+
+/* stages two and three are ways of working, not screens. these draw the
+   argument and move it, minimally - a few marks, no chrome. */
+.art-fx { flex: 1; min-height: 0; display: flex; flex-direction: column; justify-content: center; gap: 30px; padding: 30px 26px; }
+.fx-signals { display: flex; flex-wrap: wrap; gap: 7px; justify-content: center; }
+.fx-signals span { font-family: var(--mono); font-size: 10.5px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--dim); border: 1px solid var(--line2); border-radius: 999px; padding: 5px 9px; animation: fxPulse 3.6s ease-in-out infinite; }
+.fx-signals span:nth-child(2) { animation-delay: 1.2s; }
+.fx-signals span:nth-child(3) { animation-delay: 2.4s; }
+@keyframes fxPulse { 0%, 100% { border-color: var(--line2); color: var(--dim); } 50% { border-color: color-mix(in srgb, var(--rose) 55%, transparent); color: var(--rose); } }
+
+/* the roadmap: three lanes, and one item that keeps arriving in Now -
+   which is the whole job, stated once. */
+.fx-road { position: relative; display: grid; gap: 15px; }
+.fx-lane { display: grid; grid-template-columns: 46px 1fr 1fr; gap: 8px; align-items: center; }
+.fx-lane-l { font-family: var(--mono); font-size: 9px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--dim); }
+.fx-lane i { height: 22px; border-radius: 5px; background: color-mix(in srgb, var(--mute) 22%, transparent); }
+.fx-lane:first-child i { background: color-mix(in srgb, var(--mute) 34%, transparent); }
+.fx-rise { position: absolute; left: 54px; width: calc(50% - 32px); height: 22px; border-radius: 5px; background: var(--rose); animation: fxRise 4.4s var(--ease) infinite; }
+@keyframes fxRise { 0%, 12% { transform: translateY(74px); opacity: 0.25; } 46%, 88% { transform: translateY(0); opacity: 1; } 100% { transform: translateY(74px); opacity: 0.25; } }
+
+/* the loop: one dot goes ask -> design -> deploy and starts again, and
+   never stops at a handoff, because there isn't one. */
+.fx-loop { position: relative; display: flex; justify-content: space-between; align-items: center; padding: 0 4px; }
+.fx-loop::before { content: ''; position: absolute; left: 10%; right: 10%; top: 50%; height: 1px; background: var(--line2); }
+.fx-node { position: relative; z-index: 1; font-family: var(--mono); font-size: 11px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--mute); background: var(--raise); border: 1px solid var(--line2); border-radius: 999px; padding: 12px 16px; }
+.fx-dot { position: absolute; top: 50%; left: 12%; width: 9px; height: 9px; margin-top: -4.5px; border-radius: 50%; background: var(--up); box-shadow: 0 0 12px color-mix(in srgb, var(--up) 60%, transparent); animation: fxTravel 4s linear infinite; }
+@keyframes fxTravel { 0% { left: 15%; } 100% { left: 78%; } }
+.fx-cap { text-align: center; font-family: var(--mono); font-size: 9.5px; letter-spacing: 0.16em; text-transform: uppercase; color: var(--dim); margin: 0; }
+
+@media (prefers-reduced-motion: reduce) {
+  .art-swap img { animation: none; }
+  .art-swap img:last-child { display: none; }
+  .fx-signals span, .fx-rise, .fx-dot { animation: none; }
+  .fx-rise { transform: none; opacity: 1; }
+}
+
 /* Ch.2's three stages each carry their own accent, and it travels: the
    year, the emphasised word in the question, and the dot on the artifact
    header all take it. only one stage is ever lit (the others sit at 0.16
