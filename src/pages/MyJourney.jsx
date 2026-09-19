@@ -96,43 +96,21 @@ function TheCrossing() {
           </div>
         ))}
       </div>
+      {/* the three artifacts are the real products now rather than
+          wireframes of them - a chapter that claims "I shipped this" is
+          better served by the thing than by a drawing of the thing. */}
       <div className="cross-right" aria-hidden="true">
         <div className={`artifact ${active === 0 ? 'on' : ''}`}>
-          <div className="art-bar"><i style={{ background: 'var(--mute)' }}></i>portal-module-v1.fig · first designer</div>
-          <div className="art-body">
-            <div className="wf-el bar"></div>
-            <div className="wf-el hero">MODULE / 0 → 1</div>
-            <div className="wf-row"><div className="wf-el card"></div><div className="wf-el card"></div></div>
-            <div className="wf-el btn"></div>
-          </div>
+          <div className="art-bar"><i style={{ background: 'var(--bar-5)' }}></i>customer portal · every module 0 → 1</div>
+          <img className="art-img" src="/journey/jr-portal.jpg" alt="" loading="lazy" />
         </div>
         <div className={`artifact ${active === 1 ? 'on' : ''}`}>
-          <div className="art-bar"><i style={{ background: 'var(--rose)' }}></i>polarin-ds · tokens · components</div>
-          <div className="art-body">
-            <div className="prd-line prd-h"></div>
-            <span className="prd-tag">Tokens</span><span className="prd-tag">Components</span><span className="prd-tag">Patterns</span>
-            <div className="prd-line" style={{ width: '92%' }}></div>
-            <div className="prd-line" style={{ width: '84%' }}></div>
-            <div className="prd-line" style={{ width: '70%' }}></div>
-            <div className="prd-metric"><span>surfaces running on it</span><b>all of them</b></div>
-            <div className="prd-metric"><span>design → dev drift</span><b>↓ near zero</b></div>
-          </div>
+          <div className="art-bar"><i style={{ background: 'var(--rose)' }}></i>polarin design system · tokens · components</div>
+          <img className="art-img" src="/journey/jr-ds.jpg" alt="" loading="lazy" />
         </div>
         <div className={`artifact ${active === 2 ? 'on' : ''}`}>
-          <div className="art-bar"><i style={{ background: 'var(--up)' }}></i>roadmap-review · portals · apm</div>
-          <div className="art-body">
-            <div className="db-kpis">
-              <div className="db-kpi"><div className="v g">3×</div><div className="l">self-serve adoption</div></div>
-              <div className="db-kpi"><div className="v a">−40%</div><div className="l">dev handoffs</div></div>
-              <div className="db-kpi"><div className="v">−50%</div><div className="l">vendor dependency</div></div>
-            </div>
-            <div className="db-chart">
-              <i style={{ height: '30%' }}></i><i style={{ height: '42%' }}></i><i style={{ height: '38%' }}></i>
-              <i style={{ height: '56%' }}></i><i style={{ height: '64%' }}></i><i className="hot" style={{ height: '82%' }}></i>
-              <i className="hot" style={{ height: '95%' }}></i>
-            </div>
-            <div className="db-note">▲ shipped · adopted · <b>measured</b></div>
-          </div>
+          <div className="art-bar"><i style={{ background: 'var(--up)' }}></i>developer portal · owned end to end</div>
+          <img className="art-img" src="/journey/jr-product.jpg" alt="" loading="lazy" />
         </div>
       </div>
     </div>
@@ -142,7 +120,7 @@ function TheCrossing() {
 function TheMultiplier() {
   return (
     <div className="wrap mult-stage">
-      <svg className="mult-svg" viewBox="0 0 1060 480" aria-hidden="true">
+      <svg className="mult-svg" viewBox="-95 0 1300 480" aria-hidden="true">
         <path className="thread" data-th style={{ stroke: 'var(--mute)' }} d="M150 70  C 330 70,  330 226, 500 232" />
         <path className="thread" data-th style={{ stroke: 'var(--rose)' }} d="M150 155 C 320 155, 330 230, 500 236" />
         <path className="thread" data-th style={{ stroke: 'var(--text)' }} d="M150 240 C 320 240, 330 240, 500 240" />
@@ -154,7 +132,7 @@ function TheMultiplier() {
         <text className="in-label" x="140" y="329" textAnchor="end">Data & analytics</text>
         <text className="in-label" x="140" y="414" textAnchor="end">AI × frontend</text>
         <g id="multCore" opacity="0">
-          <circle cx="545" cy="240" r="52" fill="var(--line)" stroke="var(--text)" strokeWidth="1.4" />
+          <circle cx="545" cy="240" r="52" fill="var(--raise)" stroke="var(--text)" strokeWidth="1.4" />
           <circle cx="545" cy="240" r="66" fill="none" stroke="var(--line2)" strokeDasharray="3 7" />
           <text className="core-t1" x="545" y="236" textAnchor="middle">One PM</text>
           <text className="core-t2" x="545" y="254" textAnchor="middle">END TO END</text>

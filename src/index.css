@@ -8211,6 +8211,24 @@ body.static .scene { height: auto !important; }
 .blueprint .draw.faint { stroke: color-mix(in srgb, var(--mute) 45%, transparent); }
 .bp-cap { font-family: var(--mono); font-size: 11px; letter-spacing: 0.18em; text-transform: uppercase; color: var(--dim); text-align: center; margin-top: 16px; }
 .bp-cap b { color: var(--text); font-weight: 500; }
+
+/* ---- JOURNEY: a colour per chapter -------------------------------------
+   The page had drifted fully monochrome. Each chapter now owns one accent
+   and the chapter title, its kicker number and its numbers all take it, so
+   colour carries the structure instead of decorating it:
+
+     Ch.1  craft, teal      Ch.2  systems, rose
+     Ch.3  outcomes, green  Epilogue  the same green it earned
+
+   Scoped to the journey section ids, because .ch-title is a site-wide
+   class and the case studies set their own accents deliberately. */
+#ch1 { --jr-ch: #3696B1; }
+#ch2 { --jr-ch: var(--rose); }
+#ch3, #epi { --jr-ch: var(--up); }
+#ch1 .ch-title span, #ch2 .ch-title span, #ch3 .ch-title span { color: var(--jr-ch); }
+#epi h2 .hot { color: var(--jr-ch); }
+#ch1 .ch-num b, #ch2 .ch-num b, #ch3 .ch-num b { color: var(--jr-ch); }
+#ch1 .bp-cap b { color: var(--up); }
 .ch1-creds { display: flex; gap: 9px; flex-wrap: wrap; margin-top: 16px; }
 .wr { font-family: var(--disp); font-weight: 500; font-size: clamp(20px, 3.1vw, 36px); line-height: 1.4; letter-spacing: -0.01em; max-width: 24ch; }
 .wr i.hot { font-style: normal; color: var(--text); }
@@ -8241,6 +8259,22 @@ body.static .scene { height: auto !important; }
    palette (see ELEVATION), so the override is gone rather than restated. */
 .art-bar { display: flex; align-items: center; gap: 7px; padding: 12px 15px; border-bottom: 1px solid var(--line); background: var(--raise2); font-family: var(--mono); font-size: 10.5px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--dim); }
 .art-bar i { width: 8px; height: 8px; border-radius: 50%; }
+
+/* the artifacts hold real product screenshots now, not drawings of them.
+   cover + top-left origin because the top-left of any of these three
+   screens is the part that identifies it; scaling the whole thing down to
+   fit would make all three unreadable grey rectangles. */
+.art-img { flex: 1; min-height: 0; width: 100%; object-fit: cover; object-position: top left; display: block; }
+
+/* Ch.2's three stages each carry their own accent, and it travels: the
+   year, the emphasised word in the question, and the dot on the artifact
+   header all take it. only one stage is ever lit (the others sit at 0.16
+   opacity), so this stays one accent per viewport. */
+.cross-q:nth-child(1) { --jr-accent: #3696B1; }
+.cross-q:nth-child(2) { --jr-accent: var(--rose); }
+.cross-q:nth-child(3) { --jr-accent: var(--up); }
+.cross-q.on .yr b { color: var(--jr-accent); }
+.cross-q.on h3 em { color: var(--jr-accent); }
 .art-body { flex: 1; padding: 20px; position: relative; }
 /* the three artifact mock-ups inside Ch.2 used to be drawn in fixed
    light-on-dark rgba()s - a blue wireframe, two grey PRD bars, a blue bar
@@ -8293,6 +8327,11 @@ body.static .scene { height: auto !important; }
 .mult-svg { width: 100%; max-width: 1060px; margin: 0 auto; display: block; }
 .mult-svg text { font-family: var(--mono); letter-spacing: 0.14em; text-transform: uppercase; }
 .mult-svg .in-label { fill: var(--mute); font-size: 12px; }
+/* each label takes its own thread's colour, so the eye can follow one
+   skill through the node instead of reading five grey words. */
+.mult-svg .in-label:nth-of-type(2) { fill: color-mix(in srgb, var(--rose) 80%, var(--text)); }
+.mult-svg .in-label:nth-of-type(4) { fill: color-mix(in srgb, var(--up) 80%, var(--text)); }
+.mult-svg .in-label:nth-of-type(5) { fill: color-mix(in srgb, var(--bar-5) 80%, var(--text)); }
 .mult-svg .thread { fill: none; stroke-width: 1.6; stroke-linecap: round; }
 .mult-svg .out-g { opacity: 0; }
 .mult-svg .out-label { fill: var(--text); font-size: 12.5px; }
