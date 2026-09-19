@@ -570,7 +570,7 @@ export default function CurrentProject() {
                   <h4>Developer Portal</h4>
                   <div className="tl-cs-row"><span>about</span><p>customers with their own NMS asked to drive Polarin from inside it - so we productised the API we had already built for ourselves</p></div>
                   <div className="tl-cs-row"><span>role</span><p>DX design, docs & frontend · PRD + pricing framework · volumetrics with engineering</p></div>
-                  <div className="tl-cs-foot"><span className="tl-cs-impact">revenue <small>in testing</small></span><span className="tl-cs-link">Deep dive →</span></div>
+                  <div className="tl-cs-foot"><span className="tl-cs-impact">upsell <small>live with customers</small></span><span className="tl-cs-link">Deep dive →</span></div>
                 </article>
 
                 <article className="tl-cs-card" role="button" tabIndex={0} onClick={() => openStudy('GenAI Initiative')} onKeyDown={cardKeys('GenAI Initiative')}>

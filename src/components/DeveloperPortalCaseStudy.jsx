@@ -268,7 +268,7 @@ const RESULT = [
   </h3>,
   <div className="gax-wide" key="result">
     <span className="gax-eyebrow">Where it stands</span>
-    <div className="inv-result">Revenue in testing with first users - opening a segment that runs its own NMS tooling, and making every integration sticky the moment it&apos;s live.</div>
+    <div className="inv-result">Already upselling into existing accounts - it opened a segment that runs its own NMS tooling, and every integration makes the service sticky the moment it goes live.</div>
   </div>,
 ];
 
@@ -290,7 +290,7 @@ export default function DeveloperPortalCaseStudy({ onPrev, onNext, idx, total })
         <div className="inv-meta">
           <div><span>My role</span><b>Product definition → DX design → frontend</b></div>
           <div><span>Output</span><b>236 endpoints, live portal</b></div>
-          <div><span>Status</span><b>In testing · revenue expected</b></div>
+          <div><span>Status</span><b>Live · already upselling</b></div>
         </div>
         <span className="cp-scroll" aria-hidden="true"><i></i>scroll</span>
       </div>
