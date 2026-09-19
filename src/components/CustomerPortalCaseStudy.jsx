@@ -428,23 +428,7 @@ function AlexJourney() {
               </>
             )}
             {beat === 3 && (
-              <>
-                <svg className="cjx-hook-ico" viewBox="0 0 96 48" aria-hidden="true">
-                  <defs>
-                    <linearGradient id="cpNodeStroke" x1="0%" y1="0%" x2="100%" y2="0%">
-                      <stop offset="0%" stopColor="#3696B1" stopOpacity="0.95" />
-                      <stop offset="100%" stopColor="#3696B1" stopOpacity="0.55" />
-                    </linearGradient>
-                  </defs>
-                  <circle cx="14" cy="24" r="9" fill="none" stroke="url(#cpNodeStroke)" strokeWidth="2.6" />
-                  <circle cx="14" cy="24" r="3" fill="#3696B1" />
-                  <circle cx="82" cy="24" r="9" fill="none" stroke="url(#cpNodeStroke)" strokeWidth="2.6" />
-                  <circle cx="82" cy="24" r="3" fill="#3696B1" />
-                  <line x1="23" y1="24" x2="73" y2="24" stroke="url(#cpNodeStroke)" strokeWidth="2" strokeDasharray="4 5" />
-                  <path d="M66 17l8 7-8 7" fill="none" stroke="url(#cpNodeStroke)" strokeWidth="2.6" strokeLinecap="round" strokeLinejoin="round" />
-                </svg>
-                <p className="cjx-q">Needs <em>one</em> connection:<br />datacenter → AWS ap-south-1.</p>
-              </>
+              <p className="cjx-q">Needs <em>one</em> connection:<br />datacenter → AWS ap-south-1.</p>
             )}
             <span className="cjx-cue">scroll to watch the days pile up →</span>
           </div>
