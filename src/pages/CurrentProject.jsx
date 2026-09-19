@@ -32,7 +32,7 @@ const INDEX = [
   { cat: 1, name: 'Customer Portal', label: 'Customer Portal', note: 'the self-serve front door' },
   { cat: 3, name: 'Invoice Design', label: 'Invoice Design', note: 'transparency for high-ticket billing' },
   { cat: 4, name: 'Knowledge Base', label: 'Knowledge Base', note: 'documentation out of the engineering queue' },
-  { cat: 5, name: 'Developer Portal', label: 'Developer Portal', note: '236 endpoints, executable against a sandbox' },
+  { cat: 5, name: 'Developer Portal', label: 'Developer Portal', note: 'the API, turned into a product' },
   { cat: 6, name: 'GenAI Initiative', label: 'GenAI Initiative', note: 'an assistant that answers with evidence' },
 ];
 
@@ -568,7 +568,7 @@ export default function CurrentProject() {
                     </svg>
                   </span>
                   <h4>Developer Portal</h4>
-                  <div className="tl-cs-row"><span>about</span><p>236 endpoints a customer can read, try against a sandbox, and automate against - without calling support first</p></div>
+                  <div className="tl-cs-row"><span>about</span><p>customers with their own NMS asked to drive Polarin from inside it - so we productised the API we had already built for ourselves</p></div>
                   <div className="tl-cs-row"><span>role</span><p>DX design, docs & frontend · PRD + pricing framework · volumetrics with engineering</p></div>
                   <div className="tl-cs-foot"><span className="tl-cs-impact">revenue <small>in testing</small></span><span className="tl-cs-link">Deep dive →</span></div>
                 </article>

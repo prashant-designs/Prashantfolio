@@ -3,17 +3,16 @@ import CaseRoute from '../CaseRoute';
 import { Shot, Clip } from '../CaseMedia';
 
 /* ---- Polarin Developer Portal -----------------------------------------
-   Polarin had APIs and no way in: a bare Swagger page where every test
-   call hit live production. This is the run from the first customer
-   conversation to a deployed frontend - the PRD, the decisions inside it,
-   and the portal those decisions turned into.
+   Polarin never set out to sell an API. We built one because the platform
+   needed it. Then customers running their own network management systems
+   started asking to drive Polarin services from inside their tooling -
+   and the decision to productise that is what this case study is about.
 
-   Built as pinned chapters, the same shape GenAICaseStudy uses, because
-   this was the one case study still running as flat scrolling sections. */
+   Built as pinned chapters, the same shape GenAICaseStudy uses. */
 
-/* the five glyphs the media annotations use. same language as the other
-   case studies' icon sets: 24x24, no fill, currentColor stroke at 1.6,
-   round caps and joins. */
+/* the glyphs the media annotations use. same language as the other case
+   studies' icon sets: 24x24, no fill, currentColor stroke at 1.6, round
+   caps and joins. */
 const DV_ICONS = {
   book: <><path d="M4 5.2c2.6-1.2 5.4-1.2 8 0v13.6c-2.6-1.2-5.4-1.2-8 0z" /><path d="M20 5.2c-2.6-1.2-5.4-1.2-8 0v13.6c2.6-1.2 5.4-1.2 8 0z" /></>,
   key: <><circle cx="8.4" cy="12" r="3.6" /><path d="M12 12h8" /><path d="M17.4 12v3.1" /><path d="M20 12v2.2" /></>,
@@ -30,33 +29,41 @@ function DvIco({ name }) {
   );
 }
 
-const PIPELINE = ['requirements', 'PRD', 'DX design', 'frontend build', 'deploy'];
-
-/* the current state, written as the responses a developer actually got */
-const FAILS = [
-  { code: 'GET /safe-test-environment', status: '500', body: 'every test call hits live production - one wrong call is a real order' },
-  { code: 'GET /api-key', status: '403', body: '"contact Lightstorm support" - days of delay for a two-minute task' },
-  { code: 'GET /change-bandwidth', status: '404', body: 'lost in hundreds of endpoints organised by tech, not by task' },
-  { code: 'GET /breaking-changes', status: '410', body: 'customers find out an API changed when their integration breaks' },
+/* what customers actually asked for. they were not asking for an API -
+   they were asking to stop leaving the tool they already live in. */
+const ASKS = [
+  { n: '01', t: 'Pull our metrics into their NMS', p: 'network-ops teams already watch one screen all day. they wanted Polarin performance on it, not in another tab.' },
+  { n: '02', t: 'Place and change orders from code', p: 'provision a port, change a bandwidth, run a MACD - without a human opening the portal to do it.' },
+  { n: '03', t: 'Everything the portal can do', p: 'parity, not a convenient subset. a partial API just moves the dead end somewhere less obvious.' },
 ];
 
-const PRINCIPLES = [
-  { t: 'a UAT twin', p: 'full sandbox - demo circuits, a mock write layer, nightly reset. responses field-identical to production; nothing real ever happens' },
-  { t: 'tasks, not endpoints', p: '236 endpoints organised into plain-english modules - ordering, MACD, monitoring, billing, support…' },
-  { t: 'self-serve keys', p: 'generate, rotate & revoke without a human - rotation overlap so live integrations never break' },
-  { t: 'a 180-day promise', p: 'max 2 live versions, migration guides, deprecation notices - no surprise breakage, ever' },
+/* the four calls that turned platform plumbing into something sellable */
+const DECISIONS = [
+  { t: 'Free to call', p: 'no per-call charge. Lightstorm earns from the services, not the requests - so nothing we charge for discourages the integration we want.' },
+  { t: 'A ceiling, not a bill', p: 'limits sit at the gateway so heavy polling cannot choke the platform. nobody has to model a cost before they integrate.' },
+  { t: 'Both surfaces stay in sync', p: 'an order placed by API still appears on the portal and still sends the email.' },
+  { t: 'A UAT twin', p: 'demo circuits, a mock write layer, a nightly reset, responses field-identical to production. nothing real ever happens.' },
 ];
 
-/* a PRD is a stack of arguments settled one by one. these are the ones
-   that shaped the portal. */
+/* a product definition is arguments settled one by one. these are the ones
+   that decided what the thing actually was. */
 const LEDGER = [
-  { q: 'Where do requirements come from?', a: 'journeys, not wishlists', d: 'two journeys wrote the PRD - a network engineer wiring Grafana, an IT team automating operations. every requirement had to serve one of them, benchmarked against the best developer platforms.' },
-  { q: 'UAT data - shared demo or per-customer snapshots?', a: 'shared · phase 1', d: 'shared demo circuits with a nightly reset ship faster and answer every integration question. per-customer production snapshots flagged for phase 2 - richer, not required for launch.' },
-  { q: 'Docs - public or behind login?', a: 'public · recommended', d: 'like the platforms developers already trust: docs, reference & Postman collection open to read, so integration code gets written in parallel with procurement. keys still require full Lightstorm onboarding & KYC.' },
-  { q: 'Key rotation - how long do old keys live?', a: 'overlap window', d: 'old key stays valid through a fixed overlap after rotation, so a live Grafana board never goes dark mid-swap. revoke is instant when a key is compromised.' },
+  { q: 'Where did the requirement come from?', a: 'customers, not a roadmap', d: 'teams already running an in-house NMS asked for it directly. the API existed as platform plumbing long before that - the product was the decision to sell it, and that decision came from demand rather than from a planning cycle.' },
+  { q: 'Charge per call?', a: 'no - free', d: 'metering an ordering API puts friction in front of our own revenue. calls are free and the ceiling sits at the gateway instead, so a customer never has to model a bill before they integrate.' },
+  { q: 'API-only, or both surfaces?', a: 'both, always in sync', d: 'an automated order still lands on the portal and still triggers the email. the alternative splits a customer\u2019s own team in two - the engineer sees the truth, their colleagues see a stale screen.' },
+  { q: 'Docs - public or behind login?', a: 'public', d: 'like the platforms developers already trust: reference and examples open to read, so integration code gets written in parallel with procurement. keys still require full onboarding and KYC.' },
+  { q: 'UAT data - shared or per-customer?', a: 'shared \u00b7 phase 1', d: 'shared demo circuits with a nightly reset answer every integration question and ship far faster. per-customer snapshots are richer, and were not required to launch.' },
 ];
 
-const DEV_ROUTE = ['Problem', 'The PRD', 'The portal', 'Result'];
+/* how it got built, and why that mattered as much as what got built */
+const DELIVERY = [
+  { t: 'Figma', p: 'the structure and the developer experience - navigation, page anatomy, the states an endpoint can be in' },
+  { t: 'Claude Code', p: 'the entire frontend, written against that structure by me rather than queued for an engineering slot' },
+  { t: 'Claude', p: 'the getting-started steps, module docs and reference copy - drafted fast, then edited for accuracy' },
+  { t: 'Git', p: 'the repo handed to a developer, and the engineering team took it from there for integration' },
+];
+
+const DEV_ROUTE = ['The pull', 'The product', 'The portal', 'How it shipped', 'Result'];
 
 function prefersReducedMotion() {
   return typeof window !== 'undefined'
@@ -103,51 +110,56 @@ function Chapter({ beats }) {
   );
 }
 
-/* ---- the four chapters ------------------------------------------------ */
+/* ---- the five chapters ------------------------------------------------ */
 
-const PROBLEM = [
-  <h3 className="gax-big" key="had">
-    Polarin had APIs.<br /><em className="cp-rose">Nobody could safely call them.</em>
+const PULL = [
+  <h3 className="gax-big" key="plumbing">
+    We built an API to run<br />our own platform.<br />
+    <em className="cp-signal">Customers asked to use it.</em>
   </h3>,
-  <div className="gax-wide" key="fails">
-    <span className="gax-eyebrow">The current state, as a developer met it</span>
-    <div className="dv-fails">
-      {FAILS.map((f) => (
-        <div className="dvf" key={f.code}>
-          <code>{f.code}</code>
-          <span className="dvf-code">{f.status}</span>
-          <p>{f.body}</p>
+  <div className="gax-wide" key="asks">
+    <span className="gax-eyebrow">What they actually asked for</span>
+    <div className="gax-grid3">
+      {ASKS.map((a) => (
+        <div className="gax-card" key={a.n}>
+          <span className="gax-n">{a.n}</span>
+          <b>{a.t}</b>
+          <p>{a.p}</p>
         </div>
       ))}
     </div>
+    <p className="gax-note">every one of them already ran an in-house NMS. they were not asking for an API - they were asking to stop leaving the screen they already watch.</p>
   </div>,
-  <h3 className="gax-big" key="support">
-    Customers who wanted to<br />automate <em className="cp-amber">still called support.</em>
+  <h3 className="gax-big" key="product">
+    So we stopped treating it as plumbing<br />and <em className="cp-up">made it a product</em> - a new way<br />to sell what we already had.
   </h3>,
 ];
 
-const PRD = [
-  <div className="gax-wide" key="pipe">
-    <span className="gax-eyebrow">One pair of hands, every stage</span>
-    <div className="dv-pipe">
-      {PIPELINE.map((p, i) => (
-        <span key={p} className={`dvp ${i === PIPELINE.length - 1 ? 'last' : ''}`}>
-          <b>{p}</b>{i === PIPELINE.length - 1 ? <i>201</i> : <i>200</i>}
-        </span>
-      ))}
-    </div>
-    <p className="gax-note">requirements came from shadowing support tickets and sitting with CX, sales and engineering - then anchored on two customers: network-ops pulling metrics into Grafana, and enterprise IT automating orders.</p>
-  </div>,
-  <div className="gax-wide" key="principles">
-    <span className="gax-eyebrow">The four calls the PRD made</span>
+const PRODUCT = [
+  <div className="gax-wide" key="decisions">
+    <span className="gax-eyebrow">The four calls that defined it</span>
     <div className="ivx-principles dv4">
-      {PRINCIPLES.map((pr) => (
-        <div className="ivp" key={pr.t}><b>{pr.t}</b><p>{pr.p}</p></div>
+      {DECISIONS.map((d) => (
+        <div className="ivp" key={d.t}><b>{d.t}</b><p>{d.p}</p></div>
       ))}
     </div>
+  </div>,
+  <h3 className="gax-big" key="free">
+    Free to call.<br /><em className="cp-up">The limit sits at the gateway,</em><br />not on the invoice.
+  </h3>,
+  <div className="gax-wide" key="sync">
+    <span className="gax-eyebrow">The decision I would defend hardest</span>
+    <div className="dv-sync">
+      <div className="dv-sync-c"><span>An order placed by API</span></div>
+      <i aria-hidden="true">→</i>
+      <div className="dv-sync-c on"><span>appears on the portal</span></div>
+      <i aria-hidden="true">+</i>
+      <div className="dv-sync-c on"><span>and in their inbox</span></div>
+    </div>
+    <p className="gax-note">the engineer who automates it is rarely the only person who needs to see it - so adoption spreads past the one person who wrote the integration.</p>
   </div>,
   <div className="gax-wide" key="ledger">
-    <span className="gax-eyebrow">A PRD is arguments, settled one by one</span>
+    <span className="gax-eyebrow">A product definition is arguments, settled one by one</span>
     <div className="dv-ledger">
       {LEDGER.map((l) => (
         <div className="li" key={l.q} tabIndex={0}>
@@ -171,18 +183,18 @@ const PORTAL = [
     icon={<DvIco name="book" />}
     note={{
       title: 'One front door, 236 endpoints behind it',
-      body: 'Get access, authenticate, call the APIs - the three steps of the PRD, made the first thing on the page. The search counts what it covers, because the old Swagger page never told you how much there was.',
+      body: 'Get access, authenticate, call the APIs. The search counts what it covers, because a customer sizing up an integration needs to know how much is there before they commit to it.',
     }}
   />,
   <Shot
     key="m-access"
     src="/dp/dp-access.jpg"
     alt="The Getting Access page: five numbered steps ending in a note that the first API call takes under thirty minutes"
-    eyebrow="The 30-minute promise"
+    eyebrow="Zero to first call"
     icon={<DvIco name="key" />}
     note={{
-      title: 'A claim in the PRD, turned into five steps',
-      body: 'Register, KYC, activation, email, then UAT. The PRD promised a developer could go from activation to first successful call in under half an hour; this is that promise written as something someone can follow.',
+      title: 'Under 30 minutes, written as five steps',
+      body: 'Register, KYC, activation, email, then UAT. The faster someone reaches a working call, the less likely the integration stalls in procurement - so the path had to be a page, not a conversation.',
     }}
   />,
   <Shot
@@ -203,7 +215,7 @@ const PORTAL = [
     icon={<DvIco name="play" />}
     note={{
       title: 'Every endpoint runs against the sandbox',
-      body: 'Fill the parameters, send, read the real response - here a 400 with the error code and the field that caused it. The mock layer behind UAT was the riskiest ask in the PRD, and this is what it bought.',
+      body: 'Fill the parameters, send, read the real response - here a 400 with the error code and the field that caused it. The UAT twin was the riskiest thing I asked engineering for, and this is what it bought.',
     }}
   />,
   <div className="gax-wide" key="m-env">
@@ -229,23 +241,38 @@ const PORTAL = [
     eyebrow="Breaking changes get a surface"
     icon={<DvIco name="alert" />}
     note={{
-      title: 'The 180-day promise, given somewhere to live',
-      body: 'Suspensions and deprecations each carry the affected module, the action required and a deadline - so an integration finds out before it breaks, not after.',
+      title: 'A live integration finds out before it breaks',
+      body: 'Suspensions and deprecations each carry the affected module, the action required and a deadline. Once a customer automates against you, a silent change is an outage in their tooling, not yours.',
     }}
   />,
 ];
 
+const SHIPPED = [
+  <div className="gax-wide" key="tools">
+    <span className="gax-eyebrow">Four tools, one pair of hands</span>
+    <div className="ivx-principles dv4">
+      {DELIVERY.map((d) => (
+        <div className="ivp" key={d.t}><b>{d.t}</b><p>{d.p}</p></div>
+      ))}
+    </div>
+  </div>,
+  <h3 className="gax-big" key="time">
+    The frontend never waited<br />for an engineering slot.<br />
+    <em className="cp-up">Their time went to integration,</em><br />which is where it was needed.
+  </h3>,
+];
+
 const RESULT = [
   <h3 className="gax-big" key="close">
-    From the PRD to the frontend.<br /><em className="cp-up">One pair of hands.</em>
+    From a customer request<br />to a sellable product.<br /><em className="cp-up">One pair of hands.</em>
   </h3>,
   <div className="gax-wide" key="result">
     <span className="gax-eyebrow">Where it stands</span>
-    <div className="inv-result">Revenue in testing with first users - opening segments running in-house NMS tools, and making every integration sticky the moment it&apos;s live.</div>
+    <div className="inv-result">Revenue in testing with first users - opening a segment that runs its own NMS tooling, and making every integration sticky the moment it&apos;s live.</div>
   </div>,
 ];
 
-const CHAPTERS = [PROBLEM, PRD, PORTAL, RESULT];
+const CHAPTERS = [PULL, PRODUCT, PORTAL, SHIPPED, RESULT];
 
 export default function DeveloperPortalCaseStudy({ onPrev, onNext, idx, total }) {
   const secs = useRef([]);
@@ -258,10 +285,10 @@ export default function DeveloperPortalCaseStudy({ onPrev, onNext, idx, total })
         <div className="cp-logo-wrap">
           <img className="cp-logo" src="/polarin-logo.png" alt="Polarin, by Lightstorm" />
         </div>
-        <h2>A network that provisions <span className="cp-signal">like an API call.</span></h2>
-        <p>Polarin had APIs - a bare Swagger page where every test call hit live production, so customers who wanted to automate still called support. I took the developer portal from the first customer conversation to a deployed frontend, one pair of hands at every stage.</p>
+        <h2>The API was plumbing. <span className="cp-signal">We made it a product.</span></h2>
+        <p>Polarin built an API because the platform needed one. Then customers running their own network management systems asked to place orders and pull metrics from inside their tooling - so we productised it. I defined what that product had to be, designed the developer experience, and built the frontend myself.</p>
         <div className="inv-meta">
-          <div><span>My role</span><b>PRD → DX design → frontend</b></div>
+          <div><span>My role</span><b>Product definition → DX design → frontend</b></div>
           <div><span>Output</span><b>236 endpoints, live portal</b></div>
           <div><span>Status</span><b>In testing · revenue expected</b></div>
         </div>
