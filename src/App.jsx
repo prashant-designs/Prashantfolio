@@ -3,6 +3,14 @@ import { HashRouter, Routes, Route, useLocation } from 'react-router-dom';
 import ErrorBoundary from './components/ErrorBoundary';
 import PageLoader from './components/PageLoader';
 
+/* The progress rail is full-bleed, so a mark at 100% sits exactly on the
+   viewport's right edge - the running head riding it ("05 EPILOGUE") hung 2px
+   past it with no air at all, and the last tick's 18px hit area overflowed by
+   9. Both are positioned by percentage, so both are pulled in by up to this
+   much at the far end and not at all at the near end - which fixes the edge
+   without insetting the rail itself. */
+const RAIL_GUARD = 22;
+
 const Home = lazy(() => import('./pages/Home'));
 const About = lazy(() => import('./pages/About'));
 const CurrentProject = lazy(() => import('./pages/CurrentProject'));
@@ -212,7 +220,9 @@ function AppContent() {
         const section = chSections[i];
         if (!section) return;
         const top = section.getBoundingClientRect().top + window.scrollY;
-        tickEl.style.left = `${clamp((top / docHeight) * 100, 0, 100)}%`;
+        const pct = clamp((top / docHeight) * 100, 0, 100);
+        // pulled in by up to RAIL_GUARD at the far end - see the constant.
+        tickEl.style.left = `calc(${pct}% - ${(pct / 100) * RAIL_GUARD}px)`;
       });
       syncActive();
     };
@@ -324,7 +334,10 @@ function AppContent() {
         <div className="route-line" id="routeLine">
           {hasScroll && <div className="route-fill" style={{ width: `${progress}%` }}></div>}
           {hasScroll && (
-            <div className="route-packet" style={{ left: `${progress}%` }}>
+            <div
+              className="route-packet"
+              style={{ left: `calc(${progress}% - ${(progress / 100) * RAIL_GUARD}px)` }}
+            >
               {chapterName && (
                 /* translated by its own progress percentage so it never leaves
                    the viewport: at 0% it hangs off the right of the caret, at
