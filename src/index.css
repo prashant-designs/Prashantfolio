@@ -6648,12 +6648,32 @@ b.adm-was { font-family: var(--body); font-weight: 600; color: var(--rose); }
    artefact. */
 .expl-sketches { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 18px; }
 .expl-sketch { margin: 0; }
-.expl-sketch svg { display: block; width: 100%; height: auto; background: var(--ink2); border: 1px solid var(--line2); border-radius: var(--r-md); padding: 6px; }
-.expl-sketch svg path, .expl-sketch svg circle { fill: none; stroke: var(--mute); stroke-width: 1.6; stroke-linecap: round; stroke-linejoin: round; opacity: 0.75; }
-.expl-sketch .expl-sketch-x { stroke: var(--rose); opacity: 0.5; stroke-width: 2; }
-.expl-sketch .expl-sketch-note { stroke: #E8A33D; opacity: 0.8; }
-.expl-sketch-win svg { border-color: rgba(54, 150, 177, 0.5); }
-.expl-sketch-win svg path, .expl-sketch-win svg circle { stroke: #3696B1; opacity: 0.9; }
+/* These read as paper now rather than as glowing vector on black: warm off-
+   white stock, dark ink, a soft drop shadow and a degree or two of rotation
+   so three of them look like three sheets on a desk rather than three tabs
+   in a UI. The stock is a CSS gradient pair - a faint grain and a warm
+   corner wash - rather than a photograph, because a photograph of paper
+   here would be someone else's sheet standing in for this project's. */
+.expl-sketch svg {
+  display: block; width: 100%; height: auto;
+  background:
+    radial-gradient(120% 90% at 18% 8%, rgba(255, 252, 244, 0.06), transparent 60%),
+    linear-gradient(168deg, #F7F4EC 0%, #EFEBE0 58%, #E8E3D6 100%);
+  border: 1px solid rgba(0, 0, 0, 0.16);
+  border-radius: 3px;
+  padding: 8px;
+  box-shadow: 0 14px 28px rgba(0, 0, 0, 0.45), 0 2px 5px rgba(0, 0, 0, 0.35);
+}
+.expl-sketch svg path, .expl-sketch svg circle { fill: none; stroke: #2B3242; stroke-width: 1.7; stroke-linecap: round; stroke-linejoin: round; opacity: 0.72; }
+.expl-sketch .expl-sketch-x { stroke: #C0392B; opacity: 0.75; stroke-width: 2.4; }
+.expl-sketch .expl-sketch-note { stroke: #C8892A; opacity: 0.95; stroke-width: 2.2; }
+/* the sheets sit at slightly different angles, the way three sheets do */
+.expl-sketch:nth-child(1) svg { transform: rotate(-1.4deg); }
+.expl-sketch:nth-child(2) svg { transform: rotate(0.7deg); }
+.expl-sketch:nth-child(3) svg { transform: rotate(-0.5deg); }
+.expl-sketch-win svg { border-color: rgba(54, 150, 177, 0.55); box-shadow: 0 14px 30px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(54, 150, 177, 0.18); }
+.expl-sketch-win svg path, .expl-sketch-win svg circle { stroke: #1D6E86; opacity: 0.92; }
+@media (prefers-reduced-motion: reduce) { .expl-sketch svg { transform: none !important; } }
 .expl-sketch figcaption { margin-top: 9px; font-size: var(--t-body-xs); line-height: 1.4; color: var(--dim); }
 .expl-sketch:nth-child(1) { transform: rotate(-1.2deg); }
 .expl-sketch:nth-child(2) { transform: rotate(0.8deg); }
