@@ -139,8 +139,10 @@ function prefersReducedMotion() {
 /* ---- the ambient field ------------------------------------------------
    A procedural point cloud behind the whole study: it rotates on its own,
    leans toward the cursor, brightens where the cursor passes, and changes
-   form as the reader moves between chapters - sphere, wave, disc. It is
-   decoration, so it is drawn on a canvas that never takes pointer events
+   form as the reader moves between chapters - sphere, wave, disc. The
+   palette, rings and core are the launch film's orb: cyan and aqua with a
+   few lilac dots, and the cursor lights dots up to a pale glint rather
+   than a second hue. It is decoration, so it is drawn on a canvas that never takes pointer events
    and is switched off entirely under reduced motion.
 
    Every dot is one stamp of a pre-rendered glow sprite. Drawing a real
@@ -166,8 +168,12 @@ function useCosmos(canvasRef, wrapRef) {
       g.fillRect(0, 0, 32, 32);
       return s;
     };
-    const TEAL = sprite('54,150,177');
-    const ROSE = sprite('255,107,138');
+    // sampled from the launch film's orb, lifted for a dark ground
+    const CYAN = sprite('64,208,238');
+    const AQUA = sprite('80,226,206');
+    const LILAC = sprite('184,156,240');
+    const GLINT = sprite('176,242,255');
+    const TONES = [CYAN, CYAN, CYAN, AQUA, CYAN, CYAN, LILAC];
 
     // a fibonacci sphere: even coverage without clumping at the poles
     const COUNT = window.innerWidth < 860 ? 240 : 560;
@@ -175,7 +181,7 @@ function useCosmos(canvasRef, wrapRef) {
       const y = 1 - (2 * (i + 0.5)) / COUNT;
       const r = Math.sqrt(Math.max(0, 1 - y * y));
       const th = i * 2.399963;
-      return { x: r * Math.cos(th), y, z: r * Math.sin(th), th };
+      return { x: r * Math.cos(th), y, z: r * Math.sin(th), th, tone: TONES[i % TONES.length] };
     });
 
     let w = 0; let h = 0; let raf = null; let last = 0; let t = 0; let morph = 0;
@@ -256,17 +262,51 @@ function useCosmos(canvasRef, wrapRef) {
         const rz = -x * si + z * co;
         const ry = y * ct - rz * st;
         const sc = 2.9 / (2.9 - rz * 0.5);
-        draw.push({ x: cx + rx * radius * sc, y: cy + ry * radius * sc, z: rz });
+        draw.push({ x: cx + rx * radius * sc, y: cy + ry * radius * sc, z: rz, tone: q.tone });
       }
       draw.sort((a, b) => a.z - b.z);
 
       // a faint ground glow, so the field sits in the page rather than on it
       const halo = ctx.createRadialGradient(cx, cy, 0, cx, cy, radius * 1.7);
-      halo.addColorStop(0, 'rgba(54,150,177,0.055)');
-      halo.addColorStop(0.55, 'rgba(255,107,138,0.028)');
+      halo.addColorStop(0, 'rgba(92,200,222,0.07)');
+      halo.addColorStop(0.55, 'rgba(92,200,222,0.025)');
       halo.addColorStop(1, 'rgba(0,0,0,0)');
       ctx.fillStyle = halo;
       ctx.fillRect(cx - radius * 2, cy - radius * 2, radius * 4, radius * 4);
+
+      // the film's orbit rings: three hairline ellipses, each on its own
+      // tilt, turning slower than the field so they read as structure
+      ctx.lineWidth = 1;
+      for (let k = 0; k < 3; k++) {
+        ctx.globalAlpha = 0.05;
+        ctx.strokeStyle = '#6FD6EC';
+        ctx.beginPath();
+        ctx.ellipse(cx, cy, radius * (0.62 + k * 0.12), radius * (0.26 + k * 0.08), t * 0.04 * (k % 2 ? -1 : 1) + k * 1.05 + ptr.lean, 0, Math.PI * 2);
+        ctx.stroke();
+      }
+
+      // and its core: a pale sphere with the four-point star. kept faint -
+      // it sits under body copy
+      const core = radius * 0.16;
+      const orb = ctx.createRadialGradient(cx - core * 0.3, cy - core * 0.35, 0, cx, cy, core * 1.6);
+      orb.addColorStop(0, 'rgba(225,248,252,0.2)');
+      orb.addColorStop(0.45, 'rgba(120,205,225,0.1)');
+      orb.addColorStop(1, 'rgba(92,200,222,0)');
+      ctx.globalAlpha = 1;
+      ctx.fillStyle = orb;
+      ctx.beginPath();
+      ctx.arc(cx, cy, core * 1.6, 0, Math.PI * 2);
+      ctx.fill();
+      const st4 = core * 0.34;
+      ctx.globalAlpha = 0.14;
+      ctx.fillStyle = '#E6FAFE';
+      ctx.beginPath();
+      ctx.moveTo(cx, cy - st4);
+      ctx.quadraticCurveTo(cx, cy, cx + st4, cy);
+      ctx.quadraticCurveTo(cx, cy, cx, cy + st4);
+      ctx.quadraticCurveTo(cx, cy, cx - st4, cy);
+      ctx.quadraticCurveTo(cx, cy, cx, cy - st4);
+      ctx.fill();
 
       // the cursor's reach is deliberately tight. a wide, strong bloom stops
       // reading as individual dots and turns into a smudge behind the text -
@@ -279,10 +319,10 @@ function useCosmos(canvasRef, wrapRef) {
         const near = Math.max(0, 1 - (dx * dx + dy * dy) / REACH);
         const depth = (d.z + 1) * 0.5;
         const r = (1 + depth * 1.25) * (1 + near * 1.9);
-        ctx.globalAlpha = Math.min(0.9, (0.11 + depth * 0.2) * (0.7 + near * 1.6));
-        // teal is the field; rose is reserved for the few dots nearest the
-        // cursor and the very front of the sphere, so it stays an accent
-        ctx.drawImage(near > 0.62 || d.z > 0.78 ? ROSE : TEAL, d.x - r * 2.4, d.y - r * 2.4, r * 4.8, r * 4.8);
+        ctx.globalAlpha = Math.min(0.9, (0.14 + depth * 0.24) * (0.7 + near * 1.6));
+        // each dot keeps its own tone; the ones nearest the cursor brighten
+        // to a pale glint, the way the film's dots catch the light
+        ctx.drawImage(near > 0.55 ? GLINT : d.tone, d.x - r * 2.4, d.y - r * 2.4, r * 4.8, r * 4.8);
 
         // thread a few near neighbours together - enough to read as a
         // lattice, not so many that it turns into a mesh
@@ -291,7 +331,7 @@ function useCosmos(canvasRef, wrapRef) {
           const len = Math.hypot(d.x - n.x, d.y - n.y);
           if (len < radius * 0.22) {
             ctx.globalAlpha = (0.04 + depth * 0.05) * (1 + near * 2);
-            ctx.strokeStyle = '#6E8FC8';
+            ctx.strokeStyle = '#5FB8CC';
             ctx.beginPath();
             ctx.moveTo(d.x, d.y);
             ctx.lineTo(n.x, n.y);
