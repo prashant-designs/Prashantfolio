@@ -1,0 +1,5 @@
+# GitHub's language bar is sized by bytes, and one 9,000-line stylesheet
+# outweighs every component combined - the repo read as "CSS". Leave the
+# stylesheet out of the count so the bar shows what the project is.
+src/index.css linguist-detectable=false
+public/*.html linguist-detectable=false
