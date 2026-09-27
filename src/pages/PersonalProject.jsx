@@ -1,6 +1,7 @@
 import { useEffect, useRef } from 'react';
 import useHeroPointer from '../useHeroPointer';
 import ScrollHint from '../components/ScrollHint';
+import CompareSlider from '../components/CompareSlider';
 
 /* ---- Personal Project: Move With Design --------------------------------
    One product, zero to live, solo: a 2024 brand that became a learning
@@ -12,8 +13,8 @@ import ScrollHint from '../components/ScrollHint';
    Screens are cut from the live public site (analytics blocked while
    recording). Onboarding and progress sit behind sign-in, so they were
    rendered from the app's own code on a local copy with no credentials,
-   progress seeded with sample data. The admin console is drawn as
-   labelled slots until real screens replace them. A slot says what goes
+   progress seeded with sample data. The admin console is the owner's own
+   recording, with the sign-in cut and the signed-in email erased. A slot says what goes
    there; it never pretends to be the screen. */
 
 const MARK = '/mwd/mwd-mark.svg';
@@ -46,7 +47,7 @@ const PIPE = [
   { t: 'Verify', s: 'credible sources' },
   { t: 'Dedupe', s: 'against history' },
   { t: 'Rank', s: 'relevance' },
-  { t: 'Draft', s: 'Gemini' },
+  { t: 'Draft', s: 'summary + takeaways' },
   { t: 'Approve', s: 'me, in the console', me: true },
   { t: 'Live', s: 'news · jobs' },
 ];
@@ -57,7 +58,7 @@ const STACK = [
   { k: 'Database & auth', v: 'Supabase' },
   { k: 'Email', v: 'Brevo · branded templates' },
   { k: 'Analytics', v: 'First-party, no third party' },
-  { k: 'AI', v: 'Gemini - drafting & chat' },
+  { k: 'AI', v: 'Gemini SDK, wired in' },
 ];
 
 const POSTS = [
@@ -71,7 +72,7 @@ const POSTS = [
 
 /* a looping clip that only fetches once it is near the viewport - four of
    these on one page would otherwise pull ~12MB before anyone scrolls */
-function Loop({ src, label }) {
+function Loop({ src, label, className = '' }) {
   const ref = useRef(null);
   useEffect(() => {
     const v = ref.current;
@@ -88,29 +89,11 @@ function Loop({ src, label }) {
     io.observe(v);
     return () => io.disconnect();
   }, [src]);
-  return <video ref={ref} className="pp-media" muted loop playsInline preload="none" aria-label={label} />;
+  return <video ref={ref} className={`pp-media ${className}`.trim()} muted loop playsInline preload="none" aria-label={label} />;
 }
 
 function Frame({ children, tone = '' }) {
   return <figure className={`pp-frame ${tone}`.trim()}>{children}</figure>;
-}
-
-/* a labelled slot for a signed-in screen. the faint skeleton says "this is
-   a product screen" at a glance; the label says which one is coming. */
-function Slot({ label, kind = 'app' }) {
-  return (
-    <div className={`pp-slot pp-slot-${kind}`} role="img" aria-label={`Placeholder: ${label}`}>
-      <div className="pp-slot-ui" aria-hidden="true">
-        <i className="side" />
-        <div className="main">
-          <i className="bar" />
-          <div className="row"><i /><i /><i /></div>
-          <i className="panel" />
-        </div>
-      </div>
-      <span className="pp-slot-l">Screenshot coming · {label}</span>
-    </div>
-  );
 }
 
 function Pills({ items }) {
@@ -185,19 +168,34 @@ export default function PersonalProject() {
         <Frame><Loop src="/mwd/mwd-onboarding.mp4" label="Onboarding: picking Design and Finance, a goal, an experience level and weekly hours, then Build my path" /></Frame>
       </Chapter>
 
-      <Chapter n="05" name="Learner portal" title={<>Progress you can <em>see</em>.</>} pills={['My dashboard', 'XP & achievements', 'Synced to the account']} tone="zone-lift">
-        <Frame><img className="pp-media" src="/mwd/mwd-progress.jpg" alt="Your Progress: 21 lessons done, a 7-day streak, 92% test average, Continue learning, and per-track completion bars" loading="lazy" /></Frame>
-        <p className="pp-note">Sample progress, rendered from the app's own code.</p>
+      <Chapter n="05" name="Learner portal" title={<>Progress you can <em>see</em>.</>} pills={['Streaks & test scores', 'Track by track', 'Badges earned']} tone="zone-lift">
+        <Frame><Loop src="/mwd/mwd-progress.mp4" label="Your Progress: 21 lessons done, a 7-day streak, 92% test average, per-track bars and earned badges" /></Frame>
+        <p className="pp-note">Sample progress, rendered from the app&apos;s own code.</p>
       </Chapter>
 
-      <Chapter n="06" name="Admin console" title={<>The whole business, <em>one console</em>.</>} pills={['Live analytics', 'Learners & email', 'Error log']} tone="zone-sink">
-        <div className="pp-two">
-          <Frame tone="pp-slotframe"><Slot label="Analytics" kind="chart" /></Frame>
-          <Frame tone="pp-slotframe"><Slot label="Curation queue" kind="list" /></Frame>
+      <Chapter n="06" name="Light & dark" title={<>Light or dark. <em>Your call.</em></>} pills={['Every surface', 'Remembers your choice', 'One set of tokens']} tone="zone-sink">
+        <CompareSlider beforeSrc="/mwd/mwd-theme-dark.jpg" afterSrc="/mwd/mwd-theme-light.jpg" beforeLabel="Dark" afterLabel="Light" hint="Drag to switch - the same page in both themes" />
+      </Chapter>
+
+      <Chapter n="07" name="The plumbing" title={<>Set up <em>every layer</em> myself.</>} tone="zone-lift">
+        <div className="pp-stack">
+          {STACK.map((s) => <div key={s.k}><span>{s.k}</span><b>{s.v}</b></div>)}
         </div>
       </Chapter>
 
-      <Chapter n="07" name="Agents" title={<>Fresh every morning. <em>Approved by me.</em></>} tone="zone-lift">
+      <Chapter n="08" name="The blog" title={<>Writing that <em>students</em> actually read.</>} pills={['49 posts', '6-7 min reads', 'Careers · AI · craft']} tone="zone-sink">
+        <div className="pp-posts">
+          {POSTS.map((p) => (
+            <a key={p.slug} className="pp-post" href={`https://www.movewithdesign.in/blog/${p.slug}`} target="_blank" rel="noopener noreferrer">
+              <span>{p.c}</span>
+              <b>{p.t}</b>
+              <i aria-hidden="true">Read ↗</i>
+            </a>
+          ))}
+        </div>
+      </Chapter>
+
+      <Chapter n="09" name="AI news" title={<>Fresh every morning. <em>Approved by me.</em></>} tone="zone-lift">
         <ol className="pp-pipe" aria-label="Daily curation pipeline, 8:00 AM">
           {PIPE.map((x) => (
             <li key={x.t} className={x.me ? 'me' : ''}><b>{x.t}</b><span>{x.s}</span></li>
@@ -210,25 +208,11 @@ export default function PersonalProject() {
         </div>
       </Chapter>
 
-      <Chapter n="08" name="The plumbing" title={<>Set up <em>every layer</em> myself.</>} tone="zone-sink">
-        <div className="pp-stack">
-          {STACK.map((s) => <div key={s.k}><span>{s.k}</span><b>{s.v}</b></div>)}
-        </div>
+      <Chapter n="10" name="Admin console" title={<>The whole business, <em>one console</em>.</>} pills={['Live analytics', 'News approval queue', 'Business dashboard']} tone="zone-sink">
+        <Frame><Loop className="pp-media-wide" src="/mwd/mwd-admin.mp4" label="The admin console: live telemetry with a 7-day activity chart, the AI and design news approval queue, and the business dashboard" /></Frame>
       </Chapter>
 
-      <Chapter n="09" name="The blog" title={<>Writing that <em>students</em> actually read.</>} pills={['49 posts', '6-7 min reads', 'Careers · AI · craft']} tone="zone-lift">
-        <div className="pp-posts">
-          {POSTS.map((p) => (
-            <a key={p.slug} className="pp-post" href={`https://www.movewithdesign.in/blog/${p.slug}`} target="_blank" rel="noopener noreferrer">
-              <span>{p.c}</span>
-              <b>{p.t}</b>
-              <i aria-hidden="true">Read ↗</i>
-            </a>
-          ))}
-        </div>
-      </Chapter>
-
-      <section className="pp-close zone zone-sink zone-cool" data-ch="Live">
+      <section className="pp-close zone zone-lift-hi zone-cool" data-ch="Live">
         <div className="wrap">
           <img className="pp-mark pp-mark-lg rv" src={MARK} alt="" />
           <h2 className="pp-h rv d1">Zero to live.<br /><em>100s of students.</em></h2>

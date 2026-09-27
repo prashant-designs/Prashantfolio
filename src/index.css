@@ -9342,6 +9342,8 @@ body.static .scene { height: auto !important; }
 
 .pp-frame { margin: 0; border: 1px solid var(--line2); border-radius: var(--r-lg); overflow: hidden; background: var(--surface); box-shadow: 0 30px 70px rgba(0, 0, 0, 0.38); }
 .pp-media { display: block; width: 100%; height: auto; aspect-ratio: 16 / 10; object-fit: cover; background: #0B0C12; }
+/* the admin recording is a wider screen (3360x1858) - show all of it */
+.pp-media-wide { aspect-ratio: 3360 / 1858; }
 .pp-two { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 18px; margin-top: 22px; }
 .pp-body > .pp-two:first-child { margin-top: 0; }
 
@@ -9353,20 +9355,8 @@ body.static .scene { height: auto !important; }
 .pp-stats b { display: block; font-family: var(--disp); font-weight: 800; font-size: clamp(28px, 3.4vw, 44px); letter-spacing: -0.03em; line-height: 1; color: var(--text); }
 .pp-stats span { display: block; margin-top: 8px; font-family: var(--mono); font-size: var(--t-meta); letter-spacing: 0.14em; text-transform: uppercase; color: var(--dim); }
 
-/* the signed-in slots: a faint product skeleton under a plain label */
-.pp-slotframe { background: transparent; box-shadow: none; border-style: dashed; }
-.pp-slot { position: relative; aspect-ratio: 16 / 10; display: grid; place-items: center; }
-.pp-slot-ui { position: absolute; inset: 18px; display: grid; grid-template-columns: 18% 1fr; gap: 14px; opacity: 0.5; }
-.pp-slot-ui i { display: block; border-radius: 8px; background: var(--line); }
-.pp-slot-ui .side { height: 100%; }
-.pp-slot-ui .main { display: grid; grid-template-rows: 22px 22% 1fr; gap: 12px; }
-.pp-slot-ui .bar { width: 46%; }
-.pp-slot-ui .row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
-.pp-slot-chart .pp-slot-ui .panel { background: linear-gradient(to top, rgba(255, 56, 92, 0.18), transparent 70%), var(--line); }
-.pp-slot-list .pp-slot-ui .panel { background: repeating-linear-gradient(to bottom, var(--line) 0 26px, transparent 26px 36px); }
-.pp-slot-flow .pp-slot-ui { grid-template-columns: 1fr; }
-.pp-slot-flow .pp-slot-ui .side { display: none; }
-.pp-slot-l { position: relative; padding: 9px 16px; border: 1px solid var(--line2); border-radius: 999px; background: var(--ink); font-family: var(--mono); font-size: var(--t-meta); letter-spacing: 0.14em; text-transform: uppercase; color: var(--mute); }
+.pp-body > .cmp-slider { margin-top: 0; }
+.pp-body .cmp-label { top: auto; bottom: 14px; }
 
 /* the curation run as a chain; the one human step is the accent */
 .pp-pipe { list-style: none; display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); gap: 0; margin: 0; padding: 0; }
@@ -9411,5 +9401,4 @@ body.static .scene { height: auto !important; }
   .pp-pipe li::before { margin: 3px 0 0; grid-row: span 2; }
   .pp-pipe li::after { top: 26px; left: 5px; right: auto; width: 2px; height: calc(100% - 4px); }
   .pp-pipe li:nth-child(4)::after { display: block; }
-  .pp-slot-l { font-size: 9px; padding: 7px 11px; }
 }

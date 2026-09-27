@@ -6,7 +6,7 @@ export function ImageOrFallback({ src, alt, children }) {
   return <img src={src} alt={alt} onError={() => setFailed(true)} style={{ width: '100%', borderRadius: '12px', display: 'block' }} />;
 }
 
-export default function CompareSlider({ beforeSrc, afterSrc, beforeLabel = 'Existing', afterLabel = 'New' }) {
+export default function CompareSlider({ beforeSrc, afterSrc, beforeLabel = 'Existing', afterLabel = 'New', hint = 'Drag to compare - existing invoice vs. the new design' }) {
   const [pos, setPos] = useState(50);
   const [beforeError, setBeforeError] = useState(false);
   const [afterError, setAfterError] = useState(false);
@@ -77,7 +77,7 @@ export default function CompareSlider({ beforeSrc, afterSrc, beforeLabel = 'Exis
           <span className="cmp-knob">↔</span>
         </div>
       </div>
-      <p className="cmp-hint">Drag to compare - existing invoice vs. the new design</p>
+      <p className="cmp-hint">{hint}</p>
     </div>
   );
 }
