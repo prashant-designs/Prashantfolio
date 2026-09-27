@@ -10,8 +10,9 @@ import ScrollHint from '../components/ScrollHint';
    the prose budget is one line.
 
    Screens are cut from the live public site (analytics blocked while
-   recording). The signed-in surfaces - onboarding, the learner dashboard
-   and the admin console - have no public page, so they are drawn as
+   recording). Onboarding and progress sit behind sign-in, so they were
+   rendered from the app's own code on a local copy with no credentials,
+   progress seeded with sample data. The admin console is drawn as
    labelled slots until real screens replace them. A slot says what goes
    there; it never pretends to be the screen. */
 
@@ -176,16 +177,20 @@ export default function PersonalProject() {
         <div className="pp-stats">
           {STATS.map((s) => <div key={s.l}><b>{s.n}</b><span>{s.l}</span></div>)}
         </div>
-        <Frame><Loop src="/mwd/mwd-skills.mp4" label="Choosing the Design skill and scrolling its five levels of modules" /></Frame>
+        <div className="pp-two">
+          <Frame><img className="pp-media" src="/mwd/mwd-skills.jpg" alt="Pick what moves you: Design, Finance, History, Your Body and Life skill cards" loading="lazy" /></Frame>
+          <Frame><img className="pp-media" src="/mwd/mwd-skill.jpg" alt="The Design skill: Get design ready, with Level 1 Seeing Design and its modules" loading="lazy" /></Frame>
+        </div>
         <Pills items={['Lessons, tests & unlocks', 'A certificate per skill', 'Written for students']} />
       </Chapter>
 
       <Chapter n="04" name="Onboarding" title={<>A few answers → <em>your path</em>.</>} pills={['Pick your skills', 'Goal · level · hours', 'Path built for you']} tone="zone-sink">
-        <Frame tone="pp-slotframe"><Slot label="Onboarding flow" kind="flow" /></Frame>
+        <Frame><Loop src="/mwd/mwd-onboarding.mp4" label="Onboarding: picking Design and Finance, a goal, an experience level and weekly hours, then Build my path" /></Frame>
       </Chapter>
 
       <Chapter n="05" name="Learner portal" title={<>Progress you can <em>see</em>.</>} pills={['My dashboard', 'XP & achievements', 'Synced to the account']} tone="zone-lift">
-        <Frame tone="pp-slotframe"><Slot label="Learner dashboard" /></Frame>
+        <Frame><img className="pp-media" src="/mwd/mwd-progress.jpg" alt="Your Progress: 21 lessons done, a 7-day streak, 92% test average, Continue learning, and per-track completion bars" loading="lazy" /></Frame>
+        <p className="pp-note">Sample progress, rendered from the app's own code.</p>
       </Chapter>
 
       <Chapter n="06" name="Admin console" title={<>The whole business, <em>one console</em>.</>} pills={['Live analytics', 'Learners & email', 'Error log']} tone="zone-sink">
