@@ -18,7 +18,7 @@ const STATS = [
 // overlay branch are all out, so it cannot be reached by click OR by the
 // overlay's prev/next either. restoring it means putting it back in these
 // four places and moving the group boundary below back to 3.
-const SURFACES = ['Customer Portal', 'Invoice Design', 'Developer Portal', 'Knowledge Base', 'GenAI Initiative'];
+const SURFACES = ['Customer Portal', 'Invoice Design', 'Developer Portal', 'Knowledge Base', 'Polarin AI Assistance'];
 
 /* the closing index - every case study on the page as one plain arrow-link
    list, which is the onething.design device the brief points at (italic-ish
@@ -33,7 +33,7 @@ const INDEX = [
   { cat: 3, name: 'Invoice Design', label: 'Invoice Design', note: 'transparency for high-ticket billing' },
   { cat: 4, name: 'Knowledge Base', label: 'Knowledge Base', note: 'documentation out of the engineering queue' },
   { cat: 5, name: 'Developer Portal', label: 'Developer Portal', note: 'the API, turned into a product' },
-  { cat: 6, name: 'GenAI Initiative', label: 'GenAI Initiative', note: 'an assistant that answers with evidence' },
+  { cat: 6, name: 'Polarin AI Assistance', label: 'Polarin AI Assistance', note: 'an assistant that answers with evidence' },
 ];
 
 // the exact vocabulary the immersion covered - nothing added
@@ -412,7 +412,7 @@ export default function CurrentProject() {
                 card's two lines did. */}
             <div className="soon-ctas rv d3">
               <button type="button" className="btn-ghost" onClick={() => scrollTo(spotRef)}>
-                Latest · Polarin&apos;s first GenAI initiative <span aria-hidden="true">↓</span>
+                Latest · Polarin AI Assistance <span aria-hidden="true">↓</span>
               </button>
             </div>
           </div>
@@ -573,7 +573,7 @@ export default function CurrentProject() {
                   <div className="tl-cs-foot"><span className="tl-cs-impact">upsell <small>live with customers</small></span><span className="tl-cs-link">Deep dive →</span></div>
                 </article>
 
-                <article className="tl-cs-card" role="button" tabIndex={0} onClick={() => openStudy('GenAI Initiative')} onKeyDown={cardKeys('GenAI Initiative')}>
+                <article className="tl-cs-card" role="button" tabIndex={0} onClick={() => openStudy('Polarin AI Assistance')} onKeyDown={cardKeys('Polarin AI Assistance')}>
                   <span className="tl-cs-icon" data-cat="6" aria-hidden="true">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round">
                       <path d="M12 3v4M12 17v4M3 12h4M17 12h4" />
@@ -582,10 +582,10 @@ export default function CurrentProject() {
                       </circle>
                     </svg>
                   </span>
-                  <h4>Polarin · AI Assistant</h4>
+                  <h4>Polarin AI Assistance</h4>
                   <div className="tl-cs-row"><span>about</span><p>an assistant that turns &quot;how is my network doing?&quot; into a conclusion, the evidence behind it, and a next step the customer confirms</p></div>
                   <div className="tl-cs-row"><span>role</span><p>product definition · AI behaviour &amp; guardrails · response design · frontend spec · built by a specialist AI delivery team</p></div>
-                  <div className="tl-cs-foot"><span className="tl-cs-impact">feasibility <small>verdict still open</small></span><span className="tl-cs-link">Deep dive →</span></div>
+                  <div className="tl-cs-foot"><span className="tl-cs-impact">prototype <small>verdict still open</small></span><span className="tl-cs-link">Deep dive →</span></div>
                 </article>
               </div>
             </Step>

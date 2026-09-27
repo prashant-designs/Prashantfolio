@@ -1,14 +1,17 @@
 import CaseRoute from '../CaseRoute';
+import { Shot, Clip } from '../CaseMedia';
 import { useEffect, useRef, useState } from 'react';
 
-/* ---- Polarin Bot ------------------------------------------------------
+/* ---- Polarin AI Assistance ----------------------------------------------
    An assistant for people who manage business network connections. The
    work here is product definition: what a good answer is, where the data
    comes from, what the thing may never do, and how you would know it
    worked - settled before a specialist AI team built the POC.
 
    Every beat below leads with the artifact. The prose is caption-length
-   on purpose; the prop is the argument. */
+   on purpose; the prop is the argument. Where the working prototype shows
+   a point, the beat carries a frame of it (public/gax/, cut from the
+   gitignored screen recordings) - sample data, simulated actions. */
 
 /* the three questions the product exists to answer, in customers' words */
 const Q_CLOUD = [
@@ -99,7 +102,7 @@ const CRITERIA = [
   { q: 'Does the handoff preserve the story?', s: 'no repeated explanation' },
 ];
 
-const GENAI_ROUTE = ['Problem', 'Discovery', 'Scope', 'Sources', 'The answer', 'Workspace', 'Interface', 'Proof'];
+const GENAI_ROUTE = ['Film', 'Problem', 'Discovery', 'Scope', 'Sources', 'The answer', 'Workspace', 'Interface', 'Proof'];
 
 /* reveal-on-scroll for [data-rv] children, scoped to the overlay panel */
 function useReveal(ref) {
@@ -400,6 +403,36 @@ function Workspace() {
   );
 }
 
+/* the launch film opens the study: it autoplays muted like every clip on
+   the site, but it was cut with a soundtrack, so the reader can turn it on.
+   it is the one clip here worth hearing, which is why it alone gets the
+   control rather than Clip growing a prop nobody else needs. */
+function LaunchFilm() {
+  const vid = useRef(null);
+  const [sound, setSound] = useState(false);
+  const toggle = () => {
+    const v = vid.current;
+    if (!v) return;
+    v.muted = sound;
+    if (!sound) { v.currentTime = 0; v.play().catch(() => {}); }
+    setSound(!sound);
+  };
+  return (
+    <div className="gax-film">
+      <span className="gax-eyebrow">The launch film · 48 seconds</span>
+      <figure className="kbm-frame gax-film-frame">
+        <video ref={vid} src="/gax/gax-launch.mp4" autoPlay muted loop playsInline preload="metadata" />
+        <button type="button" className="gax-film-snd" aria-pressed={sound} onClick={toggle}>
+          {sound ? 'Sound off' : 'Play with sound'}
+        </button>
+      </figure>
+      <div className="gax-pills">
+        <span>Ask once</span><span>Know what needs attention</span><span>Act without forms</span>
+      </div>
+    </div>
+  );
+}
+
 /* one chapter: a run of pinned beats, one idea per screen. under reduced
    motion the whole run stacks and nothing is hidden. */
 function Chapter({ beats }) {
@@ -466,6 +499,13 @@ const DISCOVERY = [
     </div>
     <p className="gax-note">place, symptom and the word &quot;again&quot; all read as signals - so a clarification offers the likely choices rather than an empty prompt.</p>
   </div>,
+  <Shot
+    key="s-narrow"
+    src="/gax/gax-narrow.jpg"
+    alt="The assistant replying Let's narrow that down, with three suggested follow-ups as chips"
+    eyebrow="In the prototype"
+    note={{ title: 'A vague question gets three likely routes', body: 'Not an empty “please clarify”.' }}
+  />,
   <div className="gax-wide" key="honest">
     <span className="gax-eyebrow">What the discovery was, and was not</span>
     <div className="gax-fact">
@@ -497,6 +537,12 @@ const SCOPE_CH = [
       <div className="gax-confirm-b">Customer confirms <i aria-hidden="true">→</i></div>
     </div>
   </div>,
+  <Clip
+    key="c-ticket"
+    src="/gax/gax-ticket.mp4"
+    eyebrow="“Raise a ticket”, typed"
+    note={{ title: 'Evidence attached. Owner named. Nothing sent without a yes.', body: 'Simulated submission - no real ticket is created.' }}
+  />,
   <div className="gax-wide" key="never">
     <span className="gax-eyebrow">Outside the boundary, permanently</span>
     <div className="gax-never">
@@ -535,6 +581,12 @@ const ANSWER_CH = [
       ))}
     </div>
   </div>,
+  <Clip
+    key="c-ask"
+    src="/gax/gax-ask.mp4"
+    eyebrow="One tap → a working answer"
+    note={{ title: 'Headline, evidence, meaning, next step', body: 'The four blocks, in that order, from the running prototype.' }}
+  />,
   <div className="gax-wide" key="tpl">
     <span className="gax-eyebrow">The shape of the question picks the blocks</span>
     <div className="gax-tpl">
@@ -553,6 +605,12 @@ const WORKSPACE_CH = [
     <Ports />
     <p className="gax-note">3 of 6 example ports. illustrative data from the POC specification.</p>
   </div>,
+  <Clip
+    key="c-evidence"
+    src="/gax/gax-evidence.mp4"
+    eyebrow="The number opens into its source"
+    note={{ title: 'All six ports, the target, the verdict', body: 'Open a row for latency, flaps and optical power - or ask about it.' }}
+  />,
 ];
 
 const INTERFACE_CH = [
@@ -565,6 +623,13 @@ const INTERFACE_CH = [
       ))}
     </div>
   </div>,
+  <Shot
+    key="s-thinking"
+    src="/gax/gax-thinking.jpg"
+    alt="While answering, the assistant lists its steps: resolving services, reading samples, comparing against thresholds, finding patterns"
+    eyebrow="While it works, it says what it is doing"
+    note={{ title: 'Every step named, and ticked off', body: 'Waiting reads as progress, not a spinner.' }}
+  />,
   <h3 className="gax-big" key="mem">
     &quot;What about Mumbai?&quot;<br /><em className="cp-up">Service, metric and period<br />carry forward.</em>
   </h3>,
@@ -579,6 +644,20 @@ const PROOF = [
       ))}
     </div>
   </div>,
+  <Shot
+    key="s-diagnose"
+    src="/gax/gax-diagnose.jpg"
+    alt="A diagnosis of Bengaluru flapping: an availability trend, a likely physical-path cause marked confidence medium, not confirmed, and its sample sources"
+    eyebrow="02 · in the prototype"
+    note={{ title: 'A likely cause - marked “not confirmed”', body: 'Confidence and sources sit beside the claim.' }}
+  />,
+  <Shot
+    key="s-handoff"
+    src="/gax/gax-handoff.jpg"
+    alt="Your handoff is prepared for the NOC, listing the full conversation, sample diagnostic results, checks already performed and attachments"
+    eyebrow="03 · in the prototype"
+    note={{ title: 'The NOC gets the whole story', body: 'Conversation, diagnostics and checks already run - nobody starts over.' }}
+  />,
   <div className="gax-wide" key="crit">
     <span className="gax-eyebrow">How the POC would be judged - written before it ran</span>
     <div className="gax-crit">
@@ -611,17 +690,19 @@ export default function GenAICaseStudy({ onPrev, onNext, idx, total }) {
           <img className="cp-logo" src="/polarin-logo.png" alt="Polarin, by Lightstorm" />
         </div>
         <h2>Less searching. <span className="cp-signal">More knowing.</span></h2>
-        <p>An assistant for people who manage business network connections. The numbers already existed - what was missing was the answer. Screens here are reconstructions from the proof-of-concept specification, and no production result is claimed.</p>
+        <p>An assistant for people who manage business network connections. The numbers already existed - what was missing was the answer. Frames here are from the working prototype, on sample data with simulated actions - no production result is claimed.</p>
         <div className="inv-meta">
           <div><span>My role</span><b>Product definition → frontend spec</b></div>
           <div><span>Built with</span><b>A specialist AI delivery team</b></div>
-          <div><span>Status</span><b>POC · verdict still open</b></div>
+          <div><span>Status</span><b>Working prototype · verdict open</b></div>
         </div>
         <span className="cp-scroll" aria-hidden="true"><i></i>scroll</span>
       </div>
 
+      <div ref={at(0)}><LaunchFilm /></div>
+
       {CHAPTERS.map((beats, i) => (
-        <div ref={at(i)} key={GENAI_ROUTE[i]}><Chapter beats={beats} /></div>
+        <div ref={at(i + 1)} key={GENAI_ROUTE[i + 1]}><Chapter beats={beats} /></div>
       ))}
 
       <div className="ovl-nav">
