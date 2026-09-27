@@ -95,11 +95,20 @@ const DECISIONS = [
   { n: '03', t: 'A handoff without starting over', p: 'the person taking over receives the conversation and the diagnostics' },
 ];
 
-/* acceptance criteria - how the POC would be judged, written before it ran */
+/* acceptance criteria - the bar the POC was held to, written before it ran */
 const CRITERIA = [
   { q: 'Can every number be trusted?', s: 'traceable to its source' },
   { q: 'Is the ticket ready for support?', s: 'essential evidence included' },
   { q: 'Does the handoff preserve the story?', s: 'no repeated explanation' },
+];
+
+/* where the work stands: the POC is behind it, the full build is the
+   current step. "now" is the only live stage - no launch date is claimed */
+const PATH = [
+  { t: 'Discovery', s: 'done' },
+  { t: 'POC', s: 'done' },
+  { t: 'Full implementation', s: 'now' },
+  { t: 'Live with customers', s: 'next' },
 ];
 
 const GENAI_ROUTE = ['Film', 'Problem', 'Discovery', 'Scope', 'Sources', 'The answer', 'Workspace', 'Interface', 'Proof'];
@@ -699,15 +708,27 @@ const PROOF = [
     note={{ title: 'The NOC gets the whole story', body: 'Conversation, diagnostics and checks already run - nobody starts over.' }}
   />,
   <div className="gax-wide" key="crit">
-    <span className="gax-eyebrow">How the POC would be judged - written before it ran</span>
+    <span className="gax-eyebrow">The bar the POC was held to - set before it ran</span>
     <div className="gax-crit">
       {CRITERIA.map((x) => (
         <div className="gax-crit-r" key={x.q}><strong>{x.q}</strong><span>{x.s}</span></div>
       ))}
     </div>
   </div>,
+  <div className="gax-wide" key="path">
+    <span className="gax-eyebrow">Where it stands</span>
+    <ol className="gax-path">
+      {PATH.map((x) => (
+        <li className={x.s} key={x.t}>
+          <i aria-hidden="true">{x.s === 'done' ? '✓' : ''}</i>
+          <b>{x.t}</b>
+          <span>{x.s === 'done' ? 'done' : x.s === 'now' ? 'in progress' : 'next'}</span>
+        </li>
+      ))}
+    </ol>
+  </div>,
   <h3 className="gax-big" key="close">
-    A good demo is a start.<br /><em className="cp-amber">Evidence is the test</em> - and<br />that test has not reported yet.
+    The POC made the case.<br /><em className="cp-up">Now it is being built for real.</em>
   </h3>,
 ];
 
@@ -730,11 +751,11 @@ export default function GenAICaseStudy({ onPrev, onNext, idx, total }) {
           <img className="cp-logo" src="/polarin-logo.png" alt="Polarin, by Lightstorm" />
         </div>
         <h2>Less searching. <span className="cp-signal">More knowing.</span></h2>
-        <p>An assistant for people who manage business network connections. The numbers already existed - what was missing was the answer. Frames here are from the working prototype, on sample data with simulated actions - no production result is claimed.</p>
+        <p>An assistant for people who manage business network connections. The numbers already existed - what was missing was the answer. Frames are from the POC, on sample data. The POC is done - the full build is underway.</p>
         <div className="inv-meta">
           <div><span>My role</span><b>Product definition → frontend spec</b></div>
           <div><span>Built with</span><b>A specialist AI delivery team</b></div>
-          <div><span>Status</span><b>Working prototype · verdict open</b></div>
+          <div><span>Status</span><b>POC done · full build underway</b></div>
         </div>
         <span className="cp-scroll" aria-hidden="true"><i></i>scroll</span>
       </div>

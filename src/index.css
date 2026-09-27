@@ -8983,6 +8983,27 @@ body.static .scene { height: auto !important; }
 .gax-big em { font-style: normal; }
 .gax-note { margin: 18px auto 0; font-size: var(--t-body-sm); line-height: 1.5; color: var(--dim); max-width: 62ch; }
 .gax-wide { width: 100%; max-width: 920px; }
+.gax-path { list-style: none; display: grid; grid-template-columns: repeat(4, 1fr); gap: 0; margin: 0 auto; padding: 0; max-width: 860px; counter-reset: none; }
+.gax-path li { position: relative; display: flex; flex-direction: column; align-items: center; gap: 8px; padding: 0 8px; }
+.gax-path li::before { content: ''; position: absolute; top: 17px; left: -50%; width: 100%; height: 2px; background: var(--line2); z-index: 0; }
+.gax-path li:first-child::before { display: none; }
+.gax-path li.done::before, .gax-path li.now::before { background: #3696B1; }
+.gax-path i { position: relative; z-index: 1; width: 36px; height: 36px; display: grid; place-items: center; border-radius: 50%; border: 2px solid var(--line2); background: var(--ink2); font-style: normal; font-size: 15px; color: #fff; }
+.gax-path .done i { border-color: #3696B1; background: #3696B1; }
+.gax-path .now i { border-color: #5CC8DE; box-shadow: 0 0 0 6px rgba(92, 200, 222, 0.14); animation: gaxPulse 2.2s ease-in-out infinite; }
+.gax-path .now i::after { content: ''; width: 10px; height: 10px; border-radius: 50%; background: #5CC8DE; }
+.gax-path b { font-family: var(--disp); font-weight: 700; font-size: var(--t-body); line-height: 1.3; color: var(--text); }
+.gax-path .next b { color: var(--mute); }
+.gax-path li > span { white-space: nowrap; font-family: var(--mono); font-size: var(--t-meta); letter-spacing: 0.16em; text-transform: uppercase; color: var(--dim); }
+.gax-path .now > span { color: #5CC8DE; }
+@keyframes gaxPulse { 50% { box-shadow: 0 0 0 11px rgba(92, 200, 222, 0.05); } }
+@media (prefers-reduced-motion: reduce) { .gax-path .now i { animation: none; } }
+@media (max-width: 520px) {
+  .gax-path { grid-template-columns: 1fr; gap: 18px; max-width: 260px; }
+  .gax-path li { flex-direction: row; gap: 14px; padding: 0; text-align: left; }
+  .gax-path li::before { top: -18px; left: 17px; width: 2px; height: 18px; }
+  .gax-path li > span { margin-left: auto; }
+}
 /* prototype frames get more of the stage than the shared .kbm cap allows:
    the notes here are one line, so the media can take the height back. */
 .gax-stage .kbm { max-width: none; }
