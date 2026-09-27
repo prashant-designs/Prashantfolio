@@ -8983,15 +8983,33 @@ body.static .scene { height: auto !important; }
 .gax-big em { font-style: normal; }
 .gax-note { margin: 18px auto 0; font-size: var(--t-body-sm); line-height: 1.5; color: var(--dim); max-width: 62ch; }
 .gax-wide { width: 100%; max-width: 920px; }
-.gax-film { position: relative; z-index: 1; display: flex; flex-direction: column; align-items: center; max-width: 1060px; margin: 0 auto; padding: 8vh 16px 10vh; text-align: center; }
-.gax-film-frame { position: relative; width: 100%; }
+/* prototype frames get more of the stage than the shared .kbm cap allows:
+   the notes here are one line, so the media can take the height back. */
+.gax-stage .kbm { max-width: none; }
+.gax-stage .kbm-frame img, .gax-stage .kbm-frame video { max-height: calc(90vh - 300px); }
+/* .inv-wrap holds the study to a 920px column, which is right for text and
+   too narrow for a 2880px screen recording. on a wide panel the film and the
+   prototype frames step out of it - centred, and kept inside the panel. the
+   stage clips, so it is the chapter that widens, not the frame; text beats
+   keep their own 920px cap and never notice. */
+@media (min-width: 861px) {
+  .gax-oscn { width: min(1180px, calc(100vw - 240px)); margin-inline: calc((100% - min(1180px, calc(100vw - 240px))) / 2); }
+  .gax-stage .kbs-wide { max-width: none; }
+  .gax-film { width: min(1240px, calc(100vw - 240px)); max-width: none; margin-inline: calc((100% - min(1240px, calc(100vw - 240px))) / 2); }
+}
+/* the film is sized off the viewport HEIGHT, not the column width: the
+   whole 16:9 frame, eyebrow and pills have to land in one screen, so the
+   width is whatever that height allows, capped by the column. */
+.gax-film { position: relative; z-index: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: calc(90vh - 60px); max-width: 1480px; margin: 0 auto; padding: 4vh 16px 6vh; text-align: center; }
+.gax-film-frame { position: relative; width: min(100%, calc((90vh - 210px) * 16 / 9)); }
+.gax-film-frame video { max-height: none; }
 .gax-film-frame video { display: block; width: 100%; height: auto; aspect-ratio: 16 / 9; background: #F4F8FA; }
 .gax-film-snd { position: absolute; right: 14px; bottom: 14px; border: 1px solid rgba(54, 150, 177, 0.4); border-radius: 999px; background: rgba(8, 14, 20, 0.72); backdrop-filter: blur(8px); padding: 8px 14px; font-family: var(--mono); font-size: var(--t-meta); letter-spacing: 0.12em; text-transform: uppercase; color: #BFE6F1; cursor: pointer; }
 .gax-film-snd:hover, .gax-film-snd[aria-pressed="true"] { border-color: #4FB4D0; color: #fff; }
 .gax-film-snd:focus-visible { outline: 2px solid #4FB4D0; outline-offset: 2px; }
 .gax-pills { display: flex; flex-wrap: wrap; justify-content: center; gap: 10px; margin-top: 22px; }
 .gax-pills span { border: 1px solid var(--line2); border-radius: 999px; padding: 7px 14px; font-size: var(--t-body-xs); color: var(--mute); }
-@media (max-width: 520px) { .gax-film { padding: 5vh 0 7vh; } .gax-film-snd { right: 8px; bottom: 8px; padding: 5px 9px; font-size: 9px; letter-spacing: 0.08em; } }
+@media (max-width: 520px) { .gax-film { min-height: 0; padding: 5vh 0 7vh; } .gax-film-snd { right: 8px; bottom: 8px; padding: 5px 9px; font-size: 9px; letter-spacing: 0.08em; } }
 /* the customer's own words, set as the thing everything else answers */
 .gax-quote { font-family: var(--disp); font-weight: 800; font-size: var(--t-lead); letter-spacing: -0.03em; line-height: 1.25; margin: 0; color: var(--text); }
 .gax-grid3 { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px; }

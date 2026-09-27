@@ -419,7 +419,7 @@ function LaunchFilm() {
   };
   return (
     <div className="gax-film">
-      <span className="gax-eyebrow">The launch film · 48 seconds</span>
+      <span className="gax-eyebrow">The launch film · 45 seconds</span>
       <figure className="kbm-frame gax-film-frame">
         <video ref={vid} src="/gax/gax-launch.mp4" autoPlay muted loop playsInline preload="metadata" />
         <button type="button" className="gax-film-snd" aria-pressed={sound} onClick={toggle}>
