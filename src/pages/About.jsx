@@ -252,6 +252,7 @@ export default function About() {
                 <p className="hero-lede rv d3">Four years ago I was the first designer on a whiteboard idea. Now I run its roadmap - and still push its frontend to production myself.</p>
                 <div className="soon-ctas rv d3">
                   <a className="btn-ghost" href="/Prashant_Resume.pdf" target="_blank" rel="noopener noreferrer">Download résumé <span aria-hidden="true">↓</span></a>
+                  <a className="btn-ghost" href="https://github.com/pk8423206" target="_blank" rel="noopener noreferrer">GitHub <span aria-hidden="true">↗</span></a>
                 </div>
               </div>
             </div>

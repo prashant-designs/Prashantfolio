@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import useHeroPointer from '../useHeroPointer';
+import ScrollHint from '../components/ScrollHint';
 
 const PROJECTS = [
   'Jeevika App - empowering street vendors',
@@ -23,6 +24,97 @@ const HERO_CHIPS = [
   { label: 'one at a time', depth: 26, top: '30%', right: '21%' },
   { label: 'on Behance', depth: 20, top: '74%', right: '11%' },
 ];
+
+/* ---- Move With Design --------------------------------------------------
+   The one project on this page with more than a Behance link behind it: a
+   brand identity from 2024 that became a working learning platform in 2026,
+   designed and built solo. Three surfaces, one tab each - a real screen,
+   a headline, three pills. The admin console is the only surface without a
+   public page, so until a screen of it is added it is shown as the modules
+   it runs rather than a mock of a screen that does not exist. */
+const MWD_SURFACES = [
+  {
+    k: 'site',
+    tab: 'Website',
+    img: '/mwd/mwd-home.jpg',
+    alt: 'The Move With Design landing page: Move with finance, with a Find your move button',
+    h: 'One headline, many subjects',
+    pills: ['Scroll-motion landing', '49 long-form posts', 'Daily AI & design news'],
+  },
+  {
+    k: 'learn',
+    tab: 'Learner portal',
+    img: '/mwd/mwd-skills.jpg',
+    alt: 'The Skills page: Pick what moves you, with Design, Finance, History and Your Body skill cards',
+    h: 'Pick a skill, climb five levels',
+    pills: ['Lessons, tests & unlocks', 'Certificates per skill', 'XP and achievements'],
+  },
+  {
+    k: 'admin',
+    tab: 'Admin console',
+    h: 'The whole business, one console',
+    pills: ['Real visitor analytics', 'Content curation', 'Learner management'],
+    modules: ['Analytics', 'Business dashboard', 'News curation', 'Content', 'Learners', 'Email & subscribers', 'Affiliate manager', 'Error log', 'Navigation', 'Settings'],
+  },
+];
+
+const MWD_BRAND = [
+  { src: '/mwd/mwd-brand-logo.jpg', alt: 'The Move With Design mark on pink' },
+  { src: '/mwd/mwd-brand-colours.jpg', alt: 'The mark in its four colour pairings' },
+  { src: '/mwd/mwd-brand-tote.jpg', alt: 'The mark on a tote bag' },
+  { src: '/mwd/mwd-brand-pattern.jpg', alt: 'The repeat pattern built from the mark' },
+];
+
+function MoveWithDesign() {
+  const [tab, setTab] = useState('site');
+  const cur = MWD_SURFACES.find((x) => x.k === tab);
+  return (
+    <section className="op-mwd zone zone-lift" data-ch="Move With Design">
+      <div className="wrap">
+        <p className="eyebrow rv">Side project · founder</p>
+        <div className="op-mwd-head rv d1">
+          <img className="op-mwd-mark" src="/mwd/mwd-mark.svg" alt="" />
+          <h2>Move With Design</h2>
+        </div>
+        <p className="op-mwd-lede rv d2">A brand I drew in 2024, rebuilt in 2026 as a learning platform - designed, built and shipped solo.</p>
+        <div className="op-mwd-meta rv d2">
+          <div><span>Role</span><b>Design, build, run</b></div>
+          <div><span>Stack</span><b>Next.js · Supabase · Vercel</b></div>
+          <div><span>Timeline</span><b>Brand 2024 → platform 2026</b></div>
+        </div>
+
+        <div className="op-mwd-tabs rv d3" role="tablist" aria-label="Move With Design surfaces">
+          {MWD_SURFACES.map((x) => (
+            <button key={x.k} type="button" role="tab" id={`mwd-tab-${x.k}`} aria-selected={tab === x.k} aria-controls="mwd-panel" onClick={() => setTab(x.k)}>
+              {x.tab}
+            </button>
+          ))}
+        </div>
+        <div className="op-mwd-panel" id="mwd-panel" role="tabpanel" aria-labelledby={`mwd-tab-${tab}`}>
+          <h3>{cur.h}</h3>
+          <div className="op-mwd-pills">{cur.pills.map((p) => <span className="chip" key={p}>{p}</span>)}</div>
+          {cur.img ? (
+            <figure className="op-mwd-frame"><img src={cur.img} alt={cur.alt} /></figure>
+          ) : (
+            <div className="op-mwd-mods" aria-label="Admin console modules">
+              {cur.modules.map((m) => <span key={m}>{m}</span>)}
+            </div>
+          )}
+        </div>
+
+        <p className="eyebrow op-mwd-sub rv">Where it started · the 2024 identity</p>
+        <div className="op-mwd-brand rv d1">
+          {MWD_BRAND.map((b) => <img key={b.src} src={b.src} alt={b.alt} loading="lazy" />)}
+        </div>
+
+        <div className="soon-ctas op-mwd-ctas rv d2">
+          <a className="btn-ghost" href="https://www.movewithdesign.in" target="_blank" rel="noopener noreferrer">Visit movewithdesign.in <span aria-hidden="true">↗</span></a>
+          <a className="btn-ghost" href="https://github.com/pk8423206" target="_blank" rel="noopener noreferrer">See the commits on GitHub <span aria-hidden="true">↗</span></a>
+        </div>
+      </div>
+    </section>
+  );
+}
 
 function useTypewriter(words) {
   const [text, setText] = useState('');
@@ -108,6 +200,7 @@ export default function OtherProject() {
      the page dark - and the moment a .flip section is added under this fold, the
      scroll-driven turn-over works exactly as it does on the other pages. */
   return (
+    <>
     <section className="hero-fold zone zone-sink zone-cool" ref={heroRef} data-ch="Intro">
       {/* the recipe's ambient chips (HERO_CHIPS above). this fold's tilt card
           was the only thing in it that answered the cursor, so the shared
@@ -171,6 +264,9 @@ export default function OtherProject() {
           </div>
         </div>
       </div>
+      <ScrollHint label="scroll to Move With Design" />
     </section>
+    <MoveWithDesign />
+    </>
   );
 }
