@@ -9375,12 +9375,9 @@ body.static .scene { height: auto !important; }
 .pp-stack b { display: block; margin-top: 10px; font-family: var(--disp); font-weight: 700; font-size: var(--t-body); color: var(--text); }
 
 .pp-posts { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; }
-.pp-post { display: flex; flex-direction: column; gap: 10px; min-height: 170px; padding: 20px; border: 1px solid var(--line); border-radius: var(--r-md); background: var(--surface); text-decoration: none; transition: border-color 0.2s, transform 0.2s; }
-.pp-post:hover { border-color: rgba(255, 56, 92, 0.55); transform: translateY(-2px); }
-.pp-post:focus-visible { outline: 2px solid #FF385C; outline-offset: 2px; }
+.pp-post { display: flex; flex-direction: column; gap: 10px; min-height: 130px; padding: 20px; border: 1px solid var(--line); border-radius: var(--r-md); background: var(--surface); }
 .pp-post span { font-family: var(--mono); font-size: var(--t-meta); letter-spacing: 0.16em; text-transform: uppercase; color: #FF385C; }
 .pp-post b { font-family: var(--disp); font-weight: 700; font-size: var(--t-body); line-height: 1.35; color: var(--text); }
-.pp-post i { margin-top: auto; font-style: normal; font-size: var(--t-body-xs); color: var(--mute); }
 
 .pp-close { padding: var(--sp-sec) 0; text-align: center; }
 .pp-close .pp-h { margin: 0 auto; }

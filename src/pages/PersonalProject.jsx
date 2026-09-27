@@ -186,11 +186,10 @@ export default function PersonalProject() {
       <Chapter n="08" name="The blog" title={<>Writing that <em>students</em> actually read.</>} pills={['49 posts', '6-7 min reads', 'Careers · AI · craft']} tone="zone-sink">
         <div className="pp-posts">
           {POSTS.map((p) => (
-            <a key={p.slug} className="pp-post" href={`https://www.movewithdesign.in/blog/${p.slug}`} target="_blank" rel="noopener noreferrer">
+            <div key={p.slug} className="pp-post">
               <span>{p.c}</span>
               <b>{p.t}</b>
-              <i aria-hidden="true">Read ↗</i>
-            </a>
+            </div>
           ))}
         </div>
       </Chapter>
