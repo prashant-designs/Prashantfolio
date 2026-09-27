@@ -177,10 +177,7 @@ export default function PersonalProject() {
         <div className="pp-stats">
           {STATS.map((s) => <div key={s.l}><b>{s.n}</b><span>{s.l}</span></div>)}
         </div>
-        <div className="pp-two">
-          <Frame><img className="pp-media" src="/mwd/mwd-skills.jpg" alt="Pick what moves you: Design, Finance, History, Your Body and Life skill cards" loading="lazy" /></Frame>
-          <Frame><img className="pp-media" src="/mwd/mwd-skill.jpg" alt="The Design skill: Get design ready, with Level 1 Seeing Design and its modules" loading="lazy" /></Frame>
-        </div>
+        <Frame><Loop src="/mwd/mwd-skills.mp4" label="Choosing the Design skill and scrolling its five levels of modules" /></Frame>
         <Pills items={['Lessons, tests & unlocks', 'A certificate per skill', 'Written for students']} />
       </Chapter>
 
