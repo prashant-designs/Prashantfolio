@@ -9316,41 +9316,100 @@ body.static .scene { height: auto !important; }
   }
 }
 
-/* ================= MOVE WITH DESIGN (Other Projects, .op-mwd-) =================
-   one project, three surfaces behind tabs, then the identity it started as.
-   the frame is width-capped rather than height-capped - this is an ordinary
-   flowing section, not a pinned stage. */
-.op-mwd { padding: var(--sp-sec) 0; }
-.op-mwd-head { display: flex; align-items: center; gap: 16px; }
-.op-mwd-head h2 { margin: 0; font-family: var(--disp); font-weight: 800; font-size: clamp(34px, 5vw, 60px); line-height: 1.05; letter-spacing: -0.03em; color: var(--text); }
-.op-mwd-mark { width: clamp(40px, 5vw, 56px); height: auto; flex: none; }
-.op-mwd-lede { max-width: 58ch; margin: 18px 0 0; font-size: var(--t-body); line-height: 1.6; color: var(--mute); }
-.op-mwd-meta { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); margin-top: 28px; border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); }
-.op-mwd-meta div { padding: 14px 18px 14px 0; }
-.op-mwd-meta div + div { padding-left: 18px; border-left: 1px solid var(--line); }
-.op-mwd-meta span { display: block; font-family: var(--mono); font-size: var(--t-meta); letter-spacing: 0.18em; text-transform: uppercase; color: var(--dim); }
-.op-mwd-meta b { display: block; margin-top: 6px; font-size: var(--t-body-sm); font-weight: 600; color: var(--text); }
-.op-mwd-tabs { display: inline-flex; gap: 4px; margin-top: 44px; padding: 4px; border: 1px solid var(--line2); border-radius: 999px; background: var(--surface); }
-.op-mwd-tabs button { border: 0; border-radius: 999px; background: transparent; padding: 9px 18px; font: inherit; font-size: var(--t-body-sm); color: var(--mute); cursor: pointer; }
-.op-mwd-tabs button[aria-selected="true"] { background: var(--text); color: var(--ink, #0A0B10); font-weight: 600; }
-.op-mwd-tabs button:focus-visible { outline: 2px solid var(--text); outline-offset: 2px; }
-.op-mwd-panel { margin-top: 26px; }
-.op-mwd-panel h3 { margin: 0; font-family: var(--disp); font-weight: 700; font-size: clamp(22px, 2.6vw, 30px); letter-spacing: -0.02em; color: var(--text); }
-.op-mwd-pills { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 14px; }
-.op-mwd-frame { margin: 24px 0 0; border: 1px solid var(--line2); border-radius: var(--r-lg); overflow: hidden; background: var(--surface); box-shadow: 0 30px 70px rgba(0, 0, 0, 0.35); }
-.op-mwd-frame img { display: block; width: 100%; height: auto; aspect-ratio: 16 / 10; object-fit: cover; }
-.op-mwd-mods { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 10px; margin-top: 24px; padding: 22px; border: 1px dashed var(--line2); border-radius: var(--r-lg); }
-.op-mwd-mods span { display: flex; align-items: center; min-height: 64px; padding: 12px 14px; border: 1px solid var(--line); border-radius: var(--r-sm); background: var(--surface); font-size: var(--t-body-sm); color: var(--text); }
-.op-mwd-sub { margin-top: 64px; }
-.op-mwd-brand { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px; }
-.op-mwd-brand img { display: block; width: 100%; aspect-ratio: 4 / 3; object-fit: cover; border-radius: var(--r-md, 12px); border: 1px solid var(--line); }
-.op-mwd-ctas { margin-top: 40px; }
 .footer-links { display: inline-flex; gap: 18px; }
-@media (max-width: 760px) {
-  .op-mwd-meta { grid-template-columns: 1fr; }
-  .op-mwd-meta div + div { padding-left: 0; border-left: 0; border-top: 1px solid var(--line); }
-  .op-mwd-tabs { display: flex; width: 100%; }
-  .op-mwd-tabs button { flex: 1; padding: 9px 4px; font-size: 13px; white-space: nowrap; }
-  .op-mwd-mods { grid-template-columns: repeat(2, minmax(0, 1fr)); padding: 14px; }
-  .op-mwd-brand { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+
+
+/* ================= PERSONAL PROJECT (Move With Design, .pp-) =================
+   the build in order, one chapter per layer. every chapter is the same
+   shape - eyebrow, headline, pills, one visual - so the reader's eye learns
+   the page once and then only reads what changed. */
+.pp-title { display: flex; align-items: center; gap: 0.28em; flex-wrap: wrap; }
+.pp-mark { width: 0.82em; height: auto; flex: none; }
+.pp-mark-lg { width: 64px; margin-bottom: 22px; }
+.pp-meta { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); max-width: 680px; margin-top: 28px; border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); }
+.pp-meta div { padding: 13px 16px 13px 0; }
+.pp-meta div + div { padding-left: 16px; border-left: 1px solid var(--line); }
+.pp-meta span { display: block; font-family: var(--mono); font-size: var(--t-meta); letter-spacing: 0.18em; text-transform: uppercase; color: var(--dim); }
+.pp-meta b { display: block; margin-top: 5px; font-size: var(--t-body-sm); font-weight: 600; color: var(--text); }
+
+.pp-ch { padding: var(--sp-sec) 0; }
+.pp-h { margin: 0; max-width: 20ch; font-family: var(--disp); font-weight: 800; font-size: clamp(32px, 4.6vw, 58px); line-height: 1.06; letter-spacing: -0.03em; color: var(--text); }
+.pp-h em { font-style: normal; color: #FF385C; }
+.pp-pills { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 18px; }
+.pp-body { margin-top: 34px; }
+.pp-body > .pp-pills { margin-top: 20px; }
+.pp-note { margin: 14px 0 0; font-size: var(--t-body-sm); color: var(--dim); }
+
+.pp-frame { margin: 0; border: 1px solid var(--line2); border-radius: var(--r-lg); overflow: hidden; background: var(--surface); box-shadow: 0 30px 70px rgba(0, 0, 0, 0.38); }
+.pp-media { display: block; width: 100%; height: auto; aspect-ratio: 16 / 10; object-fit: cover; background: #0B0C12; }
+.pp-two { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 18px; margin-top: 22px; }
+.pp-body > .pp-two:first-child { margin-top: 0; }
+
+.pp-brand { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px; }
+.pp-brand img { display: block; width: 100%; aspect-ratio: 4 / 3; object-fit: cover; border-radius: var(--r-md); border: 1px solid var(--line); }
+
+.pp-stats { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px; margin-bottom: 22px; }
+.pp-stats div { padding: 18px 20px; border: 1px solid var(--line); border-radius: var(--r-md); background: var(--surface); }
+.pp-stats b { display: block; font-family: var(--disp); font-weight: 800; font-size: clamp(28px, 3.4vw, 44px); letter-spacing: -0.03em; line-height: 1; color: var(--text); }
+.pp-stats span { display: block; margin-top: 8px; font-family: var(--mono); font-size: var(--t-meta); letter-spacing: 0.14em; text-transform: uppercase; color: var(--dim); }
+
+/* the signed-in slots: a faint product skeleton under a plain label */
+.pp-slotframe { background: transparent; box-shadow: none; border-style: dashed; }
+.pp-slot { position: relative; aspect-ratio: 16 / 10; display: grid; place-items: center; }
+.pp-slot-ui { position: absolute; inset: 18px; display: grid; grid-template-columns: 18% 1fr; gap: 14px; opacity: 0.5; }
+.pp-slot-ui i { display: block; border-radius: 8px; background: var(--line); }
+.pp-slot-ui .side { height: 100%; }
+.pp-slot-ui .main { display: grid; grid-template-rows: 22px 22% 1fr; gap: 12px; }
+.pp-slot-ui .bar { width: 46%; }
+.pp-slot-ui .row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
+.pp-slot-chart .pp-slot-ui .panel { background: linear-gradient(to top, rgba(255, 56, 92, 0.18), transparent 70%), var(--line); }
+.pp-slot-list .pp-slot-ui .panel { background: repeating-linear-gradient(to bottom, var(--line) 0 26px, transparent 26px 36px); }
+.pp-slot-flow .pp-slot-ui { grid-template-columns: 1fr; }
+.pp-slot-flow .pp-slot-ui .side { display: none; }
+.pp-slot-l { position: relative; padding: 9px 16px; border: 1px solid var(--line2); border-radius: 999px; background: var(--ink); font-family: var(--mono); font-size: var(--t-meta); letter-spacing: 0.14em; text-transform: uppercase; color: var(--mute); }
+
+/* the curation run as a chain; the one human step is the accent */
+.pp-pipe { list-style: none; display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); gap: 0; margin: 0; padding: 0; }
+.pp-pipe li { position: relative; padding: 14px 12px 14px 0; }
+.pp-pipe li::before { content: ''; display: block; width: 12px; height: 12px; margin-bottom: 12px; border-radius: 50%; border: 2px solid var(--line2); background: var(--ink); position: relative; z-index: 1; }
+.pp-pipe li::after { content: ''; position: absolute; top: 20px; left: 12px; right: 0; height: 2px; background: var(--line2); }
+.pp-pipe li:last-child::after { display: none; }
+.pp-pipe li.me::before { border-color: #FF385C; background: #FF385C; box-shadow: 0 0 0 5px rgba(255, 56, 92, 0.16); }
+.pp-pipe b { display: block; font-family: var(--disp); font-weight: 700; font-size: var(--t-body); color: var(--text); }
+.pp-pipe span { display: block; margin-top: 4px; font-size: var(--t-body-xs); color: var(--dim); }
+.pp-pipe .me b { color: #FF385C; }
+
+.pp-stack { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; }
+.pp-stack div { padding: 22px; border: 1px solid var(--line); border-radius: var(--r-md); background: var(--surface); }
+.pp-stack span { display: block; font-family: var(--mono); font-size: var(--t-meta); letter-spacing: 0.16em; text-transform: uppercase; color: var(--dim); }
+.pp-stack b { display: block; margin-top: 10px; font-family: var(--disp); font-weight: 700; font-size: var(--t-body); color: var(--text); }
+
+.pp-posts { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; }
+.pp-post { display: flex; flex-direction: column; gap: 10px; min-height: 170px; padding: 20px; border: 1px solid var(--line); border-radius: var(--r-md); background: var(--surface); text-decoration: none; transition: border-color 0.2s, transform 0.2s; }
+.pp-post:hover { border-color: rgba(255, 56, 92, 0.55); transform: translateY(-2px); }
+.pp-post:focus-visible { outline: 2px solid #FF385C; outline-offset: 2px; }
+.pp-post span { font-family: var(--mono); font-size: var(--t-meta); letter-spacing: 0.16em; text-transform: uppercase; color: #FF385C; }
+.pp-post b { font-family: var(--disp); font-weight: 700; font-size: var(--t-body); line-height: 1.35; color: var(--text); }
+.pp-post i { margin-top: auto; font-style: normal; font-size: var(--t-body-xs); color: var(--mute); }
+
+.pp-close { padding: var(--sp-sec) 0; text-align: center; }
+.pp-close .pp-h { margin: 0 auto; }
+.pp-close .soon-ctas { justify-content: center; margin-top: 28px; }
+
+@media (max-width: 900px) {
+  .pp-pipe { grid-template-columns: repeat(4, minmax(0, 1fr)); row-gap: 8px; }
+  .pp-pipe li:nth-child(4)::after { display: none; }
+  .pp-posts, .pp-stack { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+@media (max-width: 640px) {
+  .pp-meta { grid-template-columns: 1fr; }
+  .pp-meta div + div { padding-left: 0; border-left: 0; border-top: 1px solid var(--line); }
+  .pp-brand, .pp-stats { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .pp-two, .pp-posts, .pp-stack { grid-template-columns: 1fr; }
+  .pp-pipe { grid-template-columns: 1fr; }
+  .pp-pipe li { display: grid; grid-template-columns: 24px 1fr; column-gap: 12px; padding: 8px 0; }
+  .pp-pipe li::before { margin: 3px 0 0; grid-row: span 2; }
+  .pp-pipe li::after { top: 26px; left: 5px; right: auto; width: 2px; height: calc(100% - 4px); }
+  .pp-pipe li:nth-child(4)::after { display: block; }
+  .pp-slot-l { font-size: 9px; padding: 7px 11px; }
 }

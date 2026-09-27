@@ -14,6 +14,7 @@ const RAIL_GUARD = 22;
 const Home = lazy(() => import('./pages/Home'));
 const About = lazy(() => import('./pages/About'));
 const CurrentProject = lazy(() => import('./pages/CurrentProject'));
+const PersonalProject = lazy(() => import('./pages/PersonalProject'));
 const OtherProject = lazy(() => import('./pages/OtherProject'));
 const MyJourney = lazy(() => import('./pages/MyJourney'));
 const NotFound = lazy(() => import('./pages/NotFound'));
@@ -309,6 +310,12 @@ function AppContent() {
               Current Project
             </a>
             <a
+              href="#/personal"
+              className={`tab ${currentPage === 'personal' ? 'active' : ''}`}
+            >
+              Personal Project
+            </a>
+            <a
               href="#/other"
               className={`tab ${currentPage === 'other' ? 'active' : ''}`}
             >
@@ -355,6 +362,7 @@ function AppContent() {
         <nav className="mnav-list" aria-label="Mobile navigation">
           <a href="#/about" className={currentPage === 'about' ? 'active' : ''}>About</a>
           <a href="#/current" className={currentPage === 'current' ? 'active' : ''}>Current Project</a>
+          <a href="#/personal" className={currentPage === 'personal' ? 'active' : ''}>Personal Project</a>
           <a href="#/other" className={currentPage === 'other' ? 'active' : ''}>Other Projects <span className="soon">soon</span></a>
           <a href="#/journey" className={currentPage === 'journey' ? 'active' : ''}>My Journey</a>
         </nav>
@@ -367,6 +375,7 @@ function AppContent() {
               <Route path="/" element={<Home />} />
               <Route path="/about" element={<About />} />
               <Route path="/current" element={<CurrentProject />} />
+              <Route path="/personal" element={<PersonalProject />} />
               <Route path="/other" element={<OtherProject />} />
               <Route path="/journey" element={<MyJourney />} />
               <Route path="*" element={<NotFound />} />
