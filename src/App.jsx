@@ -379,7 +379,7 @@ function AppContent() {
         <span>© 2026 Prashant Kumar · Gurugram / New Delhi, IN</span>
         <span className="footer-links">
           <a className="footer-link" href="/Prashant_Resume.pdf" target="_blank" rel="noopener noreferrer">Résumé ↓</a>
-          <a className="footer-link" href="https://github.com/pk8423206" target="_blank" rel="noopener noreferrer">GitHub ↗</a>
+          <a className="footer-link" href="https://github.com/prashant-designs" target="_blank" rel="noopener noreferrer">GitHub ↗</a>
         </span>
         <span><span className="g">●</span> made with love, fun & a dash of curiosity</span>
       </footer>

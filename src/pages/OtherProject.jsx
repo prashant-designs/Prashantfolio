@@ -109,7 +109,7 @@ function MoveWithDesign() {
 
         <div className="soon-ctas op-mwd-ctas rv d2">
           <a className="btn-ghost" href="https://www.movewithdesign.in" target="_blank" rel="noopener noreferrer">Visit movewithdesign.in <span aria-hidden="true">↗</span></a>
-          <a className="btn-ghost" href="https://github.com/pk8423206" target="_blank" rel="noopener noreferrer">See the commits on GitHub <span aria-hidden="true">↗</span></a>
+          <a className="btn-ghost" href="https://github.com/prashant-designs" target="_blank" rel="noopener noreferrer">See the commits on GitHub <span aria-hidden="true">↗</span></a>
         </div>
       </div>
     </section>
